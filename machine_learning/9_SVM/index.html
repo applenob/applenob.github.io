@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="如何优雅地手推SVM1手推svm一直是面试中常见的一个问题，但是却经常难住很多人。这里总结下为什么总是会手推失败的原因，以及如何更优雅地手推。  1.手推失败原因总结1.没有重点。完整的推倒过程非常复杂，全部讲清楚是一个大工程，如何选择重点非常重要，如果只是花时间去记具体细节的公式化简，很容易手推失败。2.先验知识掌握不牢。 比如KKT/Hinge Loss/kernel。 这些知识应该拆开来分块">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Javen Chen&#39;s Blog">
+<meta property="og:url" content="http://yoursite.com/machine_learning/9_SVM/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="如何优雅地手推SVM1手推svm一直是面试中常见的一个问题，但是却经常难住很多人。这里总结下为什么总是会手推失败的原因，以及如何更优雅地手推。  1.手推失败原因总结1.没有重点。完整的推倒过程非常复杂，全部讲清楚是一个大工程，如何选择重点非常重要，如果只是花时间去记具体细节的公式化简，很容易手推失败。2.先验知识掌握不牢。 比如KKT/Hinge Loss/kernel。 这些知识应该拆开来分块">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://i.stack.imgur.com/lNgJE.png">
+<meta property="og:image" content="http://4.bp.blogspot.com/-v4XFRpY7w-U/VRKS58QsTJI/AAAAAAAAnQU/H4WT8lzfQn4/s1600/svm.png">
+<meta property="og:updated_time" content="2019-07-20T01:32:36.337Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Javen Chen&#39;s Blog">
+<meta name="twitter:description" content="如何优雅地手推SVM1手推svm一直是面试中常见的一个问题，但是却经常难住很多人。这里总结下为什么总是会手推失败的原因，以及如何更优雅地手推。  1.手推失败原因总结1.没有重点。完整的推倒过程非常复杂，全部讲清楚是一个大工程，如何选择重点非常重要，如果只是花时间去记具体细节的公式化简，很容易手推失败。2.先验知识掌握不牢。 比如KKT/Hinge Loss/kernel。 这些知识应该拆开来分块">
+<meta name="twitter:image" content="https://i.stack.imgur.com/lNgJE.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/machine_learning/9_SVM/">
+
+
+
+
+
+  <title> | Javen Chen's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?239bba0e8b78c0293b8e646237f788cd";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Javen Chen's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Tech and Life~</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-所有专栏">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            所有专栏
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-历史文章">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            历史文章
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/machine_learning/9_SVM/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Javen Chen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/red.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-07-20T09:32:36+08:00">
+                2019-07-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/machine_learning/9_SVM/" class="leancloud_visitors" data-flag-title>
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="如何优雅地手推SVM"><a href="#如何优雅地手推SVM" class="headerlink" title="如何优雅地手推SVM"></a>如何优雅地手推SVM</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">手推svm一直是面试中常见的一个问题，但是却经常难住很多人。这里总结下为什么总是会手推失败的原因，以及如何更优雅地手推。</span><br></pre></td></tr></table></figure>
+
+<h2 id="1-手推失败原因总结"><a href="#1-手推失败原因总结" class="headerlink" title="1.手推失败原因总结"></a>1.手推失败原因总结</h2><p>1.没有重点。完整的推倒过程非常复杂，全部讲清楚是一个大工程，如何选择重点非常重要，如果只是花时间去记具体细节的公式化简，很容易手推失败。<br>2.先验知识掌握不牢。 比如KKT/Hinge Loss/kernel。 这些知识应该拆开来分块学，避免学混了，以为kernel就是给SVM用的。<br>3.在模型中使用trick的地方没有着重记忆。</p>
+<h2 id="2-先验知识"><a href="#2-先验知识" class="headerlink" title="2.先验知识"></a>2.先验知识</h2><h3 id="2-1-拉格朗日对偶性"><a href="#2-1-拉格朗日对偶性" class="headerlink" title="2.1 拉格朗日对偶性"></a>2.1 拉格朗日对偶性</h3><p><strong>原始问题</strong>：
+-<br>$f(x),c_i(x),h_j(x)$是定义在$R^n$上的连续可微函数，考虑约束最优化问题：</p>
+<ul>
+<li>$\underset{x\in<br>R^n}{min}f(x)\s.t.;;c_i(x)\leq 0;;i=1,…,k\h_j(x)=0;;j=1,…,l$</li>
+<li>即有$k$个不等式约束：$c_i(x)$和$l$个等式约束：$h_j(x)$。</li>
+</ul>
+<p><strong>拉格朗日函数</strong>：
+-<br>$L(x,\alpha,\beta)=f(x)+\sum_{i=1}^k\alpha_i c_i(x)+\sum_{j=1}^l\beta_jh_j(x)$<br>-
+$\alpha_i$和$\beta_j$，称为<strong>拉格朗日乘子</strong>，$\alpha_i\geq 0$。</p>
+<p><strong>拉格朗日函数的极大极小问题</strong>：
+-<br>令$\theta_P(x) = \underset{\alpha,\beta}{max};L(x,\alpha,\beta)$<br>-
+如果存在$x$违反了原始问题的约束条件，则$\theta_P(x)=\infty$，当$x$不违反原始问题的约束条件，则$\theta_P(x)=f(x)$<br>-
+因此：$\underset{x}{min}\theta_P(x)=\underset{x}{min}\underset{\alpha,\beta}{max}L(x,\alpha,\beta)$等价于原问题。<br><strong>对偶问题</strong>：</p>
+<ul>
+<li>$\underset{\alpha,\beta}{max}\underset{x}{min};L(x,\alpha,\beta)$</li>
+<li>定理：如果函数$f(x)$和$c_i(x)$是凸函数，$h_j(x)$是仿射函数，则$x^<em>,\alpha^</em>,\beta^*$是同时是原始问题和对偶问题的解的必要条件是满足KKT条件。</li>
+</ul>
+<p><strong>KKT条件</strong>：</p>
+<ul>
+<li>1.拉格朗日函数对$x$，$λ$，$α$求偏导都为0：<br>  -<br>$\triangledown_xL(x^<em>,\alpha^</em>,\beta^<em>)=0$<br>  -<br>$\triangledown_{\alpha}L(x^</em>,\alpha^<em>,\beta^</em>)=0$<br>  -<br>$\triangledown_{\beta}L(x^<em>,\alpha^</em>,\beta^*)=0$</li>
+<li></li>
+</ul>
+<p>2.对于不等式约束，$\alpha_i^<em>c_i(x^</em>)=0;;;i=1,…,k$（对偶互补条件）。</p>
+<h3 id="2-2-Hinge-Loss"><a href="#2-2-Hinge-Loss" class="headerlink" title="2.2 Hinge Loss"></a>2.2 Hinge Loss</h3><p>参考<a href="https://en.wikipedia.org/wiki/Hinge_loss" target="_blank" rel="noopener">wikipedia</a>以及[这篇博客](<a href="https://quomodocumque.wordpress.com/2016/01/23/ranking-" target="_blank" rel="noopener">https://quomodocumque.wordpress.com/2016/01/23/ranking-</a><br>mathematicians-by-hinge-loss/)和<a href="https://arxiv.org/pdf/1512.08949.pdf" target="_blank" rel="noopener">这篇paper</a>。
+对于二分类问题：</p>
+<p>$HingeLoss = max(0, 1-y_{true}\cdot y_{pred})$，也就是说，如果$y_{true}\cdot<br>y_{pred}&gt;1$，$HingeLoss=0$，在svm中，$y_{true}\cdot y_{pred}=y_{true}(w\cdot<br>x+b)$，即函数间隔。也就是说，<strong>我们希望这个函数间隔大于1就好</strong>，具体在svm上的应用，后文继续。<br><img src="https://i.stack.imgur.com/lNgJE.png" alt></p>
+<p>对于ranking问题：</p>
+<p>$HingeLoss(f) = max(0,<br>1-f(a)+f(a’))$，下面介绍下ranking的$HingeLoss$的intuition。<br>三元组：$(r,a,a’)$代表rater（评分人），$a$和$a’$代表两个app，并且$a$的评分高于$a’$。我们需要找到一个ranking方式，使得对所有$a</p>
+<blockquote>
+<p>a’$，都有$f(a) &gt; f(a’)$。</p>
+</blockquote>
+<p>最直接地，会想到0-1损失函数，即$mistake_j(f) = 1, ; if; f(a) &lt;
+f(a’) + 1$，$mistake_j(f) = 0, ;if; f(a) &gt;= f(a’) + 1$，然后最终的损失函数是：$M = \sum_j<br>mistake_j(f)$。</p>
+<p>但是这么做，M是<strong>非凸</strong>的，直接使用梯度下降去优化很可能只能获得局部最优。</p>
+<p>所以使用$hinge_j(f) =<br>max(0, 1-f(a)+f(a’))$来替换$mistake_j(f)$，这样最终的损失函数是<strong>凸函数</strong>。</p>
+<h3 id="2-3-Kernel-Trick"><a href="#2-3-Kernel-Trick" class="headerlink" title="2.3 Kernel Trick"></a>2.3 Kernel Trick</h3><p>简单地说，Kernel<br>Trick通过一个<strong>非线性变换</strong>，将<strong>输入空间（欧氏空间$R^n$或者离散集合）</strong>映射到<strong>特征空间（希尔伯特空间$Η$）</strong>，一般是<strong>升维</strong>的映射，所以有些人会说核技巧就是升维的，但这个说法并不严谨。<br>![](<a href="https://www.researchgate.net/profile/Gokmen_Zararsiz/publication/258856315/figure/fig8/AS:297028224602116@1447828455490/Fig-8-The-" target="_blank" rel="noopener">https://www.researchgate.net/profile/Gokmen_Zararsiz/publication/258856315/figure/fig8/AS:297028224602116@1447828455490/Fig-8-The-</a><br>kernel-trick-of-SVM-28-The-linearly-inseparable-data-in-two-dimensions-can.png)<br><strong>核函数</strong>：
+设$X$是输入空间（欧氏空间$R^n$或者离散集合），$H$是特征空间（希尔伯特空间），若存在一个从$X$到$H$的映射，即$φ(x):X\rightarrow<br>H$，使得对所有$x,z∈X$，有$K(x,z)=φ(x)\cdot φ(z)$，也就是说<strong>核函数是两个映射函数的点乘</strong>。</p>
+<p><strong>核技巧</strong>：
+核技巧不显式地定义映射函数$φ(x)$，只定义$K(x,z)$，这样计算更容易。</p>
+<p><strong>常用的核函数</strong>：</p>
+<p>1.多项式核函数（polynomial<br>kernel function）：$K(x,z) = (x\cdot z)^p$</p>
+<p>2.高斯核函数（Gaussian kernel<br>function）：$K(x,z) = exp(-\frac{||x-z||^2}{2σ^2})$</p>
+<h2 id="3-具体推导"><a href="#3-具体推导" class="headerlink" title="3 具体推导"></a>3 具体推导</h2><h3 id="3-1-硬间隔最大化"><a href="#3-1-硬间隔最大化" class="headerlink" title="3.1 硬间隔最大化"></a>3.1 硬间隔最大化</h3><p>对于二分类线性可分的问题，我们想要找到一个分割超平面，使得在平面的正面一侧的点都是正类，在反面一侧的点都是负类。<br><strong>分割超平面</strong>的表达式：$wx+b=0$。<br>svm的独特之处在于，它认为什么样的分割超平面是最好的，也就是分割超平面的评价标准。这个评价标准就是：<strong>两边离超平面最近的点，它们离超平面的距离要最远</strong>。用通俗一点的话去类比就是，如果要评价一个酒店的服务质量好坏，可以比较它们的差评，哪个差评相对好一些的，就认为这个酒店服务质量还不错。两边离分割超平面最近的点即<strong>支撑向量（support<br>vector）</strong>。</p>
+<p>假设我们找到了这些点，并做两个平行于分割超平面的<strong>支撑平面</strong>。</p>
+<p>两个支撑平面的表达式：</p>
+<p>$wx+b=1$，$wx+b=-1$；<br><img src="http://4.bp.blogspot.com/-v4XFRpY7w-U/VRKS58QsTJI/AAAAAAAAnQU/H4WT8lzfQn4/s1600/svm.png" alt><br>上面的支撑平面使用了第一个<strong>trick</strong>，也就是限定支撑平面等式右面的系数是$1$和$-1$，这是利用了$w$和$b$可以等比例缩放的性质，固定支撑平面的系数，可以方便后续计算。<br>对于所有训练数据：</p>
+<p>要满足$wx_++b≥1$，$wx_-+b≤-1$；<br>因为$y_+=1$，$y_-=-1$，可以使用使用一个<strong>trick</strong>将上面两个式子合成一个：</p>
+<p>$y(wx+b)≥1$<br>下面是个<strong>重点</strong>，来推导两个支撑平面的间隔：<br>$width=(x_+-x_-)\frac{w}{||w||}=\frac{x_+w}{||w||}-\frac{x_-w}{||w||}=\frac{2}{||w||}$<br>而最大化$\frac{2}{||w||}$和最小化$\frac{1}{2}||w||^2$是等价的，至此问题转换成了一个<strong>带不等式约束的凸优化问题</strong>，其中的不等式约束是：$y(wx+b)≥1$。<br>参考上面介绍的<strong>KKT条件</strong>，拉格朗日函数为：$L(w,b,α)=\frac{1}{2}||w||^2-\sum_1^Nα_iy_i(wx_i+b)+\sum_1^Nα_i$，问题转换为：$\underset{w,b}{min};\underset{α,α\geq<br>0}{max}L(w,b,α)$。令拉格朗日函数对$w$和$b$求偏导，并使之为0，可以得到：$w=\sum_i^Nα_iy_ix_i$，$\sum_i^Nα_iy_i=0$。<br>从$w=\sum_i^Nα_iy_ix_i$可以看出，模型的参数$w$可以完全用数据和$α$来计算，模型在优化的时候，<strong>保存的参数是$α$</strong>。优化完$α$以后，直接计算出$w$即可。<br>继续回到推导上来，将上面的两个式子带回到拉格朗日函数，化简得到：$L(w,b,α)=-\frac{1}{2}\sum_i^N\sum_j^Nα_iα_jy_iy_j(x_i\cdot<br>x_j)+\sum_i^Nα_i$。</p>
+<p>问题通过引入<strong>KKT条件</strong>做了一番推导以后可以归纳成：</p>
+<p>$minL(α) =<br>\frac{1}{2}\sum_i^N\sum_j^Nα_iα_jy_iy_j(x_i\cdot x_j)-\sum_i^Nα_i$<br>约束条件：$\sum_i^Nα_iy_i=0$和$α_i\geq 0$。</p>
+<p>推导到这里，可以直接把问题交给优化算法SMO了。<br>SMO算法就不展开说了，<a href="https://zhuanlan.zhihu.com/p/23068673" target="_blank" rel="noopener">这篇文章</a>不错，可以参考。</p>
+<h3 id="3-2"><a href="#3-2" class="headerlink" title="3.2"></a>3.2</h3><p>软间隔最大化<br>硬间隔最大化的一个很难实现的前提是：<strong>线性可分</strong>。现实中很多数据正负类相互交缠，不太可能严格满足线性可分，这个时候就需要<strong>软间隔最大化</strong>。
+可以认为存在一些特异点（outlier），去除了这些特异点之后，模型依然是可分的。<br>于是引入一个<strong>松弛变量$ξ_i$</strong>，约束条件变成：$y_i(wx_i+b)≥1-ξ_i$。<br>再引入<strong>惩罚参数</strong>：$C&gt;0$，目标函数变成：$min;\frac{1}{2}||w||^2+C\sum_i^Nξ_i$。<br>![](<a href="http://opencv-python-" target="_blank" rel="noopener">http://opencv-python-</a><br>tutroals.readthedocs.io/en/latest/_images/svm_basics3.png)<br>接下来的推导和硬间隔的类似，最终的优化式子不变，只有其中一个约束变成：$0 \leq α_i\leq C$</p>
+<p>得出了这个结果之后，我们终于到了Hinge<br>Loss了，让我们来看看软间隔最大化和Hinge Loss的关系：</p>
+<p><strong>软间隔最大化</strong>：</p>
+<p>目标函数：<br>$\underset{w,b,ξ}{min}\frac{1}{2}||w||^2+C\sum_i^Nξ_i$</p>
+<p>约束条件：<br>$y_i(wx_i+b)≥1-ξ_i$，$ξ_i \geq 0$</p>
+<p><strong>Hinge Loss</strong>：</p>
+<p>目标函数：</p>
+<p>$min \sum_i^N max(0,<br>1-y_i(wx_i+b)) + λ||w||^2$ </p>
+<p><strong>证明等价</strong>：从Hinge Loss往回推导，令$1-y_i(wx_i+b)=ξ_i$，且$ξ_i<br>\geq 0$，于是有$max(0, 1-y_i(wx_i+b))=max(0,ξ_i)=ξ_i$，所以Hinge<br>Loss变成了$\underset{w,b}{min}; \sum_i^Nξ_i +<br>λ||w||^2$。取$λ=\frac{1}{2C}$，又写成：$\frac{1}{C}(C\sum_i^Nξ_i +<br>\frac{1}{2}||w||^2)$，与<strong>软间隔最大化</strong>等价。</p>
+<h3 id="非线性支持向量机"><a href="#非线性支持向量机" class="headerlink" title="非线性支持向量机"></a>非线性支持向量机</h3><p>从推导后的式子可以看出，目标函数只使用了数据集两两点乘的结果。这样我们可以直接使用核函数来代替这个点乘，实现空间非线性映射。<br><strong>非线性支持向量机表述</strong>：</p>
+<p>目标函数：</p>
+<p>$minL(α) =<br>\frac{1}{2}\sum_i^N\sum_j^Nα_iα_jy_iy_jK(x_i,x_j)-\sum_i^Nα_i$<br>约束条件：$\sum_i^Nα_iy_i=0$和$0 \leq α_i \leq C$。</p>
+<p>分割平面：</p>
+<p>$\sum_i^Nα_iy_iK(x,x_i)+b$</p>
+<figure class="highlight plain"><figcaption><span>.input  n</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">print &quot;done&quot;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><figcaption><span>.output n</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line"> &#123;</span><br><span class="line">  &quot;name&quot;: &quot;stdout&quot;,</span><br><span class="line">  &quot;output_type&quot;: &quot;stream&quot;,</span><br><span class="line">  &quot;text&quot;: &quot;done\n&quot;</span><br><span class="line"> &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/machine_learning/8_PCA/" rel="next" title>
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/machine_learning/11_Tree_Ensemble/" rel="prev" title>
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/red.jpg" alt="Javen Chen">
+            
+              <p class="site-author-name" itemprop="name">Javen Chen</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">55</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/applenob" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:applecer@pku.edu.cn" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#如何优雅地手推SVM"><span class="nav-number">1.</span> <span class="nav-text">如何优雅地手推SVM</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-手推失败原因总结"><span class="nav-number">1.1.</span> <span class="nav-text">1.手推失败原因总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-先验知识"><span class="nav-number">1.2.</span> <span class="nav-text">2.先验知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-拉格朗日对偶性"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 拉格朗日对偶性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-Hinge-Loss"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2 Hinge Loss</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-Kernel-Trick"><span class="nav-number">1.2.3.</span> <span class="nav-text">2.3 Kernel Trick</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-具体推导"><span class="nav-number">1.3.</span> <span class="nav-text">3 具体推导</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-硬间隔最大化"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1 硬间隔最大化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#非线性支持向量机"><span class="nav-number">1.3.3.</span> <span class="nav-text">非线性支持向量机</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("9s7vKaOPY7lMWuX9YVLasdnq-gzGzoHsz", "gOEj5qIEBIz5eDM3F5Nn90Jg");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

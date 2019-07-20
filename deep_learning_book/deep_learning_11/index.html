@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+
+
+
+
+  <meta name="keywords" content="Deep Learning, 笔记,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="11. Practical Methodology实践设计流程1.确定目标：使用什么样的误差度量（error metric），并为此指定目标值。 2.尽快建立一个端到端的的pipeline，包括估计合适的性能度量（performance metric）。 3.搭建系统，并确定性能瓶颈，检查哪个部分的性能差于预期，以及是否是因为过拟合、欠拟合，或者数据或软件缺陷造成的。 4.根据具体观察反复地进行增">
+<meta name="keywords" content="Deep Learning, 笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第十一章：Practical Methodology">
+<meta property="og:url" content="http://yoursite.com/deep_learning_book/deep_learning_11/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="11. Practical Methodology实践设计流程1.确定目标：使用什么样的误差度量（error metric），并为此指定目标值。 2.尽快建立一个端到端的的pipeline，包括估计合适的性能度量（performance metric）。 3.搭建系统，并确定性能瓶颈，检查哪个部分的性能差于预期，以及是否是因为过拟合、欠拟合，或者数据或软件缺陷造成的。 4.根据具体观察反复地进行增">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://github.com/applenob/reading_note/raw/master/res/hyperparameter.png">
+<meta property="og:updated_time" content="2019-06-21T14:02:13.472Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="第十一章：Practical Methodology">
+<meta name="twitter:description" content="11. Practical Methodology实践设计流程1.确定目标：使用什么样的误差度量（error metric），并为此指定目标值。 2.尽快建立一个端到端的的pipeline，包括估计合适的性能度量（performance metric）。 3.搭建系统，并确定性能瓶颈，检查哪个部分的性能差于预期，以及是否是因为过拟合、欠拟合，或者数据或软件缺陷造成的。 4.根据具体观察反复地进行增">
+<meta name="twitter:image" content="https://github.com/applenob/reading_note/raw/master/res/hyperparameter.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/deep_learning_book/deep_learning_11/">
+
+
+
+
+
+  <title>第十一章：Practical Methodology | Javen Chen's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?239bba0e8b78c0293b8e646237f788cd";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Javen Chen's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Tech and Life~</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-所有专栏">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            所有专栏
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-历史文章">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            历史文章
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/deep_learning_book/deep_learning_11/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Javen Chen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/red.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">第十一章：Practical Methodology</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-05-09T11:00:00+08:00">
+                2017-05-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/《Deep-Learning》读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">《Deep Learning》读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/deep_learning_book/deep_learning_11/" class="leancloud_visitors" data-flag-title="第十一章：Practical Methodology">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="11-Practical-Methodology"><a href="#11-Practical-Methodology" class="headerlink" title="11. Practical Methodology"></a>11. Practical Methodology</h2><h2 id="实践设计流程"><a href="#实践设计流程" class="headerlink" title="实践设计流程"></a>实践设计流程</h2><p>1.确定目标：使用什么样的<strong>误差度量（error metric）</strong>，并为此指定目标值。</p>
+<p>2.尽快建立一个端到端的的pipeline，包括估计合适的性能度量（performance metric）。</p>
+<p>3.搭建系统，并确定性能瓶颈，检查哪个部分的性能差于预期，以及是否是因为过拟合、欠拟合，或者数据或软件缺陷造成的。</p>
+<p>4.根据具体观察反复地进行增量式的改动，如收集新数据、调整超参数或改进算法。</p>
+<h2 id="性能度量"><a href="#性能度量" class="headerlink" title="性能度量"></a>性能度量</h2><p>如何确定合理的性能期望？</p>
+<p>在学术界，可以根据先前公布的<strong>基准结果（benchmark）</strong>来估计预期错误率；在现实世界中，一个应用的错误率有必要是安全的、具有成本效益的或吸引消费者的。</p>
+<h3 id="种类"><a href="#种类" class="headerlink" title="种类"></a>种类</h3><ul>
+<li><strong>1.正确率（accuracy）</strong>；</li>
+<li><strong>2.准确率（precision）</strong>：是指预测结果属于某一类的个体，实际属于该类的比例；</li>
+<li><strong>3.召回率（recall）</strong>：被正确预测为某类的个体，与数据集中该类个体总数的比例；</li>
+<li><strong>4.F Score</strong>：$F = \frac{2pr}{p+r}$；</li>
+<li><strong>5.覆盖（coverage）</strong>：机器学习系统能够产生响应的样本所占的比率，个系统可以通过拒绝处理任意样本的方式来达到$100%$的精度，但是覆盖降到了$0%$；</li>
+</ul>
+<p><strong>默认的基准（baseline）模型</strong>：</p>
+<ul>
+<li>1.首先，根据数据的结构选择一类合适的模型。如果项目是以固定大小的向量作为输入的监督学习，那么可以使用全连接的前馈网络。 如果输入有已知的拓扑结构（例如，输入是图像），那么可以使用卷积网络。</li>
+<li>2.选择优化方法：具有衰减学习率以及动量的SGD是优化算法一个合理的选择；另一个非常合理的选择是Adam算法。</li>
+<li>3.除非训练集包含数千万以及更多的样本，否则项目应该在一开始就包含一些温和的正则化，提前终止也被普遍采用；Dropout也是一个很容易实现，且兼容很多模型和训练算法的出色正则化项；批标准化有时也能降低泛化误差，此时可以省略Dropout步骤。</li>
+<li></li>
+</ul>
+<p><strong>是否使用无监督学习？</strong>在某些领域，比如自然语言处理，能够大大受益于无监督学习技术，如学习无监督词嵌入；在其他领域，如计算机视觉，除非是在半监督的设定下（标注样本数量很少），目前无监督学习并没有带来益处。</p>
+<p><strong>决定是否收集更多数据</strong>：</p>
+<ul>
+<li>1.首先，确定训练集上的性能是否可接受：如果模型在训练集上的性能就很差，学习算法都不能在训练集上学习出良好的模型，那么就没必要收集更多的数据，可以尝试增加更多的网络层或每层增加更多的隐藏单元，以增加模型的规模。</li>
+<li>2.如果训练集上的性能是可接受的，那么我们开始度量测试集上的性能。 如果测试集上的性能也是可以接受的，那么就顺利完成了。</li>
+<li>3.如果测试集上的性能比训练集的要差得多，那么收集更多的数据是最有效的解决方案之一。</li>
+</ul>
+<h2 id="调整超参数"><a href="#调整超参数" class="headerlink" title="调整超参数"></a>调整超参数</h2><ul>
+<li>1.手动：手动搜索超参数的主要目标是调整模型的有效容量以匹配任务的复杂性；学习率可能是最重要的超参数；如果你只有时间调整一个超参数，那就调整学习率；如果训练集错误率大于目标错误率，那么只能增加模型容量以改进模型，如果测试集错误率大于目标错误率,可以改变正则化超参数，以减少有效的模型容量。</li>
+<li>2.自动：网格搜索（grid search）：当有三个或更少的超参数时，常见的超参数搜索方法是网格搜索。 对于每个超参数，使用者选择一个较小的有限值集去探索。</li>
+</ul>
+<p>然后，这些超参数笛卡尔乘积得到一组组超参数，网格搜索使用每组超参数训练模型。</p>
+<p>挑选验证集误差最小的超参数作为最好的超参数，通常，网格搜索会在对数尺度下挑选合适的值，如{0.1,1,10}。随机搜索：首先，我们为每个超参数定义一个边缘分布，例如，Bernoulli分布或多项式分布（分别对应着二元超参数或离散超参数），或者对数尺度上的均匀分布（对应着正实值超参数）。</p>
+<p><img src="https://github.com/applenob/reading_note/raw/master/res/hyperparameter.png" alt></p>
+<h2 id="调试策略"><a href="#调试策略" class="headerlink" title="调试策略"></a>调试策略</h2><ul>
+<li>1.可视化计算中模型的行为：当训练模型检测图像中的对象时，查看一些模型检测到部分重叠的图像；在训练语音生成模型时，试听一些生成的语音样本。直接观察机器学习模型运行其任务，有助于确定其达到的量化性能数据是否看上去合理。 </li>
+<li>2.可视化最严重的错误：通过查看训练集中很难正确建模的样本，通常可以发现该数据预处理或者标记方式的问题。 </li>
+<li>3.根据训练和测试误差检测软件： 我们往往很难确定底层软件是否是正确实现。训练和测试误差能够提供一些线索。 如果训练误差较低，但是测试误差较高，那么很有可能训练过程正常运行，但模型由于算法原因过拟合了。另一种可能是，测试误差没有被正确地度量，可能是由于训练后保存模型再重载去度量测试集时出现问题，或者是因为测试数据和训练数据预处理的方式不同。如果训练和测试误差都很高，那么很难确定是软件错误，还是由于算法原因模型欠拟合。 这种情况需要进一步的测试，如下面所述。</li>
+<li>4.拟合极小的数据集：当训练集上有很大的误差时，我们需要确定问题是真正的欠拟合，还是软件错误。 通常，即使是小模型也可以保证很好地拟合一个足够小的数据集。 例如，只有一个样本的分类数据可以通过正确设置输出层的偏置来拟合。 通常，如果不能训练一个分类器来正确标注一个单独的样本，或不能训练一个自编码器来成功地精准再现一个单独的样本，或不能训练一个生成模型来一致地生成一个单独的样本，那么很有可能是由于软件错误阻止训练集上的成功优化。</li>
+<li>5.比较反向传播导数和数值导数：如果使用一个需要实现梯度计算的软件框架，或者在添加一个新操作到求导库中，必须定义它的bprop方法，那么常见的错误原因是没能正确地实现梯度表达。验证这些求导正确性的一种方法是比较实现的自动求导和通过有限差分计算的导数。 </li>
+<li>6.监控激活函数值和梯度的直方图：可视化神经网络在大量训练迭代后（也许是一轮）收集到的激活函数值和梯度的统计量往往是有用的。隐藏单元的预激活值可以告诉我们该单元是否饱和，或者它们饱和的频率如何。</li>
+<li><h2 id="例子：实现多位数字识别的街景转录系统"><a href="#例子：实现多位数字识别的街景转录系统" class="headerlink" title="例子：实现多位数字识别的街景转录系统"></a>例子：实现多位数字识别的街景转录系统</h2></li>
+</ul>
+<p>1.首先要采集数据：街景车收集原始数据，然后操作员手动提供标签。 </p>
+<p>2.目标是达到人类水平，$98%$的准确率。</p>
+<p>为了达到这个级别的准确率，街景转录系统牺牲了覆盖。 因此在保持准确率 $98%$的情况下，覆盖成了这个项目优化的主要性能度量。</p>
+<p>随着卷积网络的改进，我们能够降低网络拒绝转录输入的置信度阈值，最终超出了覆盖 $95%$的目标。 </p>
+<p>3.快速建立一个合理的基准系统。</p>
+<p>对于视觉任务而言，基准系统是带有整流线性单元（relu）的卷积网络。 </p>
+<p>4.当输出序列的概率低于某个值$t$即$p(y\mid x) &lt; t$时，网络拒绝为输入$x$分类。 </p>
+<p>5.覆盖仍低于$90%$，但该方法没有明显的理论问题了。<br>因此，我们的方法论建议综合训练集和测试集性能，以确定问题是否是欠拟合或过拟合。 在这种情况下，训练和测试集误差几乎是一样的。</p>
+<p>因为训练和测试集的误差是如此相似，这表明要么是这个问题欠拟合，要么是训练数据的问题。 我们使用了推荐的调试策略之一，即<strong>可视化模型最糟糕的错误</strong>。</p>
+<p>结果显示，主要是输入图像裁剪得太紧，有些和地址相关的数字被裁剪操作除去了。 </p>
+<p>6.最终，系统达到了预设的目标。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Deep-Learning-笔记/" rel="tag"># Deep Learning, 笔记</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/deep_learning_book/deep_learning_10/" rel="next" title="第十章：Sequence Modeling：Recurrent and Recursive Nets">
+                <i class="fa fa-chevron-left"></i> 第十章：Sequence Modeling：Recurrent and Recursive Nets
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/deep_learning_book/deep_learning_12/" rel="prev" title="第十二章：Application">
+                第十二章：Application <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/red.jpg" alt="Javen Chen">
+            
+              <p class="site-author-name" itemprop="name">Javen Chen</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">55</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/applenob" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:applecer@pku.edu.cn" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#11-Practical-Methodology"><span class="nav-number">1.</span> <span class="nav-text">11. Practical Methodology</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实践设计流程"><span class="nav-number">2.</span> <span class="nav-text">实践设计流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#性能度量"><span class="nav-number">3.</span> <span class="nav-text">性能度量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#种类"><span class="nav-number">3.1.</span> <span class="nav-text">种类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调整超参数"><span class="nav-number">4.</span> <span class="nav-text">调整超参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调试策略"><span class="nav-number">5.</span> <span class="nav-text">调试策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#例子：实现多位数字识别的街景转录系统"><span class="nav-number">6.</span> <span class="nav-text">例子：实现多位数字识别的街景转录系统</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("9s7vKaOPY7lMWuX9YVLasdnq-gzGzoHsz", "gOEj5qIEBIz5eDM3F5Nn90Jg");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

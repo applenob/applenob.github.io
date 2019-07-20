@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="迁移学习入门迁移学习简单地说，首先有个目标任务$T$，目标数据$D_T$数据量偏小，此时有一个相似的源任务$S$，源数据$D_S$相对更充分，迁移学习的目标即如何借助源任务去提高目标任务的效果。第四范式的罗远升有一篇很不错的文章《迁移学习实战：从算法到实践》，看了那篇文章，你会对迁移学习有个大概的认识。 迁移学习方法分类根据所要迁移的知识的表示形式（即“What to transfer”），分为以">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Javen Chen&#39;s Blog">
+<meta property="og:url" content="http://yoursite.com/machine_learning/14_tran_learn/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="迁移学习入门迁移学习简单地说，首先有个目标任务$T$，目标数据$D_T$数据量偏小，此时有一个相似的源任务$S$，源数据$D_S$相对更充分，迁移学习的目标即如何借助源任务去提高目标任务的效果。第四范式的罗远升有一篇很不错的文章《迁移学习实战：从算法到实践》，看了那篇文章，你会对迁移学习有个大概的认识。 迁移学习方法分类根据所要迁移的知识的表示形式（即“What to transfer”），分为以">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://github.com/applenob/machine_learning_basic/raw/master/res/multi_task.png">
+<meta property="og:updated_time" content="2019-07-20T01:32:36.417Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Javen Chen&#39;s Blog">
+<meta name="twitter:description" content="迁移学习入门迁移学习简单地说，首先有个目标任务$T$，目标数据$D_T$数据量偏小，此时有一个相似的源任务$S$，源数据$D_S$相对更充分，迁移学习的目标即如何借助源任务去提高目标任务的效果。第四范式的罗远升有一篇很不错的文章《迁移学习实战：从算法到实践》，看了那篇文章，你会对迁移学习有个大概的认识。 迁移学习方法分类根据所要迁移的知识的表示形式（即“What to transfer”），分为以">
+<meta name="twitter:image" content="https://github.com/applenob/machine_learning_basic/raw/master/res/multi_task.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/machine_learning/14_tran_learn/">
+
+
+
+
+
+  <title> | Javen Chen's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?239bba0e8b78c0293b8e646237f788cd";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Javen Chen's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Tech and Life~</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-所有专栏">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            所有专栏
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-历史文章">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            历史文章
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/machine_learning/14_tran_learn/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Javen Chen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/red.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-07-20T09:32:36+08:00">
+                2019-07-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/machine_learning/14_tran_learn/" class="leancloud_visitors" data-flag-title>
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="迁移学习入门"><a href="#迁移学习入门" class="headerlink" title="迁移学习入门"></a>迁移学习入门</h1><p>迁移学习简单地说，首先有个目标任务$T$，目标数据$D_T$数据量偏小，此时有一个相似的源任务$S$，源数据$D_S$相对更充分，迁移学习的目标即如何借助源任务去提高目标任务的效果。<br>第四范式的罗远升有一篇很不错的文章<a href="http://www.sohu.com/a/160626995_470008" target="_blank" rel="noopener">《迁移学习实战：从算法到实践》</a>，看了那篇文章，你会对迁移学习有个大概的认识。</p>
+<h2 id="迁移学习方法分类"><a href="#迁移学习方法分类" class="headerlink" title="迁移学习方法分类"></a>迁移学习方法分类</h2><p>根据所要迁移的知识的表示形式（即“What to transfer”），分为以下四大类：</p>
+<ul>
+<li>基于样本的迁移学习（instance-<br>transfer）；</li>
+<li>基于参数的迁移学习（parameter-transfer）；</li>
+<li>基于特征表示的迁移学习（feature-<br>representation-transfer）；</li>
+<li>基于关系知识的迁移（relation-knowledge-transfer）。</li>
+</ul>
+<p>##<br>基于样本的迁移学习</p>
+<p>所谓基于样本，就是从源数据中选取对目标领域建模有帮助的样本。这样操作就有一个前提假设：源领域和目标领域的特征空间和目标空间要一致。</p>
+<h3 id="TrAdaBoost"><a href="#TrAdaBoost" class="headerlink" title="TrAdaBoost"></a>TrAdaBoost</h3><p>TrAdaBoost是一个典型的基于样本的迁移学习算法。关于基础的AdaBoost可以看<a href="https://applenob.github.io/tree_ensemble.html#AdaBoost" target="_blank" rel="noopener">之前写的博客</a>。
+TrAdaBoost的<strong>思想</strong>是：<br>-
+当一个目标数据$D_T$中的样本被错误的分类之后，可以认为这个样本是很难分类的，因此<strong>增大这个样本的权重</strong>，这样在下一次的训练中这个样本所占的比重变大，这一点和基本的AdaBoost算法的思想是一样的；</p>
+<ul>
+<li>如果源数据$D_S$中的一个样本被错误的分类了，可以认为这个样本对于目标数据是不同的，因此<strong>降低这个样本的权重</strong>，降低这个样本在分类器中所占的比重。</li>
+</ul>
+<p><strong>TrAdaBoost算法</strong>：</p>
+<ul>
+<li>先规定源数据：$D_S=(x_i^s, c(x_i^s))$，样本个数为$n$，目标数据：$D_T=(x_i^t,<br>c(x_i^t))$，样本个数为$m$，测试数据：$S = {(x_i^{test})}$。</li>
+<li>输入：训练集$D_S$和$D_T$，测试集$S$，一个基本分类器Learner，迭代次数N。</li>
+<li>1.初始化：<ul>
+<li>初始化权重向量$\mathbf<br>w^1 = (w_1^1, …, w_{n+m}^1)$，$w_i^1=\left{\begin{matrix}<br>\frac{1}{n}，;;;;;;;;;;;;; 当i=1,…,n\ \frac{1}{m}，;<br>当i=n+1,…,n+m\end{matrix}\right.$</li>
+<li>设置$\beta = 1/(1+\sqrt{2\ln{n/N}})$</li>
+</ul>
+</li>
+<li></li>
+</ul>
+<p>2.$For;t = 1, …, N$：<br>    - 3.归一化的权重：$\mathbf p^t = \frac{\mathbf<br>w^t}{\sum_{i=1}^{n+m}w_i^t}$；<br>    -<br>4.使用带权重的两个训练数据训练Learner，得到在$S$上的分类器$h_t:X\rightarrow Y$；<br>    -<br>5.计算$h_t$在$D_T$中的错误率：$\epsilon_t =<br>\sum_{i=n+1}^{n+m}\frac{w_i^t|h_t(x_i)-c(x_i)|}{\sum_{i=n+1}^{n+m}w_i^t}$；<br>    -<br>6.令$\beta_t = \epsilon_t(1-\epsilon_t)$，<strong>更新权重向量(重点)</strong>：$w_i^{t+1} =<br>\left{\begin{matrix}w_i^t\beta^{|h_t(x_i)-c(x_i)|}，;;;;;;;;;;;;;<br>当i=1,…,n\ w_i^t\beta^{-h_t(x_i)-c(x_i)|}，;<br>当i=n+1,…,n+m\end{matrix}\right.$</p>
+<h2 id="基于参数的迁移学习"><a href="#基于参数的迁移学习" class="headerlink" title="基于参数的迁移学习"></a>基于参数的迁移学习</h2><p>基于参数就是源任务和目标任务使用同一个模型，并且共享参数。典型的方法：多任务学习（multi-task learning）。<br><img src="https://github.com/applenob/machine_learning_basic/raw/master/res/multi_task.png" alt></p>
+<h2 id="基于特征表示的迁移学习"><a href="#基于特征表示的迁移学习" class="headerlink" title="基于特征表示的迁移学习"></a>基于特征表示的迁移学习</h2><p>基于特征表示的迁移学习是指利用源数据学会一个特征表示的方法，再用这个方法去提取目标数据的特征。<br>根据特征表示学习方法的不同也可以分为有监督和无监督两类。</p>
+<figure class="highlight plain"><figcaption><span>.input  n</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">print &quot;done&quot;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><figcaption><span>.output n</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line"> &#123;</span><br><span class="line">  &quot;name&quot;: &quot;stdout&quot;,</span><br><span class="line">  &quot;output_type&quot;: &quot;stream&quot;,</span><br><span class="line">  &quot;text&quot;: &quot;done\n&quot;</span><br><span class="line"> &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/machine_learning/13_graph/" rel="next" title>
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/machine_learning/15_interview/" rel="prev" title>
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/red.jpg" alt="Javen Chen">
+            
+              <p class="site-author-name" itemprop="name">Javen Chen</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">55</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/applenob" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:applecer@pku.edu.cn" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#迁移学习入门"><span class="nav-number">1.</span> <span class="nav-text">迁移学习入门</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#迁移学习方法分类"><span class="nav-number">1.1.</span> <span class="nav-text">迁移学习方法分类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#TrAdaBoost"><span class="nav-number">1.1.1.</span> <span class="nav-text">TrAdaBoost</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于参数的迁移学习"><span class="nav-number">1.2.</span> <span class="nav-text">基于参数的迁移学习</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于特征表示的迁移学习"><span class="nav-number">1.3.</span> <span class="nav-text">基于特征表示的迁移学习</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("9s7vKaOPY7lMWuX9YVLasdnq-gzGzoHsz", "gOEj5qIEBIz5eDM3F5Nn90Jg");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

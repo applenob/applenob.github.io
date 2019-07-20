@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+
+
+
+
+  <meta name="keywords" content="Reinforcement Learning, 笔记,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="3. Finite Markov DecisionProcessesAgent和Environment的交互 学习者和决策者称为agent。 agent交互的对象，外部环境，称为Environment。 在时刻t，agent的所处的环境用状态：$S_t \in S$表示，$S$是可能的状态集。假设agent采用了动作$A_t\in A(S_t)$，$A(S_t)$代表在状态$S_t$下可能的动作集">
+<meta name="keywords" content="Reinforcement Learning, 笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="强化学习导论学习笔记——（三）">
+<meta property="og:url" content="http://yoursite.com/rl_note/intro-note-3/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="3. Finite Markov DecisionProcessesAgent和Environment的交互 学习者和决策者称为agent。 agent交互的对象，外部环境，称为Environment。 在时刻t，agent的所处的环境用状态：$S_t \in S$表示，$S$是可能的状态集。假设agent采用了动作$A_t\in A(S_t)$，$A(S_t)$代表在状态$S_t$下可能的动作集">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-3/agent_env.png">
+<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-3/backup.png">
+<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-3/backup_opt.png">
+<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-3/3_grid_world.jpg">
+<meta property="og:updated_time" content="2019-06-16T13:30:57.107Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="强化学习导论学习笔记——（三）">
+<meta name="twitter:description" content="3. Finite Markov DecisionProcessesAgent和Environment的交互 学习者和决策者称为agent。 agent交互的对象，外部环境，称为Environment。 在时刻t，agent的所处的环境用状态：$S_t \in S$表示，$S$是可能的状态集。假设agent采用了动作$A_t\in A(S_t)$，$A(S_t)$代表在状态$S_t$下可能的动作集">
+<meta name="twitter:image" content="http://yoursite.com/rl_note/intro-note-3/agent_env.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/rl_note/intro-note-3/">
+
+
+
+
+
+  <title>强化学习导论学习笔记——（三） | Javen Chen's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?239bba0e8b78c0293b8e646237f788cd";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Javen Chen's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Tech and Life~</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-所有专栏">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            所有专栏
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-历史文章">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            历史文章
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/rl_note/intro-note-3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Javen Chen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/red.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">强化学习导论学习笔记——（三）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-06T16:34:20+08:00">
+                2018-07-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/强化学习导论学习笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">强化学习导论学习笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/rl_note/intro-note-3/" class="leancloud_visitors" data-flag-title="强化学习导论学习笔记——（三）">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="3-Finite-Markov-DecisionProcesses"><a href="#3-Finite-Markov-DecisionProcesses" class="headerlink" title="3. Finite Markov DecisionProcesses"></a>3. Finite Markov DecisionProcesses</h1><h2 id="Agent和Environment的交互"><a href="#Agent和Environment的交互" class="headerlink" title="Agent和Environment的交互"></a>Agent和Environment的交互</h2><ul>
+<li>学习者和决策者称为<strong>agent</strong>。</li>
+<li>agent交互的对象，外部环境，称为<strong>Environment</strong>。</li>
+<li>在时刻t，agent的所处的环境用状态：$S_t \in S$表示，$S$是可能的状态集。假设agent采用了动作$A_t\in A(S_t)$，$A(S_t)$代表在状态$S_t$下可能的动作集。</li>
+<li>到了下一个时刻t+1，agent收到了一个奖励：$R_{t+1} \in R$，并且发现自己处在一个新的state中：$S_{t+1}$。</li>
+</ul>
+<p><img src="/rl_note/intro-note-3/agent_env.png" alt="agent_env"></p>
+<h2 id="什么是有限"><a href="#什么是有限" class="headerlink" title="什么是有限"></a>什么是有限</h2><p>有限MDP中的有限意味着：状态空间S、动作空间A和奖励空间R都是<strong>离散且有限</strong>的。</p>
+<h2 id="目标和奖励的区别"><a href="#目标和奖励的区别" class="headerlink" title="目标和奖励的区别"></a>目标和奖励的区别</h2><ul>
+<li>每个时间节点上，agent都会收到一个奖励的数值：$R_t$。</li>
+<li>但是，agent的目标应该是：所有时间结点上的奖励的和的最大化。</li>
+<li>即：$G_t = R_{t+1} +  R_{t+2} + … + R_T$</li>
+</ul>
+<h2 id="什么是Episode"><a href="#什么是Episode" class="headerlink" title="什么是Episode"></a>什么是Episode</h2><p>一系列的agent和environment<strong>交互序列</strong>。每个episode之间相互不影响，且都是有一个相同的终止状态（terminate state）。</p>
+<h2 id="Continuing-Tasks"><a href="#Continuing-Tasks" class="headerlink" title="Continuing Tasks"></a>Continuing Tasks</h2><p>不同于Episode类的任务，这类任务没有终止状态，也就是说$T = \infty$。因此，如果考虑这类任务，那么$G_t$将是无穷大，于是引入discounting。</p>
+<h2 id="Episode和Continuing-Tasks的统一规范"><a href="#Episode和Continuing-Tasks的统一规范" class="headerlink" title="Episode和Continuing Tasks的统一规范"></a>Episode和Continuing Tasks的统一规范</h2><p>在Episode的尾部加入吸收状态（absorbing state），在此状态下，奖励永远是0，且下一个状态永远是当前状态。</p>
+<p>这样收益可以统一使用下面的Expected Discounted Return表示。</p>
+<h2 id="Expected-Discounted-Return"><a href="#Expected-Discounted-Return" class="headerlink" title="Expected Discounted Return"></a>Expected Discounted Return</h2><ul>
+<li>回报：$G_t = R_{t+1} +  \gamma R_{t+2} + … = \sum_{k=0}^{\infty} \gamma ^k R_{t+k+1}$</li>
+<li>$\gamma$是参数，且$0\leq \gamma \leq 1$，被称为<strong>discount rate</strong>。</li>
+<li>含义：一个奖励，如果是在k个时间节点以后收到，那么对于当前来说，它的价值是即时奖励的$\gamma^{k-1}$倍。</li>
+<li>从$G_t$的定义，很容易获得递推式：$G_t = R_{t+1} + \gamma G_{t+1}$</li>
+</ul>
+<h2 id="马尔科夫性质（Markov-property）"><a href="#马尔科夫性质（Markov-property）" class="headerlink" title="马尔科夫性质（Markov property）"></a>马尔科夫性质（Markov property）</h2><ul>
+<li>核心思想：<strong>当前state继承了所有的环境历史信息。</strong></li>
+<li>$Pr{S_{t+1}=s’, R_{t+1}=r|S_0,A_0,R_1,…,S_{t-1},A_{t_1},R_t,S_t,A_t} = Pr{S_{t+1}=s’, R_{t+1}=r|S_t,A_t}$</li>
+<li>即便state是非马尔科夫的，我们也希望近似到马尔科夫。</li>
+</ul>
+<h2 id="Markov-Dicision-Processes（MDP）"><a href="#Markov-Dicision-Processes（MDP）" class="headerlink" title="Markov Dicision Processes（MDP）"></a>Markov Dicision Processes（MDP）</h2><ul>
+<li><strong>满足马尔科夫性质的强化学习任务称为MDP。</strong></li>
+<li>如果state和action空间有限，则称为有限MDP（涵盖了现代强化学习90%的问题）。</li>
+<li>用$p(s’,r|s,a)$表示$Pr{S_{t+1}={s}’, R_{t+1}=r|S_t,A_t}$，这个条件概率是描绘了整个MDP的动态（Dynamics）。</li>
+<li>state-action期望奖励：$r(s,a) = \mathbb{E}[R_{t+1}|S_t=s,A_t=a]=\sum_{r\in R}r\sum_{s’\in S}p(s’, r|s,a)$</li>
+<li>状态转移概率：$p(s’|s,a) = Pr{S_{t+1}=s’|S_t=s, A_t=a}=\sum_{r\in R}p(s’, r| s, a)$</li>
+<li>state-action-nextstate期望奖励：$r(s, a, s’) = \mathbb{E}[R_{t+1}|S_t=s,A_t=a, S_{t+1}=s’] = \sum_{r\in R}r\frac{p(s’,r|s,a)}{p(s’|s,a)}$</li>
+</ul>
+<h2 id="价值函数"><a href="#价值函数" class="headerlink" title="价值函数"></a>价值函数</h2><p>关于策略$\pi$的state-value函数：</p>
+<p>$$v_{\pi}(s) = {\mathbb{E}}_{\pi}[G_t|S_t=s] = \mathbb{E}_{\pi}[\sum_k\gamma^kR_{t+k+1}|S_t=s]$$</p>
+<p>即，<strong>在使用策略$\pi$的前提下，衡量处于某个state有多好</strong>。</p>
+<p>关于策略$\pi$的action-value函数：</p>
+<p>$$q_{\pi}(a,s) = \mathbb{E}_{\pi}[G_t|S_t=s,A_t=a] = \mathbb{E}_{\pi}[\sum_{k=0}^{\infty}\gamma^kR_{t+k+1}\bigm|S_t=s,A_t=a]$$</p>
+<p>即，在使用策略$\pi$的前提下，衡量处于某个state下，执行某个action有多好。</p>
+<h2 id="Bellman-Euqation"><a href="#Bellman-Euqation" class="headerlink" title="Bellman Euqation"></a>Bellman Euqation</h2><p><strong>Bellman Expectation Euqation for</strong> $v_{\pi}$：</p>
+<p>$$v_{\pi}(s) = \sum_a\pi(a|s)\sum_{s’,r}p(s’,r|s,a)[r+\gamma v_{\pi}(s’)];;\forall s \in S$$</p>
+<p>理解：</p>
+<ul>
+<li>1.方括号中是根据后继状态的价值重新估计的价值函数，再在动作空间、后继状态空间和动作空间用相应的概率做加权求和。</li>
+<li>2.<strong>表达的是某个状态的价值和其后继状态的价值之间的关系。</strong></li>
+</ul>
+<p><strong>backup</strong>：是强化学习方法的核心，以时序意义上的回退，用下一个时刻的值去评估当前时刻的值。</p>
+<p><strong>Bellman Expectation Euqation for</strong> $q_{\pi}$</p>
+<p>$$q_{\pi}(s,a) = \sum_{s’}p(s’,r|s,a)[r+\gamma \sum_{a’}q(s’,a’)]$$</p>
+<p><img src="/rl_note/intro-note-3/backup.png" alt="backup"></p>
+<p>推导：</p>
+<p>$$v_\pi(s) = \mathbb{E}_{\pi}[G_t \mid S_t = s]$$</p>
+<p>$$= \mathbb{E}_{\pi} [R_{t+1} + \gamma G_{t+1} \mid S_t = s]$$</p>
+<p>$$= \sum_a \pi(a \mid s) \sum_{s’, r} p(s’, r \mid s, a) [r + \gamma v_\pi(s’)].$$</p>
+<p>$$q_{\pi}(s,a) = \mathbb{E}_{\pi}[G_t \mid S_t = s, A_t = a]$$</p>
+<p>$$= \mathbb{E}_\pi [R_{t+1} + \gamma G_{t+1} \mid S_t = s, A_t = a]$$</p>
+<p>$$= \sum_{s’,r}p(s’,r|s,a)[r+\gamma \sum_{a’}q(s’,a’)]$$</p>
+<p>参考资料：<a href="https://joshgreaves.com/reinforcement-learning/understanding-rl-the-bellman-equations/" target="_blank" rel="noopener">https://joshgreaves.com/reinforcement-learning/understanding-rl-the-bellman-equations/</a></p>
+<h2 id="最优化价值函数"><a href="#最优化价值函数" class="headerlink" title="最优化价值函数"></a>最优化价值函数</h2><p>$$v_*(s) = \underset{\pi}{max}v_{\pi}(s)$$</p>
+<p>$$q_*(s,a) = \underset{\pi}{max}q_{\pi}(s,a)$$</p>
+<p><strong>Bellman Optimality Euqation for</strong> $v_*(s)$：</p>
+<p>$$\underset{a\in A(s)}{max}\sum_{s’,r}p(s’,r|s,a)[r+\gamma v_*(s’)]$$</p>
+<p><strong>Bellman Optimality Euqation for</strong> $q_*(s,a)$：</p>
+<p>$$\sum_{s’,r}p(s’,r|s,a)[r+\gamma \underset{a’}{max}q_*(s’, a’)]$$</p>
+<p><img src="/rl_note/intro-note-3/backup_opt.png" alt="backup_opt"></p>
+<h2 id="代码分析"><a href="#代码分析" class="headerlink" title="代码分析"></a>代码分析</h2><p><a href="https://github.com/ShangtongZhang/reinforcement-learning-an-introduction/blob/master/chapter03/grid_world.py" target="_blank" rel="noopener">完整源码</a></p>
+<p><strong>问题描述</strong>：</p>
+<ul>
+<li>动作空间：上下左右。</li>
+<li>奖励：到A点会有10的奖励，且会被带到A’，到B有10的奖励，且会被带到B’。如果动作要把agent带离格子世界，则agent不懂，且奖励是-1。其他动作奖励是0。</li>
+</ul>
+<p><img src="/rl_note/intro-note-3/3_grid_world.jpg" alt="3_grid_world"></p>
+<p>假设初始策略是等概率地选择上下左右这四个动作：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># left, up, right, down</span></span><br><span class="line">ACTIONS = [np.array([<span class="number">0</span>, <span class="number">-1</span>]),</span><br><span class="line">           np.array([<span class="number">-1</span>, <span class="number">0</span>]),</span><br><span class="line">           np.array([<span class="number">0</span>, <span class="number">1</span>]),</span><br><span class="line">           np.array([<span class="number">1</span>, <span class="number">0</span>])]</span><br><span class="line">ACTION_PROB = <span class="number">0.25</span></span><br></pre></td></tr></table></figure>
+
+<p>下面代码描述了给定当前状态和动作，下一个状态和奖励是什么。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">step</span><span class="params">(state, action)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> state == A_POS:</span><br><span class="line">        <span class="keyword">return</span> A_PRIME_POS, <span class="number">10</span></span><br><span class="line">    <span class="keyword">if</span> state == B_POS:</span><br><span class="line">        <span class="keyword">return</span> B_PRIME_POS, <span class="number">5</span></span><br><span class="line"></span><br><span class="line">    state = np.array(state)</span><br><span class="line">    next_state = (state + action).tolist()</span><br><span class="line">    x, y = next_state</span><br><span class="line">    <span class="keyword">if</span> x &lt; <span class="number">0</span> <span class="keyword">or</span> x &gt;= WORLD_SIZE <span class="keyword">or</span> y &lt; <span class="number">0</span> <span class="keyword">or</span> y &gt;= WORLD_SIZE:</span><br><span class="line">        reward = <span class="number">-1.0</span></span><br><span class="line">        next_state = state</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        reward = <span class="number">0</span></span><br><span class="line">    <span class="keyword">return</span> next_state, reward</span><br></pre></td></tr></table></figure>
+
+<p>下面代码使用bellman equation做backup，去迭代价值函数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>, WORLD_SIZE):</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">0</span>, WORLD_SIZE):</span><br><span class="line">        <span class="keyword">for</span> action <span class="keyword">in</span> ACTIONS:</span><br><span class="line">            (next_i, next_j), reward = step([i, j], action)</span><br><span class="line">            <span class="comment"># bellman equation for value function</span></span><br><span class="line">            new_value[i, j] += ACTION_PROB * (reward + DISCOUNT * value[next_i, next_j])</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Reinforcement-Learning-笔记/" rel="tag"># Reinforcement Learning, 笔记</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/rl_note/intro-note-2/" rel="next" title="强化学习导论学习笔记——（二）">
+                <i class="fa fa-chevron-left"></i> 强化学习导论学习笔记——（二）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/rl_note/intro-note-4/" rel="prev" title="强化学习导论学习笔记——（四）">
+                强化学习导论学习笔记——（四） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/red.jpg" alt="Javen Chen">
+            
+              <p class="site-author-name" itemprop="name">Javen Chen</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">55</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/applenob" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:applecer@pku.edu.cn" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#3-Finite-Markov-DecisionProcesses"><span class="nav-number">1.</span> <span class="nav-text">3. Finite Markov DecisionProcesses</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Agent和Environment的交互"><span class="nav-number">1.1.</span> <span class="nav-text">Agent和Environment的交互</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是有限"><span class="nav-number">1.2.</span> <span class="nav-text">什么是有限</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#目标和奖励的区别"><span class="nav-number">1.3.</span> <span class="nav-text">目标和奖励的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是Episode"><span class="nav-number">1.4.</span> <span class="nav-text">什么是Episode</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Continuing-Tasks"><span class="nav-number">1.5.</span> <span class="nav-text">Continuing Tasks</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Episode和Continuing-Tasks的统一规范"><span class="nav-number">1.6.</span> <span class="nav-text">Episode和Continuing Tasks的统一规范</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Expected-Discounted-Return"><span class="nav-number">1.7.</span> <span class="nav-text">Expected Discounted Return</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#马尔科夫性质（Markov-property）"><span class="nav-number">1.8.</span> <span class="nav-text">马尔科夫性质（Markov property）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Markov-Dicision-Processes（MDP）"><span class="nav-number">1.9.</span> <span class="nav-text">Markov Dicision Processes（MDP）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#价值函数"><span class="nav-number">1.10.</span> <span class="nav-text">价值函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bellman-Euqation"><span class="nav-number">1.11.</span> <span class="nav-text">Bellman Euqation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最优化价值函数"><span class="nav-number">1.12.</span> <span class="nav-text">最优化价值函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码分析"><span class="nav-number">1.13.</span> <span class="nav-text">代码分析</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("9s7vKaOPY7lMWuX9YVLasdnq-gzGzoHsz", "gOEj5qIEBIz5eDM3F5Nn90Jg");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

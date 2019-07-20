@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+
+
+
+
+  <meta name="keywords" content="Deep Learning, 笔记,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="3. Probability and Information Theory概率论部分频率学派概率（frequentist probability）：认为概率和事件发生的频率相关。 贝叶斯学派概率（Bayesian probability）：认为概率是的对某件事发生的确定程度，可以理解成是确信的程度（degree of belief）。 随机变量（random variable）：一个可能随机获取不">
+<meta name="keywords" content="Deep Learning, 笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第三章：Probability and Information Theory">
+<meta property="og:url" content="http://yoursite.com/deep_learning_book/deep_learning_3/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="3. Probability and Information Theory概率论部分频率学派概率（frequentist probability）：认为概率和事件发生的频率相关。 贝叶斯学派概率（Bayesian probability）：认为概率是的对某件事发生的确定程度，可以理解成是确信的程度（degree of belief）。 随机变量（random variable）：一个可能随机获取不">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://raw.githubusercontent.com/applenob/reading_note/master/res/gauss.PNG">
+<meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/MultivariateNormal.png/450px-MultivariateNormal.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/applenob/reading_note/master/res/exp_dis.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/applenob/reading_note/master/res/laplace.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/applenob/reading_note/master/res/dirac.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/applenob/reading_note/master/res/logistic.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/applenob/reading_note/master/res/softplus.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/applenob/reading_note/master/res/dg.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/applenob/reading_note/master/res/udg.png">
+<meta property="og:updated_time" content="2019-06-19T15:39:53.038Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="第三章：Probability and Information Theory">
+<meta name="twitter:description" content="3. Probability and Information Theory概率论部分频率学派概率（frequentist probability）：认为概率和事件发生的频率相关。 贝叶斯学派概率（Bayesian probability）：认为概率是的对某件事发生的确定程度，可以理解成是确信的程度（degree of belief）。 随机变量（random variable）：一个可能随机获取不">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/applenob/reading_note/master/res/gauss.PNG">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/deep_learning_book/deep_learning_3/">
+
+
+
+
+
+  <title>第三章：Probability and Information Theory | Javen Chen's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?239bba0e8b78c0293b8e646237f788cd";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Javen Chen's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Tech and Life~</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-所有专栏">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            所有专栏
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-历史文章">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            历史文章
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/deep_learning_book/deep_learning_3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Javen Chen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/red.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">第三章：Probability and Information Theory</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-05-09T03:00:00+08:00">
+                2017-05-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/《Deep-Learning》读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">《Deep Learning》读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/deep_learning_book/deep_learning_3/" class="leancloud_visitors" data-flag-title="第三章：Probability and Information Theory">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="3-Probability-and-Information-Theory"><a href="#3-Probability-and-Information-Theory" class="headerlink" title="3. Probability and Information Theory"></a>3. Probability and Information Theory</h1><h2 id="概率论部分"><a href="#概率论部分" class="headerlink" title="概率论部分"></a>概率论部分</h2><p><strong>频率学派概率（frequentist probability）</strong>：认为概率和事件发生的频率相关。</p>
+<p><strong>贝叶斯学派概率（Bayesian probability）</strong>：认为概率是的对某件事发生的确定程度，可以理解成是确信的程度（degree of belief）。</p>
+<p><strong>随机变量（random variable）</strong>：一个可能随机获取不同值的变量。</p>
+<p><strong>概率质量函数（probability mass function，PMF）</strong>：用来描述离散随机变量的概率分布。表示为P(x)，是状态到概率的映射。</p>
+<p><strong>概率密度函数（probability density function，PDF）</strong>：用来描述连续随机变量的概率分布，p(x)。</p>
+<p><strong>条件概率（conditional probability）</strong>：$P(y=y|x=x) = \frac{P(y=y, x=x)}{P(x=x)}$</p>
+<p><strong>条件概率的链式法则（chain rule of conditional probability）</strong>：$P(x^{(1)}, …, x^{(n)}) =<br>P(x^{(1)})\prod^n_{i=2}P(x^{(i)}|x^{(1)}, …, x^{(i-1)})$</p>
+<p><strong>独立（independence）</strong>：$\forall x \in x, y ∈ y, p(x=x, y=y) = p(x=x)p(y=y)$</p>
+<p><strong>条件独立（conditional independence）</strong>：$\forall x ∈ x, y ∈ y, z ∈ z,p(x=x, y=y |<br>z=z) = p(x=x | z=z)p(y=y | z=z)$</p>
+<p><strong>期望（expectation）</strong>：</p>
+<ul>
+<li>期望针对某个函数$f(x)$，关于概率分布$P(x)$的平均值。</li>
+<li>对离散随机变量：$E_{x \sim P}[f(x)] = \sum_xP(x)f(x)$</li>
+<li>对连续随机变量：$E_{x \sim p}[f(x)] = \int P(x)f(x)dx$</li>
+<li>期望是线性的：$E_x[αf(x)+βg(x)] =<br>αE_x[f(x)]+βE_x[f(x)]$</li>
+</ul>
+<p><strong>方差（variance）</strong>：</p>
+<ul>
+<li>用来衡量从随机变量$x$的分布函数$f(x)$中采样出来的一系列值和期望的偏差。</li>
+<li>$Var(x) =<br>E[(f(x)-E[f(x)])^2]$，方差开平方即为标准差（standard deviation）。</li>
+</ul>
+<p><strong>协方差（covariance）</strong>：</p>
+<ul>
+<li>用于衡量两组值之间的线性相关程度。</li>
+<li>$Cov(f(x), g(y)) = E[(f(x)-E[f(x)])(g(y)-E[g(y)])]$。</li>
+<li>独立比协方差为0更强，因为独立还排除了非线性的相关。</li>
+</ul>
+<p><strong>贝努力分布</strong>（Bernoulli Distribution）：随机变量只有两种可能的分布，只有一个参数：$Φ$，即$x=1$的概率。</p>
+<p><strong>多项式分布</strong>（Multinoulli Distribution）随机变量有$k$种可能的分布，参数是一个长度为$k-1$的向量$p$。</p>
+<p><strong>高斯分布</strong>（Gaussian Distribution）</p>
+<ul>
+<li>即正态分布（normal distribution）</li>
+<li>$\textit{N}(x;μ,σ^2) = \sqrt{\frac{1}{2πσ^2}}exp(-\frac{1}{2σ^2}(x-μ)^2)$。</li>
+<li>中心极限定理（central limit theorem）认为，大量的独立随机变量的和近似于一个高斯分布，这一点可以大量使用在应用中，我们可以认为噪声是属于正态分布的。</li>
+<li><img src="https://raw.githubusercontent.com/applenob/reading_note/master/res/gauss.PNG" alt></li>
+</ul>
+<p><strong>多元正态分布（multivariate normal distribution）</strong>：</p>
+<ul>
+<li>给定协方差矩阵$\mathbf{Σ}$（正定对称），$\textit{N}(x;μ,Σ) = \sqrt{\frac{1}{(2π)^ndet(Σ)}}exp(-\frac{1}{2}(x-μ)^TΣ^{-1}(x-μ))$</li>
+<li><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/MultivariateNormal.png/450px-MultivariateNormal.png" alt></li>
+</ul>
+<p><strong>指数分布（exponential distribution）</strong>：</p>
+<p>在深度学习的有研究中，经常会用到在x=0点获得最高的概率的分布，$p(x; λ) = λ\mathbf{1}_{x≥0}exp(-λx)$，或者：若$x≥0$则$f(x) = λexp(-λx)$；否则为0。</p>
+<p>其中λ &gt; 0是分布的一个参数，常被称为率参数（rate parameter）。</p>
+<p><img src="https://raw.githubusercontent.com/applenob/reading_note/master/res/exp_dis.png" alt></p>
+<p><strong>拉普拉斯分布（Laplace Distribution）</strong>：</p>
+<ul>
+<li>另一个可以在一个点获得比较高的概率的分布。</li>
+<li>$Laplace(x ;μ,γ) = \frac{1}{2γ}exp(-\frac{|x-μ|}{γ})$</li>
+<li><img src="https://raw.githubusercontent.com/applenob/reading_note/master/res/laplace.jpg" alt></li>
+</ul>
+<p><strong>迪拉克分布（Dirac Distribution）</strong>：</p>
+<ul>
+<li>$p(x) = δ(x-μ)$，这是一个泛函数。迪拉克分布经常被用于组成经验分布（empirical distribution）</li>
+<li>$p(x) = \frac{1}{m}\sum_{i=1}^m{δ(x-x^{(i)})}$</li>
+<li><img src="https://raw.githubusercontent.com/applenob/reading_note/master/res/dirac.png" alt></li>
+</ul>
+<p><strong>逻辑斯蒂函数（logistic function）</strong>：</p>
+<ul>
+<li>$σ(x) = \frac{1}{1+exp(-x)}$，常用来生成贝努力分布的Φ参数。</li>
+<li><img src="https://raw.githubusercontent.com/applenob/reading_note/master/res/logistic.png" alt></li>
+</ul>
+<p><strong>softplus function</strong>: </p>
+<ul>
+<li>$ζ(x) = log(1+exp(x))$，是“取正”函数的“soft”版</li>
+<li>$x^+ = max(0, x)$</li>
+<li><img src="https://raw.githubusercontent.com/applenob/reading_note/master/res/softplus.png" alt></li>
+</ul>
+<p><strong>贝叶斯公式（Bayes’ Rule）</strong>：$P(x|y) = \frac{P(x)P(y|x)}{P(y)}$</p>
+<h2 id="信息论部分"><a href="#信息论部分" class="headerlink" title="信息论部分"></a>信息论部分</h2><p><strong>信息论背后的直觉：学习一件不太可能的事件比学习一件比较可能的事件更有信息量。</strong></p>
+<p><strong>信息（information）需要满足的三个条件</strong>：</p>
+<ul>
+<li>1.比较可能发生的事件的信息量要少；</li>
+<li>2.比较不可能发生的事件的信息量要大；</li>
+<li>3.独立发生的事件之间的信息量应该是可以叠加的。</li>
+</ul>
+<p><strong>自信息</strong>（Self-Information）：对事件$x=x$，$I(x) = -logP(x)$，满足上面三个条件，单位是nats（底为e）</p>
+<p><strong>香农熵（Shannon Entropy）</strong>：</p>
+<ul>
+<li>自信息只包含一个事件的信息。</li>
+<li><strong>对于整个概率分布$p(x)$</strong>，不确定性可以这样衡量：$E_{x\sim P}[I(x)] = -E_{x\sim P}[logP(x)]$。</li>
+<li>也可以表示成$H(P)$。</li>
+</ul>
+<p><strong>多个随机变量</strong>：</p>
+<p><strong>1.联合熵</strong>（Joint Entropy）：$H(X,Y)=-∑_{x,y}p(x,y)log(p(x,y))$，同时考虑多个事件的条件下（即考虑联合分布概率）的熵。<br><strong>2.条件熵（Conditional Entropy）</strong>：$H(X|Y)=-∑_yp(y)∑_xp(x|y)log(p(x|y))$，某件事情已经发生的情况下，另外一件事情的熵。<br><strong>3.互信息（Mutual Information）</strong>：$I(X,Y)=H(X)+H(Y)−H(X,Y)$，两个事件的信息<strong>相交</strong>的部分。<br><strong>4.信息变差（Variation of information）</strong>：$V(X,Y)=H(X,Y)−I(X,Y)$，两个事件的信息<strong>不相交</strong>的部分。<br><strong>KL散度（Kullback-Leibler Divergence）</strong>：</p>
+<ul>
+<li>衡量两个分布$P(x)$和$Q(x)$之间的差距。</li>
+<li>$D_{KL}(P||Q)=E_{x\sim P}[log \frac{P(x)}{Q(x)}]=E_{x\sim P}[logP(x)-logQ(x)]$，注意$D_{KL}(P||Q)≠D_{KL}(Q||P)$</li>
+</ul>
+<p><strong>交叉熵（Cross Entropy）</strong>：</p>
+<ul>
+<li>$H(P,Q)=H(P)+D_{KL}(P||Q)=-E_{x\sim P}[logQ(x)]$</li>
+<li>假设$P$是真实分布，$Q$是模型分布，那么最小化交叉熵$H(P,Q)$可以让模型分布逼近真实分布。</li>
+</ul>
+<p><strong>注</strong>：信息论部分很好的参考资料，<a href="http://colah.github.io/posts/2015-09-Visual-Information/" target="_blank" rel="noopener">colah的博客</a>。</p>
+<h2 id="图模型（Structured-Probabilistic-Models）"><a href="#图模型（Structured-Probabilistic-Models）" class="headerlink" title="图模型（Structured Probabilistic Models）"></a>图模型（Structured Probabilistic Models）</h2><p><strong>有向图模型（Directed Model）</strong>：</p>
+<ul>
+<li>$p(x) = \prod_i p(x_i | Pa_g(x_i))$， 其中$Pa_g(x_i)$是$x_i$的父节点。</li>
+<li><img src="https://raw.githubusercontent.com/applenob/reading_note/master/res/dg.png" alt></li>
+<li>$P(a,b,c,d,e)=p(a)p(b|a)p(c|a,b)p(d|b)p(e|c)$</li>
+</ul>
+<p><strong>无向图模型（Undirected Model）</strong>：</p>
+<ul>
+<li>所有节点都彼此联通的集合称作“团”（Clique）。</li>
+<li>$p(x)=\frac{1}{Z}\prod_i{Φ^{(i)}(C^{(i)})}$，其中，Φ称作facor，每个factor和一个团（clique）相对应。</li>
+<li><img src="https://raw.githubusercontent.com/applenob/reading_note/master/res/udg.png" alt></li>
+<li>$p(a,b,c,d,e) = \frac{1}{Z}Φ^{(1)}(a,b,c)Φ^{(2)}(b,d)Φ^{(3)}(c,e)$</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Deep-Learning-笔记/" rel="tag"># Deep Learning, 笔记</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/deep_learning_book/deep_learning_2/" rel="next" title="第二章：Linear Algebra">
+                <i class="fa fa-chevron-left"></i> 第二章：Linear Algebra
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/deep_learning_book/deep_learning_4/" rel="prev" title="第四章：Numerical Computation">
+                第四章：Numerical Computation <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/red.jpg" alt="Javen Chen">
+            
+              <p class="site-author-name" itemprop="name">Javen Chen</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">55</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/applenob" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:applecer@pku.edu.cn" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#3-Probability-and-Information-Theory"><span class="nav-number">1.</span> <span class="nav-text">3. Probability and Information Theory</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#概率论部分"><span class="nav-number">1.1.</span> <span class="nav-text">概率论部分</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#信息论部分"><span class="nav-number">1.2.</span> <span class="nav-text">信息论部分</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#图模型（Structured-Probabilistic-Models）"><span class="nav-number">1.3.</span> <span class="nav-text">图模型（Structured Probabilistic Models）</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("9s7vKaOPY7lMWuX9YVLasdnq-gzGzoHsz", "gOEj5qIEBIz5eDM3F5Nn90Jg");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

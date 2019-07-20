@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+
+
+
+
+  <meta name="keywords" content="Deep Learning, 笔记,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="14. Autoencoders自编码器（Autoencoders）自编码器是神经网络的一种，经过训练后能尝试将输入复制到输出。自编码器内部有一个隐藏层 $h$，产生编码表示输入。  该网络由两部分组成：一个由函数$h = f(x)$表示的编码器和一个生成重构的解码器$r=g(h)$。 如果一个自编码器只是简单地学会将处处设置为$g(f(x)) = x$，那么这个自编码器就没什么特别的用处。 相反">
+<meta name="keywords" content="Deep Learning, 笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第十四章：Autoencoders">
+<meta property="og:url" content="http://yoursite.com/deep_learning_book/deep_learning_14/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="14. Autoencoders自编码器（Autoencoders）自编码器是神经网络的一种，经过训练后能尝试将输入复制到输出。自编码器内部有一个隐藏层 $h$，产生编码表示输入。  该网络由两部分组成：一个由函数$h = f(x)$表示的编码器和一个生成重构的解码器$r=g(h)$。 如果一个自编码器只是简单地学会将处处设置为$g(f(x)) = x$，那么这个自编码器就没什么特别的用处。 相反">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://github.com/applenob/reading_note/raw/master/res/autoencoder.png">
+<meta property="og:image" content="https://github.com/applenob/reading_note/raw/master/res/stochasticAutoencoder.png">
+<meta property="og:image" content="https://github.com/applenob/reading_note/raw/master/res/dae.png">
+<meta property="og:image" content="https://github.com/applenob/reading_note/raw/master/res/manifold.png">
+<meta property="og:updated_time" content="2019-06-21T14:09:53.256Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="第十四章：Autoencoders">
+<meta name="twitter:description" content="14. Autoencoders自编码器（Autoencoders）自编码器是神经网络的一种，经过训练后能尝试将输入复制到输出。自编码器内部有一个隐藏层 $h$，产生编码表示输入。  该网络由两部分组成：一个由函数$h = f(x)$表示的编码器和一个生成重构的解码器$r=g(h)$。 如果一个自编码器只是简单地学会将处处设置为$g(f(x)) = x$，那么这个自编码器就没什么特别的用处。 相反">
+<meta name="twitter:image" content="https://github.com/applenob/reading_note/raw/master/res/autoencoder.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/deep_learning_book/deep_learning_14/">
+
+
+
+
+
+  <title>第十四章：Autoencoders | Javen Chen's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?239bba0e8b78c0293b8e646237f788cd";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Javen Chen's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Tech and Life~</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-所有专栏">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            所有专栏
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-历史文章">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            历史文章
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/deep_learning_book/deep_learning_14/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Javen Chen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/red.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">第十四章：Autoencoders</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-05-09T14:00:00+08:00">
+                2017-05-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/《Deep-Learning》读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">《Deep Learning》读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/deep_learning_book/deep_learning_14/" class="leancloud_visitors" data-flag-title="第十四章：Autoencoders">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="14-Autoencoders"><a href="#14-Autoencoders" class="headerlink" title="14. Autoencoders"></a>14. Autoencoders</h1><h2 id="自编码器（Autoencoders）"><a href="#自编码器（Autoencoders）" class="headerlink" title="自编码器（Autoencoders）"></a>自编码器（Autoencoders）</h2><p>自编码器是神经网络的一种，经过训练后能尝试将输入复制到输出。自编码器内部有一个隐藏层 $h$，产生<strong>编码表示输入</strong>。 </p>
+<p>该网络由两部分组成：一个由函数$h = f(x)$表示的编码器和一个生成重构的解码器$r=g(h)$。 如果一个自编码器只是简单地学会将处处设置为$g(f(x)) = x$，那么这个自编码器就没什么特别的用处。</p>
+<p>相反，我们不应该将自编码器设计成输入到输出完全相等:向自编码器强加一些约束，使它只能近似地复制，并只能复制与训练数据相似的输入。</p>
+<p><strong>这些约束强制模型考虑输入数据的哪些部分需要被优先复制，因此它往往能学习到数据的有用特性。</strong></p>
+<p>现代自编码器将编码器和解码器的概念推而广之，将确定函数推广为随机映射$p_{encoder} (h \mid x)$和$p_{decoder}(x \mid h)$。 </p>
+<p>所有自编码器的训练过程涉及<strong>两种推动力</strong>的折衷：</p>
+<p>1.学习训练样本$x$的表示$h$使得$x$能通过解码器近似地从$h$中恢复，$x$是从训练数据挑出的这一事实很关键，因为这意味着在自编码器不需要成功重构不属于数据生成分布下的输入；</p>
+<p>2.满足约束或正则惩罚。 这可以是限制自编码器容量的架构约束，也可以是加入到重构代价的一个正则项。<br>两种推动力结合才是有用的，因为它们驱使隐藏的表示能捕获有关数据分布结构的信息。</p>
+<p><img src="https://github.com/applenob/reading_note/raw/master/res/autoencoder.png" alt></p>
+<p><strong>自编码器的应用</strong>：传统自编码器被用于<strong>降维</strong>或<strong>特征学习</strong>。 近年来，自编码器与潜变量模型理论的联系将自编码器带到了<strong>生成建模</strong>的前沿。</p>
+<h2 id="欠完备自编码器（Undercomplete-Autoencoder）"><a href="#欠完备自编码器（Undercomplete-Autoencoder）" class="headerlink" title="欠完备自编码器（Undercomplete Autoencoder）"></a>欠完备自编码器（Undercomplete Autoencoder）</h2><p>从自编码器获得有用特征的一种方法是<strong>限制$h$的维度比$x$小</strong>，这种编码维度小于输入维度的自编码器称为欠完备自编码器。<br>损失函数$L(x,g(f(x)))$，惩罚$g(f(x))$与$x$的差异，如均方误差。</p>
+<p>当解码器是线性的且$L$是均方误差，欠完备的自编码器会学习出与PCA相同的生成子空间。</p>
+<p>不幸的是，如果编码器和解码器被赋予过大的容量，自编码器会执行复制任务而捕捉不到任何有关数据分布的有用信息。 </p>
+<h2 id="正则自编码器（Regularized-Autoencoders）"><a href="#正则自编码器（Regularized-Autoencoders）" class="headerlink" title="正则自编码器（Regularized Autoencoders）"></a>正则自编码器（Regularized Autoencoders）</h2><p>使用的损失函数可以鼓励模型学习<strong>其他特性（除了将输入复制到输出）</strong>，而不必限制使用浅层的编码器和解码器以及小的编码维数来限制模型的容量。</p>
+<p>这些特性包括<strong>稀疏表示</strong>、<strong>表示的小导数</strong>、以及<strong>对噪声或输入缺失的鲁棒性</strong>。</p>
+<h3 id="稀疏自编码器（Sparse-Autoencoders）"><a href="#稀疏自编码器（Sparse-Autoencoders）" class="headerlink" title="稀疏自编码器（Sparse Autoencoders）"></a>稀疏自编码器（Sparse Autoencoders）</h3><p>训练时结合编码层的稀疏惩罚$\Omega(h)$和重构误差：$L(x,g(f(x)))+Ω(h)$。 其中，<br>$Ω(h)=λ\sum_i|h_i|$一般用来学习特征，以便用于像分类这样的任务。</p>
+<h3 id="随机编码器和解码器（Stochastic-Encoders-and-Decoders）"><a href="#随机编码器和解码器（Stochastic-Encoders-and-Decoders）" class="headerlink" title="随机编码器和解码器（Stochastic Encoders and Decoders）"></a>随机编码器和解码器（Stochastic Encoders and Decoders）</h3><p>任何潜变量模型$p_{model}(h, x)$定义一个随机编码器：$p_{encoder}(h∣x)=p_{model}(h∣x)$，以及一个随机解码器：$p_{decoder}(x∣h)=p_{model}(x∣h)$。</p>
+<p><img src="https://github.com/applenob/reading_note/raw/master/res/stochasticAutoencoder.png" alt></p>
+<h3 id="去噪自编码器（Denoising-Autoencoders，DAE）"><a href="#去噪自编码器（Denoising-Autoencoders，DAE）" class="headerlink" title="去噪自编码器（Denoising Autoencoders，DAE）"></a>去噪自编码器（Denoising Autoencoders，DAE）</h3><p>使用损失函数：$L(x,g(f(\tilde x)))$，其中$\tilde<br>x$是被某种噪声损坏的$x$的副本。 </p>
+<p>引入损坏过程（corruption process）$C(\tilde{x} \mid x)$。</p>
+<p>训练过程：</p>
+<p>1.从训练数据中采一个训练样本$x$；</p>
+<p>2.从$C(\tilde{x} \mid x=x)$采一个<strong>损坏样本</strong>$\tilde x$；</p>
+<p>3.将$(x, \tilde x)$作为训练样本来估计自编码器的重构分布$p_{reconstruct} (x \mid \tilde x) = p_{decoder}(x \mid h)$，其中，$h$是编码器 $f(\tilde x)$的输出，$p_{decoder}$根据解码函数$g(h)$定义。</p>
+<p>通常我们可以简单地对<strong>负对数似然</strong>$-\log p_{decoder} (x \mid h)$进行基于梯度的近似最小化，因此，我们可以认为DAE是在以下期望下进行随机梯度下降：$E_{x \sim \hat{p}_{data}(x)} E_{\tilde{x} \sim C(\tilde{x}\mid x)} \log p_{decoder}(x \mid h = f(\tilde{x}))$，其中，$\hat{p}_{data}(x)$是训练数据的分布。</p>
+<p>对一类采用高斯噪声和均方误差作为重构误差的特定去噪自编码器（具有sigmoid隐藏单元和relu）的去噪训练过程，与训练带高斯可见单元的RBM无向概率模型是等价的。</p>
+<p><img src="https://github.com/applenob/reading_note/raw/master/res/dae.png" alt></p>
+<h3 id="流形（manifold）相关"><a href="#流形（manifold）相关" class="headerlink" title="流形（manifold）相关"></a>流形（manifold）相关</h3><p><strong>流形的一些重要特性</strong>：一个重要特征是<strong>切平面（tangent<br>plane）</strong>：$d$维流形上的一点$x$，切平面由能张成流形上允许变动的局部方向的$d$维基向量给出。 $n$维流形在每个点处都具有$n$维切平面。</p>
+<p>该切平面恰好在该点接触流形，并且在该点处平行于流形表面。 它定义了为保持在流形上可以移动的方向空间。</p>
+<p><strong>使用自编码器学习流形</strong>：自编码器的目标是学习流形的结构。 我们可以通过构建对数据点周围的输入扰动不敏感的重构函数，使得自编码器恢复流形结构。<br><img src="https://github.com/applenob/reading_note/raw/master/res/manifold.png" alt></p>
+<h3 id="收缩自编码器（Contractive-Encoder）"><a href="#收缩自编码器（Contractive-Encoder）" class="headerlink" title="收缩自编码器（Contractive Encoder）"></a>收缩自编码器（Contractive Encoder）</h3><p><strong>惩罚导数作为正则</strong>：$L(x,g(f(x)))+Ω(h,x)$，其中，$Ω(h,x)=λ∑_i||∇_xh_i||^2$。<br>这迫使模型学习一个在$x$变化小时目标也没有太大变化的函数。</p>
+<p>鼓励$f$的导数尽可能小：$Ω(h)=λ|\frac{∂f(x)}{∂x}|_F^2$。<br>惩罚项$\Omega(h)$为平方Frobenius范数（元素平方之和），作用于与编码器的函数相关偏导数的Jacobian矩阵。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Deep-Learning-笔记/" rel="tag"># Deep Learning, 笔记</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/deep_learning_book/deep_learning_13/" rel="next" title="第十三章：Linear Factor Models">
+                <i class="fa fa-chevron-left"></i> 第十三章：Linear Factor Models
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/deep_learning_book/deep_learning_15/" rel="prev" title="第十五章：Representation Learning">
+                第十五章：Representation Learning <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/red.jpg" alt="Javen Chen">
+            
+              <p class="site-author-name" itemprop="name">Javen Chen</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">55</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/applenob" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:applecer@pku.edu.cn" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#14-Autoencoders"><span class="nav-number">1.</span> <span class="nav-text">14. Autoencoders</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#自编码器（Autoencoders）"><span class="nav-number">1.1.</span> <span class="nav-text">自编码器（Autoencoders）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#欠完备自编码器（Undercomplete-Autoencoder）"><span class="nav-number">1.2.</span> <span class="nav-text">欠完备自编码器（Undercomplete Autoencoder）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#正则自编码器（Regularized-Autoencoders）"><span class="nav-number">1.3.</span> <span class="nav-text">正则自编码器（Regularized Autoencoders）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#稀疏自编码器（Sparse-Autoencoders）"><span class="nav-number">1.3.1.</span> <span class="nav-text">稀疏自编码器（Sparse Autoencoders）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#随机编码器和解码器（Stochastic-Encoders-and-Decoders）"><span class="nav-number">1.3.2.</span> <span class="nav-text">随机编码器和解码器（Stochastic Encoders and Decoders）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#去噪自编码器（Denoising-Autoencoders，DAE）"><span class="nav-number">1.3.3.</span> <span class="nav-text">去噪自编码器（Denoising Autoencoders，DAE）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#流形（manifold）相关"><span class="nav-number">1.3.4.</span> <span class="nav-text">流形（manifold）相关</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#收缩自编码器（Contractive-Encoder）"><span class="nav-number">1.3.5.</span> <span class="nav-text">收缩自编码器（Contractive Encoder）</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("9s7vKaOPY7lMWuX9YVLasdnq-gzGzoHsz", "gOEj5qIEBIz5eDM3F5Nn90Jg");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

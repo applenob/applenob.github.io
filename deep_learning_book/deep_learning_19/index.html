@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+
+
+
+
+  <meta name="keywords" content="Deep Learning, 笔记,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="19. Approximate Inference推断（Inference）我们通常使用推断这个术语来指代给定一些其他变量的情况下计算某些变量概率分布的过程。 在深度学习中，通常我们有一系列可见变量v和一系列隐变量h。  推断困难通常是指难以计算$p(h∣v)$或其期望。推断在最大似然学习的任务中往往是必需的。  但是，大多数具有多层隐藏变量的图模型的后验分布都很难处理。因此需要想办法来实现近似推">
+<meta name="keywords" content="Deep Learning, 笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第十九章：Approximate Inference">
+<meta property="og:url" content="http://yoursite.com/deep_learning_book/deep_learning_19/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="19. Approximate Inference推断（Inference）我们通常使用推断这个术语来指代给定一些其他变量的情况下计算某些变量概率分布的过程。 在深度学习中，通常我们有一系列可见变量v和一系列隐变量h。  推断困难通常是指难以计算$p(h∣v)$或其期望。推断在最大似然学习的任务中往往是必需的。  但是，大多数具有多层隐藏变量的图模型的后验分布都很难处理。因此需要想办法来实现近似推">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-06-21T14:39:35.680Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="第十九章：Approximate Inference">
+<meta name="twitter:description" content="19. Approximate Inference推断（Inference）我们通常使用推断这个术语来指代给定一些其他变量的情况下计算某些变量概率分布的过程。 在深度学习中，通常我们有一系列可见变量v和一系列隐变量h。  推断困难通常是指难以计算$p(h∣v)$或其期望。推断在最大似然学习的任务中往往是必需的。  但是，大多数具有多层隐藏变量的图模型的后验分布都很难处理。因此需要想办法来实现近似推">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/deep_learning_book/deep_learning_19/">
+
+
+
+
+
+  <title>第十九章：Approximate Inference | Javen Chen's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?239bba0e8b78c0293b8e646237f788cd";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Javen Chen's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Tech and Life~</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-所有专栏">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            所有专栏
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-历史文章">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            历史文章
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/deep_learning_book/deep_learning_19/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Javen Chen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/red.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">第十九章：Approximate Inference</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-05-09T19:00:00+08:00">
+                2017-05-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/《Deep-Learning》读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">《Deep Learning》读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/deep_learning_book/deep_learning_19/" class="leancloud_visitors" data-flag-title="第十九章：Approximate Inference">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="19-Approximate-Inference"><a href="#19-Approximate-Inference" class="headerlink" title="19. Approximate Inference"></a>19. Approximate Inference</h1><h2 id="推断（Inference）"><a href="#推断（Inference）" class="headerlink" title="推断（Inference）"></a>推断（Inference）</h2><p>我们通常使用<strong>推断</strong>这个术语来指代给定一些其他变量的情况下计算某些变量概率分布的过程。</p>
+<p>在深度学习中，通常我们有一系列<strong>可见变量v</strong>和一系列<strong>隐变量h</strong>。 </p>
+<p>推断困难通常是指难以计算$p(h∣v)$或其期望。推断在最大似然学习的任务中往往是必需的。 </p>
+<p>但是，大多数具有多层隐藏变量的图模型的后验分布都很难处理。<br>因此需要想办法来实现<strong>近似推断</strong>。</p>
+<p>面对有隐变量的概率模型的思路。这种情况下，目标是极大化观测数据（不完全数据）v关于参数θ的对数似然函数，即最大化：$L(θ)=logp(v;θ)=log\sum_hp(v,h;θ)=log(\sum_hp(h|v;θ)p(v;θ))$。</p>
+<p>或者在图模型中，为了使用最大似然估计，有：$logp(v)=E_{h\sim p(h|v)}[logp(h,v)-logp(h|v)]$。</p>
+<p>总之，计算推断，也就是$p(h|v)$是很有必要的。</p>
+<h2 id="把推断视作优化问题"><a href="#把推断视作优化问题" class="headerlink" title="把推断视作优化问题"></a>把推断视作优化问题</h2><p>精确推断问题可以描述为一个优化问题，计算一个$logp(v;θ)$的下界$L(v,θ,q)$（这个下界被称为<strong>证据下界，Evidence lower bound，ELBO</strong>，另一个常用名称是负变分自由能，negative variational free energy）：$L(v,θ,q)=log⁡p(v;θ)−D_{KL}(q(h∣v)‖p(h∣v;θ))$，其中q是关于h的一个任意概率分布。</p>
+<p>可以化简成：$L(v,θ,q)=E_{h\sim q}[logp(h,v)]+H(q)$。 </p>
+<p>对任意分布q的选择来说，L提供了似然函数的一个下界。<br>越好地近似$p(h∣v)$的分布$q(h∣v)$，得到的下界就越紧。 </p>
+<p><strong>将推断问题看作是找一个分布q使得L最大的过程。</strong> </p>
+<h2 id="EM（Expectation-Maximization）算法"><a href="#EM（Expectation-Maximization）算法" class="headerlink" title="EM（Expectation Maximization）算法"></a>EM（Expectation Maximization）算法</h2><p>本质上，EM并不是一个近似推断算法，而是一种<strong>能够学到近似后验的算法</strong>；但是这里EM也可以解决近似推断问题。 </p>
+<p><strong>E步</strong>:</p>
+<p>令$θ^{(0)}$表示在这一步开始时的参数值。<br>对索引为i的训练样本$v^{(i)}$，$q(h^{(i)}∣v)=p(h^{(i)}∣v^{(i)};θ^{(0)})$。</p>
+<p>认为q是在当前参数$θ^{(0)}$下定义的函数，也就是如果我们改变θ，那么$p(h∣v;θ)$将会相应地变化，但是$q(h∣v)$还是不变并且等于$p(h∣v;θ^{(0)})$。</p>
+<p><strong>M步</strong>：使用选择的优化算法关于θ最大化：$∑_iL(v^{(i)},θ,q)$。</p>
+<p>这可以被看作通过<strong>坐标上升（coordinate ascending）算法</strong>来最大化L。 </p>
+<p>在第一步中，我们更新分布q来最大化L，而在另一步中，我们更新θ来最大化L。</p>
+<h2 id="最大后验推断（MAP）"><a href="#最大后验推断（MAP）" class="headerlink" title="最大后验推断（MAP）"></a>最大后验推断（MAP）</h2><p>$h^∗=\underset{h}{argmax}p(h∣v)$。 </p>
+<p>令分布q满足一个Dirac分布：$q(h∣v)=δ(h−μ)$。<br>这也意味着可以通过μ来完全控制分布q。 </p>
+<p>转换成另一个优化问题：$μ^∗=\underset{μ}{argmax} logp(h=μ,v)$。</p>
+<p>使用类似EM算法的学习算法，还是轮流迭代两步，一步是用MAP推断估计出$h^<em>$，另一步是更新θ来增大$log p(h^</em>,v)$。</p>
+<p>MAP推断作为特征提取器以及一种学习机制被广泛地应用在了深度学习中，主要用于稀疏编码模型中。</p>
+<h2 id="变分推断和学习（Variational-Inference-and-Learning）"><a href="#变分推断和学习（Variational-Inference-and-Learning）" class="headerlink" title="变分推断和学习（Variational Inference and Learning）"></a>变分推断和学习（Variational Inference and Learning）</h2><p>变分学习的核心思想就是<strong>我们在一个关于$q$的有约束的分布族上最大化$L$</strong>。 </p>
+<p>选择这个分布族时应该考虑到计算$E_qlogp(h,v)$的难易度。<br>一个典型的方法就是添加分布$q$如何分解的假设,一种常用的变分学习的方法是加入一些限制使得$q$是一个因子分布：<br>$q(h∣v)=∏_iq(h_i∣v)$，这被称为<strong>均值场方法（mean field approach）</strong>。</p>
+<p>变分方法的优点是我们<strong>不需要为分布q设定一个特定的参数化形式。</strong></p>
+<p>我们设定它如何分解，之后通过解决优化问题来找出在这些分解限制下最优的概率分布。</p>
+<p>对<strong>离散型潜变量</strong>来说，这意味着我们使用传统的优化技巧来优化描述分布q的有限个变量。</p>
+<p>对<strong>连续型潜变量</strong>来说，这意味着我们使用一个被称为变分法的数学工具来解决函数空间上的优化问题。</p>
+<p><strong>离散型潜变量</strong>：</p>
+<p>我们定义一个分布q，在最简单的情况中，h是二值的并且我们做了均值场假定，分布q可以根据每一个$h_i$分解。</p>
+<p>用一个向量$\hat{h}$来表示参数化分布q，$\hat{h}$的每一个元素都代表一个概率，即$q(h_i=1∣v)=\hat{h}_i$。</p>
+<p>然后就可以通过求解$\frac{∂}{∂\hat{h}_i}L=0$，来优化分布q。</p>
+<h3 id="变分的数学基础"><a href="#变分的数学基础" class="headerlink" title="变分的数学基础"></a>变分的数学基础</h3><p>许多机器学习的技巧是基于寻找一个输入向量$θ∈R_n$来最小化函数$J(θ)$，使得它取到最小值。</p>
+<p>这个步骤可以利用多元微积分以及线性代数的知识找到满足$∇_θJ(θ)=0$的临界点来完成。</p>
+<p>在某些情况下，我们希望能够解一个函数f(x)，比如当我们希望找到一些随机变量的概率密度函数时，借助变分法能够让我们完成这个目标。</p>
+<p>函数f的函数被称为泛函$J[f]$。</p>
+<p><strong>泛函导数</strong>：即在任意特定的$x$值，对一个泛函$J[f]$是关于函数$f(x)$的导数，这也被称为<strong>变分导数</strong>。
+泛函$J$的关于函数$f$在点x处的泛函导数被记作$\frac{δ}{δf(x)}J$。</p>
+<p>对于可微分函数$f(x)以$及带有连续导数的可微分函数$g(y,x)$，有：$\frac{δ}{δf(x)}∫g(f(x),x)dx=\frac{∂}{∂y}g(f(x),x)$。</p>
+<p>为了使上述等式更加直观，我们可以把$f(x)$看作是一个有着无穷不可数多元素的向量，由一个实数向量$x$作为索引。</p>
+<p>这种关系式中描述的泛函导数和对向量$θ∈R_n$的导数相同：$\frac{∂}{∂θ_i}∑_jg(θ_j,j)=\frac{∂}{∂θ_i}g(θ_i,i)$。</p>
+<p><strong>用变分法求解满足最大熵的分布</strong>：</p>
+<p>考虑寻找一个定义在$x∈R$上的有最大微分熵的概率密度函数。<br>熵的定义（连续变量）：$H[p]=−∫p(x)logp(x)dx$。 </p>
+<p>约束：1.分布p(x)积分值为1；2.方差固定为$σ^2$；3.分布的均值必须为μ。</p>
+<p>有：$L[p]=λ_1(∫p(x)dx−1)+λ_2(E[x]−μ)+λ_3(E[(x−μ)^2]−σ^2)+H[p]$</p>
+<p>$=∫(λ_1p(x)+λ_2p(x)x+λ_3p(x)(x−μ)^2−p(x)logp(x))dx−λ_1−μλ_2−σ^2λ_3$</p>
+<p>令泛函导数为0：$∀x, \frac{δ}{δp(x)}L=λ_1+λ_2x+λ_3(x−μ)^2−1−logp(x)=0$，解得：$p(x)=exp(λ_1+λ_2x+λ_3(x−μ)^2−1)$</p>
+<p>令$λ_1=1−logσ\sqrt{2π}, λ_2=0, λ_3=−\frac{1}{2σ^2}$，从而得到：</p>
+<p>$p(x)=N(x;μ,σ^2)$。 </p>
+<p>这也是当我们不知道真实的分布时总是使用正态分布的一个原因。<br><strong>因为正态分布拥有最大的熵</strong>。</p>
+<h3 id="连续型潜变量"><a href="#连续型潜变量" class="headerlink" title="连续型潜变量"></a>连续型潜变量</h3><p>应用者<strong>不需要</strong>解决任何变分法的问题，均值场固定点迭代更新有一个通用的方程：</p>
+<p>先做均值场近似：$q(h∣v)=∏_iq(h_i∣v)$</p>
+<p>并且对任何的$j≠i$固定$q(h_j∣v)$，只需要满足分布p中任何联合分布变量的概率值不为0，我们就可以通过归一化下面这个未归一的分布:</p>
+<p>$\tilde{q}(h_i∣v)=exp(E_{h_{−i}\sim q(h_{−i}∣v)}log\tilde{p}(v,h))$，来得到最优的$q(h_i∣v)$。 </p>
+<h3 id="学得近似推断（Learned-Approximate-Inference）"><a href="#学得近似推断（Learned-Approximate-Inference）" class="headerlink" title="学得近似推断（Learned Approximate Inference）"></a>学得近似推断（Learned Approximate Inference）</h3><p>我们可以将优化过程视作将一个输入$v$映射到一个近似分布$q^∗=\underset{q}{argmax} L(v,q)$的一个函数$f$。 </p>
+<p>这样，我们就可以用一个近似函数为$\hat f(v;θ)$的神经网络来近似它。</p>
+<h3 id="醒眠算法（Wake-Sleep-Algorithm）"><a href="#醒眠算法（Wake-Sleep-Algorithm）" class="headerlink" title="醒眠算法（Wake-Sleep Algorithm）"></a>醒眠算法（Wake-Sleep Algorithm）</h3><p>训练一个可以用$v$来推断$h$的模型的主要难在我们没有监督训练集来训练模型。 </p>
+<p>给定一个$v$，无法获知一个合适的$h$。<br>醒眠算法通过从模型分布中抽取$v$和$h$的样本来解决这个问题：</p>
+<p>如在有向模型中，执行从$h$开始并在v结束的原始采样$v$和$h$；</p>
+<p>然后这个推断网络可以被训练来执行反向的映射：预测哪一个$h$产生了当前的$v$。 </p>
+<p>再用生物做梦来帮助理解：做梦的作用是训练网络来预测$q$；<br>清醒的时候更新$θ$。</p>
+<p>这解释了动物如何能够保持清醒几个小时（它们清醒的时间越长，$L$和$logp(v)$之间的差距越大， 但是$L$仍然是下限）。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Deep-Learning-笔记/" rel="tag"># Deep Learning, 笔记</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/deep_learning_book/deep_learning_18/" rel="next" title="第十八章：Confronting the Partition Function">
+                <i class="fa fa-chevron-left"></i> 第十八章：Confronting the Partition Function
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/deep_learning_book/deep_learning_20/" rel="prev" title="第二十章：Deep Generative Models">
+                第二十章：Deep Generative Models <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/red.jpg" alt="Javen Chen">
+            
+              <p class="site-author-name" itemprop="name">Javen Chen</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">55</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/applenob" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:applecer@pku.edu.cn" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#19-Approximate-Inference"><span class="nav-number">1.</span> <span class="nav-text">19. Approximate Inference</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#推断（Inference）"><span class="nav-number">1.1.</span> <span class="nav-text">推断（Inference）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#把推断视作优化问题"><span class="nav-number">1.2.</span> <span class="nav-text">把推断视作优化问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#EM（Expectation-Maximization）算法"><span class="nav-number">1.3.</span> <span class="nav-text">EM（Expectation Maximization）算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最大后验推断（MAP）"><span class="nav-number">1.4.</span> <span class="nav-text">最大后验推断（MAP）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#变分推断和学习（Variational-Inference-and-Learning）"><span class="nav-number">1.5.</span> <span class="nav-text">变分推断和学习（Variational Inference and Learning）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#变分的数学基础"><span class="nav-number">1.5.1.</span> <span class="nav-text">变分的数学基础</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#连续型潜变量"><span class="nav-number">1.5.2.</span> <span class="nav-text">连续型潜变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#学得近似推断（Learned-Approximate-Inference）"><span class="nav-number">1.5.3.</span> <span class="nav-text">学得近似推断（Learned Approximate Inference）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#醒眠算法（Wake-Sleep-Algorithm）"><span class="nav-number">1.5.4.</span> <span class="nav-text">醒眠算法（Wake-Sleep Algorithm）</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("9s7vKaOPY7lMWuX9YVLasdnq-gzGzoHsz", "gOEj5qIEBIz5eDM3F5Nn90Jg");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

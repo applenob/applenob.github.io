@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+
+
+
+
+  <meta name="keywords" content="Python,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1. 介绍和引入最近初学NLP相关的深度学习，下了很多论文，数量一多，发现论文管理是个问题。 首先论文数目一多，必须要按类别放到子文件夹下。但是某一篇论文，往往有多个主题。比如说某论文使用word2vec给短文本分类，那这篇论文既可以放在word2vec的目录下，也可以放在短文本的目录下，也可以放在分类的目录下。当你有天想去看了，往往又忘了是放在哪个子目录下了。再比如说，你下载了一些论文，下载的时">
+<meta name="keywords" content="Python">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用python编写一个本地论文管理器">
+<meta property="og:url" content="http://yoursite.com/python/paper_manager/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="1. 介绍和引入最近初学NLP相关的深度学习，下了很多论文，数量一多，发现论文管理是个问题。 首先论文数目一多，必须要按类别放到子文件夹下。但是某一篇论文，往往有多个主题。比如说某论文使用word2vec给短文本分类，那这篇论文既可以放在word2vec的目录下，也可以放在短文本的目录下，也可以放在分类的目录下。当你有天想去看了，往往又忘了是放在哪个子目录下了。再比如说，你下载了一些论文，下载的时">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/python/paper_manager/info.png">
+<meta property="og:image" content="http://yoursite.com/python/paper_manager/welcome.png">
+<meta property="og:image" content="http://yoursite.com/python/paper_manager/all.png">
+<meta property="og:image" content="http://yoursite.com/python/paper_manager/tags.png">
+<meta property="og:image" content="http://yoursite.com/python/paper_manager/sbt.png">
+<meta property="og:image" content="http://yoursite.com/python/paper_manager/sbn.png">
+<meta property="og:image" content="http://yoursite.com/python/paper_manager/path.png">
+<meta property="og:image" content="http://yoursite.com/python/paper_manager/edit.png">
+<meta property="og:image" content="http://yoursite.com/python/paper_manager/read.png">
+<meta property="og:image" content="http://yoursite.com/python/paper_manager/rec.png">
+<meta property="og:image" content="http://yoursite.com/python/paper_manager/help.png">
+<meta property="og:image" content="http://yoursite.com/python/paper_manager/quit.png">
+<meta property="og:updated_time" content="2019-06-16T14:46:09.134Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="用python编写一个本地论文管理器">
+<meta name="twitter:description" content="1. 介绍和引入最近初学NLP相关的深度学习，下了很多论文，数量一多，发现论文管理是个问题。 首先论文数目一多，必须要按类别放到子文件夹下。但是某一篇论文，往往有多个主题。比如说某论文使用word2vec给短文本分类，那这篇论文既可以放在word2vec的目录下，也可以放在短文本的目录下，也可以放在分类的目录下。当你有天想去看了，往往又忘了是放在哪个子目录下了。再比如说，你下载了一些论文，下载的时">
+<meta name="twitter:image" content="http://yoursite.com/python/paper_manager/info.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/python/paper_manager/">
+
+
+
+
+
+  <title>用python编写一个本地论文管理器 | Javen Chen's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?239bba0e8b78c0293b8e646237f788cd";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Javen Chen's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Tech and Life~</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-所有专栏">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            所有专栏
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-历史文章">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            历史文章
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/python/paper_manager/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Javen Chen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/red.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">用python编写一个本地论文管理器</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-17T20:00:20+08:00">
+                2016-11-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CS小项目/" itemprop="url" rel="index">
+                    <span itemprop="name">CS小项目</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/python/paper_manager/" class="leancloud_visitors" data-flag-title="用python编写一个本地论文管理器">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="1-介绍和引入"><a href="#1-介绍和引入" class="headerlink" title="1. 介绍和引入"></a>1. 介绍和引入</h2><p>最近初学NLP相关的深度学习，下了很多论文，数量一多，发现论文管理是个问题。</p>
+<p>首先论文数目一多，必须要按类别放到子文件夹下。但是某一篇论文，往往有多个主题。比如说某论文使用word2vec给短文本分类，那这篇论文既可以放在word2vec的目录下，也可以放在短文本的目录下，也可以放在分类的目录下。当你有天想去看了，往往又忘了是放在哪个子目录下了。再比如说，你下载了一些论文，下载的时候你知道这些论文的重要性（引用次数或者对项目的重要性）和紧急性（比如你三天之内都要看完）。但是当你把它放在某个子目录以后，当你有时间去看的时候，你忘了你当时最想看的那篇论文是什么了。</p>
+<p>为此，我决定开发一个小工具来帮助我管理我的paper。我的思路是这样的：给每篇论文打上tag，标上重要程度和紧急程度。这样当我没有特定目的的时候，我就可以根据重要程度和紧急程度看小工具推荐的paper；当我想看某方面的paper时，我只需要查询下tag就可以找到相关主题的paper。</p>
+<p>OK，有了思路，就可以着手实现了。</p>
+<h2 id="2-实现"><a href="#2-实现" class="headerlink" title="2.实现"></a>2.实现</h2><p>实现这里不想讲太多，主要是设计程序的思路，源代码在文末给出，都有注释。</p>
+<p>首先是图形化界面和命令行的选择，最终选择了命令行，开发速度更快，使用起来更直接。命令行的实现使用python自带的cmd模块实现。为了美化命令行的输出，参考使用了<a href="http://blog.csdn.net/qianghaohao/article/details/52117082" target="_blank" rel="noopener">这里</a>的终端输出彩色化和第三方的<a href="https://pypi.python.org/pypi/terminaltables" target="_blank" rel="noopener">terminaltables</a>。</p>
+<p>数据存储选择sqlite，因为有数据的查询/插入/删除/更新操作，用数据库比文件要方便很多；而且sqlite是python自己支持的，不用再安装其他软件，属于轻量级的文件数据库，最适合这个任务。</p>
+<h2 id="3-安装"><a href="#3-安装" class="headerlink" title="3.安装"></a>3.安装</h2><p>下载<a href="https://github.com/applenob/paper_manager" target="_blank" rel="noopener">github</a>上的源码以后，使用python2.7，只需要：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install terminaltables</span><br></pre></td></tr></table></figure>
+
+<p>然后就可以输入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python Manager.py</span><br></pre></td></tr></table></figure>
+
+<p>启动程序。</p>
+<h2 id="4-使用"><a href="#4-使用" class="headerlink" title="4.使用"></a>4.使用</h2><p>基本的命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">^---^ ^---^ ^---^ ^---^ ^---^</span><br><span class="line">rec    recommend the papers according to urgency and importance</span><br><span class="line">all    show all the papers info</span><br><span class="line">tags   show all tags</span><br><span class="line">sbt    search by tags, like (sbt tag1 tg2)</span><br><span class="line">sbn    search by id nums, like (sbn 1 2)</span><br><span class="line">edit    edit one paper info by paper id, like (edit 1)</span><br><span class="line">path    find path by paper id, like (path 1 2)</span><br><span class="line">open    open paper to read by id, like (open 1)</span><br><span class="line">help    help info</span><br><span class="line">quit    exit the manager</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-演示："><a href="#5-演示：" class="headerlink" title="5.演示："></a>5.演示：</h2><h3 id="a-录入目录"><a href="#a-录入目录" class="headerlink" title="a.录入目录"></a>a.录入目录</h3><p>启动程序后，首先按照提示，输入你的paper的根目录。如果输错了，可以把<strong>user_set.pkl</strong>删掉，重新启动程序即可。我这里程序已经保存路径，所以跳过。</p>
+<h3 id="b-输入新paper的数据"><a href="#b-输入新paper的数据" class="headerlink" title="b.输入新paper的数据"></a>b.输入新paper的数据</h3><p>每次启动程序后，程序都会去扫描paper的目录（以及子目录），有扫描到新paper就会提示录入新paper的数据。</p>
+<p><img src="/python/paper_manager/info.png" alt="录入每篇paper的info.png"><br>按照提示录入即可，分别是重要性（importance），紧急性（urgency），都是1-5的整数，还有所有tag（用空格隔开），以及这篇论文是不是读过了。<br>所有扫描到的新论文录入信息以后，就会出现欢迎界面：</p>
+<p><img src="/python/paper_manager/welcome.png" alt="欢迎界面.png"></p>
+<h3 id="c-显示所有论文信息"><a href="#c-显示所有论文信息" class="headerlink" title="c.显示所有论文信息"></a>c.显示所有论文信息</h3><p>输入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">all</span><br></pre></td></tr></table></figure>
+
+<p><img src="/python/paper_manager/all.png" alt="all"></p>
+<h3 id="d-显示录入的所有tag"><a href="#d-显示录入的所有tag" class="headerlink" title="d.显示录入的所有tag"></a>d.显示录入的所有tag</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tags</span><br></pre></td></tr></table></figure>
+
+<p><img src="/python/paper_manager/tags.png" alt="tags"></p>
+<h3 id="e-按照tag搜索paper"><a href="#e-按照tag搜索paper" class="headerlink" title="e.按照tag搜索paper"></a>e.按照tag搜索paper</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sbt tag1 tag2</span><br></pre></td></tr></table></figure>
+
+<p>sbt(search by tag)<br><img src="/python/paper_manager/sbt.png" alt="sbt"></p>
+<h3 id="f-按照id号获取论文"><a href="#f-按照id号获取论文" class="headerlink" title="f.按照id号获取论文"></a>f.按照id号获取论文</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sbn num1 num2</span><br></pre></td></tr></table></figure>
+
+<p><img src="/python/paper_manager/sbn.png" alt="sbn"></p>
+<h3 id="g-按照id号获取论文路径"><a href="#g-按照id号获取论文路径" class="headerlink" title="g.按照id号获取论文路径"></a>g.按照id号获取论文路径</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">path num1 num2</span><br></pre></td></tr></table></figure>
+
+<p><img src="/python/paper_manager/path.png" alt="path"></p>
+<h3 id="h-修改特定paper的info"><a href="#h-修改特定paper的info" class="headerlink" title="h.修改特定paper的info"></a>h.修改特定paper的info</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">edit num</span><br></pre></td></tr></table></figure>
+
+<p><img src="/python/paper_manager/edit.png" alt="edit"><br>如果看完了某篇论文，想改read从n为y，也可以直接使用edit命令。不修改的字段直接回车，数据不会丢失。<br>如：</p>
+<p><img src="/python/paper_manager/read.png" alt="只修改read"></p>
+<h3 id="i-获取推荐"><a href="#i-获取推荐" class="headerlink" title="i.获取推荐"></a>i.获取推荐</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rec</span><br></pre></td></tr></table></figure>
+
+<p><img src="/python/paper_manager/rec.png" alt="rec"></p>
+<p>推荐规则是按照紧急程度降序，相同紧急程度按照重要程度降序，而且是read为n，就是没有标记读过的论文。</p>
+<h3 id="j-打开论文"><a href="#j-打开论文" class="headerlink" title="j.打开论文"></a>j.打开论文</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">open num</span><br></pre></td></tr></table></figure>
+
+<p>打开指定id的论文（使用系统默认的阅读器）。</p>
+<h3 id="k-获取帮助"><a href="#k-获取帮助" class="headerlink" title="k.获取帮助"></a>k.获取帮助</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">help</span><br></pre></td></tr></table></figure>
+
+<p><img src="/python/paper_manager/help.png" alt="help"></p>
+<h3 id="l-退出"><a href="#l-退出" class="headerlink" title="l.退出"></a>l.退出</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">quit</span><br></pre></td></tr></table></figure>
+
+<p><img src="/python/paper_manager/quit.png" alt="quit"></p>
+<h2 id="6-最后"><a href="#6-最后" class="headerlink" title="6.最后"></a>6.最后</h2><p><a href="https://github.com/applenob/paper_manager" target="_blank" rel="noopener">github源代码地址</a>,喜欢留个star ：&gt;</p>
+<p>这个工具只是用来方便自己的日常使用，一共只开发了两天的时间，有什么改进意见尽管提，但是不保证回去改哦～我要滚回去看paper了。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Python/" rel="tag"># Python</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/nlp/naive_bayes/" rel="next" title="基于朴素贝叶斯的自然语言分类器">
+                <i class="fa fa-chevron-left"></i> 基于朴素贝叶斯的自然语言分类器
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/deep_learning/nn_bp/" rel="prev" title="神经网络基础（BP算法推导和基本的神经网络的实现）">
+                神经网络基础（BP算法推导和基本的神经网络的实现） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/red.jpg" alt="Javen Chen">
+            
+              <p class="site-author-name" itemprop="name">Javen Chen</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">55</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/applenob" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:applecer@pku.edu.cn" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-介绍和引入"><span class="nav-number">1.</span> <span class="nav-text">1. 介绍和引入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-实现"><span class="nav-number">2.</span> <span class="nav-text">2.实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-安装"><span class="nav-number">3.</span> <span class="nav-text">3.安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-使用"><span class="nav-number">4.</span> <span class="nav-text">4.使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-演示："><span class="nav-number">5.</span> <span class="nav-text">5.演示：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#a-录入目录"><span class="nav-number">5.1.</span> <span class="nav-text">a.录入目录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#b-输入新paper的数据"><span class="nav-number">5.2.</span> <span class="nav-text">b.输入新paper的数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#c-显示所有论文信息"><span class="nav-number">5.3.</span> <span class="nav-text">c.显示所有论文信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#d-显示录入的所有tag"><span class="nav-number">5.4.</span> <span class="nav-text">d.显示录入的所有tag</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#e-按照tag搜索paper"><span class="nav-number">5.5.</span> <span class="nav-text">e.按照tag搜索paper</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#f-按照id号获取论文"><span class="nav-number">5.6.</span> <span class="nav-text">f.按照id号获取论文</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#g-按照id号获取论文路径"><span class="nav-number">5.7.</span> <span class="nav-text">g.按照id号获取论文路径</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#h-修改特定paper的info"><span class="nav-number">5.8.</span> <span class="nav-text">h.修改特定paper的info</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#i-获取推荐"><span class="nav-number">5.9.</span> <span class="nav-text">i.获取推荐</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#j-打开论文"><span class="nav-number">5.10.</span> <span class="nav-text">j.打开论文</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#k-获取帮助"><span class="nav-number">5.11.</span> <span class="nav-text">k.获取帮助</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#l-退出"><span class="nav-number">5.12.</span> <span class="nav-text">l.退出</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-最后"><span class="nav-number">6.</span> <span class="nav-text">6.最后</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("9s7vKaOPY7lMWuX9YVLasdnq-gzGzoHsz", "gOEj5qIEBIz5eDM3F5Nn90Jg");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

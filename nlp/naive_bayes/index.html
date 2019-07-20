@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+
+
+
+
+  <meta name="keywords" content="Python, NLP, Machine Learning,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="概述123自然语言分类是指按照预先定义的主题类别，为文档集合中的每个文档确定一个类别。本文将介绍一个限定类别的自然语言分类器的原理和实现。采用Python作为编程语言，采用朴素贝叶斯作为分类器，使用jieba进行分词，并使用scikit-learn实现分类器。训练数据来自于凤凰网，最终交叉验证的平均准确率是0.927。  一、训练数据获取中文自然语言分类现成可用的有搜狗自然语言分类语料库、北京大学">
+<meta name="keywords" content="Python, NLP, Machine Learning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于朴素贝叶斯的自然语言分类器">
+<meta property="og:url" content="http://yoursite.com/nlp/naive_bayes/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="概述123自然语言分类是指按照预先定义的主题类别，为文档集合中的每个文档确定一个类别。本文将介绍一个限定类别的自然语言分类器的原理和实现。采用Python作为编程语言，采用朴素贝叶斯作为分类器，使用jieba进行分词，并使用scikit-learn实现分类器。训练数据来自于凤凰网，最终交叉验证的平均准确率是0.927。  一、训练数据获取中文自然语言分类现成可用的有搜狗自然语言分类语料库、北京大学">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/1.jpeg">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/2.jpeg">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/3.png">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/4.png">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/5.jpeg">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/6.png">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/7.png">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/8.jpeg">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/9.jpeg">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/10.jpeg">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/11.jpeg">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/13.jpeg">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/14.jpeg">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/15.jpeg">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/16.jpeg">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/17.jpeg">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/18.jpeg">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/19.jpeg">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/20.jpeg">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/21.jpeg">
+<meta property="og:updated_time" content="2019-06-16T14:40:34.553Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基于朴素贝叶斯的自然语言分类器">
+<meta name="twitter:description" content="概述123自然语言分类是指按照预先定义的主题类别，为文档集合中的每个文档确定一个类别。本文将介绍一个限定类别的自然语言分类器的原理和实现。采用Python作为编程语言，采用朴素贝叶斯作为分类器，使用jieba进行分词，并使用scikit-learn实现分类器。训练数据来自于凤凰网，最终交叉验证的平均准确率是0.927。  一、训练数据获取中文自然语言分类现成可用的有搜狗自然语言分类语料库、北京大学">
+<meta name="twitter:image" content="http://yoursite.com/nlp/naive_bayes/1.jpeg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/nlp/naive_bayes/">
+
+
+
+
+
+  <title>基于朴素贝叶斯的自然语言分类器 | Javen Chen's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?239bba0e8b78c0293b8e646237f788cd";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Javen Chen's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Tech and Life~</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-所有专栏">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            所有专栏
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-历史文章">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            历史文章
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/nlp/naive_bayes/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Javen Chen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/red.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">基于朴素贝叶斯的自然语言分类器</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-09-15T20:10:20+08:00">
+                2016-09-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/NLP/" itemprop="url" rel="index">
+                    <span itemprop="name">NLP</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/nlp/naive_bayes/" class="leancloud_visitors" data-flag-title="基于朴素贝叶斯的自然语言分类器">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">自然语言分类是指按照预先定义的主题类别，为文档集合中的每个文档确定一个类别。</span><br><span class="line">本文将介绍一个限定类别的自然语言分类器的原理和实现。采用Python作为编程语言，采用朴素贝叶斯作为分类器，使用jieba进行分词，并使用scikit-learn实现分类器。</span><br><span class="line">训练数据来自于凤凰网，最终交叉验证的平均准确率是0.927。</span><br></pre></td></tr></table></figure>
+
+<h2 id="一、训练数据获取"><a href="#一、训练数据获取" class="headerlink" title="一、训练数据获取"></a>一、训练数据获取</h2><p>中文自然语言分类现成可用的有搜狗自然语言分类语料库、北京大学建立的人民日报语料库、清华大学建立的现代汉语语料库等。</p>
+<p>由于语言在使用过程中会不断演进，具有一定的时效性，我们最终决定自己开发爬虫爬取训练数据。</p>
+<p>经过综合考虑，我们最终将目标选定为凤凰网。</p>
+<p>我们选取凤凰网移动版开展数据获取工作，地址为<a href="http://i.ifeng.com/" target="_blank" rel="noopener">http://i.ifeng.com/</a> 如图1所示。</p>
+<p>移动版的页面布局简单清晰，但由于文章列表采用了下拉刷新的动态更新策略，直接解析页面源码效率太低，最终决定直接调用网页api获取。比如获取十条凤凰“军事”的内容，访问<a href="http://imil.ifeng.com/20_2/data.shtml" target="_blank" rel="noopener">http://imil.ifeng.com/20_2/data.shtml</a> 返回结果如图2左。</p>
+<p>最终获取到4784条新闻，都保存到MySQL数据库，具体数据如图2右。</p>
+<p>从中看出，军事类的文章相对偏少，体育类的文章偏多。</p>
+<p><img src="/nlp/naive_bayes/1.jpeg" alt></p>
+<p><img src="/nlp/naive_bayes/2.jpeg" alt></p>
+<h2 id="二、朴素贝叶斯介绍"><a href="#二、朴素贝叶斯介绍" class="headerlink" title="二、朴素贝叶斯介绍"></a>二、朴素贝叶斯介绍</h2><h3 id="1．贝叶斯定理"><a href="#1．贝叶斯定理" class="headerlink" title="1．贝叶斯定理"></a>1．贝叶斯定理</h3><pre><code>贝叶斯定理是关于随机事件 A 和 B 的条件概率：</code></pre><p><img src="/nlp/naive_bayes/3.png" alt></p>
+<p>其中，P(A)是A的先验概率，之所以称为“先验”是因为它不考虑任何B方面的因素。</p>
+<p>P(A|B)是已知B发生后A的条件概率，也由于得自B的取值而被称作A 的后验概率。</p>
+<p>P(B|A)是已知A发生后B的条件概率，也由于得自A的取值而被称作B的后验概率。</p>
+<p>P(B)是B的先验概率，也称作标淮化常量（normalizing constant）。</p>
+<p>按这些术语，贝叶斯定理可表述为：</p>
+<pre><code>$后验概率 = (相似度 * 先验概率)/标淮化常量$</code></pre><h3 id="2．贝叶斯概率观"><a href="#2．贝叶斯概率观" class="headerlink" title="2．贝叶斯概率观"></a>2．贝叶斯概率观</h3><p>一般学院派的概率观可以称作频率主义。一个事件，如果重复独立地执行多次，把发生的次数除以执行的次数，就得到一个频率。比如说抛硬币，抛了10000次，有4976次正面向上，频率就是0.4976。然后如果执行的次数很多很多，频率会趋向于一个固定的值，就是这个事件的概率。理论基础是中心极限定理。</p>
+<p>贝叶斯概率观与此很不同。</p>
+<p>主观贝叶斯主义认为，概率就是个人对某个事件发生可能性的一个估计。</p>
+<p>如果对一个事件你一无所知，那么你可以随便猜一个概率。</p>
+<p>但因为是估计，如果有新的信息，那就必须根据新信息对概率进行修正。</p>
+<p>这样的话，随着经历越来越多，对概率的估计也会越来越符合“实际情况”。</p>
+<h3 id="3．朴素贝叶斯分类器"><a href="#3．朴素贝叶斯分类器" class="headerlink" title="3．朴素贝叶斯分类器"></a>3．朴素贝叶斯分类器</h3><p>分类器基本原理：</p>
+<p>对一个多维的输入向量x，根据贝叶斯公式，有：</p>
+<p><img src="/nlp/naive_bayes/4.png" alt></p>
+<p>条件独立性假设：</p>
+<p><img src="/nlp/naive_bayes/5.jpeg" alt></p>
+<p>放到自然语言分类器的应用中理解，就是在给定文本的类别的条件下，文本中出现的词的概率是相互独立的。</p>
+<p>朴素贝叶斯之所以“朴素”，就是因为条件独立性假设是一个较强的假设。于是：</p>
+<p><img src="/nlp/naive_bayes/6.png" alt></p>
+<p><img src="/nlp/naive_bayes/7.png" alt></p>
+<p>从自然语言分类的角度上说，一个文本属于哪个类，要计算所有类别的先验概率和所有词在相应类别下的后验概率，再一起乘起来，哪个类别对应的值最大，就归为哪类。</p>
+<p><img src="/nlp/naive_bayes/8.jpeg" alt></p>
+<p><img src="/nlp/naive_bayes/9.jpeg" alt></p>
+<p><img src="/nlp/naive_bayes/10.jpeg" alt></p>
+<h2 id="三、分类器实现"><a href="#三、分类器实现" class="headerlink" title="三、分类器实现"></a>三、分类器实现</h2><h3 id="1．数据预处理"><a href="#1．数据预处理" class="headerlink" title="1．数据预处理"></a>1．数据预处理</h3><p>文本放到分类器中分类，必须先将文本数据向量化，因为scikit-learn的分类器大多输入的数据类型都是numpy数组和类似的类型。</p>
+<p>这一步可以通过scikit-learn中特征抽取模块feature_extraction中text.</p>
+<p>CountVectorizer、text.TfidfVectorizer和text.HashingVectorizer实现。</p>
+<p><img src="/nlp/naive_bayes/11.jpeg" alt>    </p>
+<p>特征哈希：特征哈希是一种处理高维数据的技术，并经常被应用在文本和分类数据集。</p>
+<p>特征哈希不需要像其他向量化工具一样，需要额外对数据集做一次遍历。</p>
+<p>特征哈希通过使用哈希方差对特征赋予向量下标，这个向量下标是通过对特征，例如，单词“美国”计算的哈希值是342，那么向量中下标是342的那个元素，值加1。</p>
+<p>特征哈希的优势在于不需要构建映射并把它保存到内存中，但是需要预先选择特征向量的大小。</p>
+<p>另外，在向量化之前，还有一步是十分必要的。</p>
+<p>上述的方法是针对英文设计实现的，因此接收的数据类型也是默认通过空格的截断获取分词结果。</p>
+<p>因此要讲中文向量化，必须要先分词。</p>
+<p>这一步我们通过jieba实现。最后的输入文本类似图3这样的格式。</p>
+<p>CountVectorize的转换结果如图4，向量的每个值代表一个词出现的个数。</p>
+<p>HashingVectorizer的转换结果如图5。</p>
+<p>TfidfVectorizer的转换结果如图6，这里我们设置参数use_idf=False，即只使用tf，但并不等同于CountVectorize，而是相当于个数+归一化。</p>
+<p><img src="/nlp/naive_bayes/13.jpeg" alt></p>
+<p><img src="/nlp/naive_bayes/14.jpeg" alt></p>
+<p><img src="/nlp/naive_bayes/15.jpeg" alt></p>
+<p><img src="/nlp/naive_bayes/16.jpeg" alt></p>
+<h3 id="2．调参"><a href="#2．调参" class="headerlink" title="2．调参"></a>2．调参</h3><p>确定了模型之后，可以直接使用Scikit-learn中的GridSearchCV来寻找最佳超参数。</p>
+<p>另外一个提高准确率的技巧是删除停用词。</p>
+<p>之前分词的过程中使用的是通用的中文停用词，比如“这”，“那”等没有实际语义的词。</p>
+<p>但是这里对于文章的分类来说还有一些高频出现但是对主题没有影响的词，即便他们本身是有语义的。</p>
+<p>比如“时间”、“图”等。</p>
+<p><img src="/nlp/naive_bayes/17.jpeg" alt></p>
+<h3 id="3．组合"><a href="#3．组合" class="headerlink" title="3．组合"></a>3．组合</h3><p>组合技术即通过聚集多个分类器的预测来提高分类准确率。</p>
+<p>常用的组合分类器方法：</p>
+<p>1）装袋（bagging）：根据均匀概率分布从数据集中重复抽样（有放回），每个自助样本集和原数据集一样大，每个自助样本集含有原数据集大约63%的数据。训练k个分类器，测试样本被指派到得票最高的类。</p>
+<p>2）提升（boosting）：通过给样本设置不同的权值，每轮迭代调整权值。不同的提升算法之间的差别，一般是（1）如何更新样本的权值；（2）如何组合每个分类器的预测。其中在Adaboost中，样本权值是增加那些被错误分类的样本的权值，分类器C_i的重要性依赖于它的错误率。</p>
+<p>这里使用BaggingClassifier对原分类器进行装袋组合，准确率有所提升。</p>
+<h2 id="四、分类器评估"><a href="#四、分类器评估" class="headerlink" title="四、分类器评估"></a>四、分类器评估</h2><p> 使用scikit-learn提供的classification_report获得分类报告如图8。</p>
+<p> 使用condusion_matrix获得分类混淆矩阵如图9。交叉验证的结果如图10。</p>
+<p> 可见，取得了较理想的分类表现。图11是部分分类结果。</p>
+<p><img src="/nlp/naive_bayes/18.jpeg" alt></p>
+<p><img src="/nlp/naive_bayes/19.jpeg" alt></p>
+<p><img src="/nlp/naive_bayes/20.jpeg" alt></p>
+<p><img src="/nlp/naive_bayes/21.jpeg" alt></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Python-NLP-Machine-Learning/" rel="tag"># Python, NLP, Machine Learning</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/machine_learning/Scikit-learn/" rel="next" title="Scikit-learn使用总结">
+                <i class="fa fa-chevron-left"></i> Scikit-learn使用总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/python/paper_manager/" rel="prev" title="用python编写一个本地论文管理器">
+                用python编写一个本地论文管理器 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/red.jpg" alt="Javen Chen">
+            
+              <p class="site-author-name" itemprop="name">Javen Chen</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">55</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/applenob" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:applecer@pku.edu.cn" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一、训练数据获取"><span class="nav-number">2.</span> <span class="nav-text">一、训练数据获取</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、朴素贝叶斯介绍"><span class="nav-number">3.</span> <span class="nav-text">二、朴素贝叶斯介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1．贝叶斯定理"><span class="nav-number">3.1.</span> <span class="nav-text">1．贝叶斯定理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2．贝叶斯概率观"><span class="nav-number">3.2.</span> <span class="nav-text">2．贝叶斯概率观</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3．朴素贝叶斯分类器"><span class="nav-number">3.3.</span> <span class="nav-text">3．朴素贝叶斯分类器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、分类器实现"><span class="nav-number">4.</span> <span class="nav-text">三、分类器实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1．数据预处理"><span class="nav-number">4.1.</span> <span class="nav-text">1．数据预处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2．调参"><span class="nav-number">4.2.</span> <span class="nav-text">2．调参</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3．组合"><span class="nav-number">4.3.</span> <span class="nav-text">3．组合</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、分类器评估"><span class="nav-number">5.</span> <span class="nav-text">四、分类器评估</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("9s7vKaOPY7lMWuX9YVLasdnq-gzGzoHsz", "gOEj5qIEBIz5eDM3F5Nn90Jg");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

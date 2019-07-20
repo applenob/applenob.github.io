@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+
+
+
+
+  <meta name="keywords" content="Deep Learning, 笔记,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="12. Application计算机视觉计算机视觉的应用：计算机视觉的应用广泛：从复现人类视觉能力（比如识别人脸）到创造全新的视觉能力。 预处理：1.标准化：使得它们的像素都在相同并且合理的范围内，比如$[0,1]$或者$[-1,1]$。2.标准尺寸：裁剪或缩放图像以适应固定的尺寸。3.数据集增强：只对训练集做预处理，是减少大多数计算机视觉模型泛化误差的一种极好方法。 对比度归一化：对比度指的是图">
+<meta name="keywords" content="Deep Learning, 笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第十二章：Application">
+<meta property="og:url" content="http://yoursite.com/deep_learning_book/deep_learning_12/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="12. Application计算机视觉计算机视觉的应用：计算机视觉的应用广泛：从复现人类视觉能力（比如识别人脸）到创造全新的视觉能力。 预处理：1.标准化：使得它们的像素都在相同并且合理的范围内，比如$[0,1]$或者$[-1,1]$。2.标准尺寸：裁剪或缩放图像以适应固定的尺寸。3.数据集增强：只对训练集做预处理，是减少大多数计算机视觉模型泛化误差的一种极好方法。 对比度归一化：对比度指的是图">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-06-21T14:05:26.264Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="第十二章：Application">
+<meta name="twitter:description" content="12. Application计算机视觉计算机视觉的应用：计算机视觉的应用广泛：从复现人类视觉能力（比如识别人脸）到创造全新的视觉能力。 预处理：1.标准化：使得它们的像素都在相同并且合理的范围内，比如$[0,1]$或者$[-1,1]$。2.标准尺寸：裁剪或缩放图像以适应固定的尺寸。3.数据集增强：只对训练集做预处理，是减少大多数计算机视觉模型泛化误差的一种极好方法。 对比度归一化：对比度指的是图">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/deep_learning_book/deep_learning_12/">
+
+
+
+
+
+  <title>第十二章：Application | Javen Chen's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?239bba0e8b78c0293b8e646237f788cd";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Javen Chen's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Tech and Life~</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-所有专栏">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            所有专栏
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-历史文章">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            历史文章
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/deep_learning_book/deep_learning_12/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Javen Chen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/red.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">第十二章：Application</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-05-09T12:00:00+08:00">
+                2017-05-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/《Deep-Learning》读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">《Deep Learning》读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/deep_learning_book/deep_learning_12/" class="leancloud_visitors" data-flag-title="第十二章：Application">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="12-Application"><a href="#12-Application" class="headerlink" title="12. Application"></a>12. Application</h1><h2 id="计算机视觉"><a href="#计算机视觉" class="headerlink" title="计算机视觉"></a>计算机视觉</h2><p><strong>计算机视觉的应用</strong>：计算机视觉的应用广泛：从复现人类视觉能力（比如识别人脸）到创造全新的视觉能力。</p>
+<p><strong>预处理</strong>：1.标准化：使得它们的像素都在相同并且合理的范围内，比如$[0,1]$或者$[-1,1]$。2.标准尺寸：裁剪或缩放图像以适应固定的尺寸。3.数据集增强：只对训练集做预处理，是减少大多数计算机视觉模型泛化误差的一种极好方法。</p>
+<p><strong>对比度归一化</strong>：对比度指的是图像中亮像素和暗像素之间差异的大小，在深度学习中，对比度通常指的是图像或图像区域中像素的标准差。</p>
+<p><strong>全局对比度归一化</strong>旨在通过从每个图像中减去其平均值，然后重新缩放其使得其像素上的标准差等于某个常数$s$来防止图像具有变化的对比度。</p>
+<p>局部对比度归一化确保对比度在每个小窗口上被归一化，而不是作为整体在图像上被归一化。</p>
+<p><strong>数据集增强</strong>：我们很容易通过增加训练集的额外副本来增加训练集的大小，进而改进分类器的泛化能力。</p>
+<p>这些额外副本可以通过对原始图像进行一些变化来生成，但是并不改变其类别。</p>
+<p>对象识别这个分类任务特别适合于这种形式的数据集增强，因为类别信息对于许多变换是不变的，而我们可以简单地对输入应用诸多几何变换。</p>
+<p>分类器可以受益于<strong>随机转换或者旋转</strong>。 还有一些高级的用以数据集增强的变换，包括图像中<strong>颜色的随机扰动</strong>，以及对输入的<strong>非线性几何变形</strong>。</p>
+<h2 id="语音识别"><a href="#语音识别" class="headerlink" title="语音识别"></a>语音识别</h2><p><strong>语音识别</strong>：语音识别任务旨在将一段包括了自然语言发音的声学信号投影到对应说话人的词序列上。</p>
+<p><strong>语音识别的应用</strong>：1.其中的一个创新点是卷积网络的应用。 卷积网络在时域与频域上复用了权重，改进了之前的仅在时域上使用重复权值的时延神经网络。</p>
+<p>这种新的二维的卷积模型并不是将输入的频谱当作一个长的向量，而是当成是一个图像，其中一个轴对应着时间，另一个轴对应的是谱分量的频率。2.完全抛弃HMM转向研究端到端的深度学习语音识别系统是一大活跃领域，这个领域第一个主要的突破是一个深度的LSTM神经网络</p>
+<h2 id="自然语言处理"><a href="#自然语言处理" class="headerlink" title="自然语言处理"></a>自然语言处理</h2><p><strong>自然语言处理</strong>：自然语言处理让计算机能够使用人类语言，例如英语或法语。</p>
+<p><strong>$n$-gram</strong>：语言模型定义了自然语言中标记序列的概率分布。 根据模型的设计，标记可以是词、字符、甚至是字节。<br>基于$n$-gram的模型定义一个条件概率——给定前$n-1$个标记后的第$n$个标记的条件概率。</p>
+<p>该模型使用这些条件分布的乘积定义较长序列的概率分布：$P(x_1,…,x_τ)=P(x_1,…,x_{n−1})∏_{t=n}^τP(x_t∣x_{t−n+1},…,x_{t−1})$。</p>
+<p>训练$n$-gram模型是简单的，因为最大似然估计可以通过简单地统计每个可能的$n$-gram在训练集中出现的次数来获得。</p>
+<p>几十年来，基于$n$-gram的模型都是统计语言模型的核心模块。 通常我们同时训练$n$-gram模型和$n-1$ gram模型。</p>
+<p>这使得下式可以简单地通过查找两个存储的概率来计算：$P(x_t∣x_{t−n+1},…,x_{t−1})=P_n(x_{t−n+1},…,x_t)P_{n−1}(x_{t−n+1},…,x_{t−1})$。<br>$n$-gram特别容易引起维数灾难。</p>
+<p><strong>神经语言模型</strong>：神经语言模型是一类用来克服维数灾难的语言模型，它使用词的分布式表示对自然语言序列建模。</p>
+<p>不同于基于类的$n$-gram模型，神经语言模型在能够识别两个相似的词，并且不丧失将每个词编码为彼此不同的能力。</p>
+<p><strong>神经机器翻译</strong>：机器翻译以一种自然语言读取句子并产生等同含义的另一种语言的句子。 机器翻译系统通常涉及许多组件：在高层次，一个组件通常会提出许多候选翻译。</p>
+<p>由于语言之间的差异，这些翻译中的许多翻译是不符合语法的。 翻译系统的第二个组成部分（语言模型）评估提议的翻译，并可以评估哪句翻译地更好。</p>
+<h2 id="其他应用"><a href="#其他应用" class="headerlink" title="其他应用"></a>其他应用</h2><h3 id="推荐系统"><a href="#推荐系统" class="headerlink" title="推荐系统"></a>推荐系统</h3><p>可以分为两种主要的应用：在线广告和项目建议（通常这些建议的目的仍然是为了销售产品）。 两者都依赖于预测用户和项目之间的关联，一旦向该用户展示了广告或推荐了该产品，推荐系统要么预测一些行为的概率（用户购买产品或该行为的一些代替）或预期增益（其可取决于产品的价值）。早期推荐系统的工作依赖于这些预测输入的最小信息：用户ID和项目ID。</p>
+<p>在这种情况下，唯一的泛化方式依赖于不同用户或不同项目的目标变量值之间的模式相似性。 假设用户1和用户2都喜欢项目A，B和C.</p>
+<p>由此，我们可以推断出用户1和用户2具有类似的口味。 如果用户1喜欢项目D，那么这可以强烈提示用户2也喜欢D。 基于此原理的算法称为<strong>协同过滤</strong>。</p>
+<p>然而，协同过滤系统有一个基本限制：当引入新项目或新用户时，缺乏评级历史意味着无法评估其与其他项目或用户的相似性，或者说无法评估新的用户和现有项目的联系。</p>
+<p>这被称为冷启动推荐问题。 解决冷启动推荐问题的一般方式是引入单个用户和项目的额外信息。 例如，该额外信息可以是用户简要信息或每个项目的特征。</p>
+<p>使用这种信息的系统被称为基于内容的推荐系统(content-based recommender system)。<br>从丰富的用户特征或项目特征集到嵌入的映射可以通过深度学习架构学习。 专用的深度学习架构，如卷积网络已经应用于从丰富内容中提取特征，如提取用于音乐推荐的音乐音轨。</p>
+<p>在该工作中，卷积网络将声学特征作为输入并计算相关歌曲的嵌入。 该歌曲嵌入和用户嵌入之间的点积则可以预测用户是否将收听该歌曲。</p>
+<p><strong>知识表示、推理和回答</strong>：数学中，二元关系是一组有序的对象对。 集合中的对具有这种关系，而那些不在集合中的对则没有。 例如，我们可以在实体集${ 1, 2, 3 }$上定义关系”小于”来定义有序对的集合$S = { (1, 2), (1, 3), (2, 3) }$。 一旦这个关系被定义，我们可以像动词一样使用它。</p>
+<p>因为$(1, 2) \in S$，我们说1小于2。 一种常见的引入深度学习方法是将神经语言模型扩展到模型实体和关系。</p>
+<p>神经语言模型学习提供每个词分布式表示的向量。 他们还通过学习这些向量的函数来学习词之间的相互作用，例如哪些词可能出现在词序列之后。</p>
+<p>我们可以学习每个关系的嵌入向量将这种方法扩展到实体和关系。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Deep-Learning-笔记/" rel="tag"># Deep Learning, 笔记</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/deep_learning_book/deep_learning_11/" rel="next" title="第十一章：Practical Methodology">
+                <i class="fa fa-chevron-left"></i> 第十一章：Practical Methodology
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/deep_learning_book/deep_learning_13/" rel="prev" title="第十三章：Linear Factor Models">
+                第十三章：Linear Factor Models <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/red.jpg" alt="Javen Chen">
+            
+              <p class="site-author-name" itemprop="name">Javen Chen</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">55</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/applenob" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:applecer@pku.edu.cn" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#12-Application"><span class="nav-number">1.</span> <span class="nav-text">12. Application</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#计算机视觉"><span class="nav-number">1.1.</span> <span class="nav-text">计算机视觉</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#语音识别"><span class="nav-number">1.2.</span> <span class="nav-text">语音识别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自然语言处理"><span class="nav-number">1.3.</span> <span class="nav-text">自然语言处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他应用"><span class="nav-number">1.4.</span> <span class="nav-text">其他应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#推荐系统"><span class="nav-number">1.4.1.</span> <span class="nav-text">推荐系统</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("9s7vKaOPY7lMWuX9YVLasdnq-gzGzoHsz", "gOEj5qIEBIz5eDM3F5Nn90Jg");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

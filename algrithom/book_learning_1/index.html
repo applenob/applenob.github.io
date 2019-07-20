@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+
+
+
+
+  <meta name="keywords" content="Algorithm, 笔记,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1对应本书第一章。   0.简介 这本书的豆瓣评分高达9.3，python作为接近算法伪码的一种脚本语言，其实用它写算法是极好的，可以将注意力集中在算法本身。但是由于python性能的问题，用python写算法不算太主流，因此市面上介绍算法的书也多以使用c/c++或者Java居多。这本书几乎是用python介绍算法豆瓣评分最高的一本书了，网上可以下到pdf，但最好的阅读方式是直接使用这本书的网站。">
+<meta name="keywords" content="Algorithm, 笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一. intro">
+<meta property="og:url" content="http://yoursite.com/algrithom/book_learning_1/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="1对应本书第一章。   0.简介 这本书的豆瓣评分高达9.3，python作为接近算法伪码的一种脚本语言，其实用它写算法是极好的，可以将注意力集中在算法本身。但是由于python性能的问题，用python写算法不算太主流，因此市面上介绍算法的书也多以使用c/c++或者Java居多。这本书几乎是用python介绍算法豆瓣评分最高的一本书了，网上可以下到pdf，但最好的阅读方式是直接使用这本书的网站。">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://raw.githubusercontent.com/applenob/algorithm_note/master/res/cover.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/applenob/algorithm_note/master/res/table1.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/applenob/algorithm_note/master/res/table2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/applenob/algorithm_note/master/res/Halfadder.gif">
+<meta property="og:image" content="https://raw.githubusercontent.com/applenob/algorithm_note/master/res/Fulladder.gif">
+<meta property="og:updated_time" content="2019-07-07T10:23:40.126Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="一. intro">
+<meta name="twitter:description" content="1对应本书第一章。   0.简介 这本书的豆瓣评分高达9.3，python作为接近算法伪码的一种脚本语言，其实用它写算法是极好的，可以将注意力集中在算法本身。但是由于python性能的问题，用python写算法不算太主流，因此市面上介绍算法的书也多以使用c/c++或者Java居多。这本书几乎是用python介绍算法豆瓣评分最高的一本书了，网上可以下到pdf，但最好的阅读方式是直接使用这本书的网站。">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/applenob/algorithm_note/master/res/cover.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/algrithom/book_learning_1/">
+
+
+
+
+
+  <title>一. intro | Javen Chen's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?239bba0e8b78c0293b8e646237f788cd";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Javen Chen's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Tech and Life~</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-所有专栏">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            所有专栏
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-历史文章">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            历史文章
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/algrithom/book_learning_1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Javen Chen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/red.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">一. intro</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-17T21:00:00+08:00">
+                2017-02-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/《Problem-Solving-with-Algorithms-and-Data-Structures-using-Python》的学习笔记和课后作业答案/" itemprop="url" rel="index">
+                    <span itemprop="name">《Problem Solving with Algorithms and Data Structures using Python》的学习笔记和课后作业答案</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/algrithom/book_learning_1/" class="leancloud_visitors" data-flag-title="一. intro">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">对应本书第一章。</span><br></pre></td></tr></table></figure>
+
+
+<h1 id="0-简介"><a href="#0-简介" class="headerlink" title="0.简介"></a>0.简介</h1><p><img src="https://raw.githubusercontent.com/applenob/algorithm_note/master/res/cover.jpg" alt></p>
+<p>这本书的<a href="https://book.douban.com/subject/3098386/" target="_blank" rel="noopener">豆瓣评分</a>高达9.3，python作为接近算法伪码的一种脚本语言，其实用它写算法是极好的，可以将注意力集中在算法本身。<br>但是由于python性能的问题，用python写算法不算太主流，因此市面上介绍算法的书也多以使用c/c++或者Java居多。<br>这本书几乎是用python介绍算法豆瓣评分最高的一本书了，网上可以下到pdf，但最好的阅读方式是直接使用这本书的<a href="http://interactivepython.org/courselib/static/pythonds/index.html" target="_blank" rel="noopener">网站</a>。这本书可以直接在网站上运行示例程序。self check的部分还有作者视频讲解，这才是编程类书籍的未来嘛！</p>
+<p>这里我记录每章的学习笔记，同时记录每章课后作业的个人解决代码，统一使用python3。</p>
+<h1 id="1-intro"><a href="#1-intro" class="headerlink" title="1.intro"></a>1.intro</h1><h2 id="笔记"><a href="#笔记" class="headerlink" title="笔记"></a>笔记</h2><p>这章主要给python做了个简短介绍，魔术方法部分以前没有仔细学习过，看看感觉挺好用，可以让自定义的方法看起来像内建的方法。</p>
+<p><a href="https://docs.python.org/2/library/operator.html" target="_blank" rel="noopener">python官方文档关于operator的表格</a></p>
+<p><img src="https://raw.githubusercontent.com/applenob/algorithm_note/master/res/table1.png" alt></p>
+<p><img src="https://raw.githubusercontent.com/applenob/algorithm_note/master/res/table2.png" alt><br>两个不错的学习链接：</p>
+<ul>
+<li><p><a href="http://wklken.me/posts/2012/10/29/python-base-magic.html" target="_blank" rel="noopener">PYTHON-进阶-魔术方法小结(方法运算符重载)</a></p>
+</li>
+<li><p><a href="http://pycoders-weekly-chinese.readthedocs.io/en/latest/issue6/a-guide-to-pythons-magic-methods.html" target="_blank" rel="noopener">Python 魔术方法指南</a></p>
+</li>
+</ul>
+<h2 id="作业"><a href="#作业" class="headerlink" title="作业"></a>作业</h2><p><a href="http://interactivepython.org/courselib/static/pythonds/Introduction/ProgrammingExercises.html" target="_blank" rel="noopener">作业链接</a></p>
+<h3 id="q1-to-q9"><a href="#q1-to-q9" class="headerlink" title="q1 to q9"></a>q1 to q9</h3><p>完善处理分式的Fraction类。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gcd</span><span class="params">(m,n)</span>:</span></span><br><span class="line">    <span class="string">"""求两个数最大公因数"""</span></span><br><span class="line">    <span class="keyword">while</span> m%n != <span class="number">0</span>:</span><br><span class="line">        oldm = m</span><br><span class="line">        oldn = n</span><br><span class="line"></span><br><span class="line">        m = oldn</span><br><span class="line">        n = oldm%oldn</span><br><span class="line">    <span class="keyword">return</span> n</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Fraction</span>:</span></span><br><span class="line">    <span class="string">"""处理分数的类"""</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,top,bottom)</span>:</span></span><br><span class="line">        <span class="comment"># q5 检查分子分母是否都是整数</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> isinstance(top, int) <span class="keyword">or</span> <span class="keyword">not</span> isinstance(bottom, int):</span><br><span class="line">            <span class="keyword">raise</span> Exception(<span class="string">"top or bottom of Fraction is not int type!"</span>)</span><br><span class="line">        <span class="comment"># q2 初始化时直接约分</span></span><br><span class="line">        common = gcd(top,bottom)</span><br><span class="line">        self.num = top//common</span><br><span class="line">        self.den = bottom//common</span><br><span class="line">        </span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> str(self.num)+<span class="string">"/"</span>+str(self.den)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">show</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(self.num,<span class="string">"/"</span>,self.den)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__add__</span><span class="params">(self,other)</span>:</span></span><br><span class="line">        <span class="comment"># q2</span></span><br><span class="line">        newnum = self.num*other.den + \</span><br><span class="line">                 self.den*other.num</span><br><span class="line">        newden = self.den * other.den</span><br><span class="line">        <span class="keyword">return</span> Fraction(newnum,newden)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__eq__</span><span class="params">(self, other)</span>:</span></span><br><span class="line">        firstnum = self.num * other.den</span><br><span class="line">        secondnum = other.num * self.den</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> firstnum == secondnum</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># q1</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getNum</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.num</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getDen</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.den</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># q3</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__sub__</span><span class="params">(self, other)</span>:</span></span><br><span class="line">        newnum = self.num*other.den - \</span><br><span class="line">                 other.num*self.den</span><br><span class="line">        newden = self.den * other.den</span><br><span class="line">        <span class="keyword">return</span> Fraction(newnum, newden)</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__mul__</span><span class="params">(self, other)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> Fraction(self.num*other.num, self.den*other.den)</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__truediv__</span><span class="params">(self, other)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> Fraction(self.num*other.den, self.den*other.num)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># q4</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__gt__</span><span class="params">(self, other)</span>:</span> </span><br><span class="line">        <span class="keyword">if</span> self.num*other.den &gt; self.den*other.num:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__ge__</span><span class="params">(self, other)</span>:</span> </span><br><span class="line">        <span class="keyword">if</span> self.num*other.den &gt;= self.den*other.num:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__lt__</span><span class="params">(self, other)</span>:</span> </span><br><span class="line">        <span class="keyword">if</span> self.num*other.den &lt; self.den*other.num:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__le__</span><span class="params">(self, other)</span>:</span> </span><br><span class="line">        <span class="keyword">if</span> self.num*other.den &lt; self.den*other.num:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__ne__</span><span class="params">(self, other)</span>:</span> </span><br><span class="line">        <span class="keyword">if</span> self.num*other.den != self.den*other.num:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># q7</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__radd__</span><span class="params">(self,other_int)</span>:</span></span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        Python will first try (4).__add__(myobj), </span></span><br><span class="line"><span class="string">        and if that returns NotImplemented Python will check if </span></span><br><span class="line"><span class="string">        the right-hand operand implements __radd__, and if it does, </span></span><br><span class="line"><span class="string">        it will call myobj.__radd__(4) rather than raising a TypeError.</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        newnum = self.num + \</span><br><span class="line">                 self.den*other_int</span><br><span class="line">        <span class="keyword">return</span> Fraction(newnum,self.den)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># q8</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__iadd__</span><span class="params">(self, other)</span>:</span></span><br><span class="line">        <span class="string">"""a = iadd(a, b) is equivalent to a += b."""</span></span><br><span class="line">        newnum = self.num*other.den + \</span><br><span class="line">                 self.den*other.num</span><br><span class="line">        newden = self.den * other.den</span><br><span class="line">        <span class="keyword">return</span> Fraction(newnum, newden)</span><br><span class="line">        </span><br><span class="line">    <span class="comment"># q9</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__repr__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        In short, the goal of __repr__ is to be unambiguous and __str__ is to be readable.</span></span><br><span class="line"><span class="string">        也就是说，__repr__是用于输出更多的关于对象的信息的，而__str__是为了print好看的。</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">"num:&#123;&#125;, den:&#123;&#125;"</span>.format(self.num, self.den)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">x = Fraction(<span class="number">1</span>,<span class="number">2</span>)</span><br><span class="line">y = Fraction(<span class="number">2</span>,<span class="number">3</span>)</span><br><span class="line">print(x+y)</span><br><span class="line">print(x == y)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">7/6</span><br><span class="line">False</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># q1</span></span><br><span class="line">print(x.getNum())</span><br><span class="line">print(x.getDen())</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># q2</span></span><br><span class="line">z = Fraction(<span class="number">10</span>, <span class="number">5</span>)</span><br><span class="line">print(z)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2/1</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># q3</span></span><br><span class="line">print(x/y)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">3/4</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># q4</span></span><br><span class="line">print(x&gt;y)</span><br><span class="line">print(x&gt;=y)</span><br><span class="line">print(x&lt;y)</span><br><span class="line">print(x&lt;=y)</span><br><span class="line">print(x!=y)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">False</span><br><span class="line">False</span><br><span class="line">True</span><br><span class="line">True</span><br><span class="line">True</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># q5</span></span><br><span class="line">Fraction(<span class="number">1.1</span>, <span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Exception                                 Traceback (most recent call last)</span><br><span class="line">&lt;ipython-input-7-49b67a4c3ca5&gt; in &lt;module&gt;()</span><br><span class="line">      1 # q5</span><br><span class="line">----&gt; 2 Fraction(1.1, 2)</span><br><span class="line"></span><br><span class="line">&lt;ipython-input-1-501ce21d5123&gt; in __init__(self, top, bottom)</span><br><span class="line">     14         # q5 检查分子分母是否都是整数</span><br><span class="line">     15         if not isinstance(top, int) or not isinstance(bottom, int):</span><br><span class="line">---&gt; 16             raise Exception(&quot;top or bottom of Fraction is not int type!&quot;)</span><br><span class="line">     17         # q2 初始化时直接约分</span><br><span class="line">     18         common = gcd(top,bottom)</span><br><span class="line"></span><br><span class="line">Exception: top or bottom of Fraction is not int type!</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># q6</span></span><br><span class="line">w=Fraction(<span class="number">1</span>, <span class="number">-2</span>)</span><br><span class="line">print(w)</span><br><span class="line">print(w.getNum())</span><br><span class="line">print(w.getDen())</span><br><span class="line">print(w&gt;x)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-1/2</span><br><span class="line">-1</span><br><span class="line">2</span><br><span class="line">False</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># q7</span></span><br><span class="line">print(<span class="number">1</span>+x)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">3/2</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># q8</span></span><br><span class="line">x += y</span><br><span class="line">print(x)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">7/6</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># q9</span></span><br><span class="line"></span><br><span class="line">print(repr(x))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">num:7, den:6</span><br></pre></td></tr></table></figure>
+
+<p>数字电路部分：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 作者实现的部分</span></span><br><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">LogicGate</span>:</span></span><br><span class="line">    <span class="string">"""逻辑门总类"""</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,n)</span>:</span></span><br><span class="line">        self.name = n</span><br><span class="line">        self.output = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getName</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.name</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getOutput</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.output = self.performGateLogic()</span><br><span class="line">        <span class="keyword">return</span> self.output</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BinaryGate</span><span class="params">(LogicGate)</span>:</span></span><br><span class="line">    <span class="string">"""两个输入引脚的门"""</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,n)</span>:</span></span><br><span class="line">        LogicGate.__init__(self,n)</span><br><span class="line"></span><br><span class="line">        self.pinA = <span class="literal">None</span></span><br><span class="line">        self.pinB = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getPinA</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> self.pinA == <span class="literal">None</span>:</span><br><span class="line">            <span class="keyword">return</span> int(input(<span class="string">"Enter Pin A input for gate "</span>+self.getName()+<span class="string">"--&gt;"</span>))</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> self.pinA.getFrom().getOutput()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getPinB</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> self.pinB == <span class="literal">None</span>:</span><br><span class="line">            <span class="keyword">return</span> int(input(<span class="string">"Enter Pin B input for gate "</span>+self.getName()+<span class="string">"--&gt;"</span>))</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> self.pinB.getFrom().getOutput()</span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">setNextPin</span><span class="params">(self,source)</span>:</span></span><br><span class="line">        <span class="string">"""有其他逻辑门连接该门的输入"""</span></span><br><span class="line">        <span class="keyword">if</span> self.pinA == <span class="literal">None</span>:</span><br><span class="line">            self.pinA = source</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">if</span> self.pinB == <span class="literal">None</span>:</span><br><span class="line">                self.pinB = source</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                print(<span class="string">"Cannot Connect: NO EMPTY PINS on this gate"</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AndGate</span><span class="params">(BinaryGate)</span>:</span></span><br><span class="line">    <span class="string">"""与门"""</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,n)</span>:</span></span><br><span class="line">        BinaryGate.__init__(self,n)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">performGateLogic</span><span class="params">(self)</span>:</span></span><br><span class="line"></span><br><span class="line">        a = self.getPinA()</span><br><span class="line">        b = self.getPinB()</span><br><span class="line">        <span class="keyword">if</span> a==<span class="number">1</span> <span class="keyword">and</span> b==<span class="number">1</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">OrGate</span><span class="params">(BinaryGate)</span>:</span></span><br><span class="line">    <span class="string">"""或门"""</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,n)</span>:</span></span><br><span class="line">        BinaryGate.__init__(self,n)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">performGateLogic</span><span class="params">(self)</span>:</span></span><br><span class="line"></span><br><span class="line">        a = self.getPinA()</span><br><span class="line">        b = self.getPinB()</span><br><span class="line">        <span class="keyword">if</span> a ==<span class="number">1</span> <span class="keyword">or</span> b==<span class="number">1</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UnaryGate</span><span class="params">(LogicGate)</span>:</span></span><br><span class="line">    <span class="string">"""单个输入引脚的门"""</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,n)</span>:</span></span><br><span class="line">        LogicGate.__init__(self,n)</span><br><span class="line"></span><br><span class="line">        self.pin = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getPin</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> self.pin == <span class="literal">None</span>:</span><br><span class="line">            <span class="keyword">return</span> int(input(<span class="string">"Enter Pin input for gate "</span>+self.getName()+<span class="string">"--&gt;"</span>))</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> self.pin.getFrom().getOutput()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">setNextPin</span><span class="params">(self,source)</span>:</span></span><br><span class="line">        <span class="string">"""有其他逻辑门连接该门的输入"""</span></span><br><span class="line">        <span class="keyword">if</span> self.pin == <span class="literal">None</span>:</span><br><span class="line">            self.pin = source</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            print(<span class="string">"Cannot Connect: NO EMPTY PINS on this gate"</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NotGate</span><span class="params">(UnaryGate)</span>:</span></span><br><span class="line">    <span class="string">"""非门"""</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,n)</span>:</span></span><br><span class="line">        UnaryGate.__init__(self,n)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">performGateLogic</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> self.getPin():</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Connector</span>:</span></span><br><span class="line">    <span class="string">"""引线"""</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, fgate, tgate)</span>:</span></span><br><span class="line">        self.fromgate = fgate</span><br><span class="line">        self.togate = tgate</span><br><span class="line"></span><br><span class="line">        tgate.setNextPin(self)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getFrom</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.fromgate</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getTo</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.togate</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    g1 = AndGate(<span class="string">"G1"</span>)</span><br><span class="line">    g2 = AndGate(<span class="string">"G2"</span>)</span><br><span class="line">    g3 = OrGate(<span class="string">"G3"</span>)</span><br><span class="line">    g4 = NotGate(<span class="string">"G4"</span>)</span><br><span class="line">    c1 = Connector(g1,g3)</span><br><span class="line">    c2 = Connector(g2,g3)</span><br><span class="line">    c3 = Connector(g3,g4)</span><br><span class="line">    print(g4.getOutput())</span><br><span class="line">    print(g4.getPin())</span><br><span class="line"></span><br><span class="line">main()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Enter Pin A input for gate G1--&gt;1</span><br><span class="line">Enter Pin B input for gate G1--&gt;1</span><br><span class="line">Enter Pin A input for gate G2--&gt;1</span><br><span class="line">Enter Pin B input for gate G2--&gt;1</span><br><span class="line">0</span><br><span class="line">Enter Pin A input for gate G1--&gt;1</span><br><span class="line">Enter Pin B input for gate G1--&gt;1</span><br><span class="line">Enter Pin A input for gate G2--&gt;1</span><br><span class="line">Enter Pin B input for gate G2--&gt;1</span><br><span class="line">1</span><br></pre></td></tr></table></figure>
+
+<h3 id="q10"><a href="#q10" class="headerlink" title="q10"></a>q10</h3><p>实现NAND, NOR, 和 XOR</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># q10 </span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NANDGate</span><span class="params">(BinaryGate)</span>:</span></span><br><span class="line">    <span class="string">"""与非门"""</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,n)</span>:</span></span><br><span class="line">        BinaryGate.__init__(self,n)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">performGateLogic</span><span class="params">(self)</span>:</span></span><br><span class="line"></span><br><span class="line">        a = self.getPinA()</span><br><span class="line">        b = self.getPinB()</span><br><span class="line">        <span class="keyword">if</span> a ==<span class="number">1</span> <span class="keyword">and</span> b==<span class="number">1</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">        </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NORGate</span><span class="params">(BinaryGate)</span>:</span></span><br><span class="line">    <span class="string">"""或非门"""</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,n)</span>:</span></span><br><span class="line">        BinaryGate.__init__(self,n)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">performGateLogic</span><span class="params">(self)</span>:</span></span><br><span class="line"></span><br><span class="line">        a = self.getPinA()</span><br><span class="line">        b = self.getPinB()</span><br><span class="line">        <span class="keyword">if</span> a ==<span class="number">0</span> <span class="keyword">and</span> b==<span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">XORGate</span><span class="params">(BinaryGate)</span>:</span></span><br><span class="line">    <span class="string">"""异或门"""</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,n)</span>:</span></span><br><span class="line">        BinaryGate.__init__(self,n)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">performGateLogic</span><span class="params">(self)</span>:</span></span><br><span class="line"></span><br><span class="line">        a = self.getPinA()</span><br><span class="line">        b = self.getPinB()</span><br><span class="line">        <span class="keyword">if</span> a == b:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="q11"><a href="#q11" class="headerlink" title="q11"></a>q11</h3><p>实现half-adder</p>
+<p>half adder的定义可参考<a href="https://en.wikipedia.org/wiki/Adder_(electronics" target="_blank" rel="noopener">wikipedia</a></p>
+<p><img src="https://raw.githubusercontent.com/applenob/algorithm_note/master/res/Halfadder.gif" alt></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">InGate</span><span class="params">(UnaryGate)</span>:</span></span><br><span class="line">    <span class="string">"""输入门"""</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,n)</span>:</span></span><br><span class="line">        UnaryGate.__init__(self,n)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">performGateLogic</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> self.getPin():</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HalfAdder</span><span class="params">(BinaryGate)</span>:</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, n)</span>:</span></span><br><span class="line">        BinaryGate.__init__(self, n)</span><br><span class="line">        self.i1 = InGate(<span class="string">"I1"</span>)</span><br><span class="line">        self.i2 = InGate(<span class="string">"I2"</span>)</span><br><span class="line">        self.x1 = XORGate(<span class="string">"X1"</span>)</span><br><span class="line">        self.a1 = AndGate(<span class="string">"A2"</span>)</span><br><span class="line">        c1 = Connector(self.i1, self.x1)</span><br><span class="line">        c2 = Connector(self.i2, self.x1)</span><br><span class="line">        c3 = Connector(self.i1, self.a1)</span><br><span class="line">        c4 = Connector(self.i2, self.a1)</span><br><span class="line">         </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">setNextPin</span><span class="params">(self,source)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> self.i1.pin == <span class="literal">None</span>:</span><br><span class="line">            self.i1.pin = source</span><br><span class="line">        <span class="keyword">elif</span> self.i2.pin == <span class="literal">None</span>:</span><br><span class="line">            self.i2.pin = source</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            print(<span class="string">"Cannot Connect: NO EMPTY PINS on this gate"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getSum</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.x1.getOutput()</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getCarry</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.a1.getOutput()</span><br><span class="line">        </span><br><span class="line">half_adder = HalfAdder(<span class="string">"Half_Adder"</span>)</span><br><span class="line">print(half_adder.getSum())</span><br><span class="line">print(half_adder.getCarry())</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Enter Pin input for gate I1--&gt;1</span><br><span class="line">Enter Pin input for gate I2--&gt;0</span><br><span class="line">1</span><br><span class="line">Enter Pin input for gate I1--&gt;1</span><br><span class="line">Enter Pin input for gate I2--&gt;0</span><br><span class="line">0</span><br></pre></td></tr></table></figure>
+
+<p>上面的实现还是有些缺点，就是因为输出有两个，所以相同的输入要输两次。</p>
+<h3 id="q12"><a href="#q12" class="headerlink" title="q12"></a>q12</h3><p>实现full adder</p>
+<p> $$ S=A\oplus B\oplus<br>C_{in}$$<br> $$ {\displaystyle C_{\text{out}}=(A\cdot B)+(C_{\text{in}}\cdot<br>(A\oplus B))} $$<br><img src="https://raw.githubusercontent.com/applenob/algorithm_note/master/res/Fulladder.gif" alt></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># q12</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FullAdder</span><span class="params">(LogicGate)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, n)</span>:</span></span><br><span class="line">        LogicGate.__init__(self, n)</span><br><span class="line">        self.i1 = InGate(<span class="string">"I1"</span>)</span><br><span class="line">        self.i2 = InGate(<span class="string">"I2"</span>)</span><br><span class="line">        self.i3 = InGate(<span class="string">"I3"</span>)</span><br><span class="line">        self.x1 = XORGate(<span class="string">"X1"</span>)</span><br><span class="line">        self.x2 = XORGate(<span class="string">"X2"</span>)</span><br><span class="line">        self.a1 = AndGate(<span class="string">"A1"</span>)</span><br><span class="line">        self.a2 = AndGate(<span class="string">"A2"</span>)</span><br><span class="line">        self.o1 = XORGate(<span class="string">"O1"</span>)</span><br><span class="line">        c1 = Connector(self.i1, self.x1)</span><br><span class="line">        c2 = Connector(self.i2, self.x1)</span><br><span class="line">        c3 = Connector(self.x1, self.x2)</span><br><span class="line">        c4 = Connector(self.i3, self.x2)</span><br><span class="line">        c5 = Connector(self.x1, self.a1)</span><br><span class="line">        c6 = Connector(self.i3, self.a1)</span><br><span class="line">        c7 = Connector(self.i1, self.a2)</span><br><span class="line">        c8 = Connector(self.i2, self.a2)</span><br><span class="line">        c9 = Connector(self.a1, self.o1)</span><br><span class="line">        c10 = Connector(self.a2, self.o1)</span><br><span class="line">         </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">setNextPin</span><span class="params">(self,source)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> self.i1.pin == <span class="literal">None</span>:</span><br><span class="line">            self.i1.pin = source</span><br><span class="line">        <span class="keyword">elif</span> self.i2.pin == <span class="literal">None</span>:</span><br><span class="line">            self.i2.pin = source</span><br><span class="line">        <span class="keyword">elif</span> self.i3.pin == <span class="literal">None</span>:</span><br><span class="line">            self.i3.pin = source</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            print(<span class="string">"Cannot Connect: NO EMPTY PINS on this gate"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getSum</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.x2.getOutput()</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getCarry</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.o1.getOutput()</span><br><span class="line">        </span><br><span class="line">full_adder = FullAdder(<span class="string">"Full_Adder"</span>)</span><br><span class="line">print(full_adder.getSum())</span><br><span class="line">print(full_adder.getCarry())</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Enter Pin input for gate I1--&gt;1</span><br><span class="line">Enter Pin input for gate I2--&gt;0</span><br><span class="line">Enter Pin input for gate I3--&gt;0</span><br><span class="line">1</span><br><span class="line">Enter Pin input for gate I1--&gt;1</span><br><span class="line">Enter Pin input for gate I2--&gt;0</span><br><span class="line">Enter Pin input for gate I3--&gt;0</span><br><span class="line">Enter Pin input for gate I1--&gt;1</span><br><span class="line">Enter Pin input for gate I2--&gt;0</span><br><span class="line">0</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Algorithm-笔记/" rel="tag"># Algorithm, 笔记</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/nlp/cnn_sc/" rel="next" title="CNN Sentence Classification (with Theano code)">
+                <i class="fa fa-chevron-left"></i> CNN Sentence Classification (with Theano code)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/algrithom/book_learning_2/" rel="prev" title="二. Analysis">
+                二. Analysis <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/red.jpg" alt="Javen Chen">
+            
+              <p class="site-author-name" itemprop="name">Javen Chen</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">55</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/applenob" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:applecer@pku.edu.cn" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0-简介"><span class="nav-number">1.</span> <span class="nav-text">0.简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-intro"><span class="nav-number">2.</span> <span class="nav-text">1.intro</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#笔记"><span class="nav-number">2.1.</span> <span class="nav-text">笔记</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#作业"><span class="nav-number">2.2.</span> <span class="nav-text">作业</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#q1-to-q9"><span class="nav-number">2.2.1.</span> <span class="nav-text">q1 to q9</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q10"><span class="nav-number">2.2.2.</span> <span class="nav-text">q10</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q11"><span class="nav-number">2.2.3.</span> <span class="nav-text">q11</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q12"><span class="nav-number">2.2.4.</span> <span class="nav-text">q12</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("9s7vKaOPY7lMWuX9YVLasdnq-gzGzoHsz", "gOEj5qIEBIz5eDM3F5Nn90Jg");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

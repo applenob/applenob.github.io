@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+
+
+
+
+  <meta name="keywords" content="Algorithm, 笔记,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1对应本书第二章。  2.Analysis笔记这章主要讲了算法复杂度的分析。 一. 大O名称源自于Order of magnitude function $O(f(n))$ 描述了时间复杂度$T(n)$当中增长速度最快的部分。 例如：$T(n)=5n^2+27n+1005$的阶是$O(n^2)$。 因为不同的机器计算速度的区别，和不同的编程语言的效率的不同，所以分析算法的时间复杂度使用这样的粗粒度">
+<meta name="keywords" content="Algorithm, 笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="二. Analysis">
+<meta property="og:url" content="http://yoursite.com/algrithom/book_learning_2/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="1对应本书第二章。  2.Analysis笔记这章主要讲了算法复杂度的分析。 一. 大O名称源自于Order of magnitude function $O(f(n))$ 描述了时间复杂度$T(n)$当中增长速度最快的部分。 例如：$T(n)=5n^2+27n+1005$的阶是$O(n^2)$。 因为不同的机器计算速度的区别，和不同的编程语言的效率的不同，所以分析算法的时间复杂度使用这样的粗粒度">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://raw.githubusercontent.com/applenob/algorithm_note/master/res/plot.png">
+<meta property="og:image" content="https://raw.github.com/acmerfight/insight_python/master/images/list_insert.png">
+<meta property="og:updated_time" content="2019-07-07T10:27:17.040Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="二. Analysis">
+<meta name="twitter:description" content="1对应本书第二章。  2.Analysis笔记这章主要讲了算法复杂度的分析。 一. 大O名称源自于Order of magnitude function $O(f(n))$ 描述了时间复杂度$T(n)$当中增长速度最快的部分。 例如：$T(n)=5n^2+27n+1005$的阶是$O(n^2)$。 因为不同的机器计算速度的区别，和不同的编程语言的效率的不同，所以分析算法的时间复杂度使用这样的粗粒度">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/applenob/algorithm_note/master/res/plot.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/algrithom/book_learning_2/">
+
+
+
+
+
+  <title>二. Analysis | Javen Chen's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?239bba0e8b78c0293b8e646237f788cd";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Javen Chen's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Tech and Life~</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-所有专栏">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            所有专栏
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-历史文章">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            历史文章
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/algrithom/book_learning_2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Javen Chen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/red.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">二. Analysis</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-18T21:00:00+08:00">
+                2017-02-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/《Problem-Solving-with-Algorithms-and-Data-Structures-using-Python》的学习笔记和课后作业答案/" itemprop="url" rel="index">
+                    <span itemprop="name">《Problem Solving with Algorithms and Data Structures using Python》的学习笔记和课后作业答案</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/algrithom/book_learning_2/" class="leancloud_visitors" data-flag-title="二. Analysis">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">对应本书第二章。</span><br></pre></td></tr></table></figure>
+
+<h1 id="2-Analysis"><a href="#2-Analysis" class="headerlink" title="2.Analysis"></a>2.Analysis</h1><h2 id="笔记"><a href="#笔记" class="headerlink" title="笔记"></a>笔记</h2><p>这章主要讲了算法复杂度的分析。</p>
+<h3 id="一-大O"><a href="#一-大O" class="headerlink" title="一. 大O"></a>一. 大O</h3><p>名称源自于<strong>Order of magnitude function $O(f(n))$</strong> 描述了时间复杂度<strong>$T(n)$</strong>当中<strong>增长速度最快</strong>的部分。</p>
+<p>例如：$T(n)=5n^2+27n+1005$的阶是$O(n^2)$。</p>
+<p>因为不同的机器计算速度的区别，和不同的编程语言的效率的不同，所以分析算法的时间复杂度使用这样的粗粒度就足够了。</p>
+<p>不同函数的增长速度：</p>
+<p><img src="https://raw.githubusercontent.com/applenob/algorithm_note/master/res/plot.png" alt></p>
+<p>python自带的数据结构：</p>
+<h3 id="二-List"><a href="#二-List" class="headerlink" title="二. List"></a>二. List</h3><table>
+<thead>
+<tr>
+<th align="center">Operation</th>
+<th align="center">Big-O Efficiency</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">index []</td>
+<td align="center">O(1)</td>
+</tr>
+<tr>
+<td align="center">index assignment</td>
+<td align="center">O(1)</td>
+</tr>
+<tr>
+<td align="center">append</td>
+<td align="center">O(1)</td>
+</tr>
+<tr>
+<td align="center">pop()</td>
+<td align="center">O(1)</td>
+</tr>
+<tr>
+<td align="center">pop(i)</td>
+<td align="center">O(n)</td>
+</tr>
+<tr>
+<td align="center">insert(i,item)</td>
+<td align="center">O(n)</td>
+</tr>
+<tr>
+<td align="center">del operator</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">O(n)</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">iteration</td>
+<td align="center">O(n)</td>
+</tr>
+<tr>
+<td align="center">contains (in)</td>
+<td align="center">O(n)</td>
+</tr>
+<tr>
+<td align="center">get slice [x:y]</td>
+<td align="center">O(k)</td>
+</tr>
+<tr>
+<td align="center">del</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">slice</td>
+<td align="center">O(n)</td>
+</tr>
+<tr>
+<td align="center">set slice</td>
+<td align="center">O(n+k)</td>
+</tr>
+<tr>
+<td align="center">reverse</td>
+<td align="center">O(n)</td>
+</tr>
+<tr>
+<td align="center">concatenate</td>
+<td align="center">O(k)</td>
+</tr>
+<tr>
+<td align="center">sort</td>
+<td align="center">O(n</td>
+</tr>
+<tr>
+<td align="center">log n)</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">multiply</td>
+<td align="center">O(nk)</td>
+</tr>
+</tbody></table>
+<p>其中，需要注意的是concatenate还有pop和pop(i)的区别。</p>
+<p><a href="http://www.jianshu.com/p/J4U6rR" target="_blank" rel="noopener">python中list的实现</a></p>
+<p><img src="https://raw.github.com/acmerfight/insight_python/master/images/list_insert.png" alt></p>
+<h3 id="三-Dictionary"><a href="#三-Dictionary" class="headerlink" title="三. Dictionary"></a>三. Dictionary</h3><table>
+<thead>
+<tr>
+<th align="center">operation</th>
+<th align="center">Big-O Efficiency</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">copy</td>
+<td align="center">O(n)</td>
+</tr>
+<tr>
+<td align="center">get item</td>
+<td align="center">O(1)</td>
+</tr>
+<tr>
+<td align="center">set item</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">O(1)</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">delete item</td>
+<td align="center">O(1)</td>
+</tr>
+<tr>
+<td align="center">contains (in)</td>
+<td align="center">O(1)</td>
+</tr>
+<tr>
+<td align="center">iteration</td>
+<td align="center">O(n)</td>
+</tr>
+</tbody></table>
+<p>dict的in操作是O(1)，list是O(n)</p>
+<p><a href="http://www.jianshu.com/p/02af9673ab34" target="_blank" rel="noopener">python的dict实现</a></p>
+<h2 id="作业"><a href="#作业" class="headerlink" title="作业"></a>作业</h2><p><a href="http://interactivepython.org/courselib/static/pythonds/AlgorithmAnalysis/ProgrammingExercises.html" target="_blank" rel="noopener">作业链接</a></p>
+<h3 id="q1"><a href="#q1" class="headerlink" title="q1"></a>q1</h3><p>是证明list的index操作是O(1)。暂且认为list的pop(0)是O(n)是已知条件。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> timeit <span class="keyword">import</span> Timer</span><br><span class="line"><span class="comment"># q1</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test5</span><span class="params">()</span>:</span></span><br><span class="line">    l = list(range(<span class="number">1000</span>))</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">        l[i] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test6</span><span class="params">()</span>:</span></span><br><span class="line">    l = list(range(<span class="number">1000</span>))</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">        l.pop(<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">t5 = Timer(<span class="string">"test5()"</span>, <span class="string">"from __main__ import test5"</span>)</span><br><span class="line">print(<span class="string">"list index operation:"</span>,t5.timeit(number=<span class="number">10</span>), <span class="string">"milliseconds"</span>)</span><br><span class="line">t6 = Timer(<span class="string">"test6()"</span>, <span class="string">"from __main__ import test6"</span>)</span><br><span class="line">print(<span class="string">"list pop(0):"</span>,t6.timeit(number=<span class="number">10</span>), <span class="string">"milliseconds"</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">list index operation: 0.0006067330032237805 milliseconds</span><br><span class="line">list pop(0): 0.0025059110048459843 milliseconds</span><br></pre></td></tr></table></figure>
+
+<h3 id="q2"><a href="#q2" class="headerlink" title="q2"></a>q2</h3><p>是证明dict的get和set是O(1)，先认为dict的遍历是O(n)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test7</span><span class="params">()</span>:</span></span><br><span class="line">    d = dict(zip(list(range(<span class="number">1000</span>)), list(range(<span class="number">1000</span>,<span class="number">2000</span>))))</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">        d[i] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test8</span><span class="params">()</span>:</span></span><br><span class="line">    d = dict(zip(list(range(<span class="number">1000</span>)), list(range(<span class="number">1000</span>,<span class="number">2000</span>))))</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">        k = d[i]</span><br><span class="line">        </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test9</span><span class="params">()</span>:</span></span><br><span class="line">    d = dict(zip(list(range(<span class="number">1000</span>)), list(range(<span class="number">1000</span>,<span class="number">2000</span>))))</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">        <span class="keyword">for</span> one <span class="keyword">in</span> d:</span><br><span class="line">            <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">t7 = Timer(<span class="string">"test7()"</span>, <span class="string">"from __main__ import test7"</span>)</span><br><span class="line">print(<span class="string">"dict set item:"</span>,t7.timeit(number=<span class="number">1000</span>), <span class="string">"milliseconds"</span>)</span><br><span class="line">t8 = Timer(<span class="string">"test8()"</span>, <span class="string">"from __main__ import test8"</span>)</span><br><span class="line">print(<span class="string">"dict get item:"</span>,t8.timeit(number=<span class="number">1000</span>), <span class="string">"milliseconds"</span>)</span><br><span class="line">t9 = Timer(<span class="string">"test9()"</span>, <span class="string">"from __main__ import test9"</span>)</span><br><span class="line">print(<span class="string">"dict iteration:"</span>,t9.timeit(number=<span class="number">1000</span>), <span class="string">"milliseconds"</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dict set item: 0.13327282800310059 milliseconds</span><br><span class="line">dict get item: 0.1195711559994379 milliseconds</span><br><span class="line">dict iteration: 11.517200201000378 milliseconds</span><br></pre></td></tr></table></figure>
+
+<h3 id="q3"><a href="#q3" class="headerlink" title="q3"></a>q3</h3><p>对比list和dict的del操作</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test10</span><span class="params">()</span>:</span></span><br><span class="line">    l = list(range(<span class="number">1000</span>))</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">        <span class="keyword">del</span> l[<span class="number">0</span>]</span><br><span class="line">        </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test11</span><span class="params">()</span>:</span></span><br><span class="line">    d = dict(zip(list(range(<span class="number">1000</span>)), list(range(<span class="number">1000</span>,<span class="number">2000</span>))))</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">        <span class="keyword">del</span> d[i]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">t10 = Timer(<span class="string">"test10()"</span>, <span class="string">"from __main__ import test10"</span>)</span><br><span class="line">print(<span class="string">"list del item:"</span>,t10.timeit(number=<span class="number">1000</span>), <span class="string">"milliseconds"</span>)</span><br><span class="line">t11 = Timer(<span class="string">"test11()"</span>, <span class="string">"from __main__ import test11"</span>)</span><br><span class="line">print(<span class="string">"dict del item:"</span>,t11.timeit(number=<span class="number">1000</span>), <span class="string">"milliseconds"</span>)</span><br><span class="line">t10 = Timer(<span class="string">"test10()"</span>, <span class="string">"from __main__ import test10"</span>)</span><br><span class="line">print(<span class="string">"list del item:"</span>,t10.timeit(number=<span class="number">1000</span>), <span class="string">"milliseconds"</span>)</span><br><span class="line">t11 = Timer(<span class="string">"test11()"</span>, <span class="string">"from __main__ import test11"</span>)</span><br><span class="line">print(<span class="string">"dict del item:"</span>,t11.timeit(number=<span class="number">1000</span>), <span class="string">"milliseconds"</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">list del item: 0.14648991199646844 milliseconds</span><br><span class="line">dict del item: 0.13190877300075954 milliseconds</span><br><span class="line">list del item: 0.14080390099843498 milliseconds</span><br><span class="line">dict del item: 0.13055396499839844 milliseconds</span><br></pre></td></tr></table></figure>
+
+<h3 id="q4"><a href="#q4" class="headerlink" title="q4"></a>q4</h3><p>给定一个list，返回第k小的数。先给出时间复杂度是O(nlogn)的简单版：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">kth_smallest_1</span><span class="params">(nums, k)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    find kth smallest of a list, O(nlogn)</span></span><br><span class="line"><span class="string">    :type nums: list</span></span><br><span class="line"><span class="string">    :type k: int</span></span><br><span class="line"><span class="string">    :rtype: num</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    nums.sort()</span><br><span class="line">    <span class="keyword">return</span> nums[k<span class="number">-1</span>]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kth_smallest_1([<span class="number">1</span>, <span class="number">5</span>,<span class="number">9</span>,<span class="number">10</span>,<span class="number">2</span>,<span class="number">3</span>], <span class="number">4</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">5</span><br></pre></td></tr></table></figure>
+
+<h3 id="q5"><a href="#q5" class="headerlink" title="q5"></a>q5</h3><p>q4时间复杂度是O(n)的解法。利用快排的思路。平均时间复杂度是O(n)，最坏情况时间复杂度是$O(n^2)$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">kth_smallest_2</span><span class="params">(nums, k)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    find kth smallest of a list, O(n)</span></span><br><span class="line"><span class="string">    :type nums: list</span></span><br><span class="line"><span class="string">    :type k: int</span></span><br><span class="line"><span class="string">    :rtype: num</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">partition</span><span class="params">(nums, start, end)</span>:</span></span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        Pick last element as pivot</span></span><br><span class="line"><span class="string">        Place all smaller elements before pivot</span></span><br><span class="line"><span class="string">        Place all bigger elements after pivot</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        pivot = nums[end]</span><br><span class="line">        <span class="comment"># currentSmaller 记录当前有几个数比pivot小</span></span><br><span class="line">        currentSmaller = start</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(start, end):</span><br><span class="line">            <span class="comment"># If current element &lt;= pivot, put it to right position</span></span><br><span class="line">            <span class="keyword">if</span> nums[i] &lt;= pivot:</span><br><span class="line">                nums[i], nums[currentSmaller] = nums[currentSmaller], nums[i]</span><br><span class="line">                currentSmaller += <span class="number">1</span></span><br><span class="line">        <span class="comment"># Put pivot to right position</span></span><br><span class="line">        nums[end], nums[currentSmaller] = nums[currentSmaller], nums[end]</span><br><span class="line">        <span class="keyword">return</span> currentSmaller</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">quickSelect</span><span class="params">(nums, start, end, k)</span>:</span></span><br><span class="line">        pos = partition(nums, start, end)</span><br><span class="line">        <span class="comment"># print(nums)</span></span><br><span class="line">        <span class="keyword">if</span> pos == k - <span class="number">1</span>:</span><br><span class="line">            <span class="keyword">return</span> nums[pos]</span><br><span class="line">        <span class="keyword">if</span> pos &lt; k - <span class="number">1</span>:</span><br><span class="line">            <span class="keyword">return</span> quickSelect(nums, pos + <span class="number">1</span>, end, k)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> quickSelect(nums, start, pos - <span class="number">1</span>, k)</span><br><span class="line">    <span class="keyword">return</span> quickSelect(nums, <span class="number">0</span>, len(nums)<span class="number">-1</span>, k)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kth_smallest_2([<span class="number">1</span>,<span class="number">5</span>,<span class="number">9</span>,<span class="number">10</span>,<span class="number">2</span>,<span class="number">3</span>], <span class="number">4</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">5</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">t12 = Timer(<span class="string">"kth_smallest_1([1, 5,9,10,2,3], 4)"</span>, <span class="string">"from __main__ import kth_smallest_1"</span>)</span><br><span class="line">print(<span class="string">"kth_smallest_1:"</span>,t12.timeit(number=<span class="number">10</span>), <span class="string">"milliseconds"</span>)</span><br><span class="line">t13 = Timer(<span class="string">"kth_smallest_2([1,5,9,10,2,3], 4)"</span>, <span class="string">"from __main__ import kth_smallest_2"</span>)</span><br><span class="line">print(<span class="string">"kth_smallest_2:"</span>,t13.timeit(number=<span class="number">10</span>), <span class="string">"milliseconds"</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kth_smallest_1: 7.706003088969737e-06 milliseconds</span><br><span class="line">kth_smallest_2: 4.322700260672718e-05 milliseconds</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Algorithm-笔记/" rel="tag"># Algorithm, 笔记</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/algrithom/book_learning_1/" rel="next" title="一. intro">
+                <i class="fa fa-chevron-left"></i> 一. intro
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/algrithom/book_learning_3/" rel="prev" title="三. Basic Data Structures">
+                三. Basic Data Structures <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/red.jpg" alt="Javen Chen">
+            
+              <p class="site-author-name" itemprop="name">Javen Chen</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">55</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/applenob" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:applecer@pku.edu.cn" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#2-Analysis"><span class="nav-number">1.</span> <span class="nav-text">2.Analysis</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#笔记"><span class="nav-number">1.1.</span> <span class="nav-text">笔记</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一-大O"><span class="nav-number">1.1.1.</span> <span class="nav-text">一. 大O</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二-List"><span class="nav-number">1.1.2.</span> <span class="nav-text">二. List</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三-Dictionary"><span class="nav-number">1.1.3.</span> <span class="nav-text">三. Dictionary</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#作业"><span class="nav-number">1.2.</span> <span class="nav-text">作业</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#q1"><span class="nav-number">1.2.1.</span> <span class="nav-text">q1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q2"><span class="nav-number">1.2.2.</span> <span class="nav-text">q2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q3"><span class="nav-number">1.2.3.</span> <span class="nav-text">q3</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q4"><span class="nav-number">1.2.4.</span> <span class="nav-text">q4</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q5"><span class="nav-number">1.2.5.</span> <span class="nav-text">q5</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("9s7vKaOPY7lMWuX9YVLasdnq-gzGzoHsz", "gOEj5qIEBIz5eDM3F5Nn90Jg");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

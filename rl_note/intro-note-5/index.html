@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+
+
+
+
+  <meta name="keywords" content="Reinforcement Learning, 笔记,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="5. Monte Carlo Methods蒙特卡洛方法简介使用蒙特卡洛方法不需要像DP一样，对环境要有完整的知识，而是通过经验去学习。所谓经验就是对状态、动作、奖励的采样（sample sequence）。 用sample的均值去近似期望。 使用蒙特卡洛通常需要完整的episode，因此蒙特卡洛的更新方式更像是episode-by-episode，而不是像DP的step-by-step。 优点：">
+<meta name="keywords" content="Reinforcement Learning, 笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="强化学习导论学习笔记——（五）">
+<meta property="og:url" content="http://yoursite.com/rl_note/intro-note-5/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="5. Monte Carlo Methods蒙特卡洛方法简介使用蒙特卡洛方法不需要像DP一样，对环境要有完整的知识，而是通过经验去学习。所谓经验就是对状态、动作、奖励的采样（sample sequence）。 用sample的均值去近似期望。 使用蒙特卡洛通常需要完整的episode，因此蒙特卡洛的更新方式更像是episode-by-episode，而不是像DP的step-by-step。 优点：">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-5/fv_mc_est.png">
+<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-5/mc_policy_iter.png">
+<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-5/mces.png">
+<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-5/off_policy_mc_prediction.png">
+<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-5/off_policy_mc_control.png">
+<meta property="og:updated_time" content="2019-06-16T13:30:57.107Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="强化学习导论学习笔记——（五）">
+<meta name="twitter:description" content="5. Monte Carlo Methods蒙特卡洛方法简介使用蒙特卡洛方法不需要像DP一样，对环境要有完整的知识，而是通过经验去学习。所谓经验就是对状态、动作、奖励的采样（sample sequence）。 用sample的均值去近似期望。 使用蒙特卡洛通常需要完整的episode，因此蒙特卡洛的更新方式更像是episode-by-episode，而不是像DP的step-by-step。 优点：">
+<meta name="twitter:image" content="http://yoursite.com/rl_note/intro-note-5/fv_mc_est.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/rl_note/intro-note-5/">
+
+
+
+
+
+  <title>强化学习导论学习笔记——（五） | Javen Chen's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?239bba0e8b78c0293b8e646237f788cd";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Javen Chen's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Tech and Life~</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-所有专栏">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            所有专栏
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-历史文章">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            历史文章
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/rl_note/intro-note-5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Javen Chen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/red.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">强化学习导论学习笔记——（五）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-15T16:34:20+08:00">
+                2018-07-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/强化学习导论学习笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">强化学习导论学习笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/rl_note/intro-note-5/" class="leancloud_visitors" data-flag-title="强化学习导论学习笔记——（五）">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="5-Monte-Carlo-Methods"><a href="#5-Monte-Carlo-Methods" class="headerlink" title="5. Monte Carlo Methods"></a>5. Monte Carlo Methods</h1><h2 id="蒙特卡洛方法简介"><a href="#蒙特卡洛方法简介" class="headerlink" title="蒙特卡洛方法简介"></a>蒙特卡洛方法简介</h2><p>使用蒙特卡洛方法不需要像DP一样，对环境要有完整的知识，而是通过<strong>经验</strong>去学习。所谓经验就是对状态、动作、奖励的采样（sample sequence）。</p>
+<p>用sample的<strong>均值去近似期望</strong>。</p>
+<p>使用蒙特卡洛通常需要完整的<strong>episode</strong>，因此蒙特卡洛的更新方式更像是<strong>episode-by-episode</strong>，而不是像DP的<strong>step-by-step</strong>。</p>
+<p><strong>优点</strong>：</p>
+<ul>
+<li>1.可以从实际经验中学习；</li>
+<li>2.可以从模拟的经验中学习；</li>
+<li>3.可以直接从感兴趣的state开始采样episode。</li>
+</ul>
+<h2 id="蒙特卡洛预测（评估）"><a href="#蒙特卡洛预测（评估）" class="headerlink" title="蒙特卡洛预测（评估）"></a>蒙特卡洛预测（评估）</h2><ul>
+<li>在一个episode中状态s可能出现多次，每一次出现称为一次对状态s的<strong>访问（visit）</strong>。</li>
+<li><strong>first-visit MC method</strong>:只是用每个episode中第一次对状态s的访问评估状态s的价值函数。</li>
+<li><strong>every-visit MC method</strong>:用每个episode中每次对状态s的访问评估状态s的价值函数。</li>
+</ul>
+<p><img src="/rl_note/intro-note-5/fv_mc_est.png" alt="fv_mc_est"></p>
+<p>$V(s)\leftarrow average(Return(s))$</p>
+<p>核心代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Monte Carlo Sample with On-Policy</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">monte_carlo_on_policy</span><span class="params">(episodes)</span>:</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>, episodes):</span><br><span class="line">        <span class="comment"># play接受一个策略，然后模拟生成一个完整的轨迹和奖励</span></span><br><span class="line">        _, reward, player_trajectory = play(target_policy_player)</span><br><span class="line">        ...</span><br><span class="line">    <span class="comment"># 返回价值函数的平均值</span></span><br><span class="line">    <span class="keyword">return</span> states_usable_ace / states_usable_ace_count, states_no_usable_ace / states_no_usable_ace_count</span><br></pre></td></tr></table></figure>
+
+<h2 id="蒙特卡洛评估动作价值函数（Action-Values）"><a href="#蒙特卡洛评估动作价值函数（Action-Values）" class="headerlink" title="蒙特卡洛评估动作价值函数（Action Values）"></a>蒙特卡洛评估动作价值函数（Action Values）</h2><ul>
+<li><strong>注意</strong>：如果我们的问题中，没有对环境建模，那么单纯评估状态价值函数是不够的。我们必须要评估动作价值函数。</li>
+<li><strong>主体思想</strong>：从评估<strong>state</strong>到评估<strong>state-action对</strong>。</li>
+<li><strong>可能存在的问题</strong>：某些state-action对可能不会被访问（<strong>稀疏性问题</strong>）。</li>
+</ul>
+<h2 id="蒙特卡洛控制"><a href="#蒙特卡洛控制" class="headerlink" title="蒙特卡洛控制"></a>蒙特卡洛控制</h2><ul>
+<li><strong>控制</strong>（control）的目的是找到最优策略。</li>
+<li><img src="/rl_note/intro-note-5/mc_policy_iter.png" alt="mc_policy_iter"></li>
+<li>其中，$E$代表策略的evaluation，$I$代表策略的improvement。</li>
+</ul>
+<h2 id="Monte-Carlo-Exploring-Starts"><a href="#Monte-Carlo-Exploring-Starts" class="headerlink" title="Monte Carlo Exploring Starts"></a>Monte Carlo Exploring Starts</h2><ul>
+<li><strong>Exploring Starts</strong>：所有的state-action对都有可能被选为episode的开始（start）。</li>
+</ul>
+<p><img src="/rl_note/intro-note-5/mces.png" alt="mces"></p>
+<p>核心代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Monte Carlo with Exploring Starts</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">monte_carlo_es</span><span class="params">(episodes)</span>:</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="comment"># behavior policy is greedy</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">behavior_policy</span><span class="params">(usable_ace, player_sum, dealer_card)</span>:</span></span><br><span class="line">        ...</span><br><span class="line">        <span class="comment"># get argmax of the average returns(s, a)</span></span><br><span class="line">        values_ = state_action_values[player_sum, dealer_card, usable_ace, :] / \</span><br><span class="line">                  state_action_pair_count[player_sum, dealer_card, usable_ace, :]</span><br><span class="line">        <span class="keyword">return</span> np.random.choice([action_ <span class="keyword">for</span> action_, value_ <span class="keyword">in</span> enumerate(values_) <span class="keyword">if</span> value_ == np.max(values_)])</span><br><span class="line"></span><br><span class="line">    <span class="comment"># play for several episodes</span></span><br><span class="line">    <span class="keyword">for</span> episode <span class="keyword">in</span> range(episodes):</span><br><span class="line">        <span class="comment"># for each episode, use a randomly initialized state and action</span></span><br><span class="line">        initial_state = [bool(np.random.choice([<span class="number">0</span>, <span class="number">1</span>])),</span><br><span class="line">                       np.random.choice(range(<span class="number">12</span>, <span class="number">22</span>)),</span><br><span class="line">                       np.random.choice(range(<span class="number">1</span>, <span class="number">11</span>))]</span><br><span class="line">        initial_action = np.random.choice(ACTIONS)</span><br><span class="line">        current_policy = behavior_policy <span class="keyword">if</span> episode <span class="keyword">else</span> target_policy_player</span><br><span class="line">        _, reward, trajectory = play(current_policy, initial_state, initial_action)</span><br><span class="line">        ...</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> state_action_values / state_action_pair_count</span><br></pre></td></tr></table></figure>
+
+<h2 id="不使用Exploring-Starts"><a href="#不使用Exploring-Starts" class="headerlink" title="不使用Exploring Starts"></a>不使用Exploring Starts</h2><ul>
+<li>如何才能不使用Exploring Starts？保证所有被选择的动作被持续地选择。</li>
+<li>使用on-policy和off-policy。</li>
+</ul>
+<h2 id="on-policy-vs-off-policy"><a href="#on-policy-vs-off-policy" class="headerlink" title="on-policy vs off-policy"></a>on-policy vs off-policy</h2><ul>
+<li>on-policy只有<strong>一套policy</strong>，更简单，是首选。</li>
+<li>off-policy使用<strong>两套policy</strong>，更复杂、更难收敛；但也更通用、更强大。</li>
+<li>on-policy和off-policy<strong>本质</strong>依然是<strong>Exploit vs Explore</strong>的权衡。</li>
+</ul>
+<h2 id="on-policy"><a href="#on-policy" class="headerlink" title="on-policy"></a>on-policy</h2><ul>
+<li>去评估和提高生成episode时采用的policy。<strong>全过程只有一种策略</strong>，MC ES属于on-policy。</li>
+</ul>
+<h2 id="off-policy"><a href="#off-policy" class="headerlink" title="off-policy"></a>off-policy</h2><ul>
+<li>所有的MC控制方法都面临一个<strong>困境</strong>：它们都想找到一个最优的策略，但却<strong>必须采用非最优的策略去尽可能多地探索</strong>（explore）数据。</li>
+<li>直接使用<strong>两套策略</strong>：采样用的policy称为<code>behavior policy</code>，即<strong>行为策略</strong>；最终的目标policy：<code>target policy</code>，即<strong>目标策略</strong>。这就是off-policy。</li>
+<li>假设目标策略是$\pi$，行为策略是$b$，那么对于所有的$\pi(a|s)&gt;0$必然有$b(a|s)&gt;0$，这称为“覆盖”（coverage）。一个常见的例子是：行为策略使用价值函数的greedy policy，而目标策略使用ε-greedy policy。</li>
+</ul>
+<h2 id="重要性采样（importance-sampling）"><a href="#重要性采样（importance-sampling）" class="headerlink" title="重要性采样（importance sampling）"></a>重要性采样（importance sampling）</h2><p>几乎所有的off-policy都使用<strong>重要性采样（importance sampling）</strong>。</p>
+<p><strong>为什么要使用重要性采样</strong>？我们希望在使用<strong>目标策略</strong>$\pi$的情况下用均值估计价值的期望，但我们获得的是在使用<strong>行为策略</strong>$b$的情况下的均值，也就是：$\mathbb{E}[G_t \mid S_t =s] = v_b(s)$。这二者是有差距的。因此我们希望<strong>使用重要性采样去纠正</strong>。</p>
+<p>给定初始状态$S_t$，后续的状态-动作轨迹在使用目标策略$\pi$的情况下的概率为：<br>$Pr{At,S_{t+1}, A_{t+1}, … S_T \mid S_t, A_{t:T −1} \sim \pi}$ $=\prod_{k=t}^{T-1}\pi(A_k\mid S_k)p(S_{k+1}\mid S_k, A_k)$</p>
+<p>引入<strong>重要性采样比例（the importance sampling ratio）</strong>：
+$\rho_{t:T −1}=\frac{\prod_{k=t}^{T-1}\pi(A_k\mid S_k)p(S_{k+1}\mid S_k, A_k)}{\prod_{k=t}^{T-1}b(A_k\mid S_k)p(S_{k+1}\mid S_k, A_k)}$ $=\prod_{k=t}^{T-1}\frac{\pi(A_k\mid S_k)}{b(A_k\mid S_k)}$<br>上面这个式子正好巧妙地把MDP中未知的状态转移概率约掉。</p>
+<p>于是return的期望又可以得到校正：$\mathbb{E}[\rho_{t:T−1}G_t \mid S_t =s] = v_{\pi}(s)$</p>
+<p><strong>odinary importance sampling：</strong></p>
+<p>$$V(s) = \frac{\sum_{t\in J(s)} \rho_{t:T (t)-1}Gt}{\mid J(s)\mid} $$</p>
+<p><strong>weighted importance sampling：</strong></p>
+<p>$$V(s) = \frac{\sum_{t\in J(s)} \rho_{t:T (t)-1}Gt}{\sum_{t\in J(s)} \rho_{t:T (t)-1}} $$</p>
+<p>odinary importance sampling vs. weighted importance sampling:</p>
+<ul>
+<li>odinary importance sampling：无偏差，但方差没有保证。</li>
+<li>weighted importance sampling：有偏差，方差有上限。</li>
+</ul>
+<p>评估：</p>
+<p><img src="/rl_note/intro-note-5/off_policy_mc_prediction.png" alt="off_policy_mc_prediction"></p>
+<p>上面的评估使用了采样权重增量式的方法。</p>
+<p>控制：</p>
+<p><img src="/rl_note/intro-note-5/off_policy_mc_control.png" alt="off_policy_mc_control"></p>
+<p>核心代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Monte Carlo Sample with Off-Policy</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">monte_carlo_off_policy</span><span class="params">(episodes)</span>:</span></span><br><span class="line">    initial_state = [<span class="literal">True</span>, <span class="number">13</span>, <span class="number">2</span>]</span><br><span class="line"></span><br><span class="line">    rhos = []</span><br><span class="line">    returns = []</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>, episodes):</span><br><span class="line">        _, reward, player_trajectory = play(behavior_policy_player, initial_state=initial_state)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># get the importance ratio</span></span><br><span class="line">        numerator = <span class="number">1.0</span></span><br><span class="line">        denominator = <span class="number">1.0</span></span><br><span class="line">        <span class="keyword">for</span> (usable_ace, player_sum, dealer_card), action <span class="keyword">in</span> player_trajectory:</span><br><span class="line">            <span class="keyword">if</span> action == target_policy_player(usable_ace, player_sum, dealer_card):</span><br><span class="line">                denominator *= <span class="number">0.5</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                numerator = <span class="number">0.0</span></span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">        rho = numerator / denominator</span><br><span class="line">        rhos.append(rho)</span><br><span class="line">        returns.append(reward)</span><br><span class="line"></span><br><span class="line">    rhos = np.asarray(rhos)</span><br><span class="line">    returns = np.asarray(returns)</span><br><span class="line">    weighted_returns = rhos * returns</span><br><span class="line"></span><br><span class="line">    weighted_returns = np.add.accumulate(weighted_returns)</span><br><span class="line">    rhos = np.add.accumulate(rhos)</span><br><span class="line"></span><br><span class="line">    ordinary_sampling = weighted_returns / np.arange(<span class="number">1</span>, episodes + <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">with</span> np.errstate(divide=<span class="string">'ignore'</span>,invalid=<span class="string">'ignore'</span>):</span><br><span class="line">        weighted_sampling = np.where(rhos != <span class="number">0</span>, weighted_returns / rhos, <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> ordinary_sampling, weighted_sampling</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Reinforcement-Learning-笔记/" rel="tag"># Reinforcement Learning, 笔记</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/rl_note/intro-note-4/" rel="next" title="强化学习导论学习笔记——（四）">
+                <i class="fa fa-chevron-left"></i> 强化学习导论学习笔记——（四）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/rl_note/intro-note-6/" rel="prev" title="强化学习导论学习笔记——（六）">
+                强化学习导论学习笔记——（六） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/red.jpg" alt="Javen Chen">
+            
+              <p class="site-author-name" itemprop="name">Javen Chen</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">55</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/applenob" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:applecer@pku.edu.cn" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#5-Monte-Carlo-Methods"><span class="nav-number">1.</span> <span class="nav-text">5. Monte Carlo Methods</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#蒙特卡洛方法简介"><span class="nav-number">1.1.</span> <span class="nav-text">蒙特卡洛方法简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#蒙特卡洛预测（评估）"><span class="nav-number">1.2.</span> <span class="nav-text">蒙特卡洛预测（评估）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#蒙特卡洛评估动作价值函数（Action-Values）"><span class="nav-number">1.3.</span> <span class="nav-text">蒙特卡洛评估动作价值函数（Action Values）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#蒙特卡洛控制"><span class="nav-number">1.4.</span> <span class="nav-text">蒙特卡洛控制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Monte-Carlo-Exploring-Starts"><span class="nav-number">1.5.</span> <span class="nav-text">Monte Carlo Exploring Starts</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#不使用Exploring-Starts"><span class="nav-number">1.6.</span> <span class="nav-text">不使用Exploring Starts</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#on-policy-vs-off-policy"><span class="nav-number">1.7.</span> <span class="nav-text">on-policy vs off-policy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#on-policy"><span class="nav-number">1.8.</span> <span class="nav-text">on-policy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#off-policy"><span class="nav-number">1.9.</span> <span class="nav-text">off-policy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#重要性采样（importance-sampling）"><span class="nav-number">1.10.</span> <span class="nav-text">重要性采样（importance sampling）</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("9s7vKaOPY7lMWuX9YVLasdnq-gzGzoHsz", "gOEj5qIEBIz5eDM3F5Nn90Jg");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+
+
+
+
+  <meta name="keywords" content="Deep Learning, 笔记,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="20. Deep Generative Models玻尔兹曼机（Boltzmann Machines）我们在d维二值随机向量$x∈{0,1}^d$上定义玻尔兹曼机： 玻尔兹曼机是一种基于能量的模型，意味着我们可以使用能量函数定义联合概率分布：$P(x) = \frac{\exp(-E(x))}{Z}$，其中$E(x)$是能量函数，Z是确保$∑_xP(x)=1$的配分函数。玻尔兹曼机的能量函数如下给">
+<meta name="keywords" content="Deep Learning, 笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第二十章：Deep Generative Models">
+<meta property="og:url" content="http://yoursite.com/deep_learning_book/deep_learning_20/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="20. Deep Generative Models玻尔兹曼机（Boltzmann Machines）我们在d维二值随机向量$x∈{0,1}^d$上定义玻尔兹曼机： 玻尔兹曼机是一种基于能量的模型，意味着我们可以使用能量函数定义联合概率分布：$P(x) = \frac{\exp(-E(x))}{Z}$，其中$E(x)$是能量函数，Z是确保$∑_xP(x)=1$的配分函数。玻尔兹曼机的能量函数如下给">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://raw.githubusercontent.com/applenob/reading_note/master/res/rbms.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/applenob/reading_note/master/res/20-1.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/applenob/reading_note/master/res/layer-pre.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/applenob/reading_note/master/res/jointly-train.png">
+<meta property="og:image" content="http://yoursite.com/deep_learning_book/deep_learning_20/vae.png">
+<meta property="og:image" content="http://yoursite.com/deep_learning_book/deep_learning_20/gans.jpg">
+<meta property="og:updated_time" content="2019-06-19T16:09:18.070Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="第二十章：Deep Generative Models">
+<meta name="twitter:description" content="20. Deep Generative Models玻尔兹曼机（Boltzmann Machines）我们在d维二值随机向量$x∈{0,1}^d$上定义玻尔兹曼机： 玻尔兹曼机是一种基于能量的模型，意味着我们可以使用能量函数定义联合概率分布：$P(x) = \frac{\exp(-E(x))}{Z}$，其中$E(x)$是能量函数，Z是确保$∑_xP(x)=1$的配分函数。玻尔兹曼机的能量函数如下给">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/applenob/reading_note/master/res/rbms.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/deep_learning_book/deep_learning_20/">
+
+
+
+
+
+  <title>第二十章：Deep Generative Models | Javen Chen's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?239bba0e8b78c0293b8e646237f788cd";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Javen Chen's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Tech and Life~</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-所有专栏">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            所有专栏
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-历史文章">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            历史文章
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/deep_learning_book/deep_learning_20/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Javen Chen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/red.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">第二十章：Deep Generative Models</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-05-09T20:00:00+08:00">
+                2017-05-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/《Deep-Learning》读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">《Deep Learning》读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/deep_learning_book/deep_learning_20/" class="leancloud_visitors" data-flag-title="第二十章：Deep Generative Models">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="20-Deep-Generative-Models"><a href="#20-Deep-Generative-Models" class="headerlink" title="20. Deep Generative Models"></a>20. Deep Generative Models</h1><h2 id="玻尔兹曼机（Boltzmann-Machines）"><a href="#玻尔兹曼机（Boltzmann-Machines）" class="headerlink" title="玻尔兹曼机（Boltzmann Machines）"></a>玻尔兹曼机（Boltzmann Machines）</h2><p>我们在d维二值随机向量$x∈{0,1}^d$上定义玻尔兹曼机：</p>
+<p>玻尔兹曼机是一种<strong>基于能量</strong>的模型，意味着我们可以使用能量函数定义联合概率分布：<br>$P(x) = \frac{\exp(-E(x))}{Z}$，其中$E(x)$是能量函数，Z是确保$∑_xP(x)=1$的配分函数。<br>玻尔兹曼机的能量函数如下给出： $E(x) = -x^TUx - b^Tx$，其中$U$是模型参数的“权重”矩阵，$b$是偏置向量。<br>带隐变量的玻尔兹曼机：$E(v,h)=−v^⊤Rv−v^⊤Wh−h^⊤Sh−b^⊤v−c^⊤h$。</p>
+<p><img src="https://raw.githubusercontent.com/applenob/reading_note/master/res/rbms.png" alt></p>
+<p>a是受限玻尔兹曼机，RBM；b是深度信念网络，DBN；c是深度玻尔兹曼机，DBM。</p>
+<h2 id="Hebbian学习规则"><a href="#Hebbian学习规则" class="headerlink" title="Hebbian学习规则"></a>Hebbian学习规则</h2><p>我们可以假定，反射活动的持续与重复会导致神经元稳定性的持久性提升。<br>当神经元A的轴突与神经元B很近并参与了对B的重复持续的兴奋时，这两个神经元或其中一个便会发生某些生长过程或代谢变化，致使A作为能使B兴奋的细胞之一，它的效能增强了。<br>这一理论经常会被总结为“一起激发的神经元连在一起”（Cells that fire together, wire<br>together）。这段摘自wikipedia。</p>
+<h2 id="受限玻尔兹曼机（Restricted-Boltzmann-Machine）"><a href="#受限玻尔兹曼机（Restricted-Boltzmann-Machine）" class="headerlink" title="受限玻尔兹曼机（Restricted Boltzmann Machine）"></a>受限玻尔兹曼机（Restricted Boltzmann Machine）</h2><p>其能量函数为：$E(v,h)=−b^⊤v−c^⊤h−v^⊤Wh$，“受限”在于同层之间没有连接。 </p>
+<p>使用训练具有难以计算配分函数的模型的技术来训练RBM。<br>这包括CD,SML（PCD）,比率匹配等。 </p>
+<p>与深度学习中使用的其他无向模型相比，因为我们可以以闭解形式计算P(h∣v)，RBM可以相对直接地训练。 </p>
+<h2 id="深度信念网络（Deep-Belief-Networks）"><a href="#深度信念网络（Deep-Belief-Networks）" class="headerlink" title="深度信念网络（Deep Belief Networks）"></a>深度信念网络（Deep Belief Networks）</h2><p>目前使用较少，但历史地位突出。 特点：顶部两层之间的连接是无向的。<br>而所有其他层之间的连接是有向的，箭头指向最接近数据的层。 </p>
+<p>一个具有l个隐藏层的DBN包含l个权重矩阵：$W^{(1)},…,W^{(l)}$。</p>
+<p>同时也包含l+1个偏置向量： $b^{(0)},…,b^{(l)}$，其中$b^{(0)}$是可见层的偏置。 </p>
+<p>DBN表示的概率分布由下式给出：</p>
+<p>$$P(h^{(l)}, h^{(l-1)}) ∝ exp ( b^{(l)^T}h^{(l)}+ b^{(l-1)^T}h^{(l-1)}+h^{(l-1)^T}W^{(l)}h^{(l)} )$$</p>
+<p>$$P(h_i^{(k)} = 1 | h^{(k+1)}) = \sigma ( b_i^{(k)} + W_{:,i}^{(k+1)^T}h^{(k+1)} )~ \forall i,<br>\forall k \in 1, …, l-2$$ </p>
+<p>$$P(v_i = 1 | h^{(1)}) = \sigma ( b_i^{(0)} +<br>W_{:,i}^{(1)^T}h^{(1)})~ \forall i $$</p>
+<p>在实值可见单元的情况下，替换$v∼N(v;b(0)+W(1)^⊤h(1),β−1)$。</p>
+<p>采样：先在顶部的两个隐藏层上运行几个Gibbs采样；再对后面的有向图进行ancestral采样。</p>
+<h2 id="深度玻尔兹曼机（Deep-Boltzmann-Machines）"><a href="#深度玻尔兹曼机（Deep-Boltzmann-Machines）" class="headerlink" title="深度玻尔兹曼机（Deep Boltzmann Machines）"></a>深度玻尔兹曼机（Deep Boltzmann Machines）</h2><p>特点：与DBN不同的是，它是一个完全无向的模型；与RBM不同的是，它有几层潜变量（RBM只有一层）。<br>在一个深度玻尔兹曼机包含一个可见层v和三个隐藏层$h^{(1)},h^{(2)}和h^{(3)}$（$h^{(1)}$最靠近底层的可见层）的情况下，联合概率由下式给出</p>
+<p>$$P(v,h^{(1)},h^{(2)},h^{(3)})=\frac{1}{Z(θ)}exp(−E(v,h^{(1)},h^{(2)},h^{(3)};θ))$$</p>
+<p>能量函数：</p>
+<p>$$E(v, h^{(1)},h^{(2)},h^{(3)}; \theta) = -v^⊤<br>W^{(1)}h^{(1)}-h^{(1)⊤}W^{(2)}h^{(2)}- h^{(2)⊤}W^{(3)}h^{(3)}$$</p>
+<p>条件概率：</p>
+<p>$$P(v_i=1|h^{(1)})=σ(W_{i,:}^{(1)})$$</p>
+<p>$$P(h_i^{(1)}|v,h^{(2)})=σ(v^⊤W_{:,i}^{(1)}+W_{i,:}^{(2)}h^{(2)})$$</p>
+<p>$$P(h_k^{(2)}=1|h^{(1)})=σ(h^{(1)T}W_{:,k}^{(2)})$$</p>
+<p>二分图结构使Gibbs采样能在深度玻尔兹曼机中高效采样。 </p>
+<p>有趣的性质：使用适当的均匀场允许DBM的近似推断过程捕获<strong>自顶向下反馈</strong>相互作用的影响。</p>
+<p>这从神经科学的角度来看是有趣的，人脑使用许多自上而下的反馈连接。 </p>
+<p>DBM的一个<strong>缺点</strong>是采样时所有层都要使用MCMC。</p>
+<p><strong>均匀场估计</strong>：对于两层隐层的DBM，令$Q(h^{(1)},h^{(2)}∣v)$为$P(h^{(1)},h^{(2)}∣v)$的近似。</p>
+<p>均匀场假设意味着$Q(h^{(1)},h^{(2)}∣v)=∏_jQ(h^{(1)}_j∣v)∏_kQ(h^{(2)}_k∣v)$。</p>
+<p>将Q作为Bernoulli分布的乘积进行参数化：对于每个j，有$\hat h^{(1)}_j=Q(h^{(1)}_j=1∣v)$,其中$\hat<br>h^{(1)}_j∈[0,1]$；</p>
+<p>对于每个k，有$\hat h^{(2)}_k=Q(h^{(2)}_k=1∣v)$，其中$\hat h^{(2)}_k∈[0,1]$。 </p>
+<p>$Q(h^{(1)},h^{(2)}∣v)=∏_jQ(h^{(1)}_j∣v)∏_kQ(h^{(2)}_k∣v)$</p>
+<p>$=∏_j(\hat h^{(1)}_j)^{h^{(1)}_j}(1−\hat h^{(1)}_j)^{(1−h^{(1)}_j)}×∏_k(\hat h^{(2)}_k)^{h^{(2)}_k}(1−\hat h^{(2)}_k)^{(1−h^{(2)}_k)}$。 </p>
+<p>更新规则：</p>
+<p>$$\hat h_j^{(1)} = \sigma \Big( \sum_i v_i W_{i,j}^{(1)}+\sum_{k’}W_{j,k’}^{(2)} \hat<br>h_{k’}^{(2)} \Big), \forall j$$</p>
+<p>$$\hat h_{k}^{(2)} = \sigma \Big( \sum_{j’}<br>W_{j’,k}^{(2)} \hat h_{j’}^{(1)} \Big), \forall k$$</p>
+<p><strong>参数学习</strong>：变分随机最大似然算法：<br><img src="https://raw.githubusercontent.com/applenob/reading_note/master/res/20-1.png" alt></p>
+<p><strong>逐层预训练</strong>：用于分类MNIST的DBM的训练：</p>
+<ul>
+<li>(a)使用CD近似最大化$\log P(v)$来训练RBM。</li>
+<li>(b)训练第二个RBM，使用CD-k近似最大化$\log P(h^{(1)}, y)$来建模$h^{(1)}$和目标类$y$，其中$h^{(1)}$采自第一个RBM条件于数据的后验。在学习期间将$k$从$1$增加到$20$。</li>
+<li>(c)将两个RBM组合为DBM。使用$k = 5$的随机最大似然训练，近似最大化$\log P(v,y)$。</li>
+<li>(d)将$y$从模型中删除。定义新的一组特征$h^{(1)}$和$h^{(2)}$。使用随机梯度下降和Dropout训练MLP近似最大化$\log P(y|v)$。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/applenob/reading_note/master/res/layer-pre.png" alt></p>
+<p><strong>联合训练深度玻尔兹曼机</strong>：</p>
+<p><img src="https://raw.githubusercontent.com/applenob/reading_note/master/res/jointly-train.png" alt></p>
+<h2 id="实值数据上的玻尔兹曼机："><a href="#实值数据上的玻尔兹曼机：" class="headerlink" title="实值数据上的玻尔兹曼机："></a>实值数据上的玻尔兹曼机：</h2><h3 id="1-Gaussian-Bernoulli-RBM"><a href="#1-Gaussian-Bernoulli-RBM" class="headerlink" title="1.Gaussian-Bernoulli RBM"></a>1.Gaussian-Bernoulli RBM</h3><p>隐藏单元是二元的伯努利分布，可见单元上的条件分布是高斯分布（均值为隐藏单元的函数）。 </p>
+<p>条件分布：$p(v∣h)=N(v;Wh,β^{−1})$<br>能量函数的一种方式：$E(v,h)=\frac{1}{2}v^⊤(β⊙v)−(v⊙β)^⊤Wh−b^⊤h$。</p>
+<h2 id="2-均值和协方差RBM（Mean-and-Convariance-RBM，mcRBM）"><a href="#2-均值和协方差RBM（Mean-and-Convariance-RBM，mcRBM）" class="headerlink" title="2.均值和协方差RBM（Mean and Convariance RBM，mcRBM）"></a>2.均值和协方差RBM（Mean and Convariance RBM，mcRBM）</h2><p>使用隐藏单元独立地编码所有可观察单元的条件均值和协方差。<br>mcRBM的隐藏层分为两组单元：均值单元和协方差单元。 </p>
+<p>在二值均值的单元h(m)和二值协方差单元h(c)的情况下，mcRBM模型被定义为两个能量函数的组合：</p>
+<p>$$E_{mc}(x,h(m),h(c))=E_m(x,h(m))+E_c(x,h(c))$$</p>
+<h2 id="3-学生t分布均值乘积模型（Mean-Product-of-Student’s-t-distribution）"><a href="#3-学生t分布均值乘积模型（Mean-Product-of-Student’s-t-distribution）" class="headerlink" title="3.学生t分布均值乘积模型（Mean-Product of Student’s t-distribution）"></a>3.学生t分布均值乘积模型（Mean-Product of Student’s t-distribution）</h2><p>隐藏变量的互补条件分布是由条件独立的Gamma分布给出。 </p>
+<p>能量函数为：</p>
+<p>$$E_{mPoT}(x,h(m),h(c))=E_m(x,h^{(m)})+∑_j(h^{(c)}_j(1+\frac{1}{2}(r^{(j)T}x)^2)+(1−γ_j)logh^{(c)}_j)$$</p>
+<h2 id="4-尖峰和平板RBM（Spike-and-Slab-RBM，ssRBM）"><a href="#4-尖峰和平板RBM（Spike-and-Slab-RBM，ssRBM）" class="headerlink" title="4.尖峰和平板RBM（Spike and Slab RBM，ssRBM）"></a>4.尖峰和平板RBM（Spike and Slab RBM，ssRBM）</h2><p>尖峰和平板RBM有两类隐藏单元：二值尖峰(spike)单元h和实值平板(slab)单元s。 </p>
+<p>条件于隐藏单元的可见单元均值由$(h⊙s)W^⊤$给出。<br>换句话说，每一列$W_{:,i}$定义当$h_i=1$时可出现在输入中的分量。 </p>
+<p>相应的尖峰变量$h_i$确定该分量是否存在。<br>如果存在的话，相应的平板变量$s_i$确定该分量的强度。 </p>
+<p>当尖峰变量激活时，相应的平板变量将沿着$W_{:,i}$定义的轴的输入增加方差。<br>这允许我们对输入的协方差建模。</p>
+<h2 id="通过随机操作的反向传播"><a href="#通过随机操作的反向传播" class="headerlink" title="通过随机操作的反向传播"></a>通过随机操作的反向传播</h2><p>传统的神经网络对一些输入变量$x$施加确定性变换；当开发生成模型时，我们经常希望扩展神经网络以实现$x$的随机变换。<br>这样做的一个直接方法是使用额外输入$z$来引入随机性。 </p>
+<p>函数$f(x,z)$对于不能访问z的观察者来说将是随机的。<br>如果f是连续可微的，我们可以像往常一样使用反向传播计算训练所需的梯度：$ω$是同时包含参数$θ$和输入$x$的变量，$y=f(z;ω)$，可以使用传统工具（例如反向传播算法）计算$y$相对于$ω$的导数。</p>
+<p>至关重要的是：$ω$不能是$z$的函数，且$z$不能是$ω$的函数。 </p>
+<p>这种技术通常被称为<strong>重参数化技巧（reparametrization<br>trick）、随机反向传播(stochastic back-propagation)或扰动分析(perturbation analysis)</strong>。</p>
+<h2 id="通过离散随机操作的反向传播"><a href="#通过离散随机操作的反向传播" class="headerlink" title="通过离散随机操作的反向传播"></a>通过离散随机操作的反向传播</h2><p><strong>REINFORCE算法</strong>（REward Increment = nonnegative Factor × Offset<br>Reinforcement × Characteristic Eligibility）提供了定义一系列简单而强大解决方案的框架。</p>
+<p>其核心思想是:即使$J(f(z;ω))$是具有无用导数的阶跃函数，期望代价$E_{z\sim p(z)}J(f(z;ω))$通常是服从梯度下降的光滑函数。</p>
+<p>$$E_z[J(y)]=∑_yJ(y)p(y)$$</p>
+<p>$$\frac{∂E[J(y)]}{∂ω}=\sum_yJ(y)\frac{∂p(y)}{∂ω}=\sum_yJ(y)p(y)\frac{∂logp(y)}{∂ω}≈\frac{1}{m}∑^m_{y^{(i)}\sim p(y)},i=1$$</p>
+<p>简单REINFORCE估计的一个问题是其具有非常高的方差，需要采y的许多样本才能获得对梯度的良好估计。<br>相对于$ω_i$的梯度估计则变为：</p>
+<p>$$(J(y) - b(\omega)_i)\frac{\partial\log p(y)}{\partial \omega_i}$$</p>
+<p>b的获取：</p>
+<p>$$b^*(\omega)_i=\frac{E{p(y)} \Big[ J(y) \frac{\partial\log<br>p(y)^2}{\partial \omega_i} \Big]} {E_{p(y)} \Big[\frac{\partial\log<br>p(y)^2}{\partial \omega_i}\Big] }$$</p>
+<h2 id="有向生成网络："><a href="#有向生成网络：" class="headerlink" title="有向生成网络："></a>有向生成网络：</h2><h3 id="sigmoid信念网络（Sigmoid-Belief-Nets）"><a href="#sigmoid信念网络（Sigmoid-Belief-Nets）" class="headerlink" title="sigmoid信念网络（Sigmoid Belief Nets）"></a>sigmoid信念网络（Sigmoid Belief Nets）</h3><p>将sigmoid信念网络视为具有二值向量的状态s，其中状态的每个元素都受其祖先影响：</p>
+<p>$$p(s_i)=σ(\sum_{j&lt; i}W_{j,i}s_j+b_i)$$</p>
+<p>sigmoid信念网络最常见的结构是被分为许多层的结构，其中原始采样通过一系列多个隐藏层进行，然后最终生成可见层。</p>
+<p>这种结构与深度信念网络非常相似，但它们在采样过程开始时的单元彼此独立，而不是从受限玻尔兹曼机采样。</p>
+<h3 id="可微生成器网络（Differentiable-Generator-Nets）"><a href="#可微生成器网络（Differentiable-Generator-Nets）" class="headerlink" title="可微生成器网络（Differentiable Generator Nets）"></a>可微生成器网络（Differentiable Generator Nets）</h3><p>是很多生成模型的基础，使用<strong>可微函数</strong>$g(z;θ(g))$将潜变量z的样本变换为样本$x$或样本$x$上的分布，<strong>可微函数通常可以由神经网络表示</strong>。</p>
+<p><strong>给出x的训练样本，训练可微生成器网络的几种方法</strong>：</p>
+<h3 id="1-变分自编码器（Variational-Autoencoders）"><a href="#1-变分自编码器（Variational-Autoencoders）" class="headerlink" title="1.变分自编码器（Variational Autoencoders）"></a>1.变分自编码器（Variational Autoencoders）</h3><p>变分自编码器是一个使用学得<strong>近似推断（Learned Approximate Inference）</strong>的有向模型，<br>可以纯粹地使用<strong>基于梯度</strong>的方法进行训练。</p>
+<p><img src="/deep_learning_book/deep_learning_20/vae.png" alt></p>
+<p>注：图片来自<a href="http://blog.csdn.net/jackytintin/article/details/53641885" target="_blank" rel="noopener">丁丁的博客</a>。
+为了从模型生成样本，VAE首先从编码分布$p_{model}(z)$中采样$z$；</p>
+<p>然后将样本输入到<strong>可微生成器网络</strong><br>$g(z)$中；最后，从分布$p_{model}(x;g(z)) = p_{model}(x \mid z)$ 中采样$x$。<br>在训练期间，近似推断网络（或编码器）$q(z \mid x)$用于获得$z$，而$p_{model}(x \mid z)$则被视为解码器网络。<br>$log;p_{model}(x)\geq L(q)=E_{z\sim<br>q(z|x)}[log;p_{model}(x|z)]-D_{KL}(q(z|x)||p_{model}(z))$<br>变分自编码器方法是优雅的，易于实现的，也获得了不错的结果，是生成式建模中的最先进方法之一。<br>它的主要缺点是从在图像上训练的变分自编码器中采样的样本往往有些<strong>模糊</strong>。 </p>
+<h3 id="2-生成式对抗网络（Generative-Adversarial-Networks）"><a href="#2-生成式对抗网络（Generative-Adversarial-Networks）" class="headerlink" title="2.生成式对抗网络（Generative Adversarial Networks）"></a>2.生成式对抗网络（Generative Adversarial Networks）</h3><p>生成器网络直接产生样本$x = g(z; theta^{(g)})$。 </p>
+<p>判别器网络试图区分从训练数据抽取的样本和从生成器抽取的样本。<br>$g^∗=arg;\underset{g}{min};\underset{d}{max};<br>v(g,d)$，$v$的默认选择是：$v(θ(g),θ(d))=E_{x\sim p_{data}}logd(x)+E_{x\sim<br>p_{model}}log(1−d(x))$。 </p>
+<p>设计GAN的主要动机是学习过程既不需要近似推断也不需要配分函数梯度的近似。</p>
+<p>各种gan的结构：</p>
+<p><img src="/deep_learning_book/deep_learning_20/gans.jpg" alt></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Deep-Learning-笔记/" rel="tag"># Deep Learning, 笔记</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/deep_learning_book/deep_learning_19/" rel="next" title="第十九章：Approximate Inference">
+                <i class="fa fa-chevron-left"></i> 第十九章：Approximate Inference
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/japanese/biaori_1/" rel="prev" title="标日语法笔记——初级（上一）">
+                标日语法笔记——初级（上一） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/red.jpg" alt="Javen Chen">
+            
+              <p class="site-author-name" itemprop="name">Javen Chen</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">55</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/applenob" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:applecer@pku.edu.cn" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#20-Deep-Generative-Models"><span class="nav-number">1.</span> <span class="nav-text">20. Deep Generative Models</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#玻尔兹曼机（Boltzmann-Machines）"><span class="nav-number">1.1.</span> <span class="nav-text">玻尔兹曼机（Boltzmann Machines）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hebbian学习规则"><span class="nav-number">1.2.</span> <span class="nav-text">Hebbian学习规则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#受限玻尔兹曼机（Restricted-Boltzmann-Machine）"><span class="nav-number">1.3.</span> <span class="nav-text">受限玻尔兹曼机（Restricted Boltzmann Machine）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#深度信念网络（Deep-Belief-Networks）"><span class="nav-number">1.4.</span> <span class="nav-text">深度信念网络（Deep Belief Networks）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#深度玻尔兹曼机（Deep-Boltzmann-Machines）"><span class="nav-number">1.5.</span> <span class="nav-text">深度玻尔兹曼机（Deep Boltzmann Machines）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实值数据上的玻尔兹曼机："><span class="nav-number">1.6.</span> <span class="nav-text">实值数据上的玻尔兹曼机：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Gaussian-Bernoulli-RBM"><span class="nav-number">1.6.1.</span> <span class="nav-text">1.Gaussian-Bernoulli RBM</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-均值和协方差RBM（Mean-and-Convariance-RBM，mcRBM）"><span class="nav-number">1.7.</span> <span class="nav-text">2.均值和协方差RBM（Mean and Convariance RBM，mcRBM）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-学生t分布均值乘积模型（Mean-Product-of-Student’s-t-distribution）"><span class="nav-number">1.8.</span> <span class="nav-text">3.学生t分布均值乘积模型（Mean-Product of Student’s t-distribution）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-尖峰和平板RBM（Spike-and-Slab-RBM，ssRBM）"><span class="nav-number">1.9.</span> <span class="nav-text">4.尖峰和平板RBM（Spike and Slab RBM，ssRBM）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通过随机操作的反向传播"><span class="nav-number">1.10.</span> <span class="nav-text">通过随机操作的反向传播</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通过离散随机操作的反向传播"><span class="nav-number">1.11.</span> <span class="nav-text">通过离散随机操作的反向传播</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#有向生成网络："><span class="nav-number">1.12.</span> <span class="nav-text">有向生成网络：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sigmoid信念网络（Sigmoid-Belief-Nets）"><span class="nav-number">1.12.1.</span> <span class="nav-text">sigmoid信念网络（Sigmoid Belief Nets）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可微生成器网络（Differentiable-Generator-Nets）"><span class="nav-number">1.12.2.</span> <span class="nav-text">可微生成器网络（Differentiable Generator Nets）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-变分自编码器（Variational-Autoencoders）"><span class="nav-number">1.12.3.</span> <span class="nav-text">1.变分自编码器（Variational Autoencoders）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-生成式对抗网络（Generative-Adversarial-Networks）"><span class="nav-number">1.12.4.</span> <span class="nav-text">2.生成式对抗网络（Generative Adversarial Networks）</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("9s7vKaOPY7lMWuX9YVLasdnq-gzGzoHsz", "gOEj5qIEBIz5eDM3F5Nn90Jg");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

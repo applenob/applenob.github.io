@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+
+
+
+
+  <meta name="keywords" content="Algorithm, 笔记,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1对应本书第三章。  3. Basic Data Structures笔记本章主要介绍一些抽象数据类型（ADT）：栈stack/队列Queue/双向队列Deque/无序链表Unsordered List/有序链表Sordered List。 栈stack用内置的list实现： 123456789101112131415161718class Stack:    def __init__(self)">
+<meta name="keywords" content="Algorithm, 笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="三. Basic Data Structures">
+<meta property="og:url" content="http://yoursite.com/algrithom/book_learning_3/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="1对应本书第三章。  3. Basic Data Structures笔记本章主要介绍一些抽象数据类型（ADT）：栈stack/队列Queue/双向队列Deque/无序链表Unsordered List/有序链表Sordered List。 栈stack用内置的list实现： 123456789101112131415161718class Stack:    def __init__(self)">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-07-07T10:27:12.553Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="三. Basic Data Structures">
+<meta name="twitter:description" content="1对应本书第三章。  3. Basic Data Structures笔记本章主要介绍一些抽象数据类型（ADT）：栈stack/队列Queue/双向队列Deque/无序链表Unsordered List/有序链表Sordered List。 栈stack用内置的list实现： 123456789101112131415161718class Stack:    def __init__(self)">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/algrithom/book_learning_3/">
+
+
+
+
+
+  <title>三. Basic Data Structures | Javen Chen's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?239bba0e8b78c0293b8e646237f788cd";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Javen Chen's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Tech and Life~</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-所有专栏">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            所有专栏
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-历史文章">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            历史文章
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/algrithom/book_learning_3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Javen Chen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/red.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">三. Basic Data Structures</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-19T21:00:00+08:00">
+                2017-02-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/《Problem-Solving-with-Algorithms-and-Data-Structures-using-Python》的学习笔记和课后作业答案/" itemprop="url" rel="index">
+                    <span itemprop="name">《Problem Solving with Algorithms and Data Structures using Python》的学习笔记和课后作业答案</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/algrithom/book_learning_3/" class="leancloud_visitors" data-flag-title="三. Basic Data Structures">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">对应本书第三章。</span><br></pre></td></tr></table></figure>
+
+<h1 id="3-Basic-Data-Structures"><a href="#3-Basic-Data-Structures" class="headerlink" title="3. Basic Data Structures"></a>3. Basic Data Structures</h1><h2 id="笔记"><a href="#笔记" class="headerlink" title="笔记"></a>笔记</h2><p>本章主要介绍一些抽象数据类型（ADT）：栈stack/队列Queue/双向队列Deque/无序链表Unsordered List/有序链表Sordered List。</p>
+<h3 id="栈stack"><a href="#栈stack" class="headerlink" title="栈stack"></a>栈stack</h3><p>用内置的list实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Stack</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.items = []</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">isEmpty</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.items == []</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">push</span><span class="params">(self, item)</span>:</span></span><br><span class="line">        self.items.append(item)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">pop</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.items.pop()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">peek</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.items[len(self.items)<span class="number">-1</span>]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">size</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> len(self.items)</span><br></pre></td></tr></table></figure>
+
+<p>典型应用：</p>
+<ul>
+<li>括号平衡检查 Parentheses Balance Checker </li>
+<li>数字进制转换 Converting Decimal Numbers to Binary Numbers</li>
+<li>中缀，前缀，后缀表达式 Infix, Prefix and Postfix Expressions</li>
+</ul>
+<h3 id="队列Queue"><a href="#队列Queue" class="headerlink" title="队列Queue"></a>队列Queue</h3><p>用内置的list实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Queue</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.items = []</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">isEmpty</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.items == []</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">enqueue</span><span class="params">(self, item)</span>:</span></span><br><span class="line">        self.items.insert(<span class="number">0</span>,item)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">dequeue</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.items.pop()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">size</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> len(self.items)</span><br></pre></td></tr></table></figure>
+
+<p>典型应用：</p>
+<ul>
+<li>击鼓传花 Hot Potato Simulation</li>
+<li>打印机任务模拟 Printing Tasks Simulation</li>
+</ul>
+<h3 id="双向队列Deque"><a href="#双向队列Deque" class="headerlink" title="双向队列Deque"></a>双向队列Deque</h3><p>用内置的list实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Deque</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.items = []</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">isEmpty</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.items == []</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">addFront</span><span class="params">(self, item)</span>:</span></span><br><span class="line">        self.items.append(item)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">addRear</span><span class="params">(self, item)</span>:</span></span><br><span class="line">        self.items.insert(<span class="number">0</span>,item)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">removeFront</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.items.pop()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">removeRear</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.items.pop(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">size</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> len(self.items)</span><br></pre></td></tr></table></figure>
+
+<p>典型应用：</p>
+<ul>
+<li>回文检查 Palindrome-Checker</li>
+</ul>
+<h3 id="无序链表Unsordered-List"><a href="#无序链表Unsordered-List" class="headerlink" title="无序链表Unsordered List"></a>无序链表Unsordered List</h3><p>用内置的list实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,initdata)</span>:</span></span><br><span class="line">        self.data = initdata</span><br><span class="line">        self.next = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> str(self.data)</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getData</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.data</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getNext</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.next</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">setData</span><span class="params">(self,newdata)</span>:</span></span><br><span class="line">        self.data = newdata</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">setNext</span><span class="params">(self,newnext)</span>:</span></span><br><span class="line">        self.next = newnext</span><br><span class="line">        </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UnorderedList</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.head = <span class="literal">None</span></span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">isEmpty</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.head == <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add</span><span class="params">(self,item)</span>:</span></span><br><span class="line">        temp = Node(item)</span><br><span class="line">        temp.setNext(self.head)</span><br><span class="line">        self.head = temp</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">size</span><span class="params">(self)</span>:</span></span><br><span class="line">        current = self.head</span><br><span class="line">        count = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> current != <span class="literal">None</span>:</span><br><span class="line">            count = count + <span class="number">1</span></span><br><span class="line">            current = current.getNext()</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> count</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span><span class="params">(self,item)</span>:</span></span><br><span class="line">        current = self.head</span><br><span class="line">        found = <span class="literal">False</span></span><br><span class="line">        <span class="keyword">while</span> current != <span class="literal">None</span> <span class="keyword">and</span> <span class="keyword">not</span> found:</span><br><span class="line">            <span class="keyword">if</span> current.getData() == item:</span><br><span class="line">                found = <span class="literal">True</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                current = current.getNext()</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> found</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">remove</span><span class="params">(self,item)</span>:</span></span><br><span class="line">        current = self.head</span><br><span class="line">        previous = <span class="literal">None</span></span><br><span class="line">        found = <span class="literal">False</span></span><br><span class="line">        <span class="keyword">while</span> <span class="keyword">not</span> found:</span><br><span class="line">            <span class="keyword">if</span> current.getData() == item:</span><br><span class="line">                found = <span class="literal">True</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                previous = current</span><br><span class="line">                current = current.getNext()</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> previous == <span class="literal">None</span>:</span><br><span class="line">            self.head = current.getNext()</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            previous.setNext(current.getNext())</span><br></pre></td></tr></table></figure>
+
+<p><strong>有序链表Sordered List</strong></p>
+<p>用内置的list实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">OrderedList</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.head = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span><span class="params">(self,item)</span>:</span></span><br><span class="line">        current = self.head</span><br><span class="line">        found = <span class="literal">False</span></span><br><span class="line">        stop = <span class="literal">False</span></span><br><span class="line">        <span class="keyword">while</span> current != <span class="literal">None</span> <span class="keyword">and</span> <span class="keyword">not</span> found <span class="keyword">and</span> <span class="keyword">not</span> stop:</span><br><span class="line">            <span class="keyword">if</span> current.getData() == item:</span><br><span class="line">                found = <span class="literal">True</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="keyword">if</span> current.getData() &gt; item:</span><br><span class="line">                    stop = <span class="literal">True</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    current = current.getNext()</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> found</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add</span><span class="params">(self,item)</span>:</span></span><br><span class="line">        current = self.head</span><br><span class="line">        previous = <span class="literal">None</span></span><br><span class="line">        stop = <span class="literal">False</span></span><br><span class="line">        <span class="keyword">while</span> current != <span class="literal">None</span> <span class="keyword">and</span> <span class="keyword">not</span> stop:</span><br><span class="line">            <span class="keyword">if</span> current.getData() &gt; item:</span><br><span class="line">                stop = <span class="literal">True</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                previous = current</span><br><span class="line">                current = current.getNext()</span><br><span class="line"></span><br><span class="line">        temp = Node(item)</span><br><span class="line">        <span class="keyword">if</span> previous == <span class="literal">None</span>:</span><br><span class="line">            temp.setNext(self.head)</span><br><span class="line">            self.head = temp</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            temp.setNext(current)</span><br><span class="line">            previous.setNext(temp)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">isEmpty</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.head == <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">size</span><span class="params">(self)</span>:</span></span><br><span class="line">        current = self.head</span><br><span class="line">        count = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> current != <span class="literal">None</span>:</span><br><span class="line">            count = count + <span class="number">1</span></span><br><span class="line">            current = current.getNext()</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> count</span><br></pre></td></tr></table></figure>
+
+<h2 id="作业"><a href="#作业" class="headerlink" title="作业"></a>作业</h2><p><a href="http://interactivepython.org/courselib/static/pythonds/BasicDS/ProgrammingExercises.html" target="_blank" rel="noopener">题目地址</a></p>
+<h3 id="q1"><a href="#q1" class="headerlink" title="q1"></a>q1</h3><p>修改infix-to-postfix算法使其可以处理异常情况。</p>
+<p>分析：异常情况可能是括号不平衡，也可能是缺少操作符或者缺少操作数。<br>括号不平衡可以方便地在中缀转后缀的函数中添加，但是操作符和操作数的检查可以留到计算的步骤再去检查，这步留在q2实现。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># q1</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">infixToPostfix</span><span class="params">(infixexpr)</span>:</span></span><br><span class="line">    <span class="string">"""将表达式从中缀形式转化成后缀形式"""</span></span><br><span class="line">    prec = &#123;&#125;</span><br><span class="line">    prec[<span class="string">"*"</span>] = <span class="number">3</span></span><br><span class="line">    prec[<span class="string">"/"</span>] = <span class="number">3</span></span><br><span class="line">    prec[<span class="string">"+"</span>] = <span class="number">2</span></span><br><span class="line">    prec[<span class="string">"-"</span>] = <span class="number">2</span></span><br><span class="line">    prec[<span class="string">"("</span>] = <span class="number">1</span></span><br><span class="line">    <span class="comment"># 存储操作符的栈</span></span><br><span class="line">    opStack = Stack()</span><br><span class="line">    postfixList = []</span><br><span class="line">    tokenList = infixexpr.split()</span><br><span class="line">    <span class="comment"># 栈中剩余的左括号的个数</span></span><br><span class="line">    left_p_remain = <span class="number">0</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> token <span class="keyword">in</span> tokenList:</span><br><span class="line">        <span class="keyword">if</span> token <span class="keyword">in</span> <span class="string">"ABCDEFGHIJKLMNOPQRSTUVWXYZ"</span> <span class="keyword">or</span> token <span class="keyword">in</span> <span class="string">"0123456789"</span>:</span><br><span class="line">            postfixList.append(token)</span><br><span class="line">        <span class="keyword">elif</span> token == <span class="string">'('</span>:</span><br><span class="line">            opStack.push(token)</span><br><span class="line">            left_p_remain += <span class="number">1</span></span><br><span class="line">        <span class="keyword">elif</span> token == <span class="string">')'</span>:</span><br><span class="line">            left_p_remain -= <span class="number">1</span></span><br><span class="line">            <span class="keyword">if</span> left_p_remain &lt; <span class="number">0</span>:</span><br><span class="line">                <span class="keyword">raise</span> Exception(<span class="string">"parenthesis are not balance, please check!"</span>)</span><br><span class="line">            topToken = opStack.pop()</span><br><span class="line">            <span class="keyword">while</span> topToken != <span class="string">'('</span>:</span><br><span class="line">                postfixList.append(topToken)</span><br><span class="line">                topToken = opStack.pop()</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">while</span> (<span class="keyword">not</span> opStack.isEmpty()) <span class="keyword">and</span> \</span><br><span class="line">                (prec[opStack.peek()] &gt;= prec[token]):</span><br><span class="line">                    postfixList.append(opStack.pop())</span><br><span class="line">            opStack.push(token)</span><br><span class="line">    <span class="keyword">if</span> left_p_remain != <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">raise</span> Exception(<span class="string">"parenthesis are not balance, please check!"</span>)</span><br><span class="line">            </span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">not</span> opStack.isEmpty():</span><br><span class="line">        postfixList.append(opStack.pop())</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="string">" "</span>.join(postfixList)</span><br><span class="line"></span><br><span class="line">print(infixToPostfix(<span class="string">"A * B + C * D"</span>))</span><br><span class="line">print(infixToPostfix(<span class="string">"( A + B ) * C - ( D - E ) * ( F + G )"</span>))</span><br><span class="line">print(infixToPostfix(<span class="string">"( A + B ) * C - ( D - E ) ) * ( F + G)"</span>))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">A B * C D * +</span><br><span class="line">A B + C * D E - F G + * -</span><br><span class="line">---------------------------------------------------------------------------</span><br><span class="line">Exception                                 Traceback (most recent call last)</span><br><span class="line">&lt;ipython-input-6-63343863e9e7&gt; in &lt;module&gt;()</span><br><span class="line">     43 print(infixToPostfix(&quot;A * B + C * D&quot;))</span><br><span class="line">     44 print(infixToPostfix(&quot;( A + B ) * C - ( D - E ) * ( F + G )&quot;))</span><br><span class="line">---&gt; 45 print(infixToPostfix(&quot;( A + B ) * C - ( D - E ) ) * ( F + G)&quot;))</span><br><span class="line"></span><br><span class="line">&lt;ipython-input-6-63343863e9e7&gt; in infixToPostfix(infixexpr)</span><br><span class="line">     24             left_p_remain -= 1</span><br><span class="line">     25             if left_p_remain &lt; 0:</span><br><span class="line">---&gt; 26                 raise Exception(&quot;parenthesis are not balance, please check!&quot;)</span><br><span class="line">     27             topToken = opStack.pop()</span><br><span class="line">     28             while topToken != &apos;(&apos;:</span><br><span class="line"></span><br><span class="line">Exception: parenthesis are not balance, please check!</span><br></pre></td></tr></table></figure>
+
+<h3 id="q2"><a href="#q2" class="headerlink" title="q2"></a>q2</h3><p>实现后缀表达式求值函数中对操作符和操作数的检查</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">postfixEval</span><span class="params">(postfixExpr)</span>:</span></span><br><span class="line">    operandStack = Stack()</span><br><span class="line">    tokenList = postfixExpr.split()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> token <span class="keyword">in</span> tokenList:</span><br><span class="line">        <span class="keyword">if</span> token <span class="keyword">in</span> <span class="string">"0123456789"</span>:</span><br><span class="line">            operandStack.push(int(token))</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># token是个操作符，需要出栈两个操作数，提前检查操作数够不够</span></span><br><span class="line">            <span class="keyword">if</span> operandStack.size() &lt; <span class="number">2</span>:</span><br><span class="line">                <span class="keyword">raise</span> Exception(<span class="string">"not enough operand, please check!"</span>)</span><br><span class="line">            operand2 = operandStack.pop()</span><br><span class="line">            operand1 = operandStack.pop()</span><br><span class="line">            result = doMath(token,operand1,operand2)</span><br><span class="line">            operandStack.push(result)</span><br><span class="line">    <span class="comment"># 如果遍历完以后，栈中还剩操作数，则操作数过多</span></span><br><span class="line">    <span class="keyword">if</span> operandStack.size() != <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">raise</span> Exception(<span class="string">"too much operand, please check!"</span>)</span><br><span class="line">    <span class="keyword">return</span> operandStack.pop()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">doMath</span><span class="params">(op, op1, op2)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> op == <span class="string">"*"</span>:</span><br><span class="line">        <span class="keyword">return</span> op1 * op2</span><br><span class="line">    <span class="keyword">elif</span> op == <span class="string">"/"</span>:</span><br><span class="line">        <span class="keyword">return</span> op1 / op2</span><br><span class="line">    <span class="keyword">elif</span> op == <span class="string">"+"</span>:</span><br><span class="line">        <span class="keyword">return</span> op1 + op2</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> op1 - op2</span><br><span class="line"></span><br><span class="line">print(postfixEval(<span class="string">'7 8 + 3 2 + /'</span>))</span><br><span class="line">print(postfixEval(<span class="string">'7 8 + 3 2 + / -'</span>))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">3.0</span><br><span class="line">---------------------------------------------------------------------------</span><br><span class="line">Exception                                 Traceback (most recent call last)</span><br><span class="line">&lt;ipython-input-7-88e05ae7bebb&gt; in &lt;module&gt;()</span><br><span class="line">     30 </span><br><span class="line">     31 print(postfixEval(&apos;7 8 + 3 2 + /&apos;))</span><br><span class="line">---&gt; 32 print(postfixEval(&apos;7 8 + 3 2 + / -&apos;))</span><br><span class="line"></span><br><span class="line">&lt;ipython-input-7-88e05ae7bebb&gt; in postfixEval(postfixExpr)</span><br><span class="line">      9             # token是个操作符，需要出栈两个操作数，提前检查操作数够不够</span><br><span class="line">     10             if operandStack.size() &lt; 2:</span><br><span class="line">---&gt; 11                 raise Exception(&quot;not enough operand, please check!&quot;)</span><br><span class="line">     12             operand2 = operandStack.pop()</span><br><span class="line">     13             operand1 = operandStack.pop()</span><br><span class="line"></span><br><span class="line">Exception: not enough operand, please check!</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">print(postfixEval(<span class="string">'7 8 + 3 2 + / 1'</span>))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">---------------------------------------------------------------------------</span><br><span class="line">Exception                                 Traceback (most recent call last)</span><br><span class="line">&lt;ipython-input-8-23319fcf89d3&gt; in &lt;module&gt;()</span><br><span class="line">----&gt; 1 print(postfixEval(&apos;7 8 + 3 2 + / 1&apos;))</span><br><span class="line"></span><br><span class="line">&lt;ipython-input-7-88e05ae7bebb&gt; in postfixEval(postfixExpr)</span><br><span class="line">     16     # 如果遍历完以后，栈中还剩操作数，则操作数过多</span><br><span class="line">     17     if operandStack.size() != 1:</span><br><span class="line">---&gt; 18         raise Exception(&quot;too much operand, please check!&quot;)</span><br><span class="line">     19     return operandStack.pop()</span><br><span class="line">     20 </span><br><span class="line"></span><br><span class="line">Exception: too much operand, please check!</span><br></pre></td></tr></table></figure>
+
+<h3 id="q3-q4"><a href="#q3-q4" class="headerlink" title="q3/q4"></a>q3/q4</h3><p>将q1和q2合并，写一个直接根据中序表达式的函数，q4要求把q3改成一个计算器。个人以为q3和q4相似，直接写成一处。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># q3/q4</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Calculator</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="string">"""支持0-9的加减乘除的简单计算器。"""</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">calc</span><span class="params">(self, infix)</span>:</span></span><br><span class="line">        postfix = self.infixToPostfix(infix)</span><br><span class="line">        <span class="keyword">return</span> self.postfixEval(postfix)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">infixToPostfix</span><span class="params">(self, infixexpr)</span>:</span></span><br><span class="line">        <span class="string">"""将表达式从中缀形式转化成后缀形式"""</span></span><br><span class="line">        prec = &#123;&#125;</span><br><span class="line">        prec[<span class="string">"*"</span>] = <span class="number">3</span></span><br><span class="line">        prec[<span class="string">"/"</span>] = <span class="number">3</span></span><br><span class="line">        prec[<span class="string">"+"</span>] = <span class="number">2</span></span><br><span class="line">        prec[<span class="string">"-"</span>] = <span class="number">2</span></span><br><span class="line">        prec[<span class="string">"("</span>] = <span class="number">1</span></span><br><span class="line">        <span class="comment"># 存储操作符的栈</span></span><br><span class="line">        opStack = Stack()</span><br><span class="line">        postfixList = []</span><br><span class="line">        tokenList = infixexpr.split()</span><br><span class="line">        <span class="comment"># 栈中剩余的左括号的个数</span></span><br><span class="line">        left_p_remain = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> token <span class="keyword">in</span> tokenList:</span><br><span class="line">            <span class="keyword">if</span> token <span class="keyword">in</span> <span class="string">"ABCDEFGHIJKLMNOPQRSTUVWXYZ"</span> <span class="keyword">or</span> token <span class="keyword">in</span> <span class="string">"0123456789"</span>:</span><br><span class="line">                postfixList.append(token)</span><br><span class="line">            <span class="keyword">elif</span> token == <span class="string">'('</span>:</span><br><span class="line">                opStack.push(token)</span><br><span class="line">                left_p_remain += <span class="number">1</span></span><br><span class="line">            <span class="keyword">elif</span> token == <span class="string">')'</span>:</span><br><span class="line">                left_p_remain -= <span class="number">1</span></span><br><span class="line">                <span class="keyword">if</span> left_p_remain &lt; <span class="number">0</span>:</span><br><span class="line">                    <span class="keyword">raise</span> Exception(<span class="string">"parenthesis are not balance, please check!"</span>)</span><br><span class="line">                topToken = opStack.pop()</span><br><span class="line">                <span class="keyword">while</span> topToken != <span class="string">'('</span>:</span><br><span class="line">                    postfixList.append(topToken)</span><br><span class="line">                    topToken = opStack.pop()</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="keyword">while</span> (<span class="keyword">not</span> opStack.isEmpty()) <span class="keyword">and</span> \</span><br><span class="line">                    (prec[opStack.peek()] &gt;= prec[token]):</span><br><span class="line">                        postfixList.append(opStack.pop())</span><br><span class="line">                opStack.push(token)</span><br><span class="line">        <span class="keyword">if</span> left_p_remain != <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">raise</span> Exception(<span class="string">"parenthesis are not balance, please check!"</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> <span class="keyword">not</span> opStack.isEmpty():</span><br><span class="line">            postfixList.append(opStack.pop())</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="string">" "</span>.join(postfixList)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">postfixEval</span><span class="params">(self, postfixExpr)</span>:</span></span><br><span class="line">        operandStack = Stack()</span><br><span class="line">        tokenList = postfixExpr.split()</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> token <span class="keyword">in</span> tokenList:</span><br><span class="line">            <span class="keyword">if</span> token <span class="keyword">in</span> <span class="string">"0123456789"</span>:</span><br><span class="line">                operandStack.push(int(token))</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="comment"># token是个操作符，需要出栈两个操作数，提前检查操作数够不够</span></span><br><span class="line">                <span class="keyword">if</span> operandStack.size() &lt; <span class="number">2</span>:</span><br><span class="line">                    <span class="keyword">raise</span> Exception(<span class="string">"not enough operand, please check!"</span>)</span><br><span class="line">                operand2 = operandStack.pop()</span><br><span class="line">                operand1 = operandStack.pop()</span><br><span class="line">                result = self.doMath(token,operand1,operand2)</span><br><span class="line">                operandStack.push(result)</span><br><span class="line">        <span class="comment"># 如果遍历完以后，栈中还剩操作数，则操作数过多</span></span><br><span class="line">        <span class="keyword">if</span> operandStack.size() != <span class="number">1</span>:</span><br><span class="line">            <span class="keyword">raise</span> Exception(<span class="string">"too much operand, please check!"</span>)</span><br><span class="line">        <span class="keyword">return</span> operandStack.pop()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">doMath</span><span class="params">(self, op, op1, op2)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> op == <span class="string">"*"</span>:</span><br><span class="line">            <span class="keyword">return</span> op1 * op2</span><br><span class="line">        <span class="keyword">elif</span> op == <span class="string">"/"</span>:</span><br><span class="line">            <span class="keyword">return</span> op1 / op2</span><br><span class="line">        <span class="keyword">elif</span> op == <span class="string">"+"</span>:</span><br><span class="line">            <span class="keyword">return</span> op1 + op2</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> op1 - op2</span><br><span class="line">        </span><br><span class="line">cal = Calculator()</span><br><span class="line">print(cal.calc(<span class="string">"( 1 + 3 ) / ( ( 3 - 8 ) * 9 ) "</span>))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-0.08888888888888889</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">print(cal.calc(<span class="string">"( 1 + 3 ) / ( ( 3 - 8 ) * 9 ) 9 "</span>))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">---------------------------------------------------------------------------</span><br><span class="line">Exception                                 Traceback (most recent call last)</span><br><span class="line">&lt;ipython-input-10-968961ac46e3&gt; in &lt;module&gt;()</span><br><span class="line">----&gt; 1 print(cal.calc(&quot;( 1 + 3 ) / ( ( 3 - 8 ) * 9 ) 9 &quot;))</span><br><span class="line"></span><br><span class="line">&lt;ipython-input-9-507891dfbead&gt; in calc(self, infix)</span><br><span class="line">      9     def calc(self, infix):</span><br><span class="line">     10         postfix = self.infixToPostfix(infix)</span><br><span class="line">---&gt; 11         return self.postfixEval(postfix)</span><br><span class="line">     12 </span><br><span class="line">     13     def infixToPostfix(self, infixexpr):</span><br><span class="line"></span><br><span class="line">&lt;ipython-input-9-507891dfbead&gt; in postfixEval(self, postfixExpr)</span><br><span class="line">     69         # 如果遍历完以后，栈中还剩操作数，则操作数过多</span><br><span class="line">     70         if operandStack.size() != 1:</span><br><span class="line">---&gt; 71             raise Exception(&quot;too much operand, please check!&quot;)</span><br><span class="line">     72         return operandStack.pop()</span><br><span class="line">     73 </span><br><span class="line"></span><br><span class="line">Exception: too much operand, please check!</span><br></pre></td></tr></table></figure>
+
+<h3 id="q5"><a href="#q5" class="headerlink" title="q5"></a>q5</h3><p>实现Queue，使得队尾是list的末尾</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Queue2</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.items = []</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">isEmpty</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.items == []</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">enqueue</span><span class="params">(self, item)</span>:</span></span><br><span class="line">        self.items.append(item)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">dequeue</span><span class="params">(self)</span>:</span></span><br><span class="line">        head = self.items[<span class="number">0</span>]</span><br><span class="line">        <span class="keyword">del</span> self.items[<span class="number">0</span>]</span><br><span class="line">        <span class="keyword">return</span> head</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">size</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> len(self.items)</span><br><span class="line"></span><br><span class="line">q = Queue2()</span><br><span class="line">q.enqueue(<span class="number">1</span>)</span><br><span class="line">q.enqueue(<span class="number">2</span>)</span><br><span class="line">print(q.items[<span class="number">1</span>]) </span><br><span class="line">q.dequeue()</span><br><span class="line">print(q.items[<span class="number">0</span>])</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">2</span><br><span class="line">2</span><br></pre></td></tr></table></figure>
+
+<h3 id="q6"><a href="#q6" class="headerlink" title="q6"></a>q6</h3><p>设计实验，对比两种Queue实现的优劣</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">queue1_en_test</span><span class="params">()</span>:</span></span><br><span class="line">    q = Queue()</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">        q.enqueue(<span class="number">1</span>)</span><br><span class="line">        </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">queue2_en_test</span><span class="params">()</span>:</span></span><br><span class="line">    q = Queue2()</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">        q.enqueue(<span class="number">1</span>)</span><br><span class="line">        </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">queue1_en_de_test</span><span class="params">()</span>:</span></span><br><span class="line">    q = Queue()</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">        q.enqueue(<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">        q.dequeue()</span><br><span class="line">        </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">queue2_en_de_test</span><span class="params">()</span>:</span></span><br><span class="line">    q = Queue2()</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">        q.enqueue(<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">        q.dequeue()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> timeit <span class="keyword">import</span> Timer</span><br><span class="line">t1 = Timer(<span class="string">"queue1_en_test()"</span>, <span class="string">"from __main__ import queue1_en_test"</span>)</span><br><span class="line">print(<span class="string">"queue1_en_test:"</span>,t1.timeit(number=<span class="number">1000</span>), <span class="string">"milliseconds"</span>)</span><br><span class="line">t2 = Timer(<span class="string">"queue2_en_test()"</span>, <span class="string">"from __main__ import queue2_en_test"</span>)</span><br><span class="line">print(<span class="string">"queue2_en_test:"</span>,t2.timeit(number=<span class="number">1000</span>), <span class="string">"milliseconds"</span>)</span><br><span class="line">t3 = Timer(<span class="string">"queue1_en_de_test()"</span>, <span class="string">"from __main__ import queue1_en_de_test"</span>)</span><br><span class="line">print(<span class="string">"queue1_en_de_test:"</span>,t3.timeit(number=<span class="number">1000</span>), <span class="string">"milliseconds"</span>)</span><br><span class="line">t4 = Timer(<span class="string">"queue2_en_de_test()"</span>, <span class="string">"from __main__ import queue2_en_de_test"</span>)</span><br><span class="line">print(<span class="string">"queue2_en_de_test:"</span>,t4.timeit(number=<span class="number">1000</span>), <span class="string">"milliseconds"</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">queue1_en_test: 0.49930859899995994 milliseconds</span><br><span class="line">queue2_en_test: 0.20399194199990234 milliseconds</span><br><span class="line">queue1_en_de_test: 0.7333720130000074 milliseconds</span><br><span class="line">queue2_en_de_test: 0.5521609099996567 milliseconds</span><br></pre></td></tr></table></figure>
+
+<p>从理论分析可以知道，如果进队操作设置在list起点，那么入队操作是$O(n)$，出队操作是$O(1)$；<br>相反，如果进队操作设置在list末端，那么入队操作是$O(1)$，出队操作是$O(n)$。</p>
+<p>但是为什么在测试中综合第二种的性能比第一种的好呢？<br>看一下下面的测试：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">list_append_test</span><span class="params">()</span>:</span></span><br><span class="line">    l = list(range(<span class="number">1000</span>))</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">        l.append(i)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">list_pop_test</span><span class="params">()</span>:</span></span><br><span class="line">    l = list(range(<span class="number">1000</span>))</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">        l.pop()</span><br><span class="line">        </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">list_del_test</span><span class="params">()</span>:</span></span><br><span class="line">    l = list(range(<span class="number">1000</span>))</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">        <span class="keyword">del</span> l[<span class="number">0</span>]</span><br><span class="line">        </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">list_insert_test</span><span class="params">()</span>:</span></span><br><span class="line">    l = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">        l.insert(<span class="number">0</span>, i)</span><br><span class="line">        </span><br><span class="line">t5 = Timer(<span class="string">"list_append_test()"</span>, <span class="string">"from __main__ import list_append_test"</span>)</span><br><span class="line">print(<span class="string">"list_append_test:"</span>,t5.timeit(number=<span class="number">1000</span>), <span class="string">"milliseconds"</span>)</span><br><span class="line">t6 = Timer(<span class="string">"list_pop_test()"</span>, <span class="string">"from __main__ import list_pop_test"</span>)</span><br><span class="line">print(<span class="string">"list_pop_test:"</span>,t6.timeit(number=<span class="number">1000</span>), <span class="string">"milliseconds"</span>)</span><br><span class="line">t7 = Timer(<span class="string">"list_del_test()"</span>, <span class="string">"from __main__ import list_del_test"</span>)</span><br><span class="line">print(<span class="string">"list_del_test:"</span>,t7.timeit(number=<span class="number">1000</span>), <span class="string">"milliseconds"</span>)</span><br><span class="line">t8 = Timer(<span class="string">"list_insert_test()"</span>, <span class="string">"from __main__ import list_insert_test"</span>)</span><br><span class="line">print(<span class="string">"list_insert_test:"</span>,t8.timeit(number=<span class="number">1000</span>), <span class="string">"milliseconds"</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">list_append_test: 0.09044601999994484 milliseconds</span><br><span class="line">list_pop_test: 0.10493274600003133 milliseconds</span><br><span class="line">list_del_test: 0.14676751699971646 milliseconds</span><br><span class="line">list_insert_test: 0.3609275019998677 milliseconds</span><br></pre></td></tr></table></figure>
+
+<p>也就是说list的append比pop快，虽然都是$O(1)$;而且，del也比insert快，虽然都是$O(n)$。</p>
+<p>因此第二种实现更好。</p>
+<h3 id="q7"><a href="#q7" class="headerlink" title="q7"></a>q7</h3><p>实现是个enqueue和dequeue都是$O(1)$的Queue。<br>这道题我没有想出来，于是在<a href="http://stackoverflow.com/questions/69192/how-to-implement-a-queue-using-two-stacks" target="_blank" rel="noopener">stackoverflow</a>上找到了一个双栈的实现方法。只有在outbox空的时候，把所有inbox出栈，再入outbox栈，这里的时间复杂度是$O(n)$。正好符合作者的要求。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># q7</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Queue3</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Keep 2 stacks, let's call them inbox and outbox.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Enqueue:</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Push the new element onto inbox</span></span><br><span class="line"><span class="string">    Dequeue:</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    If outbox is empty, refill it by popping each element from inbox and pushing it onto outbox</span></span><br><span class="line"><span class="string">    Pop and return the top element from outbox</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.inbox = Stack()</span><br><span class="line">        self.outbox = Stack()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">enqueue</span><span class="params">(self, item)</span>:</span></span><br><span class="line">        self.inbox.push(item)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">dequeue</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> self.outbox.isEmpty():</span><br><span class="line">            <span class="keyword">while</span> <span class="keyword">not</span> self.inbox.isEmpty():</span><br><span class="line">                self.outbox.push(self.inbox.pop());</span><br><span class="line">        <span class="keyword">return</span> self.outbox.pop();</span><br><span class="line"></span><br><span class="line">q3 = Queue3()</span><br><span class="line">q3.enqueue(<span class="number">1</span>)</span><br><span class="line">q3.enqueue(<span class="number">2</span>)</span><br><span class="line">q3.enqueue(<span class="number">3</span>)</span><br><span class="line">print(q3.dequeue())</span><br><span class="line">print(q3.dequeue())</span><br><span class="line">print(q3.dequeue())</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td></tr></table></figure>
+
+<h3 id="q8"><a href="#q8" class="headerlink" title="q8"></a>q8</h3><p>设计一个现实生活中的使用场景，模拟队列。</p>
+<p>这里设计一个理发师和顾客的场景。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Barber</span><span class="params">()</span>:</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, wait_seat_num)</span>:</span></span><br><span class="line">        self.wait_seat_num = wait_seat_num</span><br><span class="line">        self.isWorking = <span class="literal">False</span></span><br><span class="line">        self.wait_queue = Queue()</span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">costomer_come</span><span class="params">(self, cid)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> self.isWorking:</span><br><span class="line">            <span class="keyword">if</span> self.wait_queue.size() &lt; self.wait_seat_num:</span><br><span class="line">                self.wait_queue.enqueue(cid)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                print(<span class="string">"Sorry, the baber shop is full! Come again later!"</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.isWorking = <span class="literal">True</span></span><br><span class="line">            self.work(cid)</span><br><span class="line">            </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">work</span><span class="params">(self, cid)</span>:</span></span><br><span class="line">        <span class="comment"># ... ...</span></span><br><span class="line">        self.work_done(cid)</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">work_done</span><span class="params">(self, cid)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> self.wait_queue.size() &gt; <span class="number">0</span>:</span><br><span class="line">            new_cid = self.wait_queue.deque()</span><br><span class="line">            self.work(new_cid)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.isWorking = <span class="literal">False</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="q9"><a href="#q9" class="headerlink" title="q9"></a>q9</h3><p>修改hot potato 算法，使每次传递的个数为一个随机数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hotPotato</span><span class="params">(namelist)</span>:</span></span><br><span class="line">    simqueue = Queue()</span><br><span class="line">    <span class="keyword">for</span> name <span class="keyword">in</span> namelist:</span><br><span class="line">        simqueue.enqueue(name)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> simqueue.size() &gt; <span class="number">1</span>:</span><br><span class="line">        num = random.randrange(<span class="number">1</span>,<span class="number">5</span>)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(num):</span><br><span class="line">            simqueue.enqueue(simqueue.dequeue())</span><br><span class="line"></span><br><span class="line">        simqueue.dequeue()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> simqueue.dequeue()</span><br><span class="line"></span><br><span class="line">print(hotPotato([<span class="string">"Bill"</span>,<span class="string">"David"</span>,<span class="string">"Susan"</span>,<span class="string">"Jane"</span>,<span class="string">"Kent"</span>,<span class="string">"Brad"</span>]))</span><br><span class="line">print(hotPotato([<span class="string">"Bill"</span>,<span class="string">"David"</span>,<span class="string">"Susan"</span>,<span class="string">"Jane"</span>,<span class="string">"Kent"</span>,<span class="string">"Brad"</span>]))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Susan</span><br><span class="line">Brad</span><br></pre></td></tr></table></figure>
+
+<h3 id="q10"><a href="#q10" class="headerlink" title="q10"></a>q10</h3><p>实现一个基数排序器，参考wikipedia的<a href="https://en.wikipedia.org/wiki/Radix_sort" target="_blank" rel="noopener">Radix_sort</a>。</p>
+<p>wikipedia的example：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">An example[edit]</span><br><span class="line">Original, unsorted list:</span><br><span class="line">170, 45, 75,</span><br><span class="line">90, 802, 2, 24, 66</span><br><span class="line">Sorting by least significant digit (1s place) gives:</span><br><span class="line">170, 90,</span><br><span class="line">802, 2, 24, 45, 75, 66</span><br><span class="line">Notice that we keep 802 before 2, because 802 occurred</span><br><span class="line">before 2 in the original list, and similarly for pairs 170 &amp; 90 and 45 &amp; 75.</span><br><span class="line">Sorting by next digit (10s place) gives:</span><br><span class="line">802, 2, 24, 45, 66, 170, 75, 90</span><br><span class="line">Notice</span><br><span class="line">that 802 again comes before 2 as 802 comes before 2 in the previous list.</span><br><span class="line">Sorting by most significant digit (100s place) gives:</span><br><span class="line">2, 24, 45, 66, 75, 90,</span><br><span class="line">170, 802</span><br></pre></td></tr></table></figure>
+
+<p>简单的说，就是每比一位排一次序。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># q10</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_max_num_len</span><span class="params">(nums)</span>:</span></span><br><span class="line">    <span class="string">"""获取数组中位数最大的个数的位数"""</span></span><br><span class="line">    max_len = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> num <span class="keyword">in</span> nums:</span><br><span class="line">        cur_len = <span class="number">1</span> </span><br><span class="line">        <span class="keyword">while</span> num // <span class="number">10</span> != <span class="number">0</span>:</span><br><span class="line">            num = num // <span class="number">10</span></span><br><span class="line">            cur_len += <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> cur_len &gt; max_len:</span><br><span class="line">            max_len = cur_len</span><br><span class="line">    <span class="keyword">return</span> max_len</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_num_by_order</span><span class="params">(num, order)</span>:</span></span><br><span class="line">    <span class="string">"""例如输入876和2，返回第二位的7；若输入4，则返回0"""</span></span><br><span class="line">    left = num // (<span class="number">10</span>**(order<span class="number">-1</span>))</span><br><span class="line">    <span class="keyword">return</span> left % <span class="number">10</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">radix_sorting_machine</span><span class="params">(nums)</span>:</span></span><br><span class="line">    bins = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">10</span>):</span><br><span class="line">        bins.append(Queue())</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(get_max_num_len(nums)):</span><br><span class="line">        <span class="keyword">for</span> num <span class="keyword">in</span> nums:</span><br><span class="line">            bins[get_num_by_order(num, i+<span class="number">1</span>)].enqueue(num)</span><br><span class="line">        j = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> one_bin <span class="keyword">in</span> bins:</span><br><span class="line">            <span class="keyword">while</span> <span class="keyword">not</span> one_bin.isEmpty():</span><br><span class="line">                nums[j] = one_bin.dequeue()</span><br><span class="line">                j += <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> nums</span><br><span class="line"></span><br><span class="line">print(get_max_num_len([<span class="number">10</span>, <span class="number">20</span>, <span class="number">300</span>]))</span><br><span class="line">print(get_num_by_order(<span class="number">876</span>, <span class="number">2</span>))</span><br><span class="line">print(get_num_by_order(<span class="number">876</span>, <span class="number">4</span>))</span><br><span class="line">print(radix_sorting_machine([<span class="number">10</span>, <span class="number">20</span>, <span class="number">300</span>]))</span><br><span class="line">print(radix_sorting_machine([<span class="number">20</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">677</span>, <span class="number">98</span>, <span class="number">25</span>]))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">3</span><br><span class="line">7</span><br><span class="line">0</span><br><span class="line">[10, 20, 300]</span><br><span class="line">[1, 3, 20, 25, 98, 677]</span><br></pre></td></tr></table></figure>
+
+<h3 id="q11"><a href="#q11" class="headerlink" title="q11"></a>q11</h3><p>html匹配检测</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> re</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">html_checker</span><span class="params">(html_str)</span>:</span></span><br><span class="line">    pattern = <span class="string">"&lt;(.+?)&gt;"</span></span><br><span class="line">    tag_stack = Stack()</span><br><span class="line">    html_pat = re.compile(pattern)</span><br><span class="line">    tags = html_pat.findall(html_str)</span><br><span class="line">    <span class="keyword">if</span> tags:</span><br><span class="line">        <span class="keyword">for</span> one <span class="keyword">in</span> tags:</span><br><span class="line">            one = one.strip()</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> one.startswith(<span class="string">'/'</span>):</span><br><span class="line">                tag_stack.push(one)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                one = one.replace(<span class="string">'/'</span>, <span class="string">''</span>)</span><br><span class="line">                <span class="keyword">if</span> tag_stack.isEmpty():</span><br><span class="line">                    print(<span class="string">"html is not balace, check : "</span>, one)</span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">                stack_top = tag_stack.pop()</span><br><span class="line">                <span class="keyword">if</span> stack_top != one:</span><br><span class="line">                    print(<span class="string">"html is not balace, check : "</span>, one)</span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> tag_stack.isEmpty():</span><br><span class="line">            print(<span class="string">"html is not closed, please check !"</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">    print(<span class="string">"html is balance !"</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">            </span><br><span class="line">        </span><br><span class="line">html_str = <span class="string">"""</span></span><br><span class="line"><span class="string">&lt;html&gt;</span></span><br><span class="line"><span class="string">   &lt;head&gt;</span></span><br><span class="line"><span class="string">      &lt;title&gt;</span></span><br><span class="line"><span class="string">         Example</span></span><br><span class="line"><span class="string">      &lt;/title&gt;</span></span><br><span class="line"><span class="string">   &lt;/head&gt;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">   &lt;body&gt;</span></span><br><span class="line"><span class="string">      &lt;h1&gt;Hello, world&lt;/h1&gt;</span></span><br><span class="line"><span class="string">   &lt;/body&gt;</span></span><br><span class="line"><span class="string">&lt;/html&gt;</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line">html_checker(html_str)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">html is balance !</span><br><span class="line">True</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">html_str += <span class="string">"&lt;a&gt;"</span></span><br><span class="line">html_checker(html_str)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">html is not closed, please check !</span><br><span class="line">False</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">html_str = <span class="string">"&lt;a&gt;&lt;/b&gt;"</span></span><br><span class="line">html_checker(html_str)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">html is not balace, check :  b</span><br><span class="line">False</span><br></pre></td></tr></table></figure>
+
+<h3 id="q12"><a href="#q12" class="headerlink" title="q12"></a>q12</h3><p>改写回文检测的代码，使得有空格也可以检测（忽略空格）。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># q12</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">palchecker</span><span class="params">(aString)</span>:</span></span><br><span class="line">    chardeque = Deque()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> ch <span class="keyword">in</span> aString:</span><br><span class="line">        <span class="keyword">if</span> ch != <span class="string">" "</span>:</span><br><span class="line">            chardeque.addRear(ch)</span><br><span class="line"></span><br><span class="line">    stillEqual = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> chardeque.size() &gt; <span class="number">1</span> <span class="keyword">and</span> stillEqual:</span><br><span class="line">        first = chardeque.removeFront()</span><br><span class="line">        last = chardeque.removeRear()</span><br><span class="line">        <span class="keyword">if</span> first != last:</span><br><span class="line">            stillEqual = <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> stillEqual</span><br><span class="line"></span><br><span class="line">print(palchecker(<span class="string">"lsdkjfskf"</span>))</span><br><span class="line">print(palchecker(<span class="string">"radar"</span>))</span><br><span class="line">print(palchecker(<span class="string">"I PREFER PI"</span>))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">False</span><br><span class="line">True</span><br><span class="line">True</span><br></pre></td></tr></table></figure>
+
+<h3 id="q13-q14-q15-q16-q17-q18-q19"><a href="#q13-q14-q15-q16-q17-q18-q19" class="headerlink" title="q13/q14/q15/q16/q17/q18/q19"></a>q13/q14/q15/q16/q17/q18/q19</h3><ul>
+<li>q13 修改UnorderedList类，增加一个变量保存链表的长度，获取长度的时候不用再遍历。</li>
+<li>q14 修改remove方法，使得元素不存在时的情况也能处理。</li>
+<li>q15 允许UnorderedList中存在重复的元素。代码无修改，会影响后面的index方法。</li>
+<li>q16/q17 实现<strong>str</strong>方法。</li>
+<li>q18 实现UnorderedList的append, index, pop, insert方法。</li>
+<li>q19 实现UnorderedList的切片。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># q13/q14/q15/q16/q17/q18</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UnorderedList</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="comment"># 保存第一个结点</span></span><br><span class="line">        self.head = <span class="literal">None</span></span><br><span class="line">        self.length = <span class="number">0</span></span><br><span class="line">        <span class="comment"># 保存最后一个结点</span></span><br><span class="line">        self.rear = <span class="literal">None</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># q16/q17    </span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span></span><br><span class="line">        datas = []</span><br><span class="line">        current = self.head</span><br><span class="line">        <span class="keyword">while</span> current:</span><br><span class="line">            datas.append(current.getData())</span><br><span class="line">            current = current.getNext()</span><br><span class="line">        datas = [str(data) <span class="keyword">for</span> data <span class="keyword">in</span> datas]</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"["</span> + <span class="string">","</span>.join(datas) + <span class="string">"]"</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># q19</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__getitem__</span><span class="params">(self, key)</span> :</span></span><br><span class="line">        <span class="keyword">if</span> isinstance(key, slice) :</span><br><span class="line">            <span class="comment">#Get the start, stop, and step from the slice</span></span><br><span class="line">            indices = list(range(self.size()))[key.start:key.stop:key.step]</span><br><span class="line">            items = []</span><br><span class="line">            <span class="keyword">for</span> ind <span class="keyword">in</span> indices:</span><br><span class="line">                items.append(self.__getitem__(ind))</span><br><span class="line">            <span class="keyword">return</span> items</span><br><span class="line">        <span class="keyword">elif</span> isinstance(key, int) :</span><br><span class="line">            <span class="keyword">if</span> key &lt; <span class="number">0</span> : <span class="comment">#Handle negative indices</span></span><br><span class="line">                key += self.size()</span><br><span class="line">            <span class="keyword">if</span> key &lt; <span class="number">0</span> <span class="keyword">or</span> key &gt;= self.size() :</span><br><span class="line">                <span class="keyword">raise</span> IndexError(<span class="string">"The index (%d) is out of range."</span>%key)</span><br><span class="line"></span><br><span class="line">            current = self.head</span><br><span class="line">            cur_ind = <span class="number">0</span></span><br><span class="line">            <span class="keyword">while</span> cur_ind &lt; key:</span><br><span class="line">                current = current.getNext()</span><br><span class="line">                cur_ind += <span class="number">1</span></span><br><span class="line">            <span class="keyword">return</span> current</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">raise</span> TypeError(<span class="string">"Invalid argument type."</span>)</span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">isEmpty</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.head == <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add</span><span class="params">(self,item)</span>:</span></span><br><span class="line">        <span class="string">"""添加元素到头部"""</span></span><br><span class="line">        temp = Node(item)</span><br><span class="line">        temp.setNext(self.head)</span><br><span class="line">        <span class="keyword">if</span> self.head == <span class="literal">None</span>:</span><br><span class="line">            self.rear = temp</span><br><span class="line">        self.head = temp</span><br><span class="line">        <span class="comment"># q13</span></span><br><span class="line">        self.length += <span class="number">1</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># q13</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">size</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.length</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span><span class="params">(self,item)</span>:</span></span><br><span class="line">        current = self.head</span><br><span class="line">        found = <span class="literal">False</span></span><br><span class="line">        <span class="keyword">while</span> current != <span class="literal">None</span> <span class="keyword">and</span> <span class="keyword">not</span> found:</span><br><span class="line">            <span class="keyword">if</span> current.getData() == item:</span><br><span class="line">                found = <span class="literal">True</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                current = current.getNext()</span><br><span class="line">        <span class="keyword">return</span> found</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">remove</span><span class="params">(self,item)</span>:</span></span><br><span class="line">        current = self.head</span><br><span class="line">        previous = <span class="literal">None</span></span><br><span class="line">        found = <span class="literal">False</span></span><br><span class="line">        <span class="keyword">while</span> <span class="keyword">not</span> found <span class="keyword">and</span> current:</span><br><span class="line">            <span class="keyword">if</span> current.getData() == item:</span><br><span class="line">                found = <span class="literal">True</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                previous = current</span><br><span class="line">                current = current.getNext()</span><br><span class="line">        <span class="comment"># q14</span></span><br><span class="line">        <span class="keyword">if</span> found:</span><br><span class="line">            <span class="keyword">if</span> previous == <span class="literal">None</span>:</span><br><span class="line">                self.head = current.getNext()</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                previous.setNext(current.getNext())</span><br><span class="line">            <span class="comment"># q13</span></span><br><span class="line">            self.length -= <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            print(<span class="string">"item not found in the list!"</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># q18        </span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">append</span><span class="params">(self, item)</span>:</span></span><br><span class="line">        <span class="string">"""添加元素到尾部"""</span></span><br><span class="line">        temp = Node(item)</span><br><span class="line">        <span class="keyword">if</span> self.rear == <span class="literal">None</span>:</span><br><span class="line">            self.rear = temp</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.rear.setNext(temp)</span><br><span class="line">            self.rear = temp</span><br><span class="line">        <span class="keyword">if</span> self.head == <span class="literal">None</span>:</span><br><span class="line">            self.head = temp</span><br><span class="line">        self.length += <span class="number">1</span></span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">index</span><span class="params">(self, item)</span>:</span></span><br><span class="line">        ind_list = []</span><br><span class="line">        current = self.head</span><br><span class="line">        cur_ind = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> current:</span><br><span class="line">            <span class="keyword">if</span> current.getData() == item:</span><br><span class="line">                ind_list.append(cur_ind)</span><br><span class="line">            current = current.getNext()</span><br><span class="line">            cur_ind += <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> ind_list</span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">pop</span><span class="params">(self, pos=<span class="number">0</span>)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> pos &gt; self.size()<span class="number">-1</span>:</span><br><span class="line">            print(<span class="string">"pos is bigger than list size!"</span>)</span><br><span class="line">            <span class="keyword">return</span>    </span><br><span class="line">        cur_ind = <span class="number">1</span></span><br><span class="line">        pre = self.head</span><br><span class="line">        current = pre.getNext()</span><br><span class="line">        <span class="keyword">if</span> pos == <span class="number">0</span>:</span><br><span class="line">            self.head = current</span><br><span class="line">            self.length -= <span class="number">1</span></span><br><span class="line">            <span class="keyword">return</span> pre.getData()</span><br><span class="line">        <span class="keyword">while</span> cur_ind &lt; pos:</span><br><span class="line">            pre = current</span><br><span class="line">            current = pre.getNext()</span><br><span class="line">            cur_ind += <span class="number">1</span></span><br><span class="line"><span class="comment">#         print(pre.getData())</span></span><br><span class="line">        pre.setNext(current.getNext())</span><br><span class="line">        self.length -= <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> current.getData()</span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">insert</span><span class="params">(self, pos, item)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> pos &gt; self.size():</span><br><span class="line">            print(<span class="string">"pos is bigger than list size!"</span>)</span><br><span class="line">            <span class="keyword">return</span>   </span><br><span class="line">        <span class="keyword">if</span> pos == <span class="number">0</span>:</span><br><span class="line">            self.add(item)</span><br><span class="line">        <span class="keyword">elif</span> pos == self.size():</span><br><span class="line">            self.append(item)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            pre = self.head</span><br><span class="line">            current = pre.getNext()</span><br><span class="line">            cur_ind = <span class="number">1</span></span><br><span class="line">            <span class="keyword">while</span> cur_ind &lt; pos:</span><br><span class="line">                pre = current</span><br><span class="line">                current = pre.getNext()</span><br><span class="line">                cur_ind += <span class="number">1</span></span><br><span class="line">            temp = Node(item)</span><br><span class="line">            temp.setNext(current)</span><br><span class="line">            pre.setNext(temp)</span><br><span class="line">            self.length += <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><figcaption><span>.input  n</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ul = UnorderedList()</span><br><span class="line">ul.add(1)</span><br><span class="line">ul.add(2)</span><br><span class="line"># q13</span><br><span class="line">print(ul.size())</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># q14</span></span><br><span class="line">ul.remove(<span class="number">3</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">item not found in the list!</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># q16/q17</span></span><br><span class="line">ul.add(<span class="number">3</span>)</span><br><span class="line">print(ul.size())</span><br><span class="line">print(ul.search(<span class="number">2</span>))</span><br><span class="line">print(ul)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">3</span><br><span class="line">True</span><br><span class="line">[3,2,1]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># q18</span></span><br><span class="line">ul.append(<span class="number">3</span>)</span><br><span class="line">ul.append(<span class="number">5</span>)</span><br><span class="line">ul.append(<span class="number">4</span>)</span><br><span class="line">print(ul)</span><br><span class="line">print(ul.size())</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[3,2,1,3,5,4]</span><br><span class="line">6</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># q18</span></span><br><span class="line">print(ul.index(<span class="number">3</span>))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[0, 3]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># q18</span></span><br><span class="line">print(ul)</span><br><span class="line">print(ul.size()<span class="number">-1</span>)</span><br><span class="line">ul.pop(<span class="number">2</span>)</span><br><span class="line">print(ul)</span><br><span class="line">print(ul.size()<span class="number">-1</span>)</span><br><span class="line">print(ul.pop(ul.size()<span class="number">-1</span>))</span><br><span class="line">print(ul)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[3,2,1,3,5,4]</span><br><span class="line">5</span><br><span class="line">[3,2,3,5,4]</span><br><span class="line">4</span><br><span class="line">4</span><br><span class="line">[3,2,3,5]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ul.insert(<span class="number">0</span>, <span class="number">3</span>)</span><br><span class="line">print(ul)</span><br><span class="line">ul.insert(<span class="number">3</span>, <span class="number">3</span>)</span><br><span class="line">print(ul)</span><br><span class="line">ul.insert(<span class="number">5</span>, <span class="number">3</span>)</span><br><span class="line">print(ul)</span><br><span class="line">ul.insert(<span class="number">8</span>, <span class="number">3</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[3,3,2,3,5]</span><br><span class="line">[3,3,2,3,3,5]</span><br><span class="line">[3,3,2,3,3,3,5]</span><br><span class="line">pos is bigger than list size!</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">print(ul.size())</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">7</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> node <span class="keyword">in</span> ul[<span class="number">0</span>:<span class="number">3</span>]:</span><br><span class="line">    print(node)</span><br><span class="line">print(ul[<span class="number">2</span>])</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">3</span><br><span class="line">3</span><br><span class="line">2</span><br><span class="line">2</span><br></pre></td></tr></table></figure>
+
+<h3 id="q20"><a href="#q20" class="headerlink" title="q20"></a>q20</h3><p>完善OrderedList的实现</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">OrderedList</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.head = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span><span class="params">(self,item)</span>:</span></span><br><span class="line">        current = self.head</span><br><span class="line">        found = <span class="literal">False</span></span><br><span class="line">        stop = <span class="literal">False</span></span><br><span class="line">        <span class="keyword">while</span> current != <span class="literal">None</span> <span class="keyword">and</span> <span class="keyword">not</span> found <span class="keyword">and</span> <span class="keyword">not</span> stop:</span><br><span class="line">            <span class="keyword">if</span> current.getData() == item:</span><br><span class="line">                found = <span class="literal">True</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="keyword">if</span> current.getData() &gt; item:</span><br><span class="line">                    stop = <span class="literal">True</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    current = current.getNext()</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> found</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add</span><span class="params">(self,item)</span>:</span></span><br><span class="line">        current = self.head</span><br><span class="line">        previous = <span class="literal">None</span></span><br><span class="line">        stop = <span class="literal">False</span></span><br><span class="line">        <span class="keyword">while</span> current != <span class="literal">None</span> <span class="keyword">and</span> <span class="keyword">not</span> stop:</span><br><span class="line">            <span class="keyword">if</span> current.getData() &gt; item:</span><br><span class="line">                stop = <span class="literal">True</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                previous = current</span><br><span class="line">                current = current.getNext()</span><br><span class="line"></span><br><span class="line">        temp = Node(item)</span><br><span class="line">        <span class="keyword">if</span> previous == <span class="literal">None</span>:</span><br><span class="line">            temp.setNext(self.head)</span><br><span class="line">            self.head = temp</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            temp.setNext(current)</span><br><span class="line">            previous.setNext(temp)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">isEmpty</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.head == <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">size</span><span class="params">(self)</span>:</span></span><br><span class="line">        current = self.head</span><br><span class="line">        count = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> current != <span class="literal">None</span>:</span><br><span class="line">            count = count + <span class="number">1</span></span><br><span class="line">            current = current.getNext()</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> count  </span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">remove</span><span class="params">(item)</span>:</span></span><br><span class="line">        pre = self.head</span><br><span class="line">        current = pre.getNext()</span><br><span class="line">        <span class="keyword">if</span> item == pre.getData():</span><br><span class="line">            self.head = current</span><br><span class="line">        found = <span class="literal">False</span></span><br><span class="line">        stop = <span class="literal">False</span></span><br><span class="line">        <span class="keyword">while</span> current <span class="keyword">and</span> <span class="keyword">not</span> found <span class="keyword">and</span> <span class="keyword">not</span> stop:</span><br><span class="line">            <span class="keyword">if</span> current.getData() == item:</span><br><span class="line">                found = <span class="literal">True</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="keyword">if</span> current.getData() &gt; item:</span><br><span class="line">                    stop = <span class="literal">True</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    pre = current</span><br><span class="line">                    current = current.getNext()</span><br><span class="line">        <span class="keyword">if</span> found:</span><br><span class="line">            pre.setNext(current.getNext())</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">pop</span><span class="params">(self, pos=<span class="number">0</span>)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> pos &gt; self.size()<span class="number">-1</span>:</span><br><span class="line">            print(<span class="string">"pos is bigger than list size!"</span>)</span><br><span class="line">            <span class="keyword">return</span>    </span><br><span class="line">        cur_ind = <span class="number">1</span></span><br><span class="line">        pre = self.head</span><br><span class="line">        current = pre.getNext()</span><br><span class="line">        <span class="keyword">if</span> pos == <span class="number">0</span>:</span><br><span class="line">            self.head = current</span><br><span class="line">            <span class="keyword">return</span> pre.getData()</span><br><span class="line">        <span class="keyword">while</span> cur_ind &lt; pos:</span><br><span class="line">            pre = current</span><br><span class="line">            current = pre.getNext()</span><br><span class="line">            cur_ind += <span class="number">1</span></span><br><span class="line">        pre.setNext(current.getNext())</span><br><span class="line">        self.length -= <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> current.getData()</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">index</span><span class="params">(self, item)</span>:</span></span><br><span class="line">        current = self.head</span><br><span class="line">        cur_ind = <span class="number">0</span></span><br><span class="line">        found = <span class="literal">False</span></span><br><span class="line">        stop = <span class="literal">False</span></span><br><span class="line">        <span class="keyword">while</span> current != <span class="literal">None</span> <span class="keyword">and</span> <span class="keyword">not</span> found <span class="keyword">and</span> <span class="keyword">not</span> stop:</span><br><span class="line">            <span class="keyword">if</span> current.getData() == item:</span><br><span class="line">                found = <span class="literal">True</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="keyword">if</span> current.getData() &gt; item:</span><br><span class="line">                    stop = <span class="literal">True</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    current = current.getNext()</span><br><span class="line">                    cur_ind += <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> found:</span><br><span class="line">            <span class="keyword">return</span> cur_ind</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="q21"><a href="#q21" class="headerlink" title="q21"></a>q21</h3><p>考虑写一个Unordered list和 Ordered list 的父类，使得二者相同的操作可以在父类中实现。</p>
+<p>相同的操作有：</p>
+<p>pop size isEmpty</p>
+<p>此题代码省略。</p>
+<h4 id="q22"><a href="#q22" class="headerlink" title="q22"></a>q22</h4><p>用链表实现一个stack</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Stack2</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.items = UnorderedList()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">isEmpty</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.items.size() == <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">push</span><span class="params">(self, item)</span>:</span></span><br><span class="line">        self.items.append(item)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">pop</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.items.pop(self.items.size()<span class="number">-1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">peek</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.items[<span class="number">-1</span>]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">size</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.items.size()</span><br></pre></td></tr></table></figure>
+
+<h3 id="q23"><a href="#q23" class="headerlink" title="q23"></a>q23</h3><p>用链表实现一个queue</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Queue2</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.items = UnorderedList()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">isEmpty</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.items.size() == <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">enqueue</span><span class="params">(self, item)</span>:</span></span><br><span class="line">        self.items.append(item)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">dequeue</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.items.pop(self.items.size()<span class="number">-1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">size</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.items.size()</span><br></pre></td></tr></table></figure>
+
+<h3 id="q24"><a href="#q24" class="headerlink" title="q24"></a>q24</h3><p>用链表实现一个deque</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Deque2</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.items = UnorderedList()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">isEmpty</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.items.size() == <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">addFront</span><span class="params">(self, item)</span>:</span></span><br><span class="line">        self.items.add(item)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">addRear</span><span class="params">(self, item)</span>:</span></span><br><span class="line">        self.items.append(item)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">removeFront</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.items.pop()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">removeRear</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.items.pop(self.items.size()<span class="number">-1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">size</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.items.size()</span><br></pre></td></tr></table></figure>
+
+<h3 id="q25"><a href="#q25" class="headerlink" title="q25"></a>q25</h3><p>设计实验对比链表和python内置list的性能。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">list_test</span><span class="params">()</span>:</span></span><br><span class="line">    l = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">        l.append(i)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">        l.pop()</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">unorded_list_test</span><span class="params">()</span>:</span></span><br><span class="line">    ul = UnorderedList()</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">        ul.add(i)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">        ul.pop()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> timeit <span class="keyword">import</span> Timer</span><br><span class="line">t9 = Timer(<span class="string">"list_test()"</span>, <span class="string">"from __main__ import list_test"</span>)</span><br><span class="line">print(<span class="string">"list :"</span>,t9.timeit(number=<span class="number">100</span>), <span class="string">"milliseconds"</span>)</span><br><span class="line">t10 = Timer(<span class="string">"unorded_list_test()"</span>, <span class="string">"from __main__ import unorded_list_test"</span>)</span><br><span class="line">print(<span class="string">"unorded list :"</span>,t10.timeit(number=<span class="number">100</span>), <span class="string">"milliseconds"</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">list : 0.020239962999767158 milliseconds</span><br><span class="line">unorded list : 0.18505007000021578 milliseconds</span><br></pre></td></tr></table></figure>
+
+<h3 id="q26"><a href="#q26" class="headerlink" title="q26"></a>q26</h3><p>设计实验对比两种stack和queue的实现的性能。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">stack_1_test</span><span class="params">()</span>:</span></span><br><span class="line">    s = Stack()</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">        s.push(i)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">        s.pop()</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">stack_2_test</span><span class="params">()</span>:</span></span><br><span class="line">    s = Stack2()</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">        s.push(i)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">        s.pop()</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">queue_1_test</span><span class="params">()</span>:</span></span><br><span class="line">    q = Queue()</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">        q.enqueue(i)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">        q.dequeue()</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">queue_2_test</span><span class="params">()</span>:</span></span><br><span class="line">    q = Queue2()</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">        q.enqueue(i)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">        q.dequeue()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">t11 = Timer(<span class="string">"stack_1_test()"</span>, <span class="string">"from __main__ import stack_1_test"</span>)</span><br><span class="line">print(<span class="string">"stack 1:"</span>,t11.timeit(number=<span class="number">10</span>), <span class="string">"milliseconds"</span>)</span><br><span class="line">t12 = Timer(<span class="string">"stack_2_test()"</span>, <span class="string">"from __main__ import stack_2_test"</span>)</span><br><span class="line">print(<span class="string">"stack 2:"</span>,t12.timeit(number=<span class="number">10</span>), <span class="string">"milliseconds"</span>)</span><br><span class="line">t13 = Timer(<span class="string">"queue_1_test()"</span>, <span class="string">"from __main__ import queue_1_test"</span>)</span><br><span class="line">print(<span class="string">"queue 1:"</span>,t13.timeit(number=<span class="number">10</span>), <span class="string">"milliseconds"</span>)</span><br><span class="line">t14 = Timer(<span class="string">"queue_2_test()"</span>, <span class="string">"from __main__ import queue_2_test"</span>)</span><br><span class="line">print(<span class="string">"queue 2:"</span>,t14.timeit(number=<span class="number">10</span>), <span class="string">"milliseconds"</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">stack 1: 0.005089294999834237 milliseconds</span><br><span class="line">stack 2: 0.9783772470000258 milliseconds</span><br><span class="line">queue 1: 0.007056649999867659 milliseconds</span><br><span class="line">queue 2: 0.9649373209999794 milliseconds</span><br></pre></td></tr></table></figure>
+
+<h3 id="q27"><a href="#q27" class="headerlink" title="q27"></a>q27</h3><p>设计一个双向连接的链表。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node2</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,initdata)</span>:</span></span><br><span class="line">        self.data = initdata</span><br><span class="line">        self.next = <span class="literal">None</span></span><br><span class="line">        self.pre = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> str(self.data)</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getData</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.data</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getNext</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.next</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getPre</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.pre</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">setData</span><span class="params">(self,newdata)</span>:</span></span><br><span class="line">        self.data = newdata</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">setNext</span><span class="params">(self,newnext)</span>:</span></span><br><span class="line">        self.next = newnext</span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">setPre</span><span class="params">(self,newpre)</span>:</span></span><br><span class="line">        self.pre = newpre</span><br></pre></td></tr></table></figure>
+
+<h3 id="q28"><a href="#q28" class="headerlink" title="q28"></a>q28</h3><p>设计一个入队和出队时间复杂度都是O(1)的queue。</p>
+<p>参考<a href="#q7">q7</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Algorithm-笔记/" rel="tag"># Algorithm, 笔记</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/algrithom/book_learning_2/" rel="next" title="二. Analysis">
+                <i class="fa fa-chevron-left"></i> 二. Analysis
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/algrithom/book_learning_4/" rel="prev" title="四. Recursion">
+                四. Recursion <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/red.jpg" alt="Javen Chen">
+            
+              <p class="site-author-name" itemprop="name">Javen Chen</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">55</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/applenob" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:applecer@pku.edu.cn" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#3-Basic-Data-Structures"><span class="nav-number">1.</span> <span class="nav-text">3. Basic Data Structures</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#笔记"><span class="nav-number">1.1.</span> <span class="nav-text">笔记</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#栈stack"><span class="nav-number">1.1.1.</span> <span class="nav-text">栈stack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#队列Queue"><span class="nav-number">1.1.2.</span> <span class="nav-text">队列Queue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#双向队列Deque"><span class="nav-number">1.1.3.</span> <span class="nav-text">双向队列Deque</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#无序链表Unsordered-List"><span class="nav-number">1.1.4.</span> <span class="nav-text">无序链表Unsordered List</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#作业"><span class="nav-number">1.2.</span> <span class="nav-text">作业</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#q1"><span class="nav-number">1.2.1.</span> <span class="nav-text">q1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q2"><span class="nav-number">1.2.2.</span> <span class="nav-text">q2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q3-q4"><span class="nav-number">1.2.3.</span> <span class="nav-text">q3/q4</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q5"><span class="nav-number">1.2.4.</span> <span class="nav-text">q5</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q6"><span class="nav-number">1.2.5.</span> <span class="nav-text">q6</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q7"><span class="nav-number">1.2.6.</span> <span class="nav-text">q7</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q8"><span class="nav-number">1.2.7.</span> <span class="nav-text">q8</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q9"><span class="nav-number">1.2.8.</span> <span class="nav-text">q9</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q10"><span class="nav-number">1.2.9.</span> <span class="nav-text">q10</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q11"><span class="nav-number">1.2.10.</span> <span class="nav-text">q11</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q12"><span class="nav-number">1.2.11.</span> <span class="nav-text">q12</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q13-q14-q15-q16-q17-q18-q19"><span class="nav-number">1.2.12.</span> <span class="nav-text">q13/q14/q15/q16/q17/q18/q19</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q20"><span class="nav-number">1.2.13.</span> <span class="nav-text">q20</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q21"><span class="nav-number">1.2.14.</span> <span class="nav-text">q21</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#q22"><span class="nav-number">1.2.14.1.</span> <span class="nav-text">q22</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q23"><span class="nav-number">1.2.15.</span> <span class="nav-text">q23</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q24"><span class="nav-number">1.2.16.</span> <span class="nav-text">q24</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q25"><span class="nav-number">1.2.17.</span> <span class="nav-text">q25</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q26"><span class="nav-number">1.2.18.</span> <span class="nav-text">q26</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q27"><span class="nav-number">1.2.19.</span> <span class="nav-text">q27</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q28"><span class="nav-number">1.2.20.</span> <span class="nav-text">q28</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("9s7vKaOPY7lMWuX9YVLasdnq-gzGzoHsz", "gOEj5qIEBIz5eDM3F5Nn90Jg");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
