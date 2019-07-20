@@ -83,19 +83,19 @@
 <meta property="og:site_name" content="Javen Chen&#39;s Blog">
 <meta property="og:description" content="1234在机器学习和数据挖掘的应用中，scikit-learn是一个功能强大的python包。在数据量不是过大的情况下，可以解决大部分问题。学习使用scikit-learn的过程中，我自己也在补充着机器学习和数据挖掘的知识。这里根据自己学习sklearn的经验，我做一个总结的笔记。另外，我也想把这篇笔记一直更新下去。   1 scikit-learn基础介绍1.1 估计器（Estimator）估计">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/machine_learning/Scikit-learn/data.png">
-<meta property="og:image" content="http://yoursite.com/machine_learning/Scikit-learn/count.png">
+<meta property="og:image" content="http://yoursite.com/machine_learning/Scikit-learn/Scikit-learn/data.png">
+<meta property="og:image" content="http://yoursite.com/machine_learning/Scikit-learn/Scikit-learn/count.png">
 <meta property="og:image" content="http://yoursite.com/machine_learning/Scikit-learn/hash.png">
-<meta property="og:image" content="http://yoursite.com/machine_learning/Scikit-learn/tfidf.png">
-<meta property="og:image" content="http://yoursite.com/machine_learning/Scikit-learn/nb.png">
-<meta property="og:image" content="http://yoursite.com/machine_learning/Scikit-learn/gs.png">
-<meta property="og:image" content="http://yoursite.com/machine_learning/Scikit-learn/dxs.png">
-<meta property="og:image" content="http://yoursite.com/machine_learning/Scikit-learn/bnl.png">
+<meta property="og:image" content="http://yoursite.com/machine_learning/Scikit-learn/Scikit-learn/tfidf.png">
+<meta property="og:image" content="http://yoursite.com/machine_learning/Scikit-learn/Scikit-learn/nb.png">
+<meta property="og:image" content="http://yoursite.com/machine_learning/Scikit-learn/Scikit-learn/gs.png">
+<meta property="og:image" content="http://yoursite.com/machine_learning/Scikit-learn/Scikit-learn/dxs.png">
+<meta property="og:image" content="http://yoursite.com/machine_learning/Scikit-learn/Scikit-learn/bnl.png">
 <meta property="og:updated_time" content="2019-06-16T14:26:06.625Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Scikit-learn使用总结">
 <meta name="twitter:description" content="1234在机器学习和数据挖掘的应用中，scikit-learn是一个功能强大的python包。在数据量不是过大的情况下，可以解决大部分问题。学习使用scikit-learn的过程中，我自己也在补充着机器学习和数据挖掘的知识。这里根据自己学习sklearn的经验，我做一个总结的笔记。另外，我也想把这篇笔记一直更新下去。   1 scikit-learn基础介绍1.1 估计器（Estimator）估计">
-<meta name="twitter:image" content="http://yoursite.com/machine_learning/Scikit-learn/data.png">
+<meta name="twitter:image" content="http://yoursite.com/machine_learning/Scikit-learn/Scikit-learn/data.png">
 
 
 
@@ -428,12 +428,12 @@
 <li><strong>text.TfidfVectorizer</strong>：将文本转换为tfidf值的向量</li>
 <li><strong>text.HashingVectorizer</strong>：文本的特征哈希</li>
 </ul>
-<p><strong>示例</strong><br><img src="/machine_learning/Scikit-learn/data.png" alt="data.png"></p>
+<p><strong>示例</strong><br><img src="Scikit-learn/data.png" alt="data.png"></p>
 <p>CountVectorize只数出现个数</p>
-<p><img src="/machine_learning/Scikit-learn/count.png" alt="count.png"></p>
-<p><img src="/machine_learning/Scikit-learn/hash.png" alt="hash.png"></p>
+<p><img src="Scikit-learn/count.png" alt="count.png"></p>
+<p><img src="hash.png" alt="hash.png"></p>
 <p>TfidfVectorizer：个数+归一化（不包括idf）</p>
-<p><img src="/machine_learning/Scikit-learn/tfidf.png" alt="tfidf(without idf).png"></p>
+<p><img src="Scikit-learn/tfidf.png" alt="tfidf(without idf).png"></p>
 <h4 id="1-5-2-特征选择"><a href="#1-5-2-特征选择" class="headerlink" title="1.5.2 特征选择"></a>1.5.2 特征选择</h4><p>包：<strong>sklearn.feature_selection</strong></p>
 <p>特征选择的原因如下：</p>
 <ul>
@@ -579,7 +579,7 @@
 <p>上面的代码测试了svm在OneVsRestClassifier的包装下，分别处理多分类和多标签的情况。</p>
 <p>特别注意，在多标签的情况下，输入必须是二值化的。所以需要MultiLabelBinarizer()先处理。</p>
 <h1 id="2-具体模型"><a href="#2-具体模型" class="headerlink" title="2 具体模型"></a>2 具体模型</h1><h2 id="2-1-朴素贝叶斯（Naive-Bayes）"><a href="#2-1-朴素贝叶斯（Naive-Bayes）" class="headerlink" title="2.1 朴素贝叶斯（Naive Bayes）"></a>2.1 朴素贝叶斯（Naive Bayes）</h2><p>包：<strong>sklearn.cross_validation</strong></p>
-<p><img src="/machine_learning/Scikit-learn/nb.png" alt="朴素贝叶斯.png"></p>
+<p><img src="Scikit-learn/nb.png" alt="朴素贝叶斯.png"></p>
 <p>朴素贝叶斯的特点是分类速度快，分类效果不一定是最好的。</p>
 <ul>
 <li><strong>GasussianNB</strong>：高斯分布的朴素贝叶斯</li>
@@ -587,9 +587,9 @@
 <li><strong>BernoulliNB</strong>：伯努利分布的朴素贝叶斯</li>
 </ul>
 <p>所谓使用什么分布的朴素贝叶斯，就是假设P(x_i|y)是符合哪一种分布，比如可以假设其服从高斯分布，然后用最大似然法估计高斯分布的参数。</p>
-<p><img src="/machine_learning/Scikit-learn/gs.png" alt="高斯分布.png"></p>
-<p><img src="/machine_learning/Scikit-learn/dxs.png" alt="多项式分布.png"></p>
-<p><img src="/machine_learning/Scikit-learn/bnl.png" alt="伯努利分布.png"></p>
+<p><img src="Scikit-learn/gs.png" alt="高斯分布.png"></p>
+<p><img src="Scikit-learn/dxs.png" alt="多项式分布.png"></p>
+<p><img src="Scikit-learn/bnl.png" alt="伯努利分布.png"></p>
 <h1 id="3-scikit-learn扩展"><a href="#3-scikit-learn扩展" class="headerlink" title="3 scikit-learn扩展"></a>3 scikit-learn扩展</h1><h3 id="3-0-概览"><a href="#3-0-概览" class="headerlink" title="3.0 概览"></a>3.0 概览</h3><p>具体的扩展，通常要继承<strong>sklearn.base</strong>包下的类。</p>
 <ul>
 <li><strong>BaseEstimator</strong>： 估计器的基类</li>
@@ -636,6 +636,10 @@
       
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
+            
+              <a href="/python/numpy_beginer/" rel="next" title="numpy基础">
+                <i class="fa fa-chevron-left"></i> numpy基础
+              </a>
             
           </div>
 
@@ -724,7 +728,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">55</span>
+                  <span class="site-state-item-count">86</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -735,7 +739,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">categories</span>
                 </a>
               </div>
@@ -746,7 +750,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">18</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>

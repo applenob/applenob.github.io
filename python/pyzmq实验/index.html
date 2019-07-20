@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+
+
+
+
+  <meta name="keywords" content="Python, Back End,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="简介稍微偏底层的网络框架：  可以跨语言跨平台调用。 可以用inproc、IPC、TCP、TIPC、multicast多途径传递数据。 提供常用的模式，如pub-sub（发布-订阅）、push-pull（推送-拉取）、router-dealer（路由器-经销商）等模式。 快速的异步IO引擎。 开源、免费。  文档 zeromq文档： http://zeromq.org/ pyzmq学习文档：htt">
+<meta name="keywords" content="Python, Back End">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pyzmq实验总结">
+<meta property="og:url" content="http://yoursite.com/python/pyzmq实验/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="简介稍微偏底层的网络框架：  可以跨语言跨平台调用。 可以用inproc、IPC、TCP、TIPC、multicast多途径传递数据。 提供常用的模式，如pub-sub（发布-订阅）、push-pull（推送-拉取）、router-dealer（路由器-经销商）等模式。 快速的异步IO引擎。 开源、免费。  文档 zeromq文档： http://zeromq.org/ pyzmq学习文档：htt">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-07-20T11:51:36.263Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="pyzmq实验总结">
+<meta name="twitter:description" content="简介稍微偏底层的网络框架：  可以跨语言跨平台调用。 可以用inproc、IPC、TCP、TIPC、multicast多途径传递数据。 提供常用的模式，如pub-sub（发布-订阅）、push-pull（推送-拉取）、router-dealer（路由器-经销商）等模式。 快速的异步IO引擎。 开源、免费。  文档 zeromq文档： http://zeromq.org/ pyzmq学习文档：htt">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/python/pyzmq实验/">
+
+
+
+
+
+  <title>pyzmq实验总结 | Javen Chen's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?239bba0e8b78c0293b8e646237f788cd";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Javen Chen's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Tech and Life~</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-所有专栏">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            所有专栏
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-历史文章">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            历史文章
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/python/pyzmq实验/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Javen Chen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/red.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">pyzmq实验总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-12-05T11:50:00+08:00">
+                2018-12-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/python/pyzmq实验/" class="leancloud_visitors" data-flag-title="pyzmq实验总结">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>稍微偏底层的网络框架：</p>
+<ul>
+<li>可以跨语言跨平台调用。</li>
+<li>可以用<code>inproc</code>、<code>IPC</code>、<code>TCP</code>、<code>TIPC</code>、<code>multicast</code>多途径传递数据。</li>
+<li>提供常用的模式，如<code>pub-sub（发布-订阅）</code>、<code>push-pull（推送-拉取）</code>、<code>router-dealer（路由器-经销商）</code>等模式。</li>
+<li>快速的异步IO引擎。</li>
+<li>开源、免费。</li>
+</ul>
+<h3 id="文档"><a href="#文档" class="headerlink" title="文档"></a>文档</h3><ul>
+<li>zeromq文档： <a href="http://zeromq.org/" target="_blank" rel="noopener">http://zeromq.org/</a></li>
+<li>pyzmq学习文档：<a href="https://learning-0mq-with-pyzmq.readthedocs.io/en/latest/pyzmq/patterns/pair.html" target="_blank" rel="noopener">https://learning-0mq-with-pyzmq.readthedocs.io/en/latest/pyzmq/patterns/pair.html</a></li>
+<li>pyzmq api：<a href="https://pyzmq.readthedocs.io/en/latest/api/" target="_blank" rel="noopener">https://pyzmq.readthedocs.io/en/latest/api/</a></li>
+</ul>
+<h2 id="常用api"><a href="#常用api" class="headerlink" title="常用api"></a>常用api</h2><h3 id="Context"><a href="#Context" class="headerlink" title="Context"></a>Context</h3><p>创建一个zmq的context。</p>
+<h3 id="Socekt"><a href="#Socekt" class="headerlink" title="Socekt"></a>Socekt</h3><p>在context中创建一个socket。</p>
+<h3 id="socket-bind-addr"><a href="#socket-bind-addr" class="headerlink" title="socket.bind(addr)"></a>socket.bind(addr)</h3><p>让某个socket监听某个端口。其他socket想连接这个socket，需要使用<code>socket.connect(addr)</code>。</p>
+<h3 id="socket-connect-addr"><a href="#socket-connect-addr" class="headerlink" title="socket.connect(addr)"></a>socket.connect(addr)</h3><p>通过端口地址，连接到远程的socket。</p>
+<h3 id="bind-vs-connect"><a href="#bind-vs-connect" class="headerlink" title="bind vs connect"></a>bind vs connect</h3><ul>
+<li>服务端和客户端必须有<code>bind</code>和<code>connect</code>，不能只用<code>connect</code>。</li>
+<li>不同的进程可以<code>connect</code>同一个端口，但不能<code>bind</code>同一个端口。</li>
+<li>必须要保证客户端先<code>connect</code>，服务端再发送数据，否则数据会丢失。</li>
+<li>在实际传输数据之前，是客户端先调用<code>connect</code>还是服务端先调用<code>bind</code>，这二者的顺序没有影响。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> zmq</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="comment"># import multiprocessing as mp</span></span><br><span class="line"></span><br><span class="line">context = zmq.Context()</span><br><span class="line">port = <span class="string">"5557"</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="常用模式"><a href="#常用模式" class="headerlink" title="常用模式"></a>常用模式</h2><h3 id="PAIR"><a href="#PAIR" class="headerlink" title="PAIR"></a>PAIR</h3><p>传统soket：</p>
+<ul>
+<li>点到点。</li>
+<li>多对一（多个客服端，一个服务端）。</li>
+<li>一对多（广播）。</li>
+</ul>
+<p><code>PAIR</code> socket的行为类似于传统soket：</p>
+<ul>
+<li>通讯是双向的。</li>
+<li>socket不保存特定状态。</li>
+<li>只能连接一个（一对一，所以叫配对）</li>
+<li>服务端监听一个特定的端口，一个客户端连接到上面。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 服务端</span></span><br><span class="line"></span><br><span class="line">socket = context.socket(zmq.PAIR)</span><br><span class="line">socket.bind(<span class="string">"tcp://*:%s"</span> % port)</span><br><span class="line"><span class="comment"># socket.connect("tcp://localhost:%s" % port)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># socket = context.socket(zmq.PAIR)</span></span><br><span class="line"><span class="comment"># socket.connect("tcp://localhost:%s" % port)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">5</span>):</span><br><span class="line">    socket.send_string(<span class="string">"Server message to client3"</span>)</span><br><span class="line">    msg = socket.recv_string()</span><br><span class="line">    print(msg)</span><br><span class="line">    time.sleep(<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">client message to server1</span><br><span class="line">client message to server2</span><br><span class="line">client message to server1</span><br><span class="line">client message to server2</span><br><span class="line">client message to server1</span><br></pre></td></tr></table></figure>
+
+<p>客户端代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">port = <span class="string">"5557"</span></span><br><span class="line">context = zmq.Context()</span><br><span class="line">socket = context.socket(zmq.PAIR)</span><br><span class="line">socket.connect(<span class="string">"tcp://localhost:%s"</span> % port)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">5</span>):</span><br><span class="line">    msg = socket.recv_string()</span><br><span class="line">    print(msg)</span><br><span class="line">    socket.send_string(<span class="string">"client message to server1"</span>)</span><br><span class="line">    socket.send_string(<span class="string">"client message to server2"</span>)</span><br><span class="line">    time.sleep(<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+<p>客户端输出：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Server message to client3</span><br><span class="line">Server message to client3</span><br><span class="line">Server message to client3</span><br><span class="line">Server message to client3</span><br><span class="line">Server message to client3</span><br></pre></td></tr></table></figure>
+
+<p>可以观察到：如果服务端绑定了<code>bind</code>某个socket，需要在客户端连接<code>connect</code>上这个socket以后，服务端传输的数据才能被客户端接收到，<strong>否则服务端发出去的数据会丢失</strong>。</p>
+<p><strong>注意：</strong>上面这点对于所有类型的socket都成立，必须要保证客户端先<code>connect</code>，服务端再发送数据。另外，在实际传输数据之前，是客户端先调用<code>connect</code>还是服务端先调用<code>bind</code>，这二者的顺序没有影响。</p>
+<h3 id="Client-Server"><a href="#Client-Server" class="headerlink" title="Client / Server"></a>Client / Server</h3><p>又称<code>Request/Reply</code>模式。</p>
+<ul>
+<li><code>REQ</code> socket可以连接到多个服务端。</li>
+<li>请求可以被同时分发到多个服务端上。</li>
+<li><code>REQ</code>在<code>REP</code>返回消息之前，会被阻塞。</li>
+<li><code>REP</code>在<code>REQ</code>返回消息之前，会被阻塞。</li>
+</ul>
+<p>简单说必须<strong>你一言我一语</strong>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 服务端</span></span><br><span class="line"></span><br><span class="line">socket = context.socket(zmq.REP)</span><br><span class="line">socket.bind(<span class="string">"tcp://*:%s"</span> % port)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">5</span>):</span><br><span class="line">    <span class="comment">#  Wait for next request from client</span></span><br><span class="line">    message = socket.recv_string()</span><br><span class="line">    print(<span class="string">"Received request: "</span>, message)</span><br><span class="line">    time.sleep(<span class="number">1</span>)  </span><br><span class="line">    socket.send_string(<span class="string">"World from %s"</span> % port)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Received request:  Hello</span><br><span class="line">Received request:  Hello</span><br><span class="line">Received request:  Hello</span><br><span class="line">Received request:  Hello</span><br><span class="line">Received request:  Hello</span><br></pre></td></tr></table></figure>
+
+<p>客户端代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">socket = context.socket(zmq.REQ)</span><br><span class="line">socket.connect (<span class="string">"tcp://localhost:%s"</span> % port)</span><br><span class="line"><span class="comment">#  Do 5 requests, waiting each time for a response</span></span><br><span class="line"><span class="keyword">for</span> request <span class="keyword">in</span> range (<span class="number">5</span>):</span><br><span class="line">    print(<span class="string">"Sending request "</span>, request,<span class="string">"..."</span>)</span><br><span class="line">    socket.send_string (<span class="string">"Hello"</span>)</span><br><span class="line">    <span class="comment">#  Get the reply.</span></span><br><span class="line">    message = socket.recv_string()</span><br><span class="line">    print(<span class="string">"Received reply "</span>, request, <span class="string">"["</span>, message, <span class="string">"]"</span>)</span><br></pre></td></tr></table></figure>
+
+<p>客户端输出：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Sending request  0 ...</span><br><span class="line">Received reply  0 [ World from 5557 ]</span><br><span class="line">Sending request  1 ...</span><br><span class="line">Received reply  1 [ World from 5557 ]</span><br><span class="line">Sending request  2 ...</span><br><span class="line">Received reply  2 [ World from 5557 ]</span><br><span class="line">Sending request  3 ...</span><br><span class="line">Received reply  3 [ World from 5557 ]</span><br><span class="line">Sending request  4 ...</span><br><span class="line">Received reply  4 [ World from 5557 ]</span><br></pre></td></tr></table></figure>
+
+<p>可以观察到：每个<code>REP</code>都会等待收到一个<code>REQ</code>请求，然后才能继续发送响应；每个<code>REQ</code>在发送请求后，必须等待收到一个<code>REP</code>响应，才可以继续发送请求。</p>
+<h3 id="Publish-Subscribe"><a href="#Publish-Subscribe" class="headerlink" title="Publish/Subscribe"></a>Publish/Subscribe</h3><p>订阅/发布模式，就像微信上订阅公众号一样，你会收到所有你订阅的公众号发送的文章；同时每个公众号会把文章发给所有订阅这个公众号的用户。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 服务端</span></span><br><span class="line"></span><br><span class="line">socket = context.socket(zmq.PUB)</span><br><span class="line">socket.bind(<span class="string">"tcp://*:%s"</span> % port)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">5</span>):</span><br><span class="line">    topic = random.randrange(<span class="number">9999</span>,<span class="number">10001</span>)</span><br><span class="line">    messagedata = random.randrange(<span class="number">1</span>,<span class="number">215</span>) - <span class="number">80</span></span><br><span class="line">    print(<span class="string">"%d %d"</span> % (topic, messagedata))</span><br><span class="line">    socket.send_string(<span class="string">"%d %d"</span> % (topic, messagedata))</span><br><span class="line">    time.sleep(<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">10000 -68</span><br><span class="line">10000 65</span><br><span class="line">9999 110</span><br><span class="line">10000 -21</span><br><span class="line">10000 114</span><br></pre></td></tr></table></figure>
+
+<p>客户端代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">socket = context.socket(zmq.SUB)</span><br><span class="line">print(<span class="string">"Collecting updates from weather server..."</span>)</span><br><span class="line">socket.connect (<span class="string">"tcp://localhost:%s"</span> % port)</span><br><span class="line"><span class="comment"># Subscribe to 9999</span></span><br><span class="line">topicfilter = <span class="string">"9999"</span></span><br><span class="line">socket.setsockopt_string(zmq.SUBSCRIBE, topicfilter)</span><br><span class="line"><span class="comment"># Process 1 updates</span></span><br><span class="line">total_value = <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> update_nbr <span class="keyword">in</span> range (<span class="number">1</span>):</span><br><span class="line">    string = socket.recv_string()</span><br><span class="line">    topic, messagedata = string.split()</span><br><span class="line">    total_value += int(messagedata)</span><br><span class="line">    print(topic, messagedata)</span><br></pre></td></tr></table></figure>
+
+<p>客户端输出：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">9999 -76</span><br></pre></td></tr></table></figure>
+
+<h3 id="Push-Pull"><a href="#Push-Pull" class="headerlink" title="Push/Pull"></a>Push/Pull</h3><p>又称<code>Pipeline</code> 模式，很像<code>生产者-消费者</code>模式。不一样的是，消费者的结果不会返回给上游，而是传给下游。</p>
+<p>顺序：</p>
+<ol>
+<li>启动结果管理器；</li>
+<li>启动worker；</li>
+<li>启动生产者。</li>
+</ol>
+<p>1.启动结果管理器</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">results_receiver = context.socket(zmq.PULL)</span><br><span class="line">results_receiver.bind(<span class="string">"tcp://127.0.0.1:5559"</span>)</span><br><span class="line"><span class="keyword">for</span> x <span class="keyword">in</span> range(<span class="number">10</span>):</span><br><span class="line">    result = results_receiver.recv_json()</span><br><span class="line">    print(result)</span><br></pre></td></tr></table></figure>
+
+<p>2.启动worker</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> multiprocessing <span class="keyword">as</span> mp</span><br><span class="line"><span class="keyword">from</span> multiprocessing <span class="keyword">import</span> Process</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Worker</span><span class="params">(Process)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, worker_id)</span>:</span></span><br><span class="line">        super().__init__()</span><br><span class="line">        self.worker_id = worker_id</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">run</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="comment"># recieve work</span></span><br><span class="line">        consumer_receiver = context.socket(zmq.PULL)</span><br><span class="line">        consumer_receiver.connect(<span class="string">"tcp://127.0.0.1:5558"</span>)</span><br><span class="line">        <span class="comment"># send work</span></span><br><span class="line">        consumer_sender = context.socket(zmq.PUSH)</span><br><span class="line">        consumer_sender.connect(<span class="string">"tcp://127.0.0.1:5559"</span>)</span><br><span class="line">        print(<span class="string">f"worker[<span class="subst">&#123;i&#125;</span>] stand by ..."</span>)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> _ <span class="keyword">in</span> range(<span class="number">5</span>):</span><br><span class="line">            work = consumer_receiver.recv_json()</span><br><span class="line">            data = work[<span class="string">'num'</span>]</span><br><span class="line">            print(<span class="string">f"worker[<span class="subst">&#123;i&#125;</span>] data: <span class="subst">&#123;data&#125;</span>"</span>)</span><br><span class="line">            result = &#123; <span class="string">'consumer'</span> : self.worker_id, <span class="string">'num'</span> : data&#125;</span><br><span class="line">            consumer_sender.send_json(result)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开启两个消费者（worker）进程</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">2</span>):</span><br><span class="line">    process = Worker(i)</span><br><span class="line">    process.start()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">worker[0] stand by ...</span><br><span class="line">worker[1] stand by ...</span><br><span class="line">worker[0] data: 0</span><br><span class="line">worker[1] data: 1</span><br><span class="line">worker[0] data: 2</span><br><span class="line">worker[1] data: 3</span><br><span class="line">worker[0] data: 4</span><br><span class="line">worker[1] data: 5</span><br><span class="line">worker[0] data: 6</span><br><span class="line">worker[1] data: 7</span><br><span class="line">worker[0] data: 8</span><br><span class="line">worker[1] data: 9</span><br></pre></td></tr></table></figure>
+
+<p>3.启动生产者，开始生产：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 生产端</span></span><br><span class="line"></span><br><span class="line">producer_socket = context.socket(zmq.PUSH)</span><br><span class="line">producer_socket.bind(<span class="string">"tcp://127.0.0.1:5558"</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> num <span class="keyword">in</span> range(<span class="number">10</span>):</span><br><span class="line">    work_message = &#123; <span class="string">'num'</span> : num &#125;</span><br><span class="line">    producer_socket.send_json(work_message)</span><br></pre></td></tr></table></figure>
+
+<p>worker端显示收到了数据。</p>
+<p>结果管理器的输出：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;&apos;consumer&apos;: 0, &apos;num&apos;: 0&#125;</span><br><span class="line">&#123;&apos;consumer&apos;: 1, &apos;num&apos;: 1&#125;</span><br><span class="line">&#123;&apos;consumer&apos;: 0, &apos;num&apos;: 2&#125;</span><br><span class="line">&#123;&apos;consumer&apos;: 1, &apos;num&apos;: 3&#125;</span><br><span class="line">&#123;&apos;consumer&apos;: 0, &apos;num&apos;: 4&#125;</span><br><span class="line">&#123;&apos;consumer&apos;: 1, &apos;num&apos;: 5&#125;</span><br><span class="line">&#123;&apos;consumer&apos;: 0, &apos;num&apos;: 6&#125;</span><br><span class="line">&#123;&apos;consumer&apos;: 1, &apos;num&apos;: 7&#125;</span><br><span class="line">&#123;&apos;consumer&apos;: 0, &apos;num&apos;: 8&#125;</span><br><span class="line">&#123;&apos;consumer&apos;: 1, &apos;num&apos;: 9&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Python-Back-End/" rel="tag"># Python, Back End</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/rl_note/intro-note-7/" rel="next" title="强化学习导论学习笔记——（七）">
+                <i class="fa fa-chevron-left"></i> 强化学习导论学习笔记——（七）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/python/datetime/" rel="prev" title="python中日期相关操作总结">
+                python中日期相关操作总结 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/red.jpg" alt="Javen Chen">
+            
+              <p class="site-author-name" itemprop="name">Javen Chen</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">86</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/applenob" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:applecer@pku.edu.cn" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#文档"><span class="nav-number">1.1.</span> <span class="nav-text">文档</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用api"><span class="nav-number">2.</span> <span class="nav-text">常用api</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Context"><span class="nav-number">2.1.</span> <span class="nav-text">Context</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Socekt"><span class="nav-number">2.2.</span> <span class="nav-text">Socekt</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#socket-bind-addr"><span class="nav-number">2.3.</span> <span class="nav-text">socket.bind(addr)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#socket-connect-addr"><span class="nav-number">2.4.</span> <span class="nav-text">socket.connect(addr)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bind-vs-connect"><span class="nav-number">2.5.</span> <span class="nav-text">bind vs connect</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用模式"><span class="nav-number">3.</span> <span class="nav-text">常用模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#PAIR"><span class="nav-number">3.1.</span> <span class="nav-text">PAIR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Client-Server"><span class="nav-number">3.2.</span> <span class="nav-text">Client / Server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Publish-Subscribe"><span class="nav-number">3.3.</span> <span class="nav-text">Publish/Subscribe</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Push-Pull"><span class="nav-number">3.4.</span> <span class="nav-text">Push/Pull</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("9s7vKaOPY7lMWuX9YVLasdnq-gzGzoHsz", "gOEj5qIEBIz5eDM3F5Nn90Jg");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

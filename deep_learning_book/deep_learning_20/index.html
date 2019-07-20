@@ -87,8 +87,8 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/applenob/reading_note/master/res/20-1.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/applenob/reading_note/master/res/layer-pre.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/applenob/reading_note/master/res/jointly-train.png">
-<meta property="og:image" content="http://yoursite.com/deep_learning_book/deep_learning_20/vae.png">
-<meta property="og:image" content="http://yoursite.com/deep_learning_book/deep_learning_20/gans.jpg">
+<meta property="og:image" content="http://yoursite.com/deep_learning_book/deep_learning_20/deep_learning_20/vae.png">
+<meta property="og:image" content="http://yoursite.com/deep_learning_book/deep_learning_20/deep_learning_20/gans.jpg">
 <meta property="og:updated_time" content="2019-06-19T16:09:18.070Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="第二十章：Deep Generative Models">
@@ -456,7 +456,7 @@
 <h3 id="可微生成器网络（Differentiable-Generator-Nets）"><a href="#可微生成器网络（Differentiable-Generator-Nets）" class="headerlink" title="可微生成器网络（Differentiable Generator Nets）"></a>可微生成器网络（Differentiable Generator Nets）</h3><p>是很多生成模型的基础，使用<strong>可微函数</strong>$g(z;θ(g))$将潜变量z的样本变换为样本$x$或样本$x$上的分布，<strong>可微函数通常可以由神经网络表示</strong>。</p>
 <p><strong>给出x的训练样本，训练可微生成器网络的几种方法</strong>：</p>
 <h3 id="1-变分自编码器（Variational-Autoencoders）"><a href="#1-变分自编码器（Variational-Autoencoders）" class="headerlink" title="1.变分自编码器（Variational Autoencoders）"></a>1.变分自编码器（Variational Autoencoders）</h3><p>变分自编码器是一个使用学得<strong>近似推断（Learned Approximate Inference）</strong>的有向模型，<br>可以纯粹地使用<strong>基于梯度</strong>的方法进行训练。</p>
-<p><img src="/deep_learning_book/deep_learning_20/vae.png" alt></p>
+<p><img src="deep_learning_20/vae.png" alt></p>
 <p>注：图片来自<a href="http://blog.csdn.net/jackytintin/article/details/53641885" target="_blank" rel="noopener">丁丁的博客</a>。
 为了从模型生成样本，VAE首先从编码分布$p_{model}(z)$中采样$z$；</p>
 <p>然后将样本输入到<strong>可微生成器网络</strong><br>$g(z)$中；最后，从分布$p_{model}(x;g(z)) = p_{model}(x \mid z)$ 中采样$x$。<br>在训练期间，近似推断网络（或编码器）$q(z \mid x)$用于获得$z$，而$p_{model}(x \mid z)$则被视为解码器网络。<br>$log;p_{model}(x)\geq L(q)=E_{z\sim<br>q(z|x)}[log;p_{model}(x|z)]-D_{KL}(q(z|x)||p_{model}(z))$<br>变分自编码器方法是优雅的，易于实现的，也获得了不错的结果，是生成式建模中的最先进方法之一。<br>它的主要缺点是从在图像上训练的变分自编码器中采样的样本往往有些<strong>模糊</strong>。 </p>
@@ -464,7 +464,7 @@
 <p>判别器网络试图区分从训练数据抽取的样本和从生成器抽取的样本。<br>$g^∗=arg;\underset{g}{min};\underset{d}{max};<br>v(g,d)$，$v$的默认选择是：$v(θ(g),θ(d))=E_{x\sim p_{data}}logd(x)+E_{x\sim<br>p_{model}}log(1−d(x))$。 </p>
 <p>设计GAN的主要动机是学习过程既不需要近似推断也不需要配分函数梯度的近似。</p>
 <p>各种gan的结构：</p>
-<p><img src="/deep_learning_book/deep_learning_20/gans.jpg" alt></p>
+<p><img src="deep_learning_20/gans.jpg" alt></p>
 
       
     </div>
@@ -505,8 +505,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/japanese/biaori_1/" rel="prev" title="标日语法笔记——初级（上一）">
-                标日语法笔记——初级（上一） <i class="fa fa-chevron-right"></i>
+              <a href="/python/save/" rel="prev" title="python 不同格式的读取效率">
+                python 不同格式的读取效率 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -586,7 +586,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">55</span>
+                  <span class="site-state-item-count">86</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -597,7 +597,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">categories</span>
                 </a>
               </div>
@@ -608,7 +608,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">18</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>

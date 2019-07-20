@@ -83,31 +83,31 @@
 <meta property="og:site_name" content="Javen Chen&#39;s Blog">
 <meta property="og:description" content="概述123自然语言分类是指按照预先定义的主题类别，为文档集合中的每个文档确定一个类别。本文将介绍一个限定类别的自然语言分类器的原理和实现。采用Python作为编程语言，采用朴素贝叶斯作为分类器，使用jieba进行分词，并使用scikit-learn实现分类器。训练数据来自于凤凰网，最终交叉验证的平均准确率是0.927。  一、训练数据获取中文自然语言分类现成可用的有搜狗自然语言分类语料库、北京大学">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/1.jpeg">
-<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/2.jpeg">
-<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/3.png">
-<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/4.png">
-<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/5.jpeg">
-<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/6.png">
-<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/7.png">
-<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/8.jpeg">
-<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/9.jpeg">
-<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/10.jpeg">
-<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/11.jpeg">
-<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/13.jpeg">
-<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/14.jpeg">
-<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/15.jpeg">
-<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/16.jpeg">
-<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/17.jpeg">
-<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/18.jpeg">
-<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/19.jpeg">
-<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/20.jpeg">
-<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/21.jpeg">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/naive_bayes/1.jpeg">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/naive_bayes/2.jpeg">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/naive_bayes/3.png">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/naive_bayes/4.png">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/naive_bayes/5.jpeg">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/naive_bayes/6.png">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/naive_bayes/7.png">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/naive_bayes/8.jpeg">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/naive_bayes/9.jpeg">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/naive_bayes/10.jpeg">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/naive_bayes/11.jpeg">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/naive_bayes/13.jpeg">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/naive_bayes/14.jpeg">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/naive_bayes/15.jpeg">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/naive_bayes/16.jpeg">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/naive_bayes/17.jpeg">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/naive_bayes/18.jpeg">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/naive_bayes/19.jpeg">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/naive_bayes/20.jpeg">
+<meta property="og:image" content="http://yoursite.com/nlp/naive_bayes/naive_bayes/21.jpeg">
 <meta property="og:updated_time" content="2019-06-16T14:40:34.553Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="基于朴素贝叶斯的自然语言分类器">
 <meta name="twitter:description" content="概述123自然语言分类是指按照预先定义的主题类别，为文档集合中的每个文档确定一个类别。本文将介绍一个限定类别的自然语言分类器的原理和实现。采用Python作为编程语言，采用朴素贝叶斯作为分类器，使用jieba进行分词，并使用scikit-learn实现分类器。训练数据来自于凤凰网，最终交叉验证的平均准确率是0.927。  一、训练数据获取中文自然语言分类现成可用的有搜狗自然语言分类语料库、北京大学">
-<meta name="twitter:image" content="http://yoursite.com/nlp/naive_bayes/1.jpeg">
+<meta name="twitter:image" content="http://yoursite.com/nlp/naive_bayes/naive_bayes/1.jpeg">
 
 
 
@@ -399,9 +399,9 @@
 <p>移动版的页面布局简单清晰，但由于文章列表采用了下拉刷新的动态更新策略，直接解析页面源码效率太低，最终决定直接调用网页api获取。比如获取十条凤凰“军事”的内容，访问<a href="http://imil.ifeng.com/20_2/data.shtml" target="_blank" rel="noopener">http://imil.ifeng.com/20_2/data.shtml</a> 返回结果如图2左。</p>
 <p>最终获取到4784条新闻，都保存到MySQL数据库，具体数据如图2右。</p>
 <p>从中看出，军事类的文章相对偏少，体育类的文章偏多。</p>
-<p><img src="/nlp/naive_bayes/1.jpeg" alt></p>
-<p><img src="/nlp/naive_bayes/2.jpeg" alt></p>
-<h2 id="二、朴素贝叶斯介绍"><a href="#二、朴素贝叶斯介绍" class="headerlink" title="二、朴素贝叶斯介绍"></a>二、朴素贝叶斯介绍</h2><h3 id="1．贝叶斯定理"><a href="#1．贝叶斯定理" class="headerlink" title="1．贝叶斯定理"></a>1．贝叶斯定理</h3><pre><code>贝叶斯定理是关于随机事件 A 和 B 的条件概率：</code></pre><p><img src="/nlp/naive_bayes/3.png" alt></p>
+<p><img src="naive_bayes/1.jpeg" alt></p>
+<p><img src="naive_bayes/2.jpeg" alt></p>
+<h2 id="二、朴素贝叶斯介绍"><a href="#二、朴素贝叶斯介绍" class="headerlink" title="二、朴素贝叶斯介绍"></a>二、朴素贝叶斯介绍</h2><h3 id="1．贝叶斯定理"><a href="#1．贝叶斯定理" class="headerlink" title="1．贝叶斯定理"></a>1．贝叶斯定理</h3><pre><code>贝叶斯定理是关于随机事件 A 和 B 的条件概率：</code></pre><p><img src="naive_bayes/3.png" alt></p>
 <p>其中，P(A)是A的先验概率，之所以称为“先验”是因为它不考虑任何B方面的因素。</p>
 <p>P(A|B)是已知B发生后A的条件概率，也由于得自B的取值而被称作A 的后验概率。</p>
 <p>P(B|A)是已知A发生后B的条件概率，也由于得自A的取值而被称作B的后验概率。</p>
@@ -415,21 +415,21 @@
 <p>这样的话，随着经历越来越多，对概率的估计也会越来越符合“实际情况”。</p>
 <h3 id="3．朴素贝叶斯分类器"><a href="#3．朴素贝叶斯分类器" class="headerlink" title="3．朴素贝叶斯分类器"></a>3．朴素贝叶斯分类器</h3><p>分类器基本原理：</p>
 <p>对一个多维的输入向量x，根据贝叶斯公式，有：</p>
-<p><img src="/nlp/naive_bayes/4.png" alt></p>
+<p><img src="naive_bayes/4.png" alt></p>
 <p>条件独立性假设：</p>
-<p><img src="/nlp/naive_bayes/5.jpeg" alt></p>
+<p><img src="naive_bayes/5.jpeg" alt></p>
 <p>放到自然语言分类器的应用中理解，就是在给定文本的类别的条件下，文本中出现的词的概率是相互独立的。</p>
 <p>朴素贝叶斯之所以“朴素”，就是因为条件独立性假设是一个较强的假设。于是：</p>
-<p><img src="/nlp/naive_bayes/6.png" alt></p>
-<p><img src="/nlp/naive_bayes/7.png" alt></p>
+<p><img src="naive_bayes/6.png" alt></p>
+<p><img src="naive_bayes/7.png" alt></p>
 <p>从自然语言分类的角度上说，一个文本属于哪个类，要计算所有类别的先验概率和所有词在相应类别下的后验概率，再一起乘起来，哪个类别对应的值最大，就归为哪类。</p>
-<p><img src="/nlp/naive_bayes/8.jpeg" alt></p>
-<p><img src="/nlp/naive_bayes/9.jpeg" alt></p>
-<p><img src="/nlp/naive_bayes/10.jpeg" alt></p>
+<p><img src="naive_bayes/8.jpeg" alt></p>
+<p><img src="naive_bayes/9.jpeg" alt></p>
+<p><img src="naive_bayes/10.jpeg" alt></p>
 <h2 id="三、分类器实现"><a href="#三、分类器实现" class="headerlink" title="三、分类器实现"></a>三、分类器实现</h2><h3 id="1．数据预处理"><a href="#1．数据预处理" class="headerlink" title="1．数据预处理"></a>1．数据预处理</h3><p>文本放到分类器中分类，必须先将文本数据向量化，因为scikit-learn的分类器大多输入的数据类型都是numpy数组和类似的类型。</p>
 <p>这一步可以通过scikit-learn中特征抽取模块feature_extraction中text.</p>
 <p>CountVectorizer、text.TfidfVectorizer和text.HashingVectorizer实现。</p>
-<p><img src="/nlp/naive_bayes/11.jpeg" alt>    </p>
+<p><img src="naive_bayes/11.jpeg" alt>    </p>
 <p>特征哈希：特征哈希是一种处理高维数据的技术，并经常被应用在文本和分类数据集。</p>
 <p>特征哈希不需要像其他向量化工具一样，需要额外对数据集做一次遍历。</p>
 <p>特征哈希通过使用哈希方差对特征赋予向量下标，这个向量下标是通过对特征，例如，单词“美国”计算的哈希值是342，那么向量中下标是342的那个元素，值加1。</p>
@@ -441,16 +441,16 @@
 <p>CountVectorize的转换结果如图4，向量的每个值代表一个词出现的个数。</p>
 <p>HashingVectorizer的转换结果如图5。</p>
 <p>TfidfVectorizer的转换结果如图6，这里我们设置参数use_idf=False，即只使用tf，但并不等同于CountVectorize，而是相当于个数+归一化。</p>
-<p><img src="/nlp/naive_bayes/13.jpeg" alt></p>
-<p><img src="/nlp/naive_bayes/14.jpeg" alt></p>
-<p><img src="/nlp/naive_bayes/15.jpeg" alt></p>
-<p><img src="/nlp/naive_bayes/16.jpeg" alt></p>
+<p><img src="naive_bayes/13.jpeg" alt></p>
+<p><img src="naive_bayes/14.jpeg" alt></p>
+<p><img src="naive_bayes/15.jpeg" alt></p>
+<p><img src="naive_bayes/16.jpeg" alt></p>
 <h3 id="2．调参"><a href="#2．调参" class="headerlink" title="2．调参"></a>2．调参</h3><p>确定了模型之后，可以直接使用Scikit-learn中的GridSearchCV来寻找最佳超参数。</p>
 <p>另外一个提高准确率的技巧是删除停用词。</p>
 <p>之前分词的过程中使用的是通用的中文停用词，比如“这”，“那”等没有实际语义的词。</p>
 <p>但是这里对于文章的分类来说还有一些高频出现但是对主题没有影响的词，即便他们本身是有语义的。</p>
 <p>比如“时间”、“图”等。</p>
-<p><img src="/nlp/naive_bayes/17.jpeg" alt></p>
+<p><img src="naive_bayes/17.jpeg" alt></p>
 <h3 id="3．组合"><a href="#3．组合" class="headerlink" title="3．组合"></a>3．组合</h3><p>组合技术即通过聚集多个分类器的预测来提高分类准确率。</p>
 <p>常用的组合分类器方法：</p>
 <p>1）装袋（bagging）：根据均匀概率分布从数据集中重复抽样（有放回），每个自助样本集和原数据集一样大，每个自助样本集含有原数据集大约63%的数据。训练k个分类器，测试样本被指派到得票最高的类。</p>
@@ -459,10 +459,10 @@
 <h2 id="四、分类器评估"><a href="#四、分类器评估" class="headerlink" title="四、分类器评估"></a>四、分类器评估</h2><p> 使用scikit-learn提供的classification_report获得分类报告如图8。</p>
 <p> 使用condusion_matrix获得分类混淆矩阵如图9。交叉验证的结果如图10。</p>
 <p> 可见，取得了较理想的分类表现。图11是部分分类结果。</p>
-<p><img src="/nlp/naive_bayes/18.jpeg" alt></p>
-<p><img src="/nlp/naive_bayes/19.jpeg" alt></p>
-<p><img src="/nlp/naive_bayes/20.jpeg" alt></p>
-<p><img src="/nlp/naive_bayes/21.jpeg" alt></p>
+<p><img src="naive_bayes/18.jpeg" alt></p>
+<p><img src="naive_bayes/19.jpeg" alt></p>
+<p><img src="naive_bayes/20.jpeg" alt></p>
+<p><img src="naive_bayes/21.jpeg" alt></p>
 
       
     </div>
@@ -584,7 +584,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">55</span>
+                  <span class="site-state-item-count">86</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -595,7 +595,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">categories</span>
                 </a>
               </div>
@@ -606,7 +606,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">18</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>

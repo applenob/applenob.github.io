@@ -83,23 +83,23 @@
 <meta property="og:site_name" content="Javen Chen&#39;s Blog">
 <meta property="og:description" content="1. 介绍和引入最近初学NLP相关的深度学习，下了很多论文，数量一多，发现论文管理是个问题。 首先论文数目一多，必须要按类别放到子文件夹下。但是某一篇论文，往往有多个主题。比如说某论文使用word2vec给短文本分类，那这篇论文既可以放在word2vec的目录下，也可以放在短文本的目录下，也可以放在分类的目录下。当你有天想去看了，往往又忘了是放在哪个子目录下了。再比如说，你下载了一些论文，下载的时">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/python/paper_manager/info.png">
-<meta property="og:image" content="http://yoursite.com/python/paper_manager/welcome.png">
-<meta property="og:image" content="http://yoursite.com/python/paper_manager/all.png">
-<meta property="og:image" content="http://yoursite.com/python/paper_manager/tags.png">
-<meta property="og:image" content="http://yoursite.com/python/paper_manager/sbt.png">
-<meta property="og:image" content="http://yoursite.com/python/paper_manager/sbn.png">
-<meta property="og:image" content="http://yoursite.com/python/paper_manager/path.png">
-<meta property="og:image" content="http://yoursite.com/python/paper_manager/edit.png">
-<meta property="og:image" content="http://yoursite.com/python/paper_manager/read.png">
-<meta property="og:image" content="http://yoursite.com/python/paper_manager/rec.png">
-<meta property="og:image" content="http://yoursite.com/python/paper_manager/help.png">
-<meta property="og:image" content="http://yoursite.com/python/paper_manager/quit.png">
+<meta property="og:image" content="http://yoursite.com/python/paper_manager/paper_manager/info.png">
+<meta property="og:image" content="http://yoursite.com/python/paper_manager/paper_manager/welcome.png">
+<meta property="og:image" content="http://yoursite.com/python/paper_manager/paper_manager/all.png">
+<meta property="og:image" content="http://yoursite.com/python/paper_manager/paper_manager/tags.png">
+<meta property="og:image" content="http://yoursite.com/python/paper_manager/paper_manager/sbt.png">
+<meta property="og:image" content="http://yoursite.com/python/paper_manager/paper_manager/sbn.png">
+<meta property="og:image" content="http://yoursite.com/python/paper_manager/paper_manager/path.png">
+<meta property="og:image" content="http://yoursite.com/python/paper_manager/paper_manager/edit.png">
+<meta property="og:image" content="http://yoursite.com/python/paper_manager/paper_manager/read.png">
+<meta property="og:image" content="http://yoursite.com/python/paper_manager/paper_manager/rec.png">
+<meta property="og:image" content="http://yoursite.com/python/paper_manager/paper_manager/help.png">
+<meta property="og:image" content="http://yoursite.com/python/paper_manager/paper_manager/quit.png">
 <meta property="og:updated_time" content="2019-06-16T14:46:09.134Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="用python编写一个本地论文管理器">
 <meta name="twitter:description" content="1. 介绍和引入最近初学NLP相关的深度学习，下了很多论文，数量一多，发现论文管理是个问题。 首先论文数目一多，必须要按类别放到子文件夹下。但是某一篇论文，往往有多个主题。比如说某论文使用word2vec给短文本分类，那这篇论文既可以放在word2vec的目录下，也可以放在短文本的目录下，也可以放在分类的目录下。当你有天想去看了，往往又忘了是放在哪个子目录下了。再比如说，你下载了一些论文，下载的时">
-<meta name="twitter:image" content="http://yoursite.com/python/paper_manager/info.png">
+<meta name="twitter:image" content="http://yoursite.com/python/paper_manager/paper_manager/info.png">
 
 
 
@@ -401,41 +401,41 @@
 
 <h2 id="5-演示："><a href="#5-演示：" class="headerlink" title="5.演示："></a>5.演示：</h2><h3 id="a-录入目录"><a href="#a-录入目录" class="headerlink" title="a.录入目录"></a>a.录入目录</h3><p>启动程序后，首先按照提示，输入你的paper的根目录。如果输错了，可以把<strong>user_set.pkl</strong>删掉，重新启动程序即可。我这里程序已经保存路径，所以跳过。</p>
 <h3 id="b-输入新paper的数据"><a href="#b-输入新paper的数据" class="headerlink" title="b.输入新paper的数据"></a>b.输入新paper的数据</h3><p>每次启动程序后，程序都会去扫描paper的目录（以及子目录），有扫描到新paper就会提示录入新paper的数据。</p>
-<p><img src="/python/paper_manager/info.png" alt="录入每篇paper的info.png"><br>按照提示录入即可，分别是重要性（importance），紧急性（urgency），都是1-5的整数，还有所有tag（用空格隔开），以及这篇论文是不是读过了。<br>所有扫描到的新论文录入信息以后，就会出现欢迎界面：</p>
-<p><img src="/python/paper_manager/welcome.png" alt="欢迎界面.png"></p>
+<p><img src="paper_manager/info.png" alt="录入每篇paper的info.png"><br>按照提示录入即可，分别是重要性（importance），紧急性（urgency），都是1-5的整数，还有所有tag（用空格隔开），以及这篇论文是不是读过了。<br>所有扫描到的新论文录入信息以后，就会出现欢迎界面：</p>
+<p><img src="paper_manager/welcome.png" alt="欢迎界面.png"></p>
 <h3 id="c-显示所有论文信息"><a href="#c-显示所有论文信息" class="headerlink" title="c.显示所有论文信息"></a>c.显示所有论文信息</h3><p>输入：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">all</span><br></pre></td></tr></table></figure>
 
-<p><img src="/python/paper_manager/all.png" alt="all"></p>
+<p><img src="paper_manager/all.png" alt="all"></p>
 <h3 id="d-显示录入的所有tag"><a href="#d-显示录入的所有tag" class="headerlink" title="d.显示录入的所有tag"></a>d.显示录入的所有tag</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tags</span><br></pre></td></tr></table></figure>
 
-<p><img src="/python/paper_manager/tags.png" alt="tags"></p>
+<p><img src="paper_manager/tags.png" alt="tags"></p>
 <h3 id="e-按照tag搜索paper"><a href="#e-按照tag搜索paper" class="headerlink" title="e.按照tag搜索paper"></a>e.按照tag搜索paper</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sbt tag1 tag2</span><br></pre></td></tr></table></figure>
 
-<p>sbt(search by tag)<br><img src="/python/paper_manager/sbt.png" alt="sbt"></p>
+<p>sbt(search by tag)<br><img src="paper_manager/sbt.png" alt="sbt"></p>
 <h3 id="f-按照id号获取论文"><a href="#f-按照id号获取论文" class="headerlink" title="f.按照id号获取论文"></a>f.按照id号获取论文</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sbn num1 num2</span><br></pre></td></tr></table></figure>
 
-<p><img src="/python/paper_manager/sbn.png" alt="sbn"></p>
+<p><img src="paper_manager/sbn.png" alt="sbn"></p>
 <h3 id="g-按照id号获取论文路径"><a href="#g-按照id号获取论文路径" class="headerlink" title="g.按照id号获取论文路径"></a>g.按照id号获取论文路径</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">path num1 num2</span><br></pre></td></tr></table></figure>
 
-<p><img src="/python/paper_manager/path.png" alt="path"></p>
+<p><img src="paper_manager/path.png" alt="path"></p>
 <h3 id="h-修改特定paper的info"><a href="#h-修改特定paper的info" class="headerlink" title="h.修改特定paper的info"></a>h.修改特定paper的info</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">edit num</span><br></pre></td></tr></table></figure>
 
-<p><img src="/python/paper_manager/edit.png" alt="edit"><br>如果看完了某篇论文，想改read从n为y，也可以直接使用edit命令。不修改的字段直接回车，数据不会丢失。<br>如：</p>
-<p><img src="/python/paper_manager/read.png" alt="只修改read"></p>
+<p><img src="paper_manager/edit.png" alt="edit"><br>如果看完了某篇论文，想改read从n为y，也可以直接使用edit命令。不修改的字段直接回车，数据不会丢失。<br>如：</p>
+<p><img src="paper_manager/read.png" alt="只修改read"></p>
 <h3 id="i-获取推荐"><a href="#i-获取推荐" class="headerlink" title="i.获取推荐"></a>i.获取推荐</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rec</span><br></pre></td></tr></table></figure>
 
-<p><img src="/python/paper_manager/rec.png" alt="rec"></p>
+<p><img src="paper_manager/rec.png" alt="rec"></p>
 <p>推荐规则是按照紧急程度降序，相同紧急程度按照重要程度降序，而且是read为n，就是没有标记读过的论文。</p>
 <h3 id="j-打开论文"><a href="#j-打开论文" class="headerlink" title="j.打开论文"></a>j.打开论文</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">open num</span><br></pre></td></tr></table></figure>
 
 <p>打开指定id的论文（使用系统默认的阅读器）。</p>
 <h3 id="k-获取帮助"><a href="#k-获取帮助" class="headerlink" title="k.获取帮助"></a>k.获取帮助</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">help</span><br></pre></td></tr></table></figure>
 
-<p><img src="/python/paper_manager/help.png" alt="help"></p>
+<p><img src="paper_manager/help.png" alt="help"></p>
 <h3 id="l-退出"><a href="#l-退出" class="headerlink" title="l.退出"></a>l.退出</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">quit</span><br></pre></td></tr></table></figure>
 
-<p><img src="/python/paper_manager/quit.png" alt="quit"></p>
+<p><img src="paper_manager/quit.png" alt="quit"></p>
 <h2 id="6-最后"><a href="#6-最后" class="headerlink" title="6.最后"></a>6.最后</h2><p><a href="https://github.com/applenob/paper_manager" target="_blank" rel="noopener">github源代码地址</a>,喜欢留个star ：&gt;</p>
 <p>这个工具只是用来方便自己的日常使用，一共只开发了两天的时间，有什么改进意见尽管提，但是不保证回去改哦～我要滚回去看paper了。</p>
 
@@ -559,7 +559,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">55</span>
+                  <span class="site-state-item-count">86</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -570,7 +570,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">categories</span>
                 </a>
               </div>
@@ -581,7 +581,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">18</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>

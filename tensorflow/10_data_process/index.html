@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+
+
+
+
+  <meta name="keywords" content="Tensorflow,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="本篇博客记录tensorflow中和数据处理相关的操作。 数据格式变换（改变数据的形状）tf.one_hot1list of indices to one hot.  比如原来的index列表是[0, 2, -1, 1] 1234567891011import tensorflow as tfsess = tf.Session()one_hot = tf.one_hot(indices = [0,">
+<meta name="keywords" content="Tensorflow">
+<meta property="og:type" content="article">
+<meta property="og:title" content="十. Tensorflow中数据处理的OP">
+<meta property="og:url" content="http://yoursite.com/tensorflow/10_data_process/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="本篇博客记录tensorflow中和数据处理相关的操作。 数据格式变换（改变数据的形状）tf.one_hot1list of indices to one hot.  比如原来的index列表是[0, 2, -1, 1] 1234567891011import tensorflow as tfsess = tf.Session()one_hot = tf.one_hot(indices = [0,">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-07-20T10:33:04.811Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="十. Tensorflow中数据处理的OP">
+<meta name="twitter:description" content="本篇博客记录tensorflow中和数据处理相关的操作。 数据格式变换（改变数据的形状）tf.one_hot1list of indices to one hot.  比如原来的index列表是[0, 2, -1, 1] 1234567891011import tensorflow as tfsess = tf.Session()one_hot = tf.one_hot(indices = [0,">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/tensorflow/10_data_process/">
+
+
+
+
+
+  <title>十. Tensorflow中数据处理的OP | Javen Chen's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?239bba0e8b78c0293b8e646237f788cd";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Javen Chen's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Tech and Life~</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-所有专栏">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            所有专栏
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-历史文章">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            历史文章
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/tensorflow/10_data_process/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Javen Chen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/red.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">十. Tensorflow中数据处理的OP</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-11T11:00:00+08:00">
+                2018-05-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Tensorflow学习笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">Tensorflow学习笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/tensorflow/10_data_process/" class="leancloud_visitors" data-flag-title="十. Tensorflow中数据处理的OP">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本篇博客记录tensorflow中和数据处理相关的操作。</p>
+<h2 id="数据格式变换（改变数据的形状）"><a href="#数据格式变换（改变数据的形状）" class="headerlink" title="数据格式变换（改变数据的形状）"></a>数据格式变换（改变数据的形状）</h2><h2 id="tf-one-hot"><a href="#tf-one-hot" class="headerlink" title="tf.one_hot"></a>tf.one_hot</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">list of indices to one hot.</span><br></pre></td></tr></table></figure>
+
+<p>比如原来的index列表是[0, 2, -1, 1]</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line">sess = tf.Session()</span><br><span class="line"></span><br><span class="line">one_hot = tf.one_hot(indices = [<span class="number">0</span>, <span class="number">2</span>, <span class="number">-1</span>, <span class="number">1</span>],</span><br><span class="line">                     depth = <span class="number">3</span>,</span><br><span class="line">                     on_value = <span class="number">1.0</span>,</span><br><span class="line">                     off_value = <span class="number">0.0</span>,</span><br><span class="line">                     axis = <span class="number">-1</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> sess.run(one_hot)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[[ 1.  0.  0.]</span><br><span class="line"> [ 0.  0.  1.]</span><br><span class="line"> [ 0.  0.  0.]</span><br><span class="line"> [ 0.  1.  0.]]</span><br></pre></td></tr></table></figure>
+
+<p>这个操作很像embedding lookup，只是返回的数据是depth维的one hot向量。常用于NLP中label的表示。</p>
+<h2 id="tf-sequence-mask"><a href="#tf-sequence-mask" class="headerlink" title="tf.sequence_mask"></a>tf.sequence_mask</h2><p>这个操作和one hot也很像，但是指定的不是index而是<strong>从前到后有多少个True</strong>，返回的是True和False。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sq_mask = tf.sequence_mask([<span class="number">1</span>, <span class="number">3</span>, <span class="number">2</span>], <span class="number">5</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> sess.run(sq_mask)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[[ True False False False False]</span><br><span class="line"> [ True  True  True False False]</span><br><span class="line"> [ True  True False False False]]</span><br></pre></td></tr></table></figure>
+
+<h2 id="tf-boolean-mask"><a href="#tf-boolean-mask" class="headerlink" title="tf.boolean_mask"></a>tf.boolean_mask</h2><p>这个操作可以用于留下指定的元素，类似于numpy的操作。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">tensor = tf.range(<span class="number">4</span>)</span><br><span class="line">mask = np.array([<span class="literal">True</span>, <span class="literal">False</span>, <span class="literal">True</span>, <span class="literal">False</span>])</span><br><span class="line">bool_mask = tf.boolean_mask(tensor, mask)</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> sess.run(bool_mask)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[0 2]</span><br></pre></td></tr></table></figure>
+
+<p>也可以先用数字传进来，再转换成bool，这样就可以利用one_hot了。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">num_mask = np.array([<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">0</span>])</span><br><span class="line">num_mask = tf.cast(num_mask, tf.bool)</span><br><span class="line">bool_num_mask = tf.boolean_mask(tensor, num_mask)</span><br><span class="line"><span class="keyword">print</span> sess.run(bool_num_mask)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[0 2]</span><br></pre></td></tr></table></figure>
+
+<p>mask和被处理的tensor必须shape相同，执行下面的代码会报错：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">tensor = tf.reshape(tf.range(<span class="number">8</span>), [<span class="number">2</span>,<span class="number">4</span>])</span><br><span class="line">mask = np.array([<span class="literal">True</span>, <span class="literal">False</span>,</span><br><span class="line"><span class="literal">True</span>, <span class="literal">False</span>])</span><br><span class="line">bool_mask = tf.boolean_mask(tensor, mask)</span><br><span class="line"><span class="keyword">print</span></span><br><span class="line">sess.run(bool_mask)</span><br><span class="line"><span class="comment"># ValueError: Shapes (2,) and (4,) are incompatible</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="tf-split"><a href="#tf-split" class="headerlink" title="tf.split"></a>tf.split</h2><p>分割数据</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">m1 = tf.reshape(tf.range(<span class="number">24</span>), [<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>])</span><br><span class="line">m1</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;tf.Tensor &apos;Reshape:0&apos; shape=(2, 3, 4) dtype=int32&gt;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># tf.split(value, num_or_size_splits, axis=0, num=None, name='split')</span></span><br><span class="line">split0, split1, split2 = tf.split(m1, <span class="number">3</span>, <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">split0.get_shape()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TensorShape([Dimension(2), Dimension(1), Dimension(4)])</span><br></pre></td></tr></table></figure>
+
+<h2 id="tf-concat"><a href="#tf-concat" class="headerlink" title="tf.concat"></a>tf.concat</h2><p>连接数据</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">m2 = tf.reshape(tf.range(<span class="number">24</span>), [<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>])</span><br><span class="line">m2</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;tf.Tensor &apos;Reshape_1:0&apos; shape=(2, 3, 4) dtype=int32&gt;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tf.concat([m1, m2], <span class="number">0</span>) <span class="comment"># 第0维上连接数据</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;tf.Tensor &apos;concat:0&apos; shape=(4, 3, 4) dtype=int32&gt;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tf.concat([m1, m2], <span class="number">1</span>) <span class="comment"># 第1维上连接数据</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;tf.Tensor &apos;concat_1:0&apos; shape=(2, 6, 4) dtype=int32&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="tf-squeeze"><a href="#tf-squeeze" class="headerlink" title="tf.squeeze"></a>tf.squeeze</h2><p>压缩长度为1的维度</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">arr = tf.truncated_normal([<span class="number">3</span>,<span class="number">4</span>,<span class="number">1</span>,<span class="number">6</span>,<span class="number">1</span>], stddev=<span class="number">0.1</span>)</span><br><span class="line"></span><br><span class="line">arr.get_shape()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TensorShape([Dimension(3), Dimension(4), Dimension(1), Dimension(6), Dimension(1)])</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tf.squeeze(arr).get_shape()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TensorShape([Dimension(3), Dimension(4), Dimension(6)])</span><br></pre></td></tr></table></figure>
+
+<h2 id="tf-expand-dims"><a href="#tf-expand-dims" class="headerlink" title="tf.expand_dims"></a>tf.expand_dims</h2><p>和squeeze相反，可以扩展指定的维度。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tf.expand_dims(arr, <span class="number">0</span>).get_shape()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TensorShape([Dimension(1), Dimension(3), Dimension(4), Dimension(1), Dimension(6), Dimension(1)])</span><br></pre></td></tr></table></figure>
+
+<h2 id="tf-gather"><a href="#tf-gather" class="headerlink" title="tf.gather"></a>tf.gather</h2><p>一个tensor当源数据，一个tensor当下标，取出对应的数据。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">indices = tf.placeholder(tf.int32, [<span class="number">5</span>])</span><br><span class="line">arr = tf.range(<span class="number">10</span>, <span class="number">20</span>)</span><br><span class="line">g = tf.gather(arr, indices)</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> sess.run(g, feed_dict=&#123;indices:[<span class="number">4</span>,<span class="number">5</span>,<span class="number">7</span>,<span class="number">1</span>,<span class="number">2</span>]&#125;)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[14 15 17 11 12]</span><br></pre></td></tr></table></figure>
+
+<h2 id="tf-tile"><a href="#tf-tile" class="headerlink" title="tf.tile"></a>tf.tile</h2><p>给定一个tensor，堆成更大的tensor。</p>
+<p><code>tf.tile(input, multiples, name=None)</code></p>
+<figure class="highlight plain"><figcaption><span>.input  n</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">t_simple = tf.range(10)</span><br><span class="line">t_complex = tf.tile(t_simple, [2])</span><br><span class="line">sess.run(t_complex)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9], dtype=int32)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">t_simple = tf.reshape(tf.range(<span class="number">10</span>), [<span class="number">2</span>, <span class="number">5</span>]) <span class="comment"># multiples的维度和输入的维度需要保持一致</span></span><br><span class="line">t_complex = tf.tile(t_simple, [<span class="number">2</span>, <span class="number">3</span>])</span><br><span class="line">sess.run(t_complex)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">array([[0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4],</span><br><span class="line">       [5, 6, 7, 8, 9, 5, 6, 7, 8, 9, 5, 6, 7, 8, 9],</span><br><span class="line">       [0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4],</span><br><span class="line">       [5, 6, 7, 8, 9, 5, 6, 7, 8, 9, 5, 6, 7, 8, 9]], dtype=int32)</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Tensorflow/" rel="tag"># Tensorflow</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/tensorflow/9_control/" rel="next" title="九. Tensorflow 流程控制">
+                <i class="fa fa-chevron-left"></i> 九. Tensorflow 流程控制
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/tensorflow/11_tensorboard/" rel="prev" title="十一. Tensorboard">
+                十一. Tensorboard <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/red.jpg" alt="Javen Chen">
+            
+              <p class="site-author-name" itemprop="name">Javen Chen</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">86</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/applenob" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:applecer@pku.edu.cn" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#数据格式变换（改变数据的形状）"><span class="nav-number">1.</span> <span class="nav-text">数据格式变换（改变数据的形状）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tf-one-hot"><span class="nav-number">2.</span> <span class="nav-text">tf.one_hot</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tf-sequence-mask"><span class="nav-number">3.</span> <span class="nav-text">tf.sequence_mask</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tf-boolean-mask"><span class="nav-number">4.</span> <span class="nav-text">tf.boolean_mask</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tf-split"><span class="nav-number">5.</span> <span class="nav-text">tf.split</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tf-concat"><span class="nav-number">6.</span> <span class="nav-text">tf.concat</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tf-squeeze"><span class="nav-number">7.</span> <span class="nav-text">tf.squeeze</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tf-expand-dims"><span class="nav-number">8.</span> <span class="nav-text">tf.expand_dims</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tf-gather"><span class="nav-number">9.</span> <span class="nav-text">tf.gather</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tf-tile"><span class="nav-number">10.</span> <span class="nav-text">tf.tile</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("9s7vKaOPY7lMWuX9YVLasdnq-gzGzoHsz", "gOEj5qIEBIz5eDM3F5Nn90Jg");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

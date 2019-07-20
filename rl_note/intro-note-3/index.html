@@ -83,15 +83,15 @@
 <meta property="og:site_name" content="Javen Chen&#39;s Blog">
 <meta property="og:description" content="3. Finite Markov DecisionProcessesAgent和Environment的交互 学习者和决策者称为agent。 agent交互的对象，外部环境，称为Environment。 在时刻t，agent的所处的环境用状态：$S_t \in S$表示，$S$是可能的状态集。假设agent采用了动作$A_t\in A(S_t)$，$A(S_t)$代表在状态$S_t$下可能的动作集">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-3/agent_env.png">
-<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-3/backup.png">
-<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-3/backup_opt.png">
-<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-3/3_grid_world.jpg">
+<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-3/intro-note-3/agent_env.png">
+<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-3/intro-note-3/backup.png">
+<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-3/intro-note-3/backup_opt.png">
+<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-3/intro-note-3/3_grid_world.jpg">
 <meta property="og:updated_time" content="2019-06-16T13:30:57.107Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="强化学习导论学习笔记——（三）">
 <meta name="twitter:description" content="3. Finite Markov DecisionProcessesAgent和Environment的交互 学习者和决策者称为agent。 agent交互的对象，外部环境，称为Environment。 在时刻t，agent的所处的环境用状态：$S_t \in S$表示，$S$是可能的状态集。假设agent采用了动作$A_t\in A(S_t)$，$A(S_t)$代表在状态$S_t$下可能的动作集">
-<meta name="twitter:image" content="http://yoursite.com/rl_note/intro-note-3/agent_env.png">
+<meta name="twitter:image" content="http://yoursite.com/rl_note/intro-note-3/intro-note-3/agent_env.png">
 
 
 
@@ -380,7 +380,7 @@
 <li>在时刻t，agent的所处的环境用状态：$S_t \in S$表示，$S$是可能的状态集。假设agent采用了动作$A_t\in A(S_t)$，$A(S_t)$代表在状态$S_t$下可能的动作集。</li>
 <li>到了下一个时刻t+1，agent收到了一个奖励：$R_{t+1} \in R$，并且发现自己处在一个新的state中：$S_{t+1}$。</li>
 </ul>
-<p><img src="/rl_note/intro-note-3/agent_env.png" alt="agent_env"></p>
+<p><img src="intro-note-3/agent_env.png" alt="agent_env"></p>
 <h2 id="什么是有限"><a href="#什么是有限" class="headerlink" title="什么是有限"></a>什么是有限</h2><p>有限MDP中的有限意味着：状态空间S、动作空间A和奖励空间R都是<strong>离散且有限</strong>的。</p>
 <h2 id="目标和奖励的区别"><a href="#目标和奖励的区别" class="headerlink" title="目标和奖励的区别"></a>目标和奖励的区别</h2><ul>
 <li>每个时间节点上，agent都会收到一个奖励的数值：$R_t$。</li>
@@ -426,7 +426,7 @@
 <p><strong>backup</strong>：是强化学习方法的核心，以时序意义上的回退，用下一个时刻的值去评估当前时刻的值。</p>
 <p><strong>Bellman Expectation Euqation for</strong> $q_{\pi}$</p>
 <p>$$q_{\pi}(s,a) = \sum_{s’}p(s’,r|s,a)[r+\gamma \sum_{a’}q(s’,a’)]$$</p>
-<p><img src="/rl_note/intro-note-3/backup.png" alt="backup"></p>
+<p><img src="intro-note-3/backup.png" alt="backup"></p>
 <p>推导：</p>
 <p>$$v_\pi(s) = \mathbb{E}_{\pi}[G_t \mid S_t = s]$$</p>
 <p>$$= \mathbb{E}_{\pi} [R_{t+1} + \gamma G_{t+1} \mid S_t = s]$$</p>
@@ -441,14 +441,14 @@
 <p>$$\underset{a\in A(s)}{max}\sum_{s’,r}p(s’,r|s,a)[r+\gamma v_*(s’)]$$</p>
 <p><strong>Bellman Optimality Euqation for</strong> $q_*(s,a)$：</p>
 <p>$$\sum_{s’,r}p(s’,r|s,a)[r+\gamma \underset{a’}{max}q_*(s’, a’)]$$</p>
-<p><img src="/rl_note/intro-note-3/backup_opt.png" alt="backup_opt"></p>
+<p><img src="intro-note-3/backup_opt.png" alt="backup_opt"></p>
 <h2 id="代码分析"><a href="#代码分析" class="headerlink" title="代码分析"></a>代码分析</h2><p><a href="https://github.com/ShangtongZhang/reinforcement-learning-an-introduction/blob/master/chapter03/grid_world.py" target="_blank" rel="noopener">完整源码</a></p>
 <p><strong>问题描述</strong>：</p>
 <ul>
 <li>动作空间：上下左右。</li>
 <li>奖励：到A点会有10的奖励，且会被带到A’，到B有10的奖励，且会被带到B’。如果动作要把agent带离格子世界，则agent不懂，且奖励是-1。其他动作奖励是0。</li>
 </ul>
-<p><img src="/rl_note/intro-note-3/3_grid_world.jpg" alt="3_grid_world"></p>
+<p><img src="intro-note-3/3_grid_world.jpg" alt="3_grid_world"></p>
 <p>假设初始策略是等概率地选择上下左右这四个动作：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># left, up, right, down</span></span><br><span class="line">ACTIONS = [np.array([<span class="number">0</span>, <span class="number">-1</span>]),</span><br><span class="line">           np.array([<span class="number">-1</span>, <span class="number">0</span>]),</span><br><span class="line">           np.array([<span class="number">0</span>, <span class="number">1</span>]),</span><br><span class="line">           np.array([<span class="number">1</span>, <span class="number">0</span>])]</span><br><span class="line">ACTION_PROB = <span class="number">0.25</span></span><br></pre></td></tr></table></figure>
 
@@ -498,8 +498,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/rl_note/intro-note-4/" rel="prev" title="强化学习导论学习笔记——（四）">
-                强化学习导论学习笔记——（四） <i class="fa fa-chevron-right"></i>
+              <a href="/tensorflow/15_dataset_basic/" rel="prev" title="十五. Tensorflow Dataset基础">
+                十五. Tensorflow Dataset基础 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -579,7 +579,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">55</span>
+                  <span class="site-state-item-count">86</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -590,7 +590,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">categories</span>
                 </a>
               </div>
@@ -601,7 +601,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">18</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>

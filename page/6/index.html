@@ -265,7 +265,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/machine_learning/MCMC/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/deep_learning_book/deep_learning_11/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Javen Chen">
@@ -284,7 +284,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/machine_learning/MCMC/" itemprop="url">机器学习中的Monte Carlo（笔记和python实现）</a></h1>
+                <a class="post-title-link" href="/deep_learning_book/deep_learning_11/" itemprop="url">第十一章：Practical Methodology</a></h1>
         
 
         <div class="post-meta">
@@ -296,8 +296,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-20T17:00:00+08:00">
-                2016-11-20
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-05-09T11:00:00+08:00">
+                2017-05-09
               </time>
             
 
@@ -319,8 +319,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Machine-Learning/" itemprop="url" rel="index">
-                    <span itemprop="name">Machine Learning</span>
+                  <a href="/categories/《Deep-Learning》读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">《Deep Learning》读书笔记</span>
                   </a>
                 </span>
 
@@ -336,7 +336,7 @@
 
           
           
-             <span id="/machine_learning/MCMC/" class="leancloud_visitors" data-flag-title="机器学习中的Monte Carlo（笔记和python实现）">
+             <span id="/deep_learning_book/deep_learning_11/" class="leancloud_visitors" data-flag-title="第十一章：Practical Methodology">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -369,15 +369,13 @@
       
         
           
-          机器学习中的Monte-Carlo来说一下机器学习中Monte-Carlo中用在什么地方：
-
-贝叶斯推论和学习：
-归一化：$p(x | y) =\frac{p(y | x)p(x)}{\int_Xp(y| x’)p(x’)dx’}$
-边缘概率的计算：$p(x | y) = \int_Z p(x, z
+          11. Practical Methodology实践设计流程1.确定目标：使用什么样的误差度量（error metric），并为此指定目标值。
+2.尽快建立一个端到端的的pipeline，包括估计合适的性能度量（performance metric）。
+3.搭建系统，并确定性能瓶颈，检查哪个部分的
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/machine_learning/MCMC/#more" rel="contents">
+            <a class="btn" href="/deep_learning_book/deep_learning_11/#more" rel="contents">
               Read more &raquo;
             </a>
           </div>
@@ -428,7 +426,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/deep_learning/nn_bp/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/deep_learning_book/deep_learning_10/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Javen Chen">
@@ -447,7 +445,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/deep_learning/nn_bp/" itemprop="url">神经网络基础（BP算法推导和基本的神经网络的实现）</a></h1>
+                <a class="post-title-link" href="/deep_learning_book/deep_learning_10/" itemprop="url">第十章：Sequence Modeling：Recurrent and Recursive Nets</a></h1>
         
 
         <div class="post-meta">
@@ -459,8 +457,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-18T19:00:00+08:00">
-                2016-11-18
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-05-09T10:00:00+08:00">
+                2017-05-09
               </time>
             
 
@@ -482,8 +480,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Deep-Learning/" itemprop="url" rel="index">
-                    <span itemprop="name">Deep Learning</span>
+                  <a href="/categories/《Deep-Learning》读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">《Deep Learning》读书笔记</span>
                   </a>
                 </span>
 
@@ -499,7 +497,7 @@
 
           
           
-             <span id="/deep_learning/nn_bp/" class="leancloud_visitors" data-flag-title="神经网络基础（BP算法推导和基本的神经网络的实现）">
+             <span id="/deep_learning_book/deep_learning_10/" class="leancloud_visitors" data-flag-title="第十章：Sequence Modeling：Recurrent and Recursive Nets">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -532,13 +530,14 @@
       
         
           
-          Back Propagation （BP）the code is from here.
-Here is hisblog.
-1. The four fundamental equations behind backpropagation definition:$$δ^l_j=\frac{∂C}{∂a^
+          10. Sequence Modeling: Recurrent and Recursive Nets循环神经网络（Recurrent Neural Network，RNN）
+是一类用于处理序列数据的神经网络。 
+RNN在不同的时间点上共享参数，使得模型能够扩展到不同长度的样本并进行泛化。
+如果我们
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/deep_learning/nn_bp/#more" rel="contents">
+            <a class="btn" href="/deep_learning_book/deep_learning_10/#more" rel="contents">
               Read more &raquo;
             </a>
           </div>
@@ -589,7 +588,7 @@ Here is hisblog.
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/python/paper_manager/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/deep_learning_book/deep_learning_9/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Javen Chen">
@@ -608,7 +607,7 @@ Here is hisblog.
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/python/paper_manager/" itemprop="url">用python编写一个本地论文管理器</a></h1>
+                <a class="post-title-link" href="/deep_learning_book/deep_learning_9/" itemprop="url">第九章：Convolutional Networks</a></h1>
         
 
         <div class="post-meta">
@@ -620,8 +619,8 @@ Here is hisblog.
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-17T20:00:20+08:00">
-                2016-11-17
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-05-09T09:00:00+08:00">
+                2017-05-09
               </time>
             
 
@@ -643,8 +642,8 @@ Here is hisblog.
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CS小项目/" itemprop="url" rel="index">
-                    <span itemprop="name">CS小项目</span>
+                  <a href="/categories/《Deep-Learning》读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">《Deep Learning》读书笔记</span>
                   </a>
                 </span>
 
@@ -660,7 +659,7 @@ Here is hisblog.
 
           
           
-             <span id="/python/paper_manager/" class="leancloud_visitors" data-flag-title="用python编写一个本地论文管理器">
+             <span id="/deep_learning_book/deep_learning_9/" class="leancloud_visitors" data-flag-title="第九章：Convolutional Networks">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -693,12 +692,14 @@ Here is hisblog.
       
         
           
-          1. 介绍和引入最近初学NLP相关的深度学习，下了很多论文，数量一多，发现论文管理是个问题。
-首先论文数目一多，必须要按类别放到子文件夹下。但是某一篇论文，往往有多个主题。比如说某论文使用word2vec给短文本分类，那这篇论文既可以放在word2vec的目录下，也可以放在短文本的目录下，也可以放在
+          9. Convolutional Networks卷积网络（Convolutional Networks）：卷积网络是指那些至少在网络的一层中使用卷积运算来替代一般的矩阵乘法运算的神经网络。
+卷积（Convolution）操作
+卷积是一种特殊的线性运算。 
+假设我们正在用激光传感器追踪一艘宇宙飞船的
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/python/paper_manager/#more" rel="contents">
+            <a class="btn" href="/deep_learning_book/deep_learning_9/#more" rel="contents">
               Read more &raquo;
             </a>
           </div>
@@ -749,7 +750,7 @@ Here is hisblog.
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/nlp/naive_bayes/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/deep_learning_book/deep_learning_8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Javen Chen">
@@ -768,7 +769,7 @@ Here is hisblog.
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/nlp/naive_bayes/" itemprop="url">基于朴素贝叶斯的自然语言分类器</a></h1>
+                <a class="post-title-link" href="/deep_learning_book/deep_learning_8/" itemprop="url">第八章：Optimization for Training Deep Models</a></h1>
         
 
         <div class="post-meta">
@@ -780,8 +781,8 @@ Here is hisblog.
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-09-15T20:10:20+08:00">
-                2016-09-15
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-05-09T08:00:00+08:00">
+                2017-05-09
               </time>
             
 
@@ -803,8 +804,8 @@ Here is hisblog.
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/NLP/" itemprop="url" rel="index">
-                    <span itemprop="name">NLP</span>
+                  <a href="/categories/《Deep-Learning》读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">《Deep Learning》读书笔记</span>
                   </a>
                 </span>
 
@@ -820,7 +821,7 @@ Here is hisblog.
 
           
           
-             <span id="/nlp/naive_bayes/" class="leancloud_visitors" data-flag-title="基于朴素贝叶斯的自然语言分类器">
+             <span id="/deep_learning_book/deep_learning_8/" class="leancloud_visitors" data-flag-title="第八章：Optimization for Training Deep Models">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -853,11 +854,13 @@ Here is hisblog.
       
         
           
-          概述123自然语言分类是指按照预先定义的主题类别，为文档集合中的每个文档确定一个类别。本文将介绍一个限定类别的自然语言分类器的原理和实现。采用Python作为编程语言，采用朴素贝叶斯作为分类器，使用jieba进行分词，并使用scikit-learn实现分类器。训练数据来自于凤凰网，最终交叉验证的平均
+          8. Optimization for Training Deep Models机器学习和纯优化问题的区别：机器学习关注某些性能度量P，定义于测试集上并且可能是不可解的，只能间接地优化P。因此通过降低代价函数J(θ)来提高P。
+这一点与纯优化不同，纯优化最小化目标J本身。
+批量（batch）梯度算法
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/nlp/naive_bayes/#more" rel="contents">
+            <a class="btn" href="/deep_learning_book/deep_learning_8/#more" rel="contents">
               Read more &raquo;
             </a>
           </div>
@@ -908,7 +911,7 @@ Here is hisblog.
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/machine_learning/Scikit-learn/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/deep_learning_book/deep_learning_7/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Javen Chen">
@@ -927,7 +930,7 @@ Here is hisblog.
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/machine_learning/Scikit-learn/" itemprop="url">Scikit-learn使用总结</a></h1>
+                <a class="post-title-link" href="/deep_learning_book/deep_learning_7/" itemprop="url">第七章：Regularization for Deep Learning</a></h1>
         
 
         <div class="post-meta">
@@ -939,8 +942,8 @@ Here is hisblog.
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-08-31T16:10:20+08:00">
-                2016-08-31
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-05-09T07:00:00+08:00">
+                2017-05-09
               </time>
             
 
@@ -962,8 +965,8 @@ Here is hisblog.
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Machine-Learning/" itemprop="url" rel="index">
-                    <span itemprop="name">Machine Learning</span>
+                  <a href="/categories/《Deep-Learning》读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">《Deep Learning》读书笔记</span>
                   </a>
                 </span>
 
@@ -979,7 +982,7 @@ Here is hisblog.
 
           
           
-             <span id="/machine_learning/Scikit-learn/" class="leancloud_visitors" data-flag-title="Scikit-learn使用总结">
+             <span id="/deep_learning_book/deep_learning_7/" class="leancloud_visitors" data-flag-title="第七章：Regularization for Deep Learning">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -1012,11 +1015,819 @@ Here is hisblog.
       
         
           
-          1234在机器学习和数据挖掘的应用中，scikit-learn是一个功能强大的python包。在数据量不是过大的情况下，可以解决大部分问题。学习使用scikit-learn的过程中，我自己也在补充着机器学习和数据挖掘的知识。这里根据自己学习sklearn的经验，我做一个总结的笔记。另外，我也想把这篇
+          7. Regularization for Deep Learning正则化（Regularization）：对学习算法的修改——旨在减少泛化误差而不是训练误差。
+参数范数惩罚（Parameter Norm Penalties）：通过对目标函数J添加一个参数范数惩罚Ω(θ)，来限制模型的学习能力。
+
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/machine_learning/Scikit-learn/#more" rel="contents">
+            <a class="btn" href="/deep_learning_book/deep_learning_7/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/deep_learning_book/deep_learning_6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Javen Chen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/red.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/deep_learning_book/deep_learning_6/" itemprop="url">第六章：Deep Feedforward Networks</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-05-09T06:00:00+08:00">
+                2017-05-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/《Deep-Learning》读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">《Deep Learning》读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/deep_learning_book/deep_learning_6/" class="leancloud_visitors" data-flag-title="第六章：Deep Feedforward Networks">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          6. Deep Feedforward Networks深度前馈网络（Deep Feedforward Networks）：也被称为前馈神经网络（feedforward neural networks），或者多层感知机（multi-layer perceptrons， MLPs）是典型的深度学习模型
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/deep_learning_book/deep_learning_6/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/deep_learning_book/deep_learning_5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Javen Chen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/red.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/deep_learning_book/deep_learning_5/" itemprop="url">第五章：Machine Learning Basics</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-05-09T05:00:00+08:00">
+                2017-05-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/《Deep-Learning》读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">《Deep Learning》读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/deep_learning_book/deep_learning_5/" class="leancloud_visitors" data-flag-title="第五章：Machine Learning Basics">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          5. Machine Learning Basics机器学习定义：一个计算机程序，如果它能做到在任务T中的性能P随着经验E可以提高，那就可以称它是关于某类任务T和性能衡量P，从经验E中学习。
+机器学习任务（$T$）类别：分类（classification）/缺失输入数据的分类（classificat
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/deep_learning_book/deep_learning_5/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/deep_learning_book/deep_learning_4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Javen Chen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/red.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/deep_learning_book/deep_learning_4/" itemprop="url">第四章：Numerical Computation</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-05-09T04:00:00+08:00">
+                2017-05-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/《Deep-Learning》读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">《Deep Learning》读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/deep_learning_book/deep_learning_4/" class="leancloud_visitors" data-flag-title="第四章：Numerical Computation">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          4. Numerical Computation数值优化（Numerical Computation）：通常指代那些在解决数学问题时，不使用从符号表达式中直接推导出解析解，而是使用迭代更新的方式获取答案的算法。
+上溢和下溢（overflow/underflow）：数据太小或者太大，在计算机内存中无法
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/deep_learning_book/deep_learning_4/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/deep_learning_book/deep_learning_3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Javen Chen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/red.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/deep_learning_book/deep_learning_3/" itemprop="url">第三章：Probability and Information Theory</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-05-09T03:00:00+08:00">
+                2017-05-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/《Deep-Learning》读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">《Deep Learning》读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/deep_learning_book/deep_learning_3/" class="leancloud_visitors" data-flag-title="第三章：Probability and Information Theory">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          3. Probability and Information Theory概率论部分频率学派概率（frequentist probability）：认为概率和事件发生的频率相关。
+贝叶斯学派概率（Bayesian probability）：认为概率是的对某件事发生的确定程度，可以理解成是确信的程度（
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/deep_learning_book/deep_learning_3/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/deep_learning_book/deep_learning_2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Javen Chen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/red.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/deep_learning_book/deep_learning_2/" itemprop="url">第二章：Linear Algebra</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-05-09T02:00:00+08:00">
+                2017-05-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/《Deep-Learning》读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">《Deep Learning》读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/deep_learning_book/deep_learning_2/" class="leancloud_visitors" data-flag-title="第二章：Linear Algebra">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          2. Linear Algebra基础概念：
+
+Scalars: 一个数；
+Vctors: 一列数；
+Matrices: 二位数组的数，每个元素由两个下标确定；
+Tensors: 多维数组的数。
+
+转置（transpose）：$(A^T)_{i,j}=A_{j,i}$
+矩阵乘法: $C=AB$， $
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/deep_learning_book/deep_learning_2/#more" rel="contents">
               Read more &raquo;
             </a>
           </div>
@@ -1058,7 +1869,7 @@ Here is hisblog.
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/5/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span>
+    <a class="extend prev" rel="prev" href="/page/5/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/7/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1106,7 +1917,7 @@ Here is hisblog.
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">55</span>
+                  <span class="site-state-item-count">86</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -1117,7 +1928,7 @@ Here is hisblog.
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">categories</span>
                 </a>
               </div>
@@ -1128,7 +1939,7 @@ Here is hisblog.
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">18</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>

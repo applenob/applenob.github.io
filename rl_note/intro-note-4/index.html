@@ -83,15 +83,15 @@
 <meta property="og:site_name" content="Javen Chen&#39;s Blog">
 <meta property="og:description" content="4. Dynamic ProgrammingDP方法简介 由于其大量的计算损耗，已经不实用，但理论上非常重要。 本书后续的所有方法可以看做想要取得和DP类似的效果；只不过是减少了计算或者假设没有完美的环境模型。 假设解决的问题是有限的MDP，即给定动作a，状态s，和奖励r，可以通过$p(s’,r|s,a)$描述动态变化。  Policy Evaluation评估一个策略的好坏。 策略评估：计算某个">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-4/iterative_policy_evaluation.png">
-<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-4/policy_iteration_2.png">
-<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-4/policy_iteration.png">
-<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-4/value_iteration.png">
+<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-4/intro-note-4/iterative_policy_evaluation.png">
+<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-4/intro-note-4/policy_iteration_2.png">
+<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-4/intro-note-4/policy_iteration.png">
+<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-4/intro-note-4/value_iteration.png">
 <meta property="og:updated_time" content="2019-06-16T13:30:57.107Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="强化学习导论学习笔记——（四）">
 <meta name="twitter:description" content="4. Dynamic ProgrammingDP方法简介 由于其大量的计算损耗，已经不实用，但理论上非常重要。 本书后续的所有方法可以看做想要取得和DP类似的效果；只不过是减少了计算或者假设没有完美的环境模型。 假设解决的问题是有限的MDP，即给定动作a，状态s，和奖励r，可以通过$p(s’,r|s,a)$描述动态变化。  Policy Evaluation评估一个策略的好坏。 策略评估：计算某个">
-<meta name="twitter:image" content="http://yoursite.com/rl_note/intro-note-4/iterative_policy_evaluation.png">
+<meta name="twitter:image" content="http://yoursite.com/rl_note/intro-note-4/intro-note-4/iterative_policy_evaluation.png">
 
 
 
@@ -383,7 +383,7 @@
 <p><strong>策略评估</strong>：<strong>计算某个policy对应的价值函数</strong>，也被称为prediction problem。</p>
 <p>更新方法：使用上一章讲的<strong>Bellman Expectation Euqation for</strong> $v_{\pi}$：</p>
 <p>$$v_{\pi}(s) = \sum_a\pi(a|s)\sum_{s’,r}p(s’,r|s,a)[r+\gamma v_{\pi}(s’)];;\forall s \in S$$</p>
-<p><img src="/rl_note/intro-note-4/iterative_policy_evaluation.png" alt="iterative_policy_evaluation"></p>
+<p><img src="intro-note-4/iterative_policy_evaluation.png" alt="iterative_policy_evaluation"></p>
 <p>核心代码：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">src = new_state_values <span class="keyword">if</span> in_place <span class="keyword">else</span> state_values</span><br><span class="line">...</span><br><span class="line">value = <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> action <span class="keyword">in</span> ACTIONS:</span><br><span class="line">    (next_i, next_j), reward = step([i, j], action)</span><br><span class="line">    value += ACTION_PROB * (reward + src[next_i, next_j])</span><br><span class="line">new_state_values[i, j] = value</span><br></pre></td></tr></table></figure>
 
@@ -395,9 +395,9 @@
 <p>核心代码：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">policy = np.zeros(value.shape, dtype=np.int)</span><br><span class="line">...</span><br><span class="line"><span class="comment"># policy improvement</span></span><br><span class="line">new_policy = np.copy(policy)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(MAX_CARS + <span class="number">1</span>):</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> range(MAX_CARS + <span class="number">1</span>):</span><br><span class="line">        action_returns = []</span><br><span class="line">        ...</span><br><span class="line">        new_policy[i, j] = actions[np.argmax(action_returns)]</span><br></pre></td></tr></table></figure>
 
-<h2 id="Policy-Iteration"><a href="#Policy-Iteration" class="headerlink" title="Policy Iteration"></a>Policy Iteration</h2><p><img src="/rl_note/intro-note-4/policy_iteration_2.png" alt="policy_iteration_2"></p>
+<h2 id="Policy-Iteration"><a href="#Policy-Iteration" class="headerlink" title="Policy Iteration"></a>Policy Iteration</h2><p><img src="intro-note-4/policy_iteration_2.png" alt="policy_iteration_2"></p>
 <p>其中，$E$代表策略的evaluation，$I$代表策略的improvement。简单地说，Policy Iteration就是不断地评估策略然后改进策略。</p>
-<p><img src="/rl_note/intro-note-4/policy_iteration.png" alt="policy_iteration"></p>
+<p><img src="intro-note-4/policy_iteration.png" alt="policy_iteration"></p>
 <p>核心代码：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">policy_change = (new_policy != policy).sum()</span><br><span class="line"><span class="keyword">if</span> policy_change == <span class="number">0</span>:</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
 
@@ -405,7 +405,7 @@
 <p>$v_{k+1}(s)=\underset{a}{max} E[R_{t+1}+\gamma v_k(S_{t+1})|S_t=s, A_t=a]$</p>
 <p>$=\underset{a}{max}\sum_{s’,r}p(s’,r|s,a)[r+\gamma v_k(s’)]$</p>
 <p>实际上就是<strong>Bellman Optimality Euqation for</strong> $v_*(s)$。</p>
-<p><img src="/rl_note/intro-note-4/value_iteration.png" alt="value_iteration"></p>
+<p><img src="intro-note-4/value_iteration.png" alt="value_iteration"></p>
 <p><strong>Value Iteration</strong>简单地说就是每次评估价值的时候直接用可能的用<strong>最优价值函数更新价值函数</strong>（这样的每一步不涉及策略本身）；在确定已经获得比较准确的价值评估之后，再一次性确定策略。</p>
 <p>核心代码：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment"># value iteration</span></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    delta = <span class="number">0.0</span></span><br><span class="line">    <span class="keyword">for</span> state <span class="keyword">in</span> STATES[<span class="number">1</span>:GOAL]:</span><br><span class="line">        <span class="comment"># get possilbe actions for current state</span></span><br><span class="line">        actions = np.arange(min(state, GOAL - state) + <span class="number">1</span>)</span><br><span class="line">        action_returns = []</span><br><span class="line">        <span class="keyword">for</span> action <span class="keyword">in</span> actions:</span><br><span class="line">            action_returns.append(</span><br><span class="line">                HEAD_PROB * state_value[state + action] + (<span class="number">1</span> - HEAD_PROB) * state_value[state - action])</span><br><span class="line">        new_value = np.max(action_returns)</span><br><span class="line">        delta += np.abs(state_value[state] - new_value)</span><br><span class="line">        <span class="comment"># update state value</span></span><br><span class="line">        state_value[state] = new_value</span><br><span class="line">    <span class="keyword">if</span> delta &lt; <span class="number">1e-9</span>:</span><br><span class="line">        <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
@@ -440,8 +440,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/rl_note/intro-note-3/" rel="next" title="强化学习导论学习笔记——（三）">
-                <i class="fa fa-chevron-left"></i> 强化学习导论学习笔记——（三）
+              <a href="/tensorflow/15_dataset_basic/" rel="next" title="十五. Tensorflow Dataset基础">
+                <i class="fa fa-chevron-left"></i> 十五. Tensorflow Dataset基础
               </a>
             
           </div>
@@ -531,7 +531,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">55</span>
+                  <span class="site-state-item-count">86</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -542,7 +542,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">categories</span>
                 </a>
               </div>
@@ -553,7 +553,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">18</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
