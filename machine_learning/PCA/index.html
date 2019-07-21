@@ -83,12 +83,12 @@
 <meta property="og:site_name" content="Javen Chen&#39;s Blog">
 <meta property="og:description" content="是什么提到Principal component analysis (PCA)，大家会先想到“降维”，其准确的定义是： 1PCA is a statistical procedure that uses an orthogonal transformation to convert a set of observations of possibly correlated variables int">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/machine_learning/PCA/PCA/exp.png">
+<meta property="og:image" content="http://yoursite.com/machine_learning/PCA/exp.png">
 <meta property="og:updated_time" content="2019-07-20T05:32:07.594Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="PCA（主成分分析）学习总结（原理+代码）">
 <meta name="twitter:description" content="是什么提到Principal component analysis (PCA)，大家会先想到“降维”，其准确的定义是： 1PCA is a statistical procedure that uses an orthogonal transformation to convert a set of observations of possibly correlated variables int">
-<meta name="twitter:image" content="http://yoursite.com/machine_learning/PCA/PCA/exp.png">
+<meta name="twitter:image" content="http://yoursite.com/machine_learning/PCA/exp.png">
 
 
 
@@ -432,7 +432,7 @@
 
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">im = np.array(Image.open(imlist[<span class="number">0</span>])) <span class="comment"># 打开一幅图像，获取其大小</span></span><br><span class="line">m,n = im.shape[<span class="number">0</span>:<span class="number">2</span>] <span class="comment"># 获取图像的大小</span></span><br><span class="line">imnbr = len(imlist) <span class="comment"># 获取图像的数目</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建矩阵，保存所有压平后的图像数据</span></span><br><span class="line">immatrix = np.array([np.array(Image.open(im)).flatten() <span class="keyword">for</span> im <span class="keyword">in</span> imlist],<span class="string">'f'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 执行 PCA 操作</span></span><br><span class="line">V,S,immean = pca(immatrix)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示一些图像（均值图像和前 7 个模式）</span></span><br><span class="line">plt.figure()</span><br><span class="line"></span><br><span class="line">plt.gray()</span><br><span class="line">plt.subplot(<span class="number">2</span>,<span class="number">4</span>,<span class="number">1</span>)</span><br><span class="line">plt.imshow(immean.reshape(m,n))</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">7</span>):</span><br><span class="line">    plt.subplot(<span class="number">2</span>,<span class="number">4</span>,i+<span class="number">2</span>)</span><br><span class="line">    plt.imshow(V[i].reshape(m,n))</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
 
-<p><img src="PCA/exp.png" alt></p>
+<p><img src="/machine_learning/PCA/exp.png" alt></p>
 <p>上面展示的是平均图像（左上第一幅）和前7个模式（具有最大方差的方向模式，不是降维的结果）</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">immatrix.shape</span><br></pre></td></tr></table></figure>
 

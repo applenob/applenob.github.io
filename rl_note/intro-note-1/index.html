@@ -83,15 +83,15 @@
 <meta property="og:site_name" content="Javen Chen&#39;s Blog">
 <meta property="og:description" content="1. Introduction书本介绍 Reinforcement Learning 作者: Richard S. Sutton / Andrew G. Barto  几乎是最权威的强化学习教材。 重要的符号表示 $q_∗(a)$：动作a对应的真实价值（价值期望），true value (expected reward) of action a $Q_t(a)$：动作a在t时刻的估计价值，esti">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-1/intro-note-1/cover.jpg">
-<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-1/intro-note-1/ttt.png">
-<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-1/intro-note-1/ttt_demo.jpg">
-<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-1/intro-note-1/ttt_value.jpg">
+<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-1/cover.jpg">
+<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-1/ttt.png">
+<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-1/ttt_demo.jpg">
+<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-1/ttt_value.jpg">
 <meta property="og:updated_time" content="2019-06-16T13:49:42.029Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="强化学习导论学习笔记——（一）">
 <meta name="twitter:description" content="1. Introduction书本介绍 Reinforcement Learning 作者: Richard S. Sutton / Andrew G. Barto  几乎是最权威的强化学习教材。 重要的符号表示 $q_∗(a)$：动作a对应的真实价值（价值期望），true value (expected reward) of action a $Q_t(a)$：动作a在t时刻的估计价值，esti">
-<meta name="twitter:image" content="http://yoursite.com/rl_note/intro-note-1/intro-note-1/cover.jpg">
+<meta name="twitter:image" content="http://yoursite.com/rl_note/intro-note-1/cover.jpg">
 
 
 
@@ -374,7 +374,7 @@
       
 
       
-        <h1 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1. Introduction"></a>1. Introduction</h1><h2 id="书本介绍"><a href="#书本介绍" class="headerlink" title="书本介绍"></a>书本介绍</h2><p><img src="intro-note-1/cover.jpg" alt="book_cover"></p>
+        <h1 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1. Introduction"></a>1. Introduction</h1><h2 id="书本介绍"><a href="#书本介绍" class="headerlink" title="书本介绍"></a>书本介绍</h2><p><img src="/rl_note/intro-note-1/cover.jpg" alt="book_cover"></p>
 <p><a href="https://book.douban.com/subject/30323890/" target="_blank" rel="noopener">Reinforcement Learning</a></p>
 <p>作者: Richard S. Sutton / Andrew G. Barto </p>
 <p>几乎是最权威的强化学习教材。</p>
@@ -407,7 +407,7 @@
 <li>遗传算法忽略了policy实际上是state到action的映射，它不关注agent和环境的互动，只看最终结果。</li>
 </ul>
 <h2 id="局限性"><a href="#局限性" class="headerlink" title="局限性"></a>局限性</h2><p>强化学习非常依赖<strong>状态</strong>（state）的概念。state既是策略函数和价值函数的输入，又是<strong>环境模型</strong>（model）的输入和输出。</p>
-<h2 id="Tic-Tac-Toe（井字棋）"><a href="#Tic-Tac-Toe（井字棋）" class="headerlink" title="Tic-Tac-Toe（井字棋）"></a>Tic-Tac-Toe（井字棋）</h2><p><img src="intro-note-1/ttt.png" alt="tic-tac-toe"></p>
+<h2 id="Tic-Tac-Toe（井字棋）"><a href="#Tic-Tac-Toe（井字棋）" class="headerlink" title="Tic-Tac-Toe（井字棋）"></a>Tic-Tac-Toe（井字棋）</h2><p><img src="/rl_note/intro-note-1/ttt.png" alt="tic-tac-toe"></p>
 <ul>
 <li>一个简单的应用强化学习的例子。</li>
 <li>定义policy：任何一种局面下，该如何落子。</li>
@@ -441,9 +441,9 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># choose an action based on the state</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">act</span><span class="params">(self)</span>:</span></span><br><span class="line">    state = self.states[<span class="number">-1</span>]</span><br><span class="line">    next_states = []</span><br><span class="line">    next_positions = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(BOARD_ROWS):</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> range(BOARD_COLS):</span><br><span class="line">            <span class="keyword">if</span> state.data[i, j] == <span class="number">0</span>:</span><br><span class="line">                next_positions.append([i, j])</span><br><span class="line">                next_states.append(state.next_state(i, j, self.symbol).hash())</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> np.random.rand() &lt; self.epsilon:</span><br><span class="line">        action = next_positions[np.random.randint(len(next_positions))]</span><br><span class="line">        action.append(self.symbol)</span><br><span class="line">        self.greedy[<span class="number">-1</span>] = <span class="literal">False</span></span><br><span class="line">        <span class="keyword">return</span> action</span><br><span class="line"></span><br><span class="line">    values = []</span><br><span class="line">    <span class="keyword">for</span> hash, pos <span class="keyword">in</span> zip(next_states, next_positions):</span><br><span class="line">        values.append((self.estimations[hash], pos))</span><br><span class="line">    <span class="comment"># to select one of the actions of equal value at random</span></span><br><span class="line">    np.random.shuffle(values)</span><br><span class="line">    values.sort(key=<span class="keyword">lambda</span> x: x[<span class="number">0</span>], reverse=<span class="literal">True</span>)</span><br><span class="line">    action = values[<span class="number">0</span>][<span class="number">1</span>]</span><br><span class="line">    action.append(self.symbol)</span><br><span class="line">    <span class="keyword">return</span> action</span><br></pre></td></tr></table></figure>
 
 <p>可以在终端和训练好的ai player对弈：</p>
-<p><img src="intro-note-1/ttt_demo.jpg" alt="ttt_demo"></p>
+<p><img src="/rl_note/intro-note-1/ttt_demo.jpg" alt="ttt_demo"></p>
 <p>我试了好几局，都是平局，看来训练的还是不错的。</p>
-<p><img src="intro-note-1/ttt_value.jpg" alt="ttt_value"></p>
+<p><img src="/rl_note/intro-note-1/ttt_value.jpg" alt="ttt_value"></p>
 <p>模型训练好后，保存的数据就是价值表格。但我们从中也可以看到一个问题，一个像tic-tac-toe这么简单的问题，使用价值表格保存所有状态的价值，也需要耗费大量的存储。</p>
 
       

@@ -83,13 +83,13 @@
 <meta property="og:site_name" content="Javen Chen&#39;s Blog">
 <meta property="og:description" content="对比了pickle/npy/npz/hdf四种格式的读取效率。 1234567891011121314151617import numpy as npimport timeimport cPickle as pklimport osimport tablesa1 = np.random.normal(size=[256, 4096])label = np.random.normal(size=[2">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/python/save/save/g1.png">
-<meta property="og:image" content="http://yoursite.com/python/save/save/g2.png">
+<meta property="og:image" content="http://yoursite.com/python/save/g1.png">
+<meta property="og:image" content="http://yoursite.com/python/save/g2.png">
 <meta property="og:updated_time" content="2019-07-20T11:40:42.250Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="python 不同格式的读取效率">
 <meta name="twitter:description" content="对比了pickle/npy/npz/hdf四种格式的读取效率。 1234567891011121314151617import numpy as npimport timeimport cPickle as pklimport osimport tablesa1 = np.random.normal(size=[256, 4096])label = np.random.normal(size=[2">
-<meta name="twitter:image" content="http://yoursite.com/python/save/save/g1.png">
+<meta name="twitter:image" content="http://yoursite.com/python/save/g1.png">
 
 
 
@@ -398,8 +398,8 @@
 
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[8.738465070724487, 0.017062902450561523, 0.09086489677429199, 0.029830217361450195]</span><br></pre></td></tr></table></figure>
 
-<p><img src="save/g1.png" alt></p>
-<p><img src="save/g2.png" alt></p>
+<p><img src="/python/save/g1.png" alt></p>
+<p><img src="/python/save/g2.png" alt></p>
 <h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><ul>
 <li><code>Pickle</code>：读写慢，而且占空间，如果存储的不是对象而是一个<code>numpy</code>数组，最好不要使用<code>pickle</code>；</li>
 <li><code>npy</code>：读写都快，占用空间少；</li>

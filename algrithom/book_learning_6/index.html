@@ -83,23 +83,23 @@
 <meta property="og:site_name" content="Javen Chen&#39;s Blog">
 <meta property="og:description" content="1对应本书第六章。  原目录 笔记作者介绍了两个计算机中的树结构：文件系统（File System）和HTML页面。 用结点和引用实现的二叉树1234567891011121314151617181920212223242526272829303132333435from __future__ import print_functionclass BinaryTree:    def __init">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/algrithom/book_learning_6/book_learning_6/buildExp8.png">
-<meta property="og:image" content="http://yoursite.com/algrithom/book_learning_6/book_learning_6/min_heap.png">
-<meta property="og:image" content="http://yoursite.com/algrithom/book_learning_6/book_learning_6/bstdel1.png">
-<meta property="og:image" content="http://yoursite.com/algrithom/book_learning_6/book_learning_6/bstdel2.png">
-<meta property="og:image" content="http://yoursite.com/algrithom/book_learning_6/book_learning_6/bstdel3.png">
-<meta property="og:image" content="http://yoursite.com/algrithom/book_learning_6/book_learning_6/skewedTree.png">
-<meta property="og:image" content="http://yoursite.com/algrithom/book_learning_6/book_learning_6/worstAVL.png">
-<meta property="og:image" content="http://yoursite.com/algrithom/book_learning_6/book_learning_6/simpleunbalanced.png">
-<meta property="og:image" content="http://yoursite.com/algrithom/book_learning_6/book_learning_6/bfderive.png">
-<meta property="og:image" content="http://yoursite.com/algrithom/book_learning_6/book_learning_6/hardunbalanced.png">
-<meta property="og:image" content="http://yoursite.com/algrithom/book_learning_6/book_learning_6/badrotate.png">
-<meta property="og:image" content="http://yoursite.com/algrithom/book_learning_6/book_learning_6/rotatelr.png">
+<meta property="og:image" content="http://yoursite.com/algrithom/book_learning_6/buildExp8.png">
+<meta property="og:image" content="http://yoursite.com/algrithom/book_learning_6/min_heap.png">
+<meta property="og:image" content="http://yoursite.com/algrithom/book_learning_6/bstdel1.png">
+<meta property="og:image" content="http://yoursite.com/algrithom/book_learning_6/bstdel2.png">
+<meta property="og:image" content="http://yoursite.com/algrithom/book_learning_6/bstdel3.png">
+<meta property="og:image" content="http://yoursite.com/algrithom/book_learning_6/skewedTree.png">
+<meta property="og:image" content="http://yoursite.com/algrithom/book_learning_6/worstAVL.png">
+<meta property="og:image" content="http://yoursite.com/algrithom/book_learning_6/simpleunbalanced.png">
+<meta property="og:image" content="http://yoursite.com/algrithom/book_learning_6/bfderive.png">
+<meta property="og:image" content="http://yoursite.com/algrithom/book_learning_6/hardunbalanced.png">
+<meta property="og:image" content="http://yoursite.com/algrithom/book_learning_6/badrotate.png">
+<meta property="og:image" content="http://yoursite.com/algrithom/book_learning_6/rotatelr.png">
 <meta property="og:updated_time" content="2019-07-07T11:03:04.579Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="六. Trees and Tree Algorithms">
 <meta name="twitter:description" content="1对应本书第六章。  原目录 笔记作者介绍了两个计算机中的树结构：文件系统（File System）和HTML页面。 用结点和引用实现的二叉树1234567891011121314151617181920212223242526272829303132333435from __future__ import print_functionclass BinaryTree:    def __init">
-<meta name="twitter:image" content="http://yoursite.com/algrithom/book_learning_6/book_learning_6/buildExp8.png">
+<meta name="twitter:image" content="http://yoursite.com/algrithom/book_learning_6/buildExp8.png">
 
 
 
@@ -400,7 +400,7 @@
 <li>如果当前token是<code>&#39;)&#39;</code>，回到父结点。</li>
 </ul>
 <p>构建的解析树如下：</p>
-<p><img src="book_learning_6/buildExp8.png" alt></p>
+<p><img src="/algrithom/book_learning_6/buildExp8.png" alt></p>
 <p>构建解析树的代码：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pythonds.basic.stack <span class="keyword">import</span> Stack</span><br><span class="line"><span class="keyword">from</span> pythonds.trees.binaryTree <span class="keyword">import</span> BinaryTree</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">buildParseTree</span><span class="params">(fpexp)</span>:</span></span><br><span class="line">    fplist = fpexp.split()</span><br><span class="line">    pStack = Stack()</span><br><span class="line">    eTree = BinaryTree(<span class="string">''</span>)</span><br><span class="line">    pStack.push(eTree)</span><br><span class="line">    currentTree = eTree</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> fplist:</span><br><span class="line">        <span class="comment"># 如果当前token是`'('`，增加一个结点作为左子结点，下降到左子结点。</span></span><br><span class="line">        <span class="keyword">if</span> i == <span class="string">'('</span>:</span><br><span class="line">            currentTree.insertLeft(<span class="string">''</span>)</span><br><span class="line">            pStack.push(currentTree)</span><br><span class="line">            currentTree = currentTree.getLeftChild()</span><br><span class="line">        <span class="comment"># 如果当前token是一个数字，则将当前结点的值设为这个数字，回到父结点。</span></span><br><span class="line">        <span class="keyword">elif</span> i <span class="keyword">not</span> <span class="keyword">in</span> [<span class="string">'+'</span>, <span class="string">'-'</span>, <span class="string">'*'</span>, <span class="string">'/'</span>, <span class="string">')'</span>]:</span><br><span class="line">            currentTree.setRootVal(int(i))</span><br><span class="line">            parent = pStack.pop()</span><br><span class="line">            currentTree = parent</span><br><span class="line">        <span class="comment"># 如果当前token属于`['+','-','/','*']`，将当前结点的值设为这个操作符，增加一个结点作为右子结点，下降到右子结点。</span></span><br><span class="line">        <span class="keyword">elif</span> i <span class="keyword">in</span> [<span class="string">'+'</span>, <span class="string">'-'</span>, <span class="string">'*'</span>, <span class="string">'/'</span>]:</span><br><span class="line">            currentTree.setRootVal(i)</span><br><span class="line">            currentTree.insertRight(<span class="string">''</span>)</span><br><span class="line">            pStack.push(currentTree)</span><br><span class="line">            currentTree = currentTree.getRightChild()</span><br><span class="line">        <span class="comment"># 如果当前token是`')'`，回到父结点。</span></span><br><span class="line">        <span class="keyword">elif</span> i == <span class="string">')'</span>:</span><br><span class="line">            currentTree = pStack.pop()</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">raise</span> ValueError</span><br><span class="line">    <span class="keyword">return</span> eTree</span><br><span class="line"></span><br><span class="line">pt = buildParseTree(<span class="string">"( 3 + ( 4 * 5 ) )"</span>)</span><br><span class="line">pt.postorder()  <span class="comment">#defined and explained in the next section</span></span><br></pre></td></tr></table></figure>
 
@@ -437,7 +437,7 @@
 <p>计算机科学家觉得还是不够，于是发明了<code>二叉堆</code>，使得<code>优先级队列</code>的时间复杂度是$O(logn)$。</p>
 <p>二叉堆从外观上来看是一棵完全二叉树，但它有一个性质，即<strong>父结点比子结点小（小顶堆）</strong>。</p>
 <p>接下来看看如何实现一个二叉堆：</p>
-<p>需要实现的方法：<br><img src="book_learning_6/min_heap.png" alt><br>实现的时候，首先牢记二叉堆的两个属性：</p>
+<p>需要实现的方法：<br><img src="/algrithom/book_learning_6/min_heap.png" alt><br>实现的时候，首先牢记二叉堆的两个属性：</p>
 <ol>
 <li><strong>The StructureProperty</strong>，即二叉堆在结构上是一棵完全二叉树。原因是完全二叉树可以直接存在list中。第0个元素置空，第$i$个元素的左子结点和右子结点分别是$i×2$和$i×2+1$，第i个元素的父结点是$i/2$。</li>
 <li><strong>Heap Order Property</strong>，即父结点比子结点小。</li>
@@ -452,11 +452,11 @@
 
 <h3 id="二叉查找树"><a href="#二叉查找树" class="headerlink" title="二叉查找树"></a>二叉查找树</h3><p><code>二叉查找树（bst）</code>即这样的二叉树：</p>
 <p>所有的父结点的值都比左子结点的大，但比右子结点的小。<br>值得<strong>注意</strong>的是<strong>bst的删除操作</strong>，分三种情况：</p>
-<p>1.该目标结点没有子节点；<br><img src="book_learning_6/bstdel1.png" alt><br>这种情况直接删除目标结点即可。</p>
-<p>2.该目标结点只有一个子节点；<br><img src="book_learning_6/bstdel2.png" alt></p>
+<p>1.该目标结点没有子节点；<br><img src="/algrithom/book_learning_6/bstdel1.png" alt><br>这种情况直接删除目标结点即可。</p>
+<p>2.该目标结点只有一个子节点；<br><img src="/algrithom/book_learning_6/bstdel2.png" alt></p>
 <p>这种情况需要先将目标结点删除，再把目标结点的子结点连到目标结点的父结点上</p>
 <p>3.该目标结点有两个子节点。</p>
-<p><img src="book_learning_6/bstdel3.png" alt></p>
+<p><img src="/algrithom/book_learning_6/bstdel3.png" alt></p>
 <p>这种情况最复杂，删除目标结点后，需要寻找successor，来替代当前结点的位置。</p>
 <p>successor必须满足比目标结点所有左子树要大，比所有右子树要小，又分三种情况：</p>
 <ol>
@@ -469,13 +469,13 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yellow</span><br><span class="line">at</span><br></pre></td></tr></table></figure>
 
 <h3 id="平衡二叉查找树"><a href="#平衡二叉查找树" class="headerlink" title="平衡二叉查找树"></a>平衡二叉查找树</h3><p>当一般的二叉查找树出现倾斜的情况（skewed tree）：</p>
-<p><img src="book_learning_6/skewedTree.png" alt></p>
+<p><img src="/algrithom/book_learning_6/skewedTree.png" alt></p>
 <p>时间复杂度右重新变成了$O(n)$，于是引入<strong>平衡二叉查找树（Balanced Binary Search Trees， AVL tree）</strong>，解决倾斜问题（AVL的命名源自其作者的名字）。</p>
 <p><strong>平衡因子（balance factor）</strong>：$balanceFactor=height(leftSubTree)−height(rightSubTree)$，即左子树的高度-右子树的高度。</p>
 <p>如果一棵二叉查找树可以被称为<strong>平衡</strong>，则其所有子树的平衡因子只能是：-1,0,1三者之一。</p>
 <p>先来看看AVL的性能：</p>
 <p>来找到<strong>最左倾</strong>的AVL的结点个数和高度：</p>
-<p><img src="book_learning_6/worstAVL.png" alt></p>
+<p><img src="/algrithom/book_learning_6/worstAVL.png" alt></p>
 <p>很容易可以发现一个规律，即$N_h=1+N_{h−1}+N_{h−2}$。其中，$h$是树的高度，$N_h$是高度$h$的情况下，最左倾的AVL的结点个数。这个形态和斐波那契数列是一致的。斐波那契数列有一个性质就是，对于足够大的数，后一个比前一个的比值接近于<strong>黄金分割</strong>：$Φ=\frac{1+\sqrt5}{2}$。</p>
 <p>可以将递推公式转换成：$h=1.44logN_h$，也就是说，AVL的查找操作的复杂度，依然是：$O(logN)$。</p>
 <p>现在考虑如何维护平衡，对插入元素的父结点递归地更新平衡因子，直到：1.已经更新到root；2.当前父结点的平衡因子是0。</p>
@@ -483,10 +483,10 @@
 
 <p>获得新的平衡因子以后，需要对不平衡的结点做<strong>旋转（操作）</strong>。</p>
 <p>左旋：</p>
-<p><img src="book_learning_6/simpleunbalanced.png" alt></p>
+<p><img src="/algrithom/book_learning_6/simpleunbalanced.png" alt></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rotateLeft</span><span class="params">(self,rotRoot)</span>:</span></span><br><span class="line">    <span class="comment"># 当前根结点的右子结点变成新的根节点</span></span><br><span class="line">    newRoot =</span><br><span class="line">rotRoot.rightChild</span><br><span class="line">    <span class="comment"># 如果新根有左子树，移到当前根结点的右子树上</span></span><br><span class="line">    rotRoot.rightChild =</span><br><span class="line">newRoot.leftChild</span><br><span class="line">    <span class="keyword">if</span> newRoot.leftChild != <span class="literal">None</span>:</span><br><span class="line">newRoot.leftChild.parent = rotRoot</span><br><span class="line">    <span class="comment"># 当前根的父结点传给新根</span></span><br><span class="line">    newRoot.parent =</span><br><span class="line">rotRoot.parent</span><br><span class="line">    <span class="keyword">if</span> rotRoot.isRoot():</span><br><span class="line">        self.root = newRoot</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line"><span class="keyword">if</span> rotRoot.isLeftChild():</span><br><span class="line">                rotRoot.parent.leftChild = newRoot</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">            rotRoot.parent.rightChild = newRoot</span><br><span class="line">    <span class="comment"># 当前根变成新根的左子树</span></span><br><span class="line">newRoot.leftChild = rotRoot</span><br><span class="line">    rotRoot.parent = newRoot</span><br><span class="line">    <span class="comment"># 更新平衡参数</span></span><br><span class="line">rotRoot.balanceFactor = rotRoot.balanceFactor + <span class="number">1</span> - min(newRoot.balanceFactor,</span><br><span class="line"><span class="number">0</span>)</span><br><span class="line">    newRoot.balanceFactor = newRoot.balanceFactor + <span class="number">1</span> +</span><br><span class="line">max(rotRoot.balanceFactor, <span class="number">0</span>)</span><br></pre></td></tr></table></figure>
 
-<p>最后两行的更新平衡参数需要补充解释：<br><img src="book_learning_6/bfderive.png" alt></p>
+<p>最后两行的更新平衡参数需要补充解释：<br><img src="/algrithom/book_learning_6/bfderive.png" alt></p>
 <p>$newBal(B)=h_A−h_C$，</p>
 <p>$oldBal(B)=h_A−h_D$，</p>
 <p>对于旋转前：$h_D=1+max(h_C,h_E)$，而经过旋转后$h_C$和$h_E$是不变的。</p>
@@ -503,9 +503,9 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">newRoot.balanceFactor =</span><br><span class="line">newRoot.balanceFactor + <span class="number">1</span> + max(rotRoot.balanceFactor, <span class="number">0</span>)</span><br></pre></td></tr></table></figure>
 
 <p>还有一个问题，如果是这样的右倾：</p>
-<p><img src="book_learning_6/hardunbalanced.png" alt><br>直接进行左旋，结果是：<br><img src="book_learning_6/badrotate.png" alt><br>结果变成了左倾。</p>
+<p><img src="/algrithom/book_learning_6/hardunbalanced.png" alt><br>直接进行左旋，结果是：<br><img src="/algrithom/book_learning_6/badrotate.png" alt><br>结果变成了左倾。</p>
 <p>因此在做旋转之前，比如左旋，先检查左子树是否左倾，如果有要先右旋左子树：</p>
-<p><img src="book_learning_6/rotatelr.png" alt></p>
+<p><img src="/algrithom/book_learning_6/rotatelr.png" alt></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rebalance</span><span class="params">(self,node)</span>:</span></span><br><span class="line">  <span class="keyword">if</span> node.balanceFactor &lt; <span class="number">0</span>:</span><br><span class="line">         <span class="keyword">if</span></span><br><span class="line">node.rightChild.balanceFactor &gt; <span class="number">0</span>:</span><br><span class="line">            self.rotateRight(node.rightChild)</span><br><span class="line">self.rotateLeft(node)</span><br><span class="line">         <span class="keyword">else</span>:</span><br><span class="line">            self.rotateLeft(node)</span><br><span class="line">  <span class="keyword">elif</span></span><br><span class="line">node.balanceFactor &gt; <span class="number">0</span>:</span><br><span class="line">         <span class="keyword">if</span> node.leftChild.balanceFactor &lt; <span class="number">0</span>:</span><br><span class="line">self.rotateLeft(node.leftChild)</span><br><span class="line">            self.rotateRight(node)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">            self.rotateRight(node)</span><br></pre></td></tr></table></figure>
 
 <h2 id="讨论作业"><a href="#讨论作业" class="headerlink" title="讨论作业"></a>讨论作业</h2>

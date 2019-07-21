@@ -83,18 +83,18 @@
 <meta property="og:site_name" content="Javen Chen&#39;s Blog">
 <meta property="og:description" content="官网：https://ai.baidu.com/unit/home UNIT（Understanding and Interaction Technology），是一个可定制的对话系统开发平台。 使用流程 1.梳理业务逻辑。 2.在网站上配置技能。 3.标注对话数据。分成数据上传和交互式生成两种方式。 4.对话训练和验证。 5.在百度云上创建应用。  案例同样的，这里提供一个简单的电影推荐的使用案">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/dialog_sys/baidu-unit/baidu-unit/unit_intent.png">
-<meta property="og:image" content="http://yoursite.com/dialog_sys/baidu-unit/baidu-unit/unit_intent_corpus.jpg">
-<meta property="og:image" content="http://yoursite.com/dialog_sys/baidu-unit/baidu-unit/unit_slot_1.png">
-<meta property="og:image" content="http://yoursite.com/dialog_sys/baidu-unit/baidu-unit/unit_slot_2.png">
-<meta property="og:image" content="http://yoursite.com/dialog_sys/baidu-unit/baidu-unit/unit_test.jpg">
-<meta property="og:image" content="http://yoursite.com/dialog_sys/baidu-unit/baidu-unit/dmkit.png">
-<meta property="og:image" content="http://yoursite.com/dialog_sys/baidu-unit/baidu-unit/unit_dm_graph.png">
+<meta property="og:image" content="http://yoursite.com/dialog_sys/baidu-unit/unit_intent.png">
+<meta property="og:image" content="http://yoursite.com/dialog_sys/baidu-unit/unit_intent_corpus.jpg">
+<meta property="og:image" content="http://yoursite.com/dialog_sys/baidu-unit/unit_slot_1.png">
+<meta property="og:image" content="http://yoursite.com/dialog_sys/baidu-unit/unit_slot_2.png">
+<meta property="og:image" content="http://yoursite.com/dialog_sys/baidu-unit/unit_test.jpg">
+<meta property="og:image" content="http://yoursite.com/dialog_sys/baidu-unit/dmkit.png">
+<meta property="og:image" content="http://yoursite.com/dialog_sys/baidu-unit/unit_dm_graph.png">
 <meta property="og:updated_time" content="2019-07-20T14:51:27.598Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="百度UNIT学习总结">
 <meta name="twitter:description" content="官网：https://ai.baidu.com/unit/home UNIT（Understanding and Interaction Technology），是一个可定制的对话系统开发平台。 使用流程 1.梳理业务逻辑。 2.在网站上配置技能。 3.标注对话数据。分成数据上传和交互式生成两种方式。 4.对话训练和验证。 5.在百度云上创建应用。  案例同样的，这里提供一个简单的电影推荐的使用案">
-<meta name="twitter:image" content="http://yoursite.com/dialog_sys/baidu-unit/baidu-unit/unit_intent.png">
+<meta name="twitter:image" content="http://yoursite.com/dialog_sys/baidu-unit/unit_intent.png">
 
 
 
@@ -388,20 +388,20 @@
 </ul>
 <h2 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h2><p>同样的，这里提供一个简单的电影推荐的使用案例。</p>
 <p>设置意图：</p>
-<p><img src="baidu-unit/unit_intent.png" alt></p>
+<p><img src="/dialog_sys/baidu-unit/unit_intent.png" alt></p>
 <p>意图的判别：</p>
-<p><img src="baidu-unit/unit_intent_corpus.jpg" alt></p>
+<p><img src="/dialog_sys/baidu-unit/unit_intent_corpus.jpg" alt></p>
 <p>设置槽位：</p>
-<p><img src="baidu-unit/unit_slot_1.png" alt></p>
-<p><img src="baidu-unit/unit_slot_2.png" alt></p>
+<p><img src="/dialog_sys/baidu-unit/unit_slot_1.png" alt></p>
+<p><img src="/dialog_sys/baidu-unit/unit_slot_2.png" alt></p>
 <p>可以看到，槽位种类分必填和非必填。设置槽位时可以上传该槽位对应的字典。澄清话术可以理解成追问话术，即对某个槽位如果不存在时，需要追问的语句。这里还可以设置澄清的次数。</p>
 <p>使用测试：</p>
-<p><img src="baidu-unit/unit_test.jpg" alt></p>
+<p><img src="/dialog_sys/baidu-unit/unit_test.jpg" alt></p>
 <h2 id="DM-Kit"><a href="#DM-Kit" class="headerlink" title="DM Kit"></a>DM Kit</h2><p>DM Kit作为UNIT的开源对话管理模块，可以无缝对接UNIT的理解能力，并赋予开发者多状态的复杂对话流程管理能力，还可以低成本对接外部知识库，迅速丰富话术信息量。</p>
 <p>github：<a href="https://github.com/baidu/unit-dmkit" target="_blank" rel="noopener">https://github.com/baidu/unit-dmkit</a></p>
-<h3 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h3><p><img src="baidu-unit/dmkit.png" alt></p>
+<h3 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h3><p><img src="/dialog_sys/baidu-unit/dmkit.png" alt></p>
 <p>在<a href="https://www.draw.io/" target="_blank" rel="noopener">draw.io</a>中按照编辑规则进行图编辑。下图是官方提供的订酒店图结构： </p>
-<p><img src="baidu-unit/unit_dm_graph.png" alt></p>
+<p><img src="/dialog_sys/baidu-unit/unit_dm_graph.png" alt></p>
 <p>其中：</p>
 <ul>
 <li>椭圆，用户节点，椭圆中存放的是用户的意图，以及槽位值（可选）。表示用户输入query的NLU解析结果，结合指向该节点的BOT节点，构成了DM Kit基础配置中一个完成trigger条件。</li>

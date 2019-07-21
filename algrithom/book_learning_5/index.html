@@ -83,14 +83,14 @@
 <meta property="og:site_name" content="Javen Chen&#39;s Blog">
 <meta property="og:description" content="1对应本书第五章。  原目录 笔记这章开始进入算法部分，讲解排序和查找。 二分查找12345678910111213141516171819202122from __future__ import print_functiondef binarySearch(alist, item):    first = 0    last = len(alist)-1    found = False">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/algrithom/book_learning_5/book_learning_5/map.png">
-<meta property="og:image" content="http://yoursite.com/algrithom/book_learning_5/book_learning_5/Shell-Sort.png">
-<meta property="og:image" content="http://yoursite.com/algrithom/book_learning_5/book_learning_5/stringhash2.png">
+<meta property="og:image" content="http://yoursite.com/algrithom/book_learning_5/map.png">
+<meta property="og:image" content="http://yoursite.com/algrithom/book_learning_5/Shell-Sort.png">
+<meta property="og:image" content="http://yoursite.com/algrithom/book_learning_5/stringhash2.png">
 <meta property="og:updated_time" content="2019-07-07T10:51:36.630Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="五. Sorting and Searching">
 <meta name="twitter:description" content="1对应本书第五章。  原目录 笔记这章开始进入算法部分，讲解排序和查找。 二分查找12345678910111213141516171819202122from __future__ import print_functiondef binarySearch(alist, item):    first = 0    last = len(alist)-1    found = False">
-<meta name="twitter:image" content="http://yoursite.com/algrithom/book_learning_5/book_learning_5/map.png">
+<meta name="twitter:image" content="http://yoursite.com/algrithom/book_learning_5/map.png">
 
 
 
@@ -384,7 +384,7 @@
 <h3 id="用Hash实现一个Map抽象数据类型"><a href="#用Hash实现一个Map抽象数据类型" class="headerlink" title="用Hash实现一个Map抽象数据类型"></a>用Hash实现一个Map抽象数据类型</h3><p>Hash碰到collision的时候一般有两种解决方法：</p>
 <ul>
 <li>开放寻址（open addressing）：寻找下一个空的slot；</li>
-<li>链接法（Chaining）：允许一个hash值对应的slot中可以存放多个元素。<br><img src="book_learning_5/map.png" alt></li>
+<li>链接法（Chaining）：允许一个hash值对应的slot中可以存放多个元素。<br><img src="/algrithom/book_learning_5/map.png" alt></li>
 </ul>
 <p>使用Hash的Map，查找的理想的时间复杂度是$O(1)$。</p>
 <p>实际上，对于占用度是$λ$的HashTable，开放寻址的线性探测的比较次数是：$\frac{1}{2}(1+\frac{1}{1−λ})$；链接法的比较次数是：$\frac{1}{2}(1+(\frac{1}{1−λ})^2)$。</p>
@@ -417,7 +417,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[17, 20, 26, 31, 44, 54, 55, 77, 93]</span><br></pre></td></tr></table></figure>
 
 <h3 id="希尔排序"><a href="#希尔排序" class="headerlink" title="希尔排序"></a>希尔排序</h3><p>使用由大到小的gap，将将list分割成几个sublist，对每个sublist做插入排序。</p>
-<p><img src="book_learning_5/Shell-Sort.png" alt></p>
+<p><img src="/algrithom/book_learning_5/Shell-Sort.png" alt></p>
 <p>时间复杂度：介于$O(n)$和$O(n^2)$之间。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">shellSort</span><span class="params">(alist)</span>:</span></span><br><span class="line">    <span class="comment"># gap为len的一半， gap等于sublistcount</span></span><br><span class="line">    sublistcount = len(alist)//<span class="number">2</span></span><br><span class="line">    <span class="keyword">while</span> sublistcount &gt; <span class="number">0</span>:</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> startposition <span class="keyword">in</span> range(sublistcount):</span><br><span class="line">            gapInsertionSort(alist,startposition,sublistcount)</span><br><span class="line"></span><br><span class="line">        print(<span class="string">"After increments of size"</span>,sublistcount,</span><br><span class="line">                                   <span class="string">"The list is"</span>,alist)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># gap再减半</span></span><br><span class="line">        sublistcount = sublistcount // <span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gapInsertionSort</span><span class="params">(alist,start,gap)</span>:</span></span><br><span class="line">    <span class="comment"># 对sublist进行插入排序</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(start+gap,len(alist),gap):</span><br><span class="line"></span><br><span class="line">        currentvalue = alist[i]</span><br><span class="line">        position = i</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> position&gt;=gap <span class="keyword">and</span> alist[position-gap]&gt;currentvalue:</span><br><span class="line">            alist[position]=alist[position-gap]</span><br><span class="line">            position = position-gap</span><br><span class="line"></span><br><span class="line">        alist[position]=currentvalue</span><br><span class="line">        </span><br><span class="line">alist = [<span class="number">54</span>,<span class="number">26</span>,<span class="number">93</span>,<span class="number">17</span>,<span class="number">77</span>,<span class="number">31</span>,<span class="number">44</span>,<span class="number">55</span>,<span class="number">20</span>]</span><br><span class="line">shellSort(alist)</span><br><span class="line">print(alist)</span><br></pre></td></tr></table></figure>
 
@@ -444,7 +444,7 @@
 
 <h3 id="q2"><a href="#q2" class="headerlink" title="q2"></a>q2</h3><p>设计计算字符串的hash值的hash函数。</p>
 <p>使用positional weight：</p>
-<p><img src="book_learning_5/stringhash2.png" alt></p>
+<p><img src="/algrithom/book_learning_5/stringhash2.png" alt></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hash_function_4str</span><span class="params">(key_str, size)</span>:</span></span><br><span class="line">    hash_value = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i, c <span class="keyword">in</span> enumerate(key_str):</span><br><span class="line">        hash_value += (i+<span class="number">1</span>)* ord(c)</span><br><span class="line">    print(hash_value)</span><br><span class="line">    hash_value %= size</span><br><span class="line">    print(hash_value)</span><br><span class="line">    <span class="keyword">return</span> hash_value</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">hash_function_4str(<span class="string">"cat"</span>, <span class="number">11</span>)</span><br><span class="line">hash_function_4str(<span class="string">"happy"</span>, <span class="number">11</span>)</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">641</span><br><span class="line">3</span><br><span class="line">1687</span><br><span class="line">4</span><br><span class="line"></span><br><span class="line">4</span><br></pre></td></tr></table></figure>

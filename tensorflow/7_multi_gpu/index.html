@@ -83,17 +83,17 @@
 <meta property="og:site_name" content="Javen Chen&#39;s Blog">
 <meta property="og:description" content="记录tensorflow多GPU操作的各个方面。 Tensorflow中指定使用设备 “/cpu:0”: 机器中的 CPU “/gpu:0”: 机器中的 GPU, 如果你有一个的话. “/gpu:1”: 机器中的第二个 GPU, 以此类推…  1234567891011import tensorflow as tfimport os# 新建一个 graph.a = tf.constant([1.0">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/tensorflow/7_multi_gpu/7_multi_gpu/1.jpg">
-<meta property="og:image" content="http://yoursite.com/tensorflow/7_multi_gpu/7_multi_gpu/2.jpg">
-<meta property="og:image" content="http://yoursite.com/tensorflow/7_multi_gpu/7_multi_gpu/3.jpg">
-<meta property="og:image" content="http://yoursite.com/tensorflow/7_multi_gpu/7_multi_gpu/4.jpg">
-<meta property="og:image" content="http://yoursite.com/tensorflow/7_multi_gpu/7_multi_gpu/5.jpg">
-<meta property="og:image" content="http://yoursite.com/tensorflow/7_multi_gpu/7_multi_gpu/6.jpg">
+<meta property="og:image" content="http://yoursite.com/tensorflow/7_multi_gpu/1.jpg">
+<meta property="og:image" content="http://yoursite.com/tensorflow/7_multi_gpu/2.jpg">
+<meta property="og:image" content="http://yoursite.com/tensorflow/7_multi_gpu/3.jpg">
+<meta property="og:image" content="http://yoursite.com/tensorflow/7_multi_gpu/4.jpg">
+<meta property="og:image" content="http://yoursite.com/tensorflow/7_multi_gpu/5.jpg">
+<meta property="og:image" content="http://yoursite.com/tensorflow/7_multi_gpu/6.jpg">
 <meta property="og:updated_time" content="2019-07-20T10:33:01.931Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="七. Tensorflow 多GPU操作">
 <meta name="twitter:description" content="记录tensorflow多GPU操作的各个方面。 Tensorflow中指定使用设备 “/cpu:0”: 机器中的 CPU “/gpu:0”: 机器中的 GPU, 如果你有一个的话. “/gpu:1”: 机器中的第二个 GPU, 以此类推…  1234567891011import tensorflow as tfimport os# 新建一个 graph.a = tf.constant([1.0">
-<meta name="twitter:image" content="http://yoursite.com/tensorflow/7_multi_gpu/7_multi_gpu/1.jpg">
+<meta name="twitter:image" content="http://yoursite.com/tensorflow/7_multi_gpu/1.jpg">
 
 
 
@@ -388,27 +388,27 @@
 
 <p>notebook里没有看到设备指派的log</p>
 <p>观察到一个问题，显存被全部占满。</p>
-<p><img src="7_multi_gpu/1.jpg" alt="图一"></p>
+<p><img src="/tensorflow/7_multi_gpu/1.jpg" alt="图一"></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 新建一个graph.</span></span><br><span class="line"><span class="keyword">with</span> tf.device(<span class="string">'/cpu:0'</span>):</span><br><span class="line">    a = tf.constant([<span class="number">1.0</span>, <span class="number">2.0</span>, <span class="number">3.0</span>, <span class="number">4.0</span>, <span class="number">5.0</span>, <span class="number">6.0</span>], shape=[<span class="number">2</span>, <span class="number">3</span>], name=<span class="string">'a'</span>)</span><br><span class="line">    b = tf.constant([<span class="number">1.0</span>, <span class="number">2.0</span>, <span class="number">3.0</span>, <span class="number">4.0</span>, <span class="number">5.0</span>, <span class="number">6.0</span>], shape=[<span class="number">3</span>, <span class="number">2</span>], name=<span class="string">'b'</span>)</span><br><span class="line">c = tf.matmul(a, b)</span><br><span class="line"><span class="comment"># 新建session with log_device_placement并设置为True.</span></span><br><span class="line">sess = tf.Session(config=tf.ConfigProto(log_device_placement=<span class="literal">True</span>))</span><br><span class="line"><span class="comment"># 运行这个op.</span></span><br><span class="line">print(sess.run(c))</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[[ 22.  28.]</span><br><span class="line"> [ 49.  64.]]</span><br></pre></td></tr></table></figure>
 
-<p>虽然计算的时候指定了设备，但是问题来了，显存还是都被占满。<br><img src="7_multi_gpu/2.jpg" alt="图二"></p>
+<p>虽然计算的时候指定了设备，但是问题来了，显存还是都被占满。<br><img src="/tensorflow/7_multi_gpu/2.jpg" alt="图二"></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 指定多个GPU</span></span><br><span class="line"><span class="comment"># 新建一个 graph.</span></span><br><span class="line">c = []</span><br><span class="line"><span class="keyword">for</span> d <span class="keyword">in</span> [<span class="string">'/gpu:0'</span>, <span class="string">'/gpu:1'</span>]:</span><br><span class="line">    <span class="keyword">with</span> tf.device(d):</span><br><span class="line">        a = tf.constant([<span class="number">1.0</span>, <span class="number">2.0</span>, <span class="number">3.0</span>, <span class="number">4.0</span>, <span class="number">5.0</span>, <span class="number">6.0</span>], shape=[<span class="number">2</span>, <span class="number">3</span>])</span><br><span class="line">        b = tf.constant([<span class="number">1.0</span>, <span class="number">2.0</span>, <span class="number">3.0</span>, <span class="number">4.0</span>, <span class="number">5.0</span>, <span class="number">6.0</span>], shape=[<span class="number">3</span>, <span class="number">2</span>])</span><br><span class="line">        c.append(tf.matmul(a, b))</span><br><span class="line">    <span class="keyword">with</span> tf.device(<span class="string">'/cpu:0'</span>):</span><br><span class="line">        sum = tf.add_n(c)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 新建session with log_device_placement并设置为True.</span></span><br><span class="line">sess = tf.Session(config=tf.ConfigProto(log_device_placement=<span class="literal">True</span>))</span><br><span class="line"><span class="comment"># 运行这个op.</span></span><br><span class="line">print(sess.run(sum))</span><br></pre></td></tr></table></figure>
 
-<p><img src="7_multi_gpu/3.jpg" alt="图三"></p>
+<p><img src="/tensorflow/7_multi_gpu/3.jpg" alt="图三"></p>
 <p><strong>结论</strong>：修改device不会改变显存占用。</p>
 <h2 id="不全部占满显存的方法"><a href="#不全部占满显存的方法" class="headerlink" title="不全部占满显存的方法"></a>不全部占满显存的方法</h2><h3 id="1-所有显存设置分配比例"><a href="#1-所有显存设置分配比例" class="headerlink" title="1.所有显存设置分配比例"></a>1.所有显存设置分配比例</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=<span class="number">0.333</span>)  </span><br><span class="line">sess = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options))</span><br><span class="line">print(sess.run(sum))</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[[  44.   56.]</span><br><span class="line"> [  98.  128.]]</span><br></pre></td></tr></table></figure>
 
-<p><img src="7_multi_gpu/4.jpg" alt="图四"></p>
+<p><img src="/tensorflow/7_multi_gpu/4.jpg" alt="图四"></p>
 <p>显示占用了所有显存的30%。</p>
 <h3 id="2-自动增长：按需求分配显存"><a href="#2-自动增长：按需求分配显存" class="headerlink" title="2.自动增长：按需求分配显存"></a>2.自动增长：按需求分配显存</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">config = tf.ConfigProto()  </span><br><span class="line">config.gpu_options.allow_growth=<span class="literal">True</span>  </span><br><span class="line">sess = tf.Session(config=config)  </span><br><span class="line">print(sess.run(sum))</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[[  44.   56.]</span><br><span class="line"> [  98.  128.]]</span><br></pre></td></tr></table></figure>
 
-<p><img src="7_multi_gpu/5.jpg" alt="图五"></p>
+<p><img src="/tensorflow/7_multi_gpu/5.jpg" alt="图五"></p>
 <p>上面的几种方法都是所有的gpu都会涉及，不够干脆。和别人共用GPU还是使用下面的方法。</p>
 <h3 id="3-指定可见的gpu"><a href="#3-指定可见的gpu" class="headerlink" title="3.指定可见的gpu"></a>3.指定可见的gpu</h3><p>在命令行执行 <code>export CUDA_VISIBLE_DEVICES = &quot;8,9,10,11,12,13,14,15&quot;</code>（你所用的gpu编号）</p>
 <p>或者直接在<code>~/.bashrc</code>中加入（如果你和别人使用不同的登陆账号的话）。</p>
@@ -416,7 +416,7 @@
 
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[[  44.   56.]</span><br><span class="line"> [  98.  128.]]</span><br></pre></td></tr></table></figure>
 
-<p><img src="7_multi_gpu/6.jpg" alt="图六"></p>
+<p><img src="/tensorflow/7_multi_gpu/6.jpg" alt="图六"></p>
 <p>结果显示只有后面8个GPU显存被占用。</p>
 <p>** 注意，在代码中指定设备时，重新从0开始计，而不是从8开始。**</p>
 

@@ -83,13 +83,13 @@
 <meta property="og:site_name" content="Javen Chen&#39;s Blog">
 <meta property="og:description" content="这篇文章是我照着《基于N最短路径方法的中文词语粗分模型》这篇论文，自己用Python实现了下文中的算法，用于理解原理。 大致思想考虑到汉语自动分词中存在切分歧义消除和未登录词识别两个主要问题，因此，有专家将分词过程分成两个阶段：首先采用切分算法对句子词语进行初步切分，得到一个相对最好的粗分结果，然后，再进行歧义排除和未登录词识别。N-最短路径方法就是一种词语粗分模型，大致步骤：  1.根据词典，找">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/nlp/n_shortest/n_shortest/nsp_graph.png">
-<meta property="og:image" content="http://yoursite.com/nlp/n_shortest/n_shortest/nsp_example.png">
+<meta property="og:image" content="http://yoursite.com/nlp/n_shortest/nsp_graph.png">
+<meta property="og:image" content="http://yoursite.com/nlp/n_shortest/nsp_example.png">
 <meta property="og:updated_time" content="2019-07-20T07:24:00.918Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="N-最短路径方法的分词实现">
 <meta name="twitter:description" content="这篇文章是我照着《基于N最短路径方法的中文词语粗分模型》这篇论文，自己用Python实现了下文中的算法，用于理解原理。 大致思想考虑到汉语自动分词中存在切分歧义消除和未登录词识别两个主要问题，因此，有专家将分词过程分成两个阶段：首先采用切分算法对句子词语进行初步切分，得到一个相对最好的粗分结果，然后，再进行歧义排除和未登录词识别。N-最短路径方法就是一种词语粗分模型，大致步骤：  1.根据词典，找">
-<meta name="twitter:image" content="http://yoursite.com/nlp/n_shortest/n_shortest/nsp_graph.png">
+<meta name="twitter:image" content="http://yoursite.com/nlp/n_shortest/nsp_graph.png">
 
 
 
@@ -387,7 +387,7 @@
 <li>1.相邻结点$V_{k-1}， V_k;(1≤k≤n)$ 之间建立有向边$V_{k-1}$，$V_k$，边的长度值为$L_k$，边对应的词默认为$c_k(k＝1,2, …,n)$。</li>
 <li>2.如果$w＝c_ic_{i＋1}…c_j;(0＜i＜j≤n)$是词表中的词，则结点$V_{i-1}，V_j$之间建立有向边$V_{i-1}, V_j$， 边的长度值为$L_w$， 边对应的词为$w$。</li>
 </ul>
-<p><img src="n_shortest/nsp_graph.png" alt></p>
+<p><img src="/nlp/n_shortest/nsp_graph.png" alt></p>
 <p>具体权重$L_k$和$L_w$的计算也有很多种方法，最简单的一种就是所有的权重都是1。</p>
 <p>基于<strong>Dijkstra的贪心算法</strong>： </p>
 <ul>
@@ -395,7 +395,7 @@
 <li>如果同一长度对应多条路径，必须同时记录这些路径上当前结点的前驱，最后通过回溯即可求出NSP（NSP为结点$V_0$到$V_n$的前$N$个最短路径的集合）。</li>
 </ul>
 <p><strong>一个实例</strong>：句子：“他说的确实在理”</p>
-<p><img src="n_shortest/nsp_example.png" alt></p>
+<p><img src="/nlp/n_shortest/nsp_example.png" alt></p>
 <p>上面图中，$Table(i)$表示结点$i$的信息记录表，表里记录的是不同长度的路径的编号（不超过$N$），且从小到大排列。</p>
 <p>前驱字段里的$(i,j)$表示沿当前路径到达当前结点的最后一条边的出发结点是$i$，这条边对应的是结点$i$的信息记录表中编号为$j$的路径。如果$j＝0$，表示没有其他候选的路径。</p>
 <p>如结点$7$对应的信息记录表$Table(7)$中编号为1的路径前驱$(5,1)$表示前一条边为结点$5$的信息表中第$1$条路径。<br>信息记录表为系统回溯找出所有可选路径提供了依据。</p>

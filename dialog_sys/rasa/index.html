@@ -83,14 +83,14 @@
 <meta property="og:site_name" content="Javen Chen&#39;s Blog">
 <meta property="og:description" content="简述Rasa是一个开源的基于机器学习的chatbot开发框架。其主要分成两大模块：Rasa NLU和Rasa Core。使用Rasa NLU + Rasa Core，开发者可以迅速构建自己的chatbot。本文先是分析了Rasa的结构组成，然后介绍开发者如何方便地利用Rasa构建自己的chatbot。 本文面向需要使用Rasa快速构建自己的chatbot的同学，还有想进一步了解Rasa框架结构的同">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/dialog_sys/rasa/rasa/rasa_nlu.png">
-<meta property="og:image" content="http://yoursite.com/dialog_sys/rasa/rasa/rasa_arch.png">
-<meta property="og:image" content="http://yoursite.com/dialog_sys/rasa/rasa/rasa_story.png">
+<meta property="og:image" content="http://yoursite.com/dialog_sys/rasa/rasa_nlu.png">
+<meta property="og:image" content="http://yoursite.com/dialog_sys/rasa/rasa_arch.png">
+<meta property="og:image" content="http://yoursite.com/dialog_sys/rasa/rasa_story.png">
 <meta property="og:updated_time" content="2019-07-20T14:54:18.502Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Rasa学习总结">
 <meta name="twitter:description" content="简述Rasa是一个开源的基于机器学习的chatbot开发框架。其主要分成两大模块：Rasa NLU和Rasa Core。使用Rasa NLU + Rasa Core，开发者可以迅速构建自己的chatbot。本文先是分析了Rasa的结构组成，然后介绍开发者如何方便地利用Rasa构建自己的chatbot。 本文面向需要使用Rasa快速构建自己的chatbot的同学，还有想进一步了解Rasa框架结构的同">
-<meta name="twitter:image" content="http://yoursite.com/dialog_sys/rasa/rasa/rasa_nlu.png">
+<meta name="twitter:image" content="http://yoursite.com/dialog_sys/rasa/rasa_nlu.png">
 
 
 
@@ -392,9 +392,9 @@
 </ul>
 </li>
 </ul>
-<p><img src="rasa/rasa_nlu.png" alt="rasa_nlu"></p>
+<p><img src="/dialog_sys/rasa/rasa_nlu.png" alt="rasa_nlu"></p>
 <h2 id="Rasa-Core"><a href="#Rasa-Core" class="headerlink" title="Rasa Core"></a>Rasa Core</h2><p>Rasa整体框架图：</p>
-<p><img src="rasa/rasa_arch.png" alt="rasa_arch"></p>
+<p><img src="/dialog_sys/rasa/rasa_arch.png" alt="rasa_arch"></p>
 <p>首先介绍一些核心概念。</p>
 <h3 id="Action"><a href="#Action" class="headerlink" title="Action"></a>Action</h3><p><code>action</code>是对系统响应的抽象。Rasa将对话管理视作一个分类问题，每轮都会在预先设定好的<code>action</code>集合中选出一个类别。Rasa Core定义了3中<code>action</code>：</p>
 <ul>
@@ -428,7 +428,7 @@
 <p>格式：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">## story名称</span><br><span class="line">* 用户的intent或者entity</span><br><span class="line">- 系统的action</span><br></pre></td></tr></table></figure>
 
-<p><img src="rasa/rasa_story.png" alt="rasa_story"></p>
+<p><img src="/dialog_sys/rasa/rasa_story.png" alt="rasa_story"></p>
 <h3 id="Interactive-learning"><a href="#Interactive-learning" class="headerlink" title="Interactive learning"></a>Interactive learning</h3><p>交互式，让用户在每一次机器做出决定之后，给与反馈。<br>对于很难手动设计的边界情况非常有效。</p>
 <p>原理：每次系统给出动作的时候，收集用户的y/n的信息，生成新的训练数据，对模型fine-tune。</p>
 <h2 id="动手实践"><a href="#动手实践" class="headerlink" title="动手实践"></a>动手实践</h2><h3 id="英文项目"><a href="#英文项目" class="headerlink" title="英文项目"></a>英文项目</h3><p>官方起步项目：<a href="https://github.com/RasaHQ/starter-pack-rasa-stack" target="_blank" rel="noopener">https://github.com/RasaHQ/starter-pack-rasa-stack</a></p>

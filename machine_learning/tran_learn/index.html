@@ -83,14 +83,14 @@
 <meta property="og:site_name" content="Javen Chen&#39;s Blog">
 <meta property="og:description" content="迁移学习简单地说，首先有个目标任务$T$，目标数据$D_T$数据量偏小，此时有一个相似的源任务$S$，源数据$D_S$相对更充分，迁移学习的目标即如何借助源任务去提高目标任务的效果。 第四范式的罗远升有一篇很不错的文章《迁移学习实战：从算法到实践》，看了那篇文章，你会对迁移学习有个大概的认识。 迁移学习方法分类根据所要迁移的知识的表示形式（即“What to transfer”），分为以下四大类：">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/machine_learning/tran_learn/tran_learn/f1.png">
-<meta property="og:image" content="http://yoursite.com/machine_learning/tran_learn/tran_learn/f2.png">
-<meta property="og:image" content="http://yoursite.com/machine_learning/tran_learn/tran_learn/multi_task.png">
+<meta property="og:image" content="http://yoursite.com/machine_learning/tran_learn/f1.png">
+<meta property="og:image" content="http://yoursite.com/machine_learning/tran_learn/f2.png">
+<meta property="og:image" content="http://yoursite.com/machine_learning/tran_learn/multi_task.png">
 <meta property="og:updated_time" content="2019-07-20T06:24:33.354Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="迁移学习入门">
 <meta name="twitter:description" content="迁移学习简单地说，首先有个目标任务$T$，目标数据$D_T$数据量偏小，此时有一个相似的源任务$S$，源数据$D_S$相对更充分，迁移学习的目标即如何借助源任务去提高目标任务的效果。 第四范式的罗远升有一篇很不错的文章《迁移学习实战：从算法到实践》，看了那篇文章，你会对迁移学习有个大概的认识。 迁移学习方法分类根据所要迁移的知识的表示形式（即“What to transfer”），分为以下四大类：">
-<meta name="twitter:image" content="http://yoursite.com/machine_learning/tran_learn/tran_learn/f1.png">
+<meta name="twitter:image" content="http://yoursite.com/machine_learning/tran_learn/f1.png">
 
 
 
@@ -394,7 +394,7 @@
 <li>先规定源数据：$D_S=(x_i^s, c(x_i^s))$，样本个数为$n$，目标数据：$D_T=(x_i^t, c(x_i^t))$，样本个数为$m$，测试数据：$S = {(x_i^{test})}$。</li>
 <li>输入：训练集$D_S$和$D_T$，测试集$S$，一个基本分类器Learner，迭代次数N。</li>
 <li>1.初始化：<ul>
-<li>初始化权重向量:<img src="tran_learn/f1.png" alt></li>
+<li>初始化权重向量:<img src="/machine_learning/tran_learn/f1.png" alt></li>
 <li>设置$\beta = 1/(1+\sqrt{2\ln{n/N}})$</li>
 </ul>
 </li>
@@ -402,12 +402,12 @@
 <li>3.归一化的权重：$\mathbf p^t = \frac{\mathbf w^t}{\sum_{i=1}^{n+m}w_i^t}$；</li>
 <li>4.使用带权重的两个训练数据训练Learner，得到在$S$上的分类器$h_t:X\rightarrow Y$；</li>
 <li>5.计算$h_t$在$D_T$中的错误率：$\epsilon_t = \sum_{i=n+1}^{n+m}\frac{w_i^t|h_t(x_i)-c(x_i)|}{\sum_{i=n+1}^{n+m}w_i^t}$；</li>
-<li>6.令$\beta_t = \epsilon_t(1-\epsilon_t)$，<strong>更新权重向量(重点)</strong>：<img src="tran_learn/f2.png" alt></li>
+<li>6.令$\beta_t = \epsilon_t(1-\epsilon_t)$，<strong>更新权重向量(重点)</strong>：<img src="/machine_learning/tran_learn/f2.png" alt></li>
 </ul>
 </li>
 </ul>
 <h2 id="基于参数的迁移学习"><a href="#基于参数的迁移学习" class="headerlink" title="基于参数的迁移学习"></a>基于参数的迁移学习</h2><p>基于参数就是源任务和目标任务使用同一个模型，并且共享参数。典型的方法：多任务学习（multi-task learning）。</p>
-<p><img src="tran_learn/multi_task.png" alt></p>
+<p><img src="/machine_learning/tran_learn/multi_task.png" alt></p>
 <h2 id="基于特征表示的迁移学习"><a href="#基于特征表示的迁移学习" class="headerlink" title="基于特征表示的迁移学习"></a>基于特征表示的迁移学习</h2><p>基于特征表示的迁移学习是指利用源数据学会一个特征表示的方法，再用这个方法去提取目标数据的特征。<br>根据特征表示学习方法的不同也可以分为有监督和无监督两类。</p>
 
       

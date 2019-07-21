@@ -83,13 +83,13 @@
 <meta property="og:site_name" content="Javen Chen&#39;s Blog">
 <meta property="og:description" content="这篇博客中，我通过学习hankcs的Java版本，自己试着做一个简单的Python版本，用于学习和理清思路。 思路所谓生成式句法解析是指生成一些列依存句法树，挑出概率最大的一棵。 这里的实现考虑了词性信息+词汇信息，使用最大生成树Prim算法搜索最终结果，实现一个简单的汉语依存句法分析器。 具体：  训练： 统计词语$WordA$和词语$WordB$构成依存关系$DrC$的频次。 统计词语$Wor">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/nlp/gen_dep_parser/gen_dep_parser/graph.png">
-<meta property="og:image" content="http://yoursite.com/nlp/gen_dep_parser/gen_dep_parser/dep_vis.png">
+<meta property="og:image" content="http://yoursite.com/nlp/gen_dep_parser/graph.png">
+<meta property="og:image" content="http://yoursite.com/nlp/gen_dep_parser/dep_vis.png">
 <meta property="og:updated_time" content="2019-07-20T07:06:29.774Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="一个简单的生成式依存句法解析器">
 <meta name="twitter:description" content="这篇博客中，我通过学习hankcs的Java版本，自己试着做一个简单的Python版本，用于学习和理清思路。 思路所谓生成式句法解析是指生成一些列依存句法树，挑出概率最大的一棵。 这里的实现考虑了词性信息+词汇信息，使用最大生成树Prim算法搜索最终结果，实现一个简单的汉语依存句法分析器。 具体：  训练： 统计词语$WordA$和词语$WordB$构成依存关系$DrC$的频次。 统计词语$Wor">
-<meta name="twitter:image" content="http://yoursite.com/nlp/gen_dep_parser/gen_dep_parser/graph.png">
+<meta name="twitter:image" content="http://yoursite.com/nlp/gen_dep_parser/graph.png">
 
 
 
@@ -415,7 +415,7 @@
 
 <h2 id="构建图"><a href="#构建图" class="headerlink" title="构建图"></a>构建图</h2><p>进来一句句子，首先要做<strong>分词</strong>和<strong>词性判断</strong>。</p>
 <p>然后在句首加入root，对一句有$n$个词的句子，两两之间可能有$(n+1)×n-n$条有向边。</p>
-<p><img src="gen_dep_parser/graph.png" alt></p>
+<p><img src="/nlp/gen_dep_parser/graph.png" alt></p>
 <p>这里的箭头是指向被依赖的HEAD。</p>
 <p>有向边的权值计算方法：<br>$$log(词1到词2依存关系数/总数)$$</p>
 <p>$$没有的话取\;\; log(词到词性依存关系数/总数) *10$$</p>
@@ -457,7 +457,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1	我	我	r	r	_	3	限定	_	_</span><br><span class="line">2	写	写	v	v	_	0	Root	_	_</span><br><span class="line">3	代码	代码	n	n	_	2	内容	_	_</span><br></pre></td></tr></table></figure>
 
 <p>使用这个在线可视化工具：<a href="http://spyysalo.github.io/conllu.js/" target="_blank" rel="noopener">http://spyysalo.github.io/conllu.js/</a> ，输入conll格式的数据可视化一下：</p>
-<p><img src="gen_dep_parser/dep_vis.png" alt></p>
+<p><img src="/nlp/gen_dep_parser/dep_vis.png" alt></p>
 <p>果然还是个Toy，三个错了一个。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这只是我学习Hank写的一个小demo，主要目的是学习简单的依存解析器的实现原理。</p>
 <p>缺点：prim算法会产生交叉弧，prim本身的实现也不是最优的，还有很多地方需要改进，也没有进行测评。</p>

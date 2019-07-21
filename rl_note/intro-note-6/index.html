@@ -83,18 +83,18 @@
 <meta property="og:site_name" content="Javen Chen&#39;s Blog">
 <meta property="og:description" content="6. Temporal-Difference Learning时序差分（Temporal-Difference）简介 时序差分是强化学习的核心观点。 时序差分是DP和MC方法的结合。 MC要等一个完整的序列结束，比如玩21点扑克，直到玩完才能知道是胜是负；相反，时序差分每经历一步，都会更新价值函数，因为每一步都会观察到一个新的Reward，比如Grid World，每走一步都知道reward是什么">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-6/intro-note-6/td0_est.png">
-<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-6/intro-note-6/td_0.png">
-<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-6/intro-note-6/sarsa_est.png">
-<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-6/intro-note-6/sarsa_backup.png">
-<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-6/intro-note-6/q_learn.png">
-<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-6/intro-note-6/q_learn_backup.png">
-<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-6/intro-note-6/double_q_learn.png">
+<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-6/td0_est.png">
+<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-6/td_0.png">
+<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-6/sarsa_est.png">
+<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-6/sarsa_backup.png">
+<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-6/q_learn.png">
+<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-6/q_learn_backup.png">
+<meta property="og:image" content="http://yoursite.com/rl_note/intro-note-6/double_q_learn.png">
 <meta property="og:updated_time" content="2019-06-16T13:30:57.107Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="强化学习导论学习笔记——（六）">
 <meta name="twitter:description" content="6. Temporal-Difference Learning时序差分（Temporal-Difference）简介 时序差分是强化学习的核心观点。 时序差分是DP和MC方法的结合。 MC要等一个完整的序列结束，比如玩21点扑克，直到玩完才能知道是胜是负；相反，时序差分每经历一步，都会更新价值函数，因为每一步都会观察到一个新的Reward，比如Grid World，每走一步都知道reward是什么">
-<meta name="twitter:image" content="http://yoursite.com/rl_note/intro-note-6/intro-note-6/td0_est.png">
+<meta name="twitter:image" content="http://yoursite.com/rl_note/intro-note-6/td0_est.png">
 
 
 
@@ -390,23 +390,23 @@
 </ul>
 <h2 id="TD-0"><a href="#TD-0" class="headerlink" title="TD(0)"></a>TD(0)</h2><p>$$V(S_t)\leftarrow V(S_t)+\alpha[R_{t+1}+\gamma V(S_{t+1})-V(S_t)]$$</p>
 <p>因为直接使用现有的估计取更新估计，因此这种方法被称为<strong>自举（bootstrap）</strong>。</p>
-<p><img src="intro-note-6/td0_est.png" alt></p>
+<p><img src="/rl_note/intro-note-6/td0_est.png" alt></p>
 <p><strong>TD error</strong>：$\delta_t = R_{t+1}+\gamma V(S_{t+1})-V(S_t)$</p>
-<p><img src="intro-note-6/td_0.png" alt="td_0"></p>
+<p><img src="/rl_note/intro-note-6/td_0.png" alt="td_0"></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">temporal_difference</span><span class="params">(values, alpha=<span class="number">0.1</span>, batch=False)</span>:</span></span><br><span class="line">    state = <span class="number">3</span></span><br><span class="line">    trajectory = [state]</span><br><span class="line">    rewards = [<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        ...</span><br><span class="line">        <span class="comment"># TD update</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> batch:</span><br><span class="line">            values[old_state] += alpha * (reward + values[state] - values[old_state])</span><br><span class="line">        ...</span><br><span class="line">        rewards.append(reward)</span><br><span class="line">    <span class="keyword">return</span> trajectory, rewards</span><br></pre></td></tr></table></figure>
 
 <h2 id="Sarsa"><a href="#Sarsa" class="headerlink" title="Sarsa"></a>Sarsa</h2><p>一种<strong>on-policy</strong>的<strong>TD控制</strong>。</p>
 <p>$$Q(S_t,A_t)\leftarrow Q(S_t,A_t)+\alpha[R_{t+1}+\gamma Q(S_{t+1},A_{t+1})-Q(S_t,A_t)]$$</p>
-<p><img src="intro-note-6/sarsa_est.png" alt></p>
-<p><img src="intro-note-6/sarsa_backup.png" alt></p>
+<p><img src="/rl_note/intro-note-6/sarsa_est.png" alt></p>
+<p><img src="/rl_note/intro-note-6/sarsa_backup.png" alt></p>
 <p>核心代码：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Sarsa update</span></span><br><span class="line">q_value[state[<span class="number">0</span>], state[<span class="number">1</span>], action] += \</span><br><span class="line">    ALPHA * (REWARD + q_value[next_state[<span class="number">0</span>], next_state[<span class="number">1</span>], next_action] - q_value[state[<span class="number">0</span>], state[<span class="number">1</span>], action])</span><br><span class="line">state = next_state</span><br><span class="line">action = next_action</span><br></pre></td></tr></table></figure>
 
 <h2 id="Q-learning"><a href="#Q-learning" class="headerlink" title="Q-learning"></a>Q-learning</h2><p>一种<strong>off-policy</strong>的<strong>TD控制</strong>。</p>
 <p>早期强化学习的一个<strong>突破</strong>。</p>
 <p>$$Q(S_t,A_t)\leftarrow Q(S_t,A_t)+\alpha[R_{t+1}+\gamma \underset{a}{max}Q(S_{t+1},a)-Q(S_t,A_t)]$$</p>
-<p><img src="intro-note-6/q_learn.png" alt="q_learn"></p>
-<p><img src="intro-note-6/q_learn_backup.png" alt="q_learn_backup"></p>
+<p><img src="/rl_note/intro-note-6/q_learn.png" alt="q_learn"></p>
+<p><img src="/rl_note/intro-note-6/q_learn_backup.png" alt="q_learn_backup"></p>
 <p>核心代码：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">q_learning</span><span class="params">(q_value, step_size=ALPHA)</span>:</span></span><br><span class="line">    state = START</span><br><span class="line">    rewards = <span class="number">0.0</span></span><br><span class="line">    <span class="keyword">while</span> state != GOAL:</span><br><span class="line">        action = choose_action(state, q_value)</span><br><span class="line">        next_state, reward = step(state, action)</span><br><span class="line">        rewards += reward</span><br><span class="line">        <span class="comment"># Q-Learning update</span></span><br><span class="line">        q_value[state[<span class="number">0</span>], state[<span class="number">1</span>], action] += step_size * (</span><br><span class="line">                reward + GAMMA * np.max(q_value[next_state[<span class="number">0</span>], next_state[<span class="number">1</span>], :]) -</span><br><span class="line">                q_value[state[<span class="number">0</span>], state[<span class="number">1</span>], action])</span><br><span class="line">        state = next_state</span><br><span class="line">    <span class="keyword">return</span> rewards</span><br></pre></td></tr></table></figure>
 
@@ -418,7 +418,7 @@
 <li>解决Q-learning的<strong>最大化偏差</strong>（maximization bias）问题</li>
 <li>2011年提出。</li>
 </ul>
-<p><img src="intro-note-6/double_q_learn.png" alt="double_q_learn"></p>
+<p><img src="/rl_note/intro-note-6/double_q_learn.png" alt="double_q_learn"></p>
 
       
     </div>

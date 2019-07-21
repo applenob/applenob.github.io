@@ -83,15 +83,15 @@
 <meta property="og:site_name" content="Javen Chen&#39;s Blog">
 <meta property="og:description" content="1.手推失败原因总结 没有重点。完整的推倒过程非常复杂，全部讲清楚是一个大工程，如何选择重点非常重要，如果只是花时间去记具体细节的公式化简，很容易手推失败。 先验知识掌握不牢。 比如KKT/Hinge Loss/kernel。 这些知识应该拆开来分块学，避免学混了，以为kernel就是给SVM用的。 在模型中使用trick的地方没有着重记忆。  2.先验知识2.1 拉格朗日对偶性原始问题： $f(">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/machine_learning/SVM/SVM/lNgJE.png">
-<meta property="og:image" content="http://yoursite.com/machine_learning/SVM/SVM/kernel-trick.png">
-<meta property="og:image" content="http://yoursite.com/machine_learning/SVM/SVM/svm.png">
-<meta property="og:image" content="http://yoursite.com/machine_learning/SVM/SVM/svm_basics3.png">
+<meta property="og:image" content="http://yoursite.com/machine_learning/SVM/lNgJE.png">
+<meta property="og:image" content="http://yoursite.com/machine_learning/SVM/kernel-trick.png">
+<meta property="og:image" content="http://yoursite.com/machine_learning/SVM/svm.png">
+<meta property="og:image" content="http://yoursite.com/machine_learning/SVM/svm_basics3.png">
 <meta property="og:updated_time" content="2019-07-20T05:44:12.962Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="如何优雅地手推SVM">
 <meta name="twitter:description" content="1.手推失败原因总结 没有重点。完整的推倒过程非常复杂，全部讲清楚是一个大工程，如何选择重点非常重要，如果只是花时间去记具体细节的公式化简，很容易手推失败。 先验知识掌握不牢。 比如KKT/Hinge Loss/kernel。 这些知识应该拆开来分块学，避免学混了，以为kernel就是给SVM用的。 在模型中使用trick的地方没有着重记忆。  2.先验知识2.1 拉格朗日对偶性原始问题： $f(">
-<meta name="twitter:image" content="http://yoursite.com/machine_learning/SVM/SVM/lNgJE.png">
+<meta name="twitter:image" content="http://yoursite.com/machine_learning/SVM/lNgJE.png">
 
 
 
@@ -414,7 +414,7 @@
 <h3 id="2-2-Hinge-Loss"><a href="#2-2-Hinge-Loss" class="headerlink" title="2.2 Hinge Loss"></a>2.2 Hinge Loss</h3><p>参考<a href="https://en.wikipedia.org/wiki/Hinge_loss" target="_blank" rel="noopener">wikipedia</a>以及<a href="https://quomodocumque.wordpress.com/2016/01/23/ranking-mathematicians-by-hinge-loss/" target="_blank" rel="noopener">这篇博客</a>和<a href="https://arxiv.org/pdf/1512.08949.pdf" target="_blank" rel="noopener">这篇paper</a>。</p>
 <p>对于二分类问题：</p>
 <p>$HingeLoss = max(0, 1-y_{true}\cdot y_{pred})$，也就是说，如果$y_{true}\cdot y_{pred}&gt;1$，$HingeLoss=0$，在svm中，$y_{true}\cdot y_{pred}=y_{true}(w\cdot x+b)$，即函数间隔。也就是说，<strong>我们希望这个函数间隔大于1就好</strong>，具体在svm上的应用，后文继续。</p>
-<p><img src="SVM/lNgJE.png" alt></p>
+<p><img src="/machine_learning/SVM/lNgJE.png" alt></p>
 <p>对于ranking问题：</p>
 <p>$HingeLoss(f) = max(0, 1-f(a)+f(a’))$，下面介绍下ranking的$HingeLoss$的intuition。</p>
 <p>三元组：$(r,a,a’)$代表rater（评分人），$a$和$a’$代表两个app，并且$a$的评分高于$a’$。我们需要找到一个ranking方式，使得对所有$a &gt; a’$，都有$f(a) &gt; f(a’)$。</p>
@@ -422,7 +422,7 @@
 <p>但是这么做，M是<strong>非凸</strong>的，直接使用梯度下降去优化很可能只能获得局部最优。</p>
 <p>所以使用$hinge_j(f) = max(0, 1-f(a)+f(a’))$来替换$mistake_j(f)$，这样最终的损失函数是<strong>凸函数</strong>。</p>
 <h3 id="2-3-Kernel-Trick"><a href="#2-3-Kernel-Trick" class="headerlink" title="2.3 Kernel Trick"></a>2.3 Kernel Trick</h3><p>简单地说，Kernel Trick通过一个<strong>非线性变换</strong>，将<strong>输入空间（欧氏空间$R^n$或者离散集合）</strong>映射到<strong>特征空间（希尔伯特空间$Η$）</strong>，一般是<strong>升维</strong>的映射，所以有些人会说核技巧就是升维的，但这个说法并不严谨。</p>
-<p><img src="SVM/kernel-trick.png" alt></p>
+<p><img src="/machine_learning/SVM/kernel-trick.png" alt></p>
 <p><strong>核函数</strong>：
 设$X$是输入空间（欧氏空间$R^n$或者离散集合），$H$是特征空间（希尔伯特空间），若存在一个从$X$到$H$的映射，即$φ(x):X\rightarrow H$，使得对所有$x,z∈X$，有$K(x,z)=φ(x)\cdot φ(z)$，也就是说<strong>核函数是两个映射函数的点乘</strong>。</p>
 <p><strong>核技巧</strong>：
@@ -438,7 +438,7 @@
 <p>假设我们找到了这些点，并做两个平行于分割超平面的<strong>支撑平面</strong>。</p>
 <p>两个支撑平面的表达式：</p>
 <p>$wx+b=1$，$wx+b=-1$；</p>
-<p><img src="SVM/svm.png" alt></p>
+<p><img src="/machine_learning/SVM/svm.png" alt></p>
 <p>上面的支撑平面使用了第一个<strong>trick</strong>，也就是限定支撑平面等式右面的系数是$1$和$-1$，这是利用了$w$和$b$可以等比例缩放的性质，固定支撑平面的系数，可以方便后续计算。</p>
 <p>对于所有训练数据：</p>
 <p>要满足$wx_++b≥1$，$wx_-+b≤-1$；</p>
@@ -457,7 +457,7 @@
 <p>可以认为存在一些特异点（outlier），去除了这些特异点之后，模型依然是可分的。</p>
 <p>于是引入一个<strong>松弛变量$ξ_i$</strong>，约束条件变成：$y_i(wx_i+b)≥1-ξ_i$。</p>
 <p>再引入<strong>惩罚参数</strong>：$C&gt;0$，目标函数变成：$min;\frac{1}{2}||w||^2+C\sum_i^Nξ_i$。</p>
-<p><img src="SVM/svm_basics3.png" alt></p>
+<p><img src="/machine_learning/SVM/svm_basics3.png" alt></p>
 <p>接下来的推导和硬间隔的类似，最终的优化式子不变，只有其中一个约束变成：$0 \leq α_i\leq C$</p>
 <p>得出了这个结果之后，我们终于到了Hinge Loss了，让我们来看看软间隔最大化和Hinge Loss的关系：</p>
 <p><strong>软间隔最大化</strong>：</p>

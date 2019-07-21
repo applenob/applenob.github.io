@@ -83,17 +83,17 @@
 <meta property="og:site_name" content="Javen Chen&#39;s Blog">
 <meta property="og:description" content="动机其实差不多半年之前就想吐槽Tensorflow的seq2seq了（后面博主去干了些别的事情），官方的代码已经抛弃原来用静态rnn实现的版本了，而官网的tutorial现在还是介绍基于静态的rnn的模型，加bucket那套，看这里。 看到了吗？是legacy_seq2seq的。本来Tensorflow的seq2seq的实现相比于pytorch已经很复杂了，还没有个正经的tutorial，哎。好的">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/nlp/tensorflow_dynamic_seq2seq/tensorflow_dynamic_seq2seq/tutorial.png">
-<meta property="og:image" content="http://yoursite.com/nlp/tensorflow_dynamic_seq2seq/tensorflow_dynamic_seq2seq/seq2seq.png">
-<meta property="og:image" content="http://yoursite.com/nlp/tensorflow_dynamic_seq2seq/tensorflow_dynamic_seq2seq/attention.png">
-<meta property="og:image" content="http://yoursite.com/nlp/tensorflow_dynamic_seq2seq/tensorflow_dynamic_seq2seq/attention_2.png">
-<meta property="og:image" content="http://yoursite.com/nlp/tensorflow_dynamic_seq2seq/tensorflow_dynamic_seq2seq/attention_3.png">
-<meta property="og:image" content="http://yoursite.com/nlp/tensorflow_dynamic_seq2seq/tensorflow_dynamic_seq2seq/AttentionWrapper.png">
+<meta property="og:image" content="http://yoursite.com/nlp/tensorflow_dynamic_seq2seq/tutorial.png">
+<meta property="og:image" content="http://yoursite.com/nlp/tensorflow_dynamic_seq2seq/seq2seq.png">
+<meta property="og:image" content="http://yoursite.com/nlp/tensorflow_dynamic_seq2seq/attention.png">
+<meta property="og:image" content="http://yoursite.com/nlp/tensorflow_dynamic_seq2seq/attention_2.png">
+<meta property="og:image" content="http://yoursite.com/nlp/tensorflow_dynamic_seq2seq/attention_3.png">
+<meta property="og:image" content="http://yoursite.com/nlp/tensorflow_dynamic_seq2seq/AttentionWrapper.png">
 <meta property="og:updated_time" content="2019-06-16T14:15:04.294Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Tensorflow动态seq2seq使用总结（r1.3）">
 <meta name="twitter:description" content="动机其实差不多半年之前就想吐槽Tensorflow的seq2seq了（后面博主去干了些别的事情），官方的代码已经抛弃原来用静态rnn实现的版本了，而官网的tutorial现在还是介绍基于静态的rnn的模型，加bucket那套，看这里。 看到了吗？是legacy_seq2seq的。本来Tensorflow的seq2seq的实现相比于pytorch已经很复杂了，还没有个正经的tutorial，哎。好的">
-<meta name="twitter:image" content="http://yoursite.com/nlp/tensorflow_dynamic_seq2seq/tensorflow_dynamic_seq2seq/tutorial.png">
+<meta name="twitter:image" content="http://yoursite.com/nlp/tensorflow_dynamic_seq2seq/tutorial.png">
 
 
 
@@ -377,7 +377,7 @@
 
       
         <h2 id="动机"><a href="#动机" class="headerlink" title="动机"></a>动机</h2><p>其实差不多半年之前就想吐槽Tensorflow的seq2seq了（后面博主去干了些别的事情），官方的代码已经抛弃原来用静态rnn实现的版本了，而官网的tutorial现在还是介绍基于静态的rnn的模型，加bucket那套，<a href="https://www.tensorflow.org/tutorials/seq2seq" target="_blank" rel="noopener">看这里</a>。</p>
-<p><img src="tensorflow_dynamic_seq2seq/tutorial.png" alt="tutorial.png"><br>看到了吗？是legacy_seq2seq的。本来Tensorflow的seq2seq的实现相比于pytorch已经很复杂了，还没有个正经的tutorial，哎。<br>好的，回到正题，遇到问题解决问题，想办法找一个<strong>最佳的Tensorflow的seq2seq解决方案</strong>！</p>
+<p><img src="/nlp/tensorflow_dynamic_seq2seq/tutorial.png" alt="tutorial.png"><br>看到了吗？是legacy_seq2seq的。本来Tensorflow的seq2seq的实现相比于pytorch已经很复杂了，还没有个正经的tutorial，哎。<br>好的，回到正题，遇到问题解决问题，想办法找一个<strong>最佳的Tensorflow的seq2seq解决方案</strong>！</p>
 <h2 id="学习的资料"><a href="#学习的资料" class="headerlink" title="学习的资料"></a>学习的资料</h2><ul>
 <li>知名博主WildML给google写了个通用的seq2seq，<a href="https://google.github.io/seq2seq/" target="_blank" rel="noopener">文档地址</a>，<a href="https://github.com/google/seq2seq" target="_blank" rel="noopener">Github地址</a>。这个框架已经被Tensorflow采用，后面我们的代码也会基于这里的实现。但本身这个框架是为了让用户直接写参数就能简单地构建网络，因此文档没有太多参考价值，我们直接借用其中的代码构建自己的网络。</li>
 <li>俄罗斯小伙<a href="https://github.com/ematvey" target="_blank" rel="noopener">ematvey</a>写的：tensorflow-seq2seq-tutorials，<a href="https://github.com/ematvey/tensorflow-seq2seq-tutorials" target="_blank" rel="noopener">Github地址</a>。介绍使用动态rnn构建seq2seq，decoder使用<code>raw_rnn</code>，原理和WildML的方案差不多。多说一句，这哥们当时也是吐槽Tensorflow的文档，写了那么个仓库当第三方的文档使，现在都400+个star了。真是有漏洞就有机遇啊，哈哈。</li>
@@ -385,9 +385,9 @@
 <h2 id="Tensorflow的动态rnn"><a href="#Tensorflow的动态rnn" class="headerlink" title="Tensorflow的动态rnn"></a>Tensorflow的动态rnn</h2><p>先来简单介绍动态rnn和静态rnn的区别。<br><code>tf.nn.rnn creates an unrolled graph for a fixed RNN length. That means, if you call tf.nn.rnn with inputs having 200 time steps you are creating a static graph with 200 RNN steps. First, graph creation is slow. Second, you’re unable to pass in longer sequences (&gt; 200) than you’ve originally specified.tf.nn.dynamic_rnn solves this. It uses a tf.While loop to dynamically construct the graph when it is executed. That means graph creation is faster and you can feed batches of variable size.</code></p>
 <p>摘自<a href="https://stackoverflow.com/questions/39734146/whats-the-difference-between-tensorflow-dynamic-rnn-and-rnn" target="_blank" rel="noopener">Whats the difference between tensorflow dynamic_rnn and rnn?</a>。也就是说，静态的rnn必须提前将图展开，在执行的时候，图是固定的，并且最大长度有限制。而动态rnn可以在执行的时候，将图循环地的复用。</p>
 <p>一句话，<strong>能用动态的rnn就尽量用动态的吧</strong>。</p>
-<h2 id="Seq2Seq结构分析"><a href="#Seq2Seq结构分析" class="headerlink" title="Seq2Seq结构分析"></a>Seq2Seq结构分析</h2><p><img src="tensorflow_dynamic_seq2seq/seq2seq.png" alt="seq2seq.png"></p>
+<h2 id="Seq2Seq结构分析"><a href="#Seq2Seq结构分析" class="headerlink" title="Seq2Seq结构分析"></a>Seq2Seq结构分析</h2><p><img src="/nlp/tensorflow_dynamic_seq2seq/seq2seq.png" alt="seq2seq.png"></p>
 <p>seq2seq由Encoder和Decoder组成，一般Encoder和Decoder都是基于RNN。Encoder相对比较简单，不管是多层还是双向或者更换具体的Cell，使用原生API还是比较容易实现的。难点在于Decoder：<strong>不同的Decoder对应的rnn cell的输入不同</strong>，比如上图的示例中，每个cell的输入是上一个时刻cell输出的预测对应的embedding。</p>
-<p><img src="tensorflow_dynamic_seq2seq/attention.png" alt="attention.png"></p>
+<p><img src="/nlp/tensorflow_dynamic_seq2seq/attention.png" alt="attention.png"></p>
 <p>如果像上图那样使用Attention，则decoder的cell输入还包括attention加权求和过的context。</p>
 <h2 id="通过示例讲解"><a href="#通过示例讲解" class="headerlink" title="通过示例讲解"></a>通过示例讲解</h2><p>![slot filling.png](tensorflow_dynamic_seq2seq/slot filling.png)<br>下面通过一个用seq2seq做slot filling（一种序列标注）的例子讲解。完整代码地址：<a href="https://github.com/applenob/RNN-for-Joint-NLU" target="_blank" rel="noopener">https://github.com/applenob/RNN-for-Joint-NLU</a></p>
 <h2 id="Encoder的实现示例"><a href="#Encoder的实现示例" class="headerlink" title="Encoder的实现示例"></a>Encoder的实现示例</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 首先构造单个rnn cell</span></span><br><span class="line">encoder_f_cell = LSTMCell(self.hidden_size)</span><br><span class="line">encoder_b_cell = LSTMCell(self.hidden_size)</span><br><span class="line"> (encoder_fw_outputs, encoder_bw_outputs),</span><br><span class="line"> (encoder_fw_final_state, encoder_bw_final_state) = \</span><br><span class="line">        tf.nn.bidirectional_dynamic_rnn(cell_fw=encoder_f_cell,</span><br><span class="line">                                            cell_bw=encoder_b_cell,</span><br><span class="line">                                            inputs=self.encoder_inputs_embedded,</span><br><span class="line">                                            sequence_length=self.encoder_inputs_actual_length,</span><br><span class="line">                                            dtype=tf.float32, time_major=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
@@ -424,7 +424,7 @@
 
 <h2 id="Attntion"><a href="#Attntion" class="headerlink" title="Attntion"></a>Attntion</h2><p>上面的代码，还有几个地方没有解释：<code>BahdanauAttention</code>，<code>AttentionWrapper</code>，<code>OutputProjectionWrapper</code>。</p>
 <p>先从简单的开始：<code>OutputProjectionWrapper</code>即做一个线性映射，比如之前的cell的ouput是T×B×D，D是hidden size，那么这里做一个线性映射，直接到T×B×S，这里S是slot class num。wrapper内部维护一个线性映射用的变量：<code>W</code>和<code>b</code>。</p>
-<p><img src="tensorflow_dynamic_seq2seq/attention_2.png" alt="attention.png"></p>
+<p><img src="/nlp/tensorflow_dynamic_seq2seq/attention_2.png" alt="attention.png"></p>
 <p><code>BahdanauAttention</code>是一种<code>AttentionMechanism</code>，另外一种是：<code>BahdanauMonotonicAttention</code>。具体二者的区别，读者请自行深入调查。关键参数：</p>
 <ul>
 <li><code>num_units</code>：隐层维度。</li>
@@ -436,10 +436,10 @@
 <li><code>cell</code>：被包装的cell。</li>
 <li><code>attention_mechanism</code>：使用的attention机制，上面介绍的。</li>
 </ul>
-<p><img src="tensorflow_dynamic_seq2seq/attention_3.png" alt="attention.png"></p>
+<p><img src="/nlp/tensorflow_dynamic_seq2seq/attention_3.png" alt="attention.png"></p>
 <p>memory对应公式中的h，wrapper的输出是s。</p>
 <p>那么一个<code>AttentionWrapper</code>具体的操作流程如何呢？看官网给的流程：</p>
-<p><img src="tensorflow_dynamic_seq2seq/AttentionWrapper.png" alt="AttentionWrapper.png"></p>
+<p><img src="/nlp/tensorflow_dynamic_seq2seq/AttentionWrapper.png" alt="AttentionWrapper.png"></p>
 <h2 id="Loss-Function"><a href="#Loss-Function" class="headerlink" title="Loss Function"></a>Loss Function</h2><p><code>tf.contrib.seq2seq.sequence_loss</code>可以直接计算序列的损失函数，重要参数：</p>
 <ul>
 <li><code>logits</code>：尺寸<code>[batch_size, sequence_length, num_decoder_symbols]</code></li>

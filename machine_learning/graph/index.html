@@ -83,15 +83,15 @@
 <meta property="og:site_name" content="Javen Chen&#39;s Blog">
 <meta property="og:description" content="图模型的引入首先总结一下图模型，所谓图模型，其实就是在统计建模的时候，结合图论的思想。 $图模型=概率论+图论$  让我们先从朴素贝叶斯开始思考，随机变量$y$和所有的观测变量$X$有关，但每个观测变量对于$y$来说，又是独立的，也就是我们说的“naive”。 这基本上是最简单的随机变量的关系了:$P(X|y)=p(x_1|y)\cdot p(x_2|y)…\cdot p(x_n|y)$。 那我">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/machine_learning/graph/graph/crf.png">
-<meta property="og:image" content="http://yoursite.com/machine_learning/graph/graph/graph.png">
-<meta property="og:image" content="http://yoursite.com/machine_learning/graph/graph/dag.png">
-<meta property="og:image" content="http://yoursite.com/machine_learning/graph/graph/ug.png">
+<meta property="og:image" content="http://yoursite.com/machine_learning/graph/crf.png">
+<meta property="og:image" content="http://yoursite.com/machine_learning/graph/graph.png">
+<meta property="og:image" content="http://yoursite.com/machine_learning/graph/dag.png">
+<meta property="og:image" content="http://yoursite.com/machine_learning/graph/ug.png">
 <meta property="og:updated_time" content="2019-07-20T06:17:42.375Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="图模型总结">
 <meta name="twitter:description" content="图模型的引入首先总结一下图模型，所谓图模型，其实就是在统计建模的时候，结合图论的思想。 $图模型=概率论+图论$  让我们先从朴素贝叶斯开始思考，随机变量$y$和所有的观测变量$X$有关，但每个观测变量对于$y$来说，又是独立的，也就是我们说的“naive”。 这基本上是最简单的随机变量的关系了:$P(X|y)=p(x_1|y)\cdot p(x_2|y)…\cdot p(x_n|y)$。 那我">
-<meta name="twitter:image" content="http://yoursite.com/machine_learning/graph/graph/crf.png">
+<meta name="twitter:image" content="http://yoursite.com/machine_learning/graph/crf.png">
 
 
 
@@ -374,10 +374,10 @@
       
 
       
-        <p><img src="graph/crf.png" alt></p>
+        <p><img src="/machine_learning/graph/crf.png" alt></p>
 <h2 id="图模型的引入"><a href="#图模型的引入" class="headerlink" title="图模型的引入"></a>图模型的引入</h2><p>首先总结一下图模型，所谓图模型，其实就是在统计建模的时候，结合图论的思想。</p>
 <p>$图模型=概率论+图论$</p>
-<p><img src="graph/graph.png" alt></p>
+<p><img src="/machine_learning/graph/graph.png" alt></p>
 <p>让我们先从<strong>朴素贝叶斯</strong>开始思考，随机变量$y$和所有的观测变量$X$有关，但每个观测变量对于$y$来说，又是独立的，也就是我们说的“naive”。</p>
 <p>这基本上是最简单的随机变量的关系了:$P(X|y)=p(x_1|y)\cdot p(x_2|y)…\cdot p(x_n|y)$。</p>
 <p>那我们可以从这里引申出什么呢？如果把所有的随机变量，都用图论中的节点表示，变量间的关系，由边表示，暂时先不考虑边的方向的问题，那么朴素贝叶斯就可以很直观地画成上面的第一幅图。</p>
@@ -389,11 +389,11 @@
 <p><strong>加粗代表是向量。</strong></p>
 <p>$$p(\mathbf{y})=\frac{1}{Z}\prod_{a=1}^{A}\Psi_a(\mathbf{y}_a)$$<br>其中$Z$是归一化因子。</p>
 <p>例：</p>
-<p><img src="graph/dag.png" alt></p>
+<p><img src="/machine_learning/graph/dag.png" alt></p>
 <p>$$p(y_1,y_2,y_3)\propto \Psi_1(y_1,y_2) \Psi_2(y_2,y_3) \Psi_3(y_3,y_1)$$</p>
 <h2 id="有向图"><a href="#有向图" class="headerlink" title="有向图"></a>有向图</h2><p>$G$是一个DAG（有向无环图），$π(s)$是$Y_s$的下标，DAG的模型可以这么理解：联合概率分布等于每个节点在它们的父节点的条件下的条件概率的累乘，写成：</p>
 <p>$$p(\mathbf{y})=\prod^S_{s=1}p(y_s|\mathbf{y}_{π(s)})$$</p>
-<p>例：<br><img src="graph/ug.png" alt></p>
+<p>例：<br><img src="/machine_learning/graph/ug.png" alt></p>
 
       
     </div>
