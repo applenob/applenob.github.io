@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+
+
+
+
+  <meta name="keywords" content="笔记,Python,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="动机最近在极客时间上买了一个课程名字叫《Python核心技术与实战》。链接戳这里：https://time.geekbang.org/column/intro/176 我挺喜欢这种课程形式：一个业内比较资深的老师整理内容，然后找一个专业的声优再朗读一遍；文章中还有一些代码。我比较习惯上下班的时候听，这种碎片时间巩固下编程语言还是可以的。 不过后面感觉这个课程讲的不错，有些内容值得复习和深度阅读，因">
+<meta name="keywords" content="笔记,Python">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《Python核心技术与实战》学习笔记">
+<meta property="og:url" content="http://yoursite.com/python/python_geek_class/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="动机最近在极客时间上买了一个课程名字叫《Python核心技术与实战》。链接戳这里：https://time.geekbang.org/column/intro/176 我挺喜欢这种课程形式：一个业内比较资深的老师整理内容，然后找一个专业的声优再朗读一遍；文章中还有一些代码。我比较习惯上下班的时候听，这种碎片时间巩固下编程语言还是可以的。 不过后面感觉这个课程讲的不错，有些内容值得复习和深度阅读，因">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/python/python_geek_class/guide.png">
+<meta property="og:image" content="http://yoursite.com/python/python_geek_class/stat_arb_arc.png">
+<meta property="og:image" content="http://yoursite.com/python/python_geek_class/message_queue.png">
+<meta property="og:updated_time" content="2019-08-18T08:32:56.076Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《Python核心技术与实战》学习笔记">
+<meta name="twitter:description" content="动机最近在极客时间上买了一个课程名字叫《Python核心技术与实战》。链接戳这里：https://time.geekbang.org/column/intro/176 我挺喜欢这种课程形式：一个业内比较资深的老师整理内容，然后找一个专业的声优再朗读一遍；文章中还有一些代码。我比较习惯上下班的时候听，这种碎片时间巩固下编程语言还是可以的。 不过后面感觉这个课程讲的不错，有些内容值得复习和深度阅读，因">
+<meta name="twitter:image" content="http://yoursite.com/python/python_geek_class/guide.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/python/python_geek_class/">
+
+
+
+
+
+  <title>《Python核心技术与实战》学习笔记 | Javen Chen's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?239bba0e8b78c0293b8e646237f788cd";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Javen Chen's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Tech and Life~</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-所有专栏">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            所有专栏
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-历史文章">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            历史文章
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/python/python_geek_class/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Javen Chen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/red.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">《Python核心技术与实战》学习笔记</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-08-04T19:08:00+08:00">
+                2019-08-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/python/python_geek_class/" class="leancloud_visitors" data-flag-title="《Python核心技术与实战》学习笔记">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="动机"><a href="#动机" class="headerlink" title="动机"></a>动机</h1><p>最近在极客时间上买了一个课程名字叫《Python核心技术与实战》。链接戳这里：<a href="https://time.geekbang.org/column/intro/176" target="_blank" rel="noopener">https://time.geekbang.org/column/intro/176</a></p>
+<p>我挺喜欢这种课程形式：一个业内比较资深的老师整理内容，然后找一个专业的声优再朗读一遍；文章中还有一些代码。我比较习惯上下班的时候听，这种碎片时间巩固下编程语言还是可以的。</p>
+<p>不过后面感觉这个课程讲的不错，有些内容值得复习和深度阅读，因此开这篇笔记。</p>
+<h1 id="基础篇"><a href="#基础篇" class="headerlink" title="基础篇"></a>基础篇</h1><h2 id="01-如何逐步突破，成为Python高手？"><a href="#01-如何逐步突破，成为Python高手？" class="headerlink" title="01 | 如何逐步突破，成为Python高手？"></a>01 | 如何逐步突破，成为Python高手？</h2><p><img src="/python/python_geek_class/guide.png" alt></p>
+<h2 id="02-Jupyter-Notebook为什么是现代Python的必学技术？"><a href="#02-Jupyter-Notebook为什么是现代Python的必学技术？" class="headerlink" title="02 | Jupyter Notebook为什么是现代Python的必学技术？"></a>02 | Jupyter Notebook为什么是现代Python的必学技术？</h2><p>Jupyter Notebook的优点：</p>
+<ul>
+<li>整合所有的资源</li>
+<li>交互性编程体验</li>
+<li>零成本重现结果</li>
+</ul>
+<h2 id="03-列表和元组，到底用哪一个？"><a href="#03-列表和元组，到底用哪一个？" class="headerlink" title="03 | 列表和元组，到底用哪一个？"></a>03 | 列表和元组，到底用哪一个？</h2><p>基础区别：</p>
+<ul>
+<li>列表是动态的，长度大小不固定，可以随意地增加、删减或者改变元素（mutable）。</li>
+<li>而元组是静态的，长度大小固定，无法增加删减或者改变（immutable).</li>
+</ul>
+<h2 id="04-字典、集合，你真的了解吗？"><a href="#04-字典、集合，你真的了解吗？" class="headerlink" title="04 | 字典、集合，你真的了解吗？"></a>04 | 字典、集合，你真的了解吗？</h2><p>集合并不支持索引操作，因为集合本质上是一个哈希表，和列表不一样。</p>
+<p>新版哈希表结构：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">Indices</span><br><span class="line">----------------------------------------------------</span><br><span class="line">None | index | None | None | index | None | index ...</span><br><span class="line">----------------------------------------------------</span><br><span class="line"></span><br><span class="line">Entries</span><br><span class="line">--------------------</span><br><span class="line">hash0   key0  value0</span><br><span class="line">---------------------</span><br><span class="line">hash1   key1  value1</span><br><span class="line">---------------------</span><br><span class="line">hash2   key2  value2</span><br><span class="line">---------------------</span><br><span class="line">        ...</span><br><span class="line">---------------------</span><br></pre></td></tr></table></figure>
+
+<h1 id="量化交易实战篇"><a href="#量化交易实战篇" class="headerlink" title="量化交易实战篇"></a>量化交易实战篇</h1><h2 id="33-带你初探量化世界"><a href="#33-带你初探量化世界" class="headerlink" title="33 | 带你初探量化世界"></a>33 | 带你初探量化世界</h2><ul>
+<li><p><strong>程序化交易</strong>：它通常用计算机程序代替交易员，来具体执行金融产品的买卖。比如，一个基金经理需要卖出大量股票。如果直接挂一个大的卖单，可能会影响市场，那就用计算机程序拆分成小单慢慢执行。量化交易的下层通常是程序交易。</p>
+</li>
+<li><p><strong>算法交易</strong>：通常用于高频交易中。它指的是，通过算法快速判定买卖的时间点，快速买卖多个产品。</p>
+</li>
+<li><p><strong>量化交易</strong>：通常是指使用数学、统计甚至机器学习的方法，去找寻合适的买卖时机。所以，在这个维度的定义之下，算法交易、高频交易还有统计套利都可以算作量化交易。</p>
+</li>
+<li><p>盈透证券：提供支持股票、期权的行情数据获取和交易的接口。</p>
+</li>
+<li><p>Gemini、OKCoin（交易所）：提供进行数字货币行情获取和交易的接口。</p>
+</li>
+</ul>
+<p>一个基本的交易系统包括：</p>
+<ul>
+<li><strong>行情模块</strong>：获取市场的行情数据，负责获取交易账户的状态。</li>
+<li><strong>策略模块</strong>：订阅市场的数据，根据设定的算法发出买、卖指令给执行模块。</li>
+<li><strong>执行模块</strong>：接受并把策略模块发过来的买、卖指令封装并转发到交易所；同时，监督并确保策略买卖的完整执行。</li>
+<li><strong>回测系统</strong>：模拟检测当前的策略。</li>
+</ul>
+<p><img src="/python/python_geek_class/stat_arb_arc.png" alt></p>
+<h2 id="34-RESTful-amp-Socket-搭建交易执行层核心"><a href="#34-RESTful-amp-Socket-搭建交易执行层核心" class="headerlink" title="34 | RESTful &amp; Socket: 搭建交易执行层核心"></a>34 | RESTful &amp; Socket: 搭建交易执行层核心</h2><p>REST 的全称是表征层状态转移（REpresentational State Transfer）。实质可以理解为：通过 URL 定位资源，用 GET、POST、PUT、DELETE 等动词来描述操作。每个 REST 请求都是独立的，不需要服务器在会话（Session）中缓存中间状态来完成这个请求，即无状态。</p>
+<ul>
+<li>maker：挂单者。</li>
+<li>taker：吃单者。</li>
+<li>买（buy）：用美元买入比特币的行为。</li>
+<li>卖（sell）：用比特币换取美元的行为。</li>
+<li>市价单（market order）：给交易所一个方向（买或者卖）和一个数量，交易所把给定数量的美元（或者比特币）换成比特币（或者美元）的单子。</li>
+<li>限价单（limit order）：给交易所一个价格、一个方向（买或者卖）和一个数量，交易所在价格达到给定价格的时候，把给定数量的美元（或者比特币）换成比特币（或者美元）的单子。</li>
+</ul>
+<h2 id="35-RESTful-amp-Socket-行情数据对接和抓取"><a href="#35-RESTful-amp-Socket-行情数据对接和抓取" class="headerlink" title="35 | RESTful &amp; Socket: 行情数据对接和抓取"></a>35 | RESTful &amp; Socket: 行情数据对接和抓取</h2><p>交易所主要有两种行情数据：委托账本（Order Book）和活动行情（Tick data）。</p>
+<p>WebSocket 是一种在单个 TCP/TSL 连接上，进行全双工、双向通信的协议。WebSocket 可以让客户端与服务器之间的数据交换变得更加简单高效，服务端也可以主动向客户端推送数据。在 WebSocket API 中，浏览器和服务器只需要完成一次握手，两者之间就可以直接创建持久性的连接，并进行双向数据传输。</p>
+<p>行情模块可以使用Gemini提供的两种Websocket接口：</p>
+<ul>
+<li>public：公开orderbook，每个人都能看到的当前挂单价和深度。</li>
+<li>private：个人订单被执行等变动的通知。</li>
+</ul>
+<h2 id="36-Pandas-amp-Numpy-策略与回测系统"><a href="#36-Pandas-amp-Numpy-策略与回测系统" class="headerlink" title="36 | Pandas &amp; Numpy: 策略与回测系统"></a>36 | Pandas &amp; Numpy: 策略与回测系统</h2><p>OHLCV 数据：开盘价（Open）、最高价（High）、最低价（Low）和收盘价（Close），还有一个成交量（Volume）。</p>
+<p>常见的两类回测框架：</p>
+<ul>
+<li>向量化回测框架：通常基于 Pandas+Numpy 来自己搭建计算核心；后端则是用 MySQL 或者 MongoDB 作为源。这种框架通过 Pandas+Numpy 对 OHLC 数组进行向量运算，可以在较长的历史数据上进行回测。不过，因为这类框架一般只用 OHLC，所以模拟会比较粗糙。</li>
+<li>事件驱动型回测框架：本质上是针对每一个 tick 的变动或者 orderbook 的变动生成事件；然后，再把一个个事件交给策略进行执行。因此，虽然它的拓展性很强，可以允许更加灵活的策略，但回测速度是很慢的。</li>
+</ul>
+<p>成熟的回测框架：</p>
+<ul>
+<li>Zipline，就是一个热门的事件驱动型回测框架，背后有大型社区和文档的支持。</li>
+<li>PyAlgoTrade 也是事件驱动的回测框架，文档相对完整，整合了知名的技术分析（Techique Analysis）库 TA-Lib。在速度和灵活方面，它比 Zipline 强。不过，它的一大硬伤是不支持 Pandas 的模块和对象。</li>
+</ul>
+<h2 id="37-Kafka-amp-ZMQ：自动化交易流水线"><a href="#37-Kafka-amp-ZMQ：自动化交易流水线" class="headerlink" title="37 | Kafka &amp; ZMQ：自动化交易流水线"></a>37 | Kafka &amp; ZMQ：自动化交易流水线</h2><p>中间件，是将技术底层工具和应用层进行连接的组件。</p>
+<p>简而言之，消息队列就是一个临时存放消息的容器，有人向消息队列中推送消息；有人则监听消息队列，发现新消息就会取走。根据我们刚刚对中间件的解释，清晰可见，消息队列也是一种中间件。</p>
+<p>市面上使用较多的消息队列有 RabbitMQ、Kafka、RocketMQ、ZMQ 等。</p>
+<p><img src="/python/python_geek_class/message_queue.png" alt></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/笔记/" rel="tag"># 笔记</a>
+          
+            <a href="/tags/Python/" rel="tag"># Python</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/tensorflow/keras/" rel="next" title="Keras梳理">
+                <i class="fa fa-chevron-left"></i> Keras梳理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/python/register/" rel="prev" title="Python中的注册器模块">
+                Python中的注册器模块 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/red.jpg" alt="Javen Chen">
+            
+              <p class="site-author-name" itemprop="name">Javen Chen</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">89</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/applenob" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:applecer@pku.edu.cn" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#动机"><span class="nav-number">1.</span> <span class="nav-text">动机</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基础篇"><span class="nav-number">2.</span> <span class="nav-text">基础篇</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#01-如何逐步突破，成为Python高手？"><span class="nav-number">2.1.</span> <span class="nav-text">01 | 如何逐步突破，成为Python高手？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#02-Jupyter-Notebook为什么是现代Python的必学技术？"><span class="nav-number">2.2.</span> <span class="nav-text">02 | Jupyter Notebook为什么是现代Python的必学技术？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#03-列表和元组，到底用哪一个？"><span class="nav-number">2.3.</span> <span class="nav-text">03 | 列表和元组，到底用哪一个？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#04-字典、集合，你真的了解吗？"><span class="nav-number">2.4.</span> <span class="nav-text">04 | 字典、集合，你真的了解吗？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#量化交易实战篇"><span class="nav-number">3.</span> <span class="nav-text">量化交易实战篇</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#33-带你初探量化世界"><span class="nav-number">3.1.</span> <span class="nav-text">33 | 带你初探量化世界</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#34-RESTful-amp-Socket-搭建交易执行层核心"><span class="nav-number">3.2.</span> <span class="nav-text">34 | RESTful &amp; Socket: 搭建交易执行层核心</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#35-RESTful-amp-Socket-行情数据对接和抓取"><span class="nav-number">3.3.</span> <span class="nav-text">35 | RESTful &amp; Socket: 行情数据对接和抓取</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#36-Pandas-amp-Numpy-策略与回测系统"><span class="nav-number">3.4.</span> <span class="nav-text">36 | Pandas &amp; Numpy: 策略与回测系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#37-Kafka-amp-ZMQ：自动化交易流水线"><span class="nav-number">3.5.</span> <span class="nav-text">37 | Kafka &amp; ZMQ：自动化交易流水线</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("9s7vKaOPY7lMWuX9YVLasdnq-gzGzoHsz", "gOEj5qIEBIz5eDM3F5Nn90Jg");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
