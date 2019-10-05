@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+
+
+
+
+  <meta name="keywords" content="Dialogue System,NLP,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="资料综述类 A Survey of Task-oriented Dialogue Systems Kaixiang Mo (2017) Neural Approaches to Conversational AI (2018) 柳泽明学长的对话系统专栏（2018） A Survey on Dialogue Systems: Recent Advances and New Frontiers（201">
+<meta name="keywords" content="Dialogue System,NLP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="任务型对话系统综述">
+<meta property="og:url" content="http://yoursite.com/dialog_sys/dialog_sys/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="资料综述类 A Survey of Task-oriented Dialogue Systems Kaixiang Mo (2017) Neural Approaches to Conversational AI (2018) 柳泽明学长的对话系统专栏（2018） A Survey on Dialogue Systems: Recent Advances and New Frontiers（201">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/dialog_sys/dialog_sys/pipeline.png">
+<meta property="og:image" content="http://yoursite.com/dialog_sys/dialog_sys/state_representation.png">
+<meta property="og:image" content="http://yoursite.com/dialog_sys/dialog_sys/all_states.png">
+<meta property="og:image" content="http://yoursite.com/dialog_sys/dialog_sys/his.png">
+<meta property="og:image" content="http://yoursite.com/dialog_sys/dialog_sys/buds.png">
+<meta property="og:image" content="http://yoursite.com/dialog_sys/dialog_sys/dstc1.png">
+<meta property="og:image" content="http://yoursite.com/dialog_sys/dialog_sys/end2end_1.png">
+<meta property="og:updated_time" content="2019-10-05T10:50:39.020Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="任务型对话系统综述">
+<meta name="twitter:description" content="资料综述类 A Survey of Task-oriented Dialogue Systems Kaixiang Mo (2017) Neural Approaches to Conversational AI (2018) 柳泽明学长的对话系统专栏（2018） A Survey on Dialogue Systems: Recent Advances and New Frontiers（201">
+<meta name="twitter:image" content="http://yoursite.com/dialog_sys/dialog_sys/pipeline.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/dialog_sys/dialog_sys/">
+
+
+
+
+
+  <title>任务型对话系统综述 | Javen Chen's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?239bba0e8b78c0293b8e646237f788cd";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Javen Chen's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Tech and Life~</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-所有专栏">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            所有专栏
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-历史文章">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            历史文章
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/dialog_sys/dialog_sys/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Javen Chen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/red.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">任务型对话系统综述</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-09-05T10:50:00+08:00">
+                2019-09-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/对话系统/" itemprop="url" rel="index">
+                    <span itemprop="name">对话系统</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/dialog_sys/dialog_sys/" class="leancloud_visitors" data-flag-title="任务型对话系统综述">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="资料"><a href="#资料" class="headerlink" title="资料"></a>资料</h2><h3 id="综述类"><a href="#综述类" class="headerlink" title="综述类"></a>综述类</h3><ul>
+<li><a href="http://kxmo.me/static/SurveyTaskDS.pdf" target="_blank" rel="noopener">A Survey of Task-oriented Dialogue Systems Kaixiang Mo (2017)</a></li>
+<li><a href="https://arxiv.org/pdf/1809.08267.pdf" target="_blank" rel="noopener">Neural Approaches to Conversational AI (2018)</a></li>
+<li><a href="https://mp.weixin.qq.com/mp/homepage?__biz=MzIzMDM1Mjk1OA==&hid=3&sn=44b3ca270df708e79a76e7fb6987f034&scene=1&devicetype=android-28&version=2700003a&lang=zh_CN&nettype=3gnet&ascene=1&session_us=gh_cb038ea54e70&fontScale=100&from=singlemessage&isappinstalled=0" target="_blank" rel="noopener">柳泽明学长的对话系统专栏（2018）</a></li>
+<li><a href="https://arxiv.org/abs/1711.01731" target="_blank" rel="noopener">A Survey on Dialogue Systems: Recent Advances and New Frontiers（2017）</a></li>
+<li><a href="https://www.csie.ntu.edu.tw/~yvchen/doc/DeepDialogue_Tutorial_ACL.pdf" target="_blank" rel="noopener">Deep Learning for Dialogue Systems （2017，台湾国立PPT）</a></li>
+<li><a href="https://web.stanford.edu/class/cs124/lec/chatbot.pdf" target="_blank" rel="noopener">Conversational Agents （Stanford PPT)</a></li>
+<li><a href="http://www.springer.com/cda/content/document/cda_downloaddocument/9781447149224-c2.pdf?SGWID=0-0-45-1376221-p174771398" target="_blank" rel="noopener">Statistical Methods for Spoken Dialogue Management, chapter 02 （2013）</a></li>
+<li><a href="http://www.shuang0420.com/2018/01/03/NLP%E7%AC%94%E8%AE%B0%20-%20%E5%A4%9A%E8%BD%AE%E5%AF%B9%E8%AF%9D%E4%B9%8B%E5%AF%B9%E8%AF%9D%E7%AE%A1%E7%90%86(Dialog%20Management)/" target="_blank" rel="noopener">徐阿衡NLP笔记 - 多轮对话之对话管理(Dialog Management) （2018）</a></li>
+</ul>
+<h3 id="科普类"><a href="#科普类" class="headerlink" title="科普类"></a>科普类</h3><ul>
+<li><a href="https://tutorials.botsfloor.com/dialog-management-799c20a39aad" target="_blank" rel="noopener">Dialog management（2017）</a></li>
+</ul>
+<h2 id="Pipeline"><a href="#Pipeline" class="headerlink" title="Pipeline"></a>Pipeline</h2><p><code>如果把对话系统比作计算机的话，SLU相当于输入，NLG相当于输出设备，而DM相当于CPU（运算器+控制器）。</code></p>
+<p>所谓Pipeline就是将对话系统模块化。每个模块实现一定的功能，将问题逐个击破。</p>
+<p><img src="/dialog_sys/dialog_sys/pipeline.png" alt="pipeline.png"></p>
+<p>pipeline框架的缺点：</p>
+<ul>
+<li>1.下游用户的反馈很难反馈到上游某个模块；</li>
+<li>2.模块间的相互依赖：如果修改某个模块，相关的模块也需要修改。</li>
+</ul>
+<h2 id="NLU"><a href="#NLU" class="headerlink" title="NLU"></a>NLU</h2><p>NLU即Natural Language Understanding，负责理解用户的语句输入，一般是做<strong>意图识别</strong>（intent detection）和<strong>槽位抽取</strong>（slots filling）。</p>
+<p><strong>开源代码</strong>：</p>
+<ul>
+<li><a href="https://github.com/RasaHQ/rasa_nlu" target="_blank" rel="noopener">rasa_nlu</a>：Open source library for natural language understanding and machine learning-based dialogue management. - All things around intent classification, entity extraction and action predictions - DIY NLP and chatbot framwork. <a href="https://rasa.com/docs/" target="_blank" rel="noopener">https://rasa.com/docs/</a></li>
+<li><a href="https://github.com/crownpku/Rasa_NLU_Chi" target="_blank" rel="noopener">Rasa_NLU_Chi</a>：Turn Chinese natural language into structured data 中文自然语言理解。</li>
+</ul>
+<p><strong>工具</strong>：</p>
+<ul>
+<li><a href="https://pyltp.readthedocs.io/zh_CN/latest/api.html" target="_blank" rel="noopener">pyltp</a> : <code>pyltp</code> 是 <code>LTP</code> 的 Python 封装，提供了分词，词性标注，命名实体识别，依存句法分析，语义角色标注的功能。</li>
+</ul>
+<h2 id="Dialogue-Manager"><a href="#Dialogue-Manager" class="headerlink" title="Dialogue Manager"></a>Dialogue Manager</h2><p>对话管理（Dialogue Manager），通常包括DST（对话状态的追踪，Dialogue State Track）以及DPL（对话策略的学习，Dialogue Policy Learning）。</p>
+<p>dialogue management的种类（从简单到复杂）：</p>
+<ol>
+<li><strong>Switch statement</strong>： 即简单定义一些query模板对应的response。缺点：总是用户拥有主动权，机器不会主动问。也没有使用对话上下文信息。</li>
+<li><strong>Finite state machine</strong>：相对强大很多，可以覆盖大部分的对话。缺点：灵活性比较差，必须按照状态机规定的按部就班；相对复杂的对话，有限状态机的构图可能会变得很难维护。</li>
+<li><strong>Goal based</strong>：考虑用户每次对话的最终目标（goal），比如订餐馆、设定导航等。比如当机器人收到用户关于餐馆的问题时，可以设定intent是looking_for_restaurant，goal是finding_restaurant。然后机器人可以知道要完成这个goal，需要用户再提供哪些信息，后续就可以去询问关于这些信息的问题。缺点：构建难度相对较大，开源工具少。</li>
+<li><strong>Belief based</strong>：前提是：现实中NLU模块不可能完全正确。因此dm需要考虑把信念（概率分布）加进来。</li>
+</ol>
+<h3 id="Rule-Based"><a href="#Rule-Based" class="headerlink" title="Rule Based"></a>Rule Based</h3><p>基于规则的方法虽然可以较好利用先验知识从而可以较好解决冷启动等问题，但是需要太多人工、非常不灵活、扩展性和移植性很差、不能同时追踪多种状态。</p>
+<ul>
+<li>优点：准确、可以实现基于配置的可扩展。</li>
+<li>缺点：难以真正扩展，复杂场景的代码可能非常复杂。</li>
+</ul>
+<p>资料：</p>
+<ul>
+<li><a href="http://people.ict.usc.edu/~traum/cs599s04/goddeau96formbased.pdf" target="_blank" rel="noopener">A form-based dialogue manager for spoken language applications. （1996）</a> </li>
+<li><a href="https://www.aclweb.org/anthology/W/W14/W14-4339.pdf" target="_blank" rel="noopener">Web-style ranking and SLU combination for dialog state tracking （2014）</a></li>
+</ul>
+<h4 id="基于FSM"><a href="#基于FSM" class="headerlink" title="基于FSM"></a>基于FSM</h4><p><strong>FSM</strong>（有限状态机，finite state machine）</p>
+<p>简单地考虑点和边表示的内容，可以分成两种：</p>
+<ul>
+<li>1.点表示数据；边表示操作；</li>
+<li>2.点表示操作；边表示数据。</li>
+</ul>
+<p><strong>开源项目</strong></p>
+<ul>
+<li>transitions：A lightweight, object-oriented finite state machine implementation in Python  <a href="https://github.com/pytransitions/transitions" target="_blank" rel="noopener">https://github.com/pytransitions/transitions</a></li>
+<li>Dialogue management using Finite State Models (2002): <a href="http://www.coli.uni-saarland.de/~korbay/Courses/DM-SS02/DM-slides/hagen-fsm-slides.pdf" target="_blank" rel="noopener">http://www.coli.uni-saarland.de/~korbay/Courses/DM-SS02/DM-slides/hagen-fsm-slides.pdf</a></li>
+</ul>
+<h3 id="DST"><a href="#DST" class="headerlink" title="DST"></a>DST</h3><p><strong>对话状态追踪</strong>(Dialogue State Tracker)，用于记录和表示当前对话状态。</p>
+<ul>
+<li>输入：各种可以获取的信息，包括所有的用户utterance、NLU结果、系统动作、以及外部知识库。</li>
+<li>输出：当前对话的状态评估<code>s</code>。</li>
+</ul>
+<p>由于ASR、SLU等组件的识别结果往往会出错，所以常常会输出N-best列表（带置信度概率），这就要求DST拥有比较强的鲁棒性。所以DST往往输出各个状态的概率分布，b(s)。</p>
+<h4 id="状态表示"><a href="#状态表示" class="headerlink" title="状态表示"></a>状态表示</h4><p>对话状态表示（DST-State Representation）通常由以下3部分组成：</p>
+<ul>
+<li>1.目前为止的槽位填充情况。</li>
+<li>2.本轮对话过程中的用户动作。</li>
+<li>3.对话历史。</li>
+</ul>
+<p>其中，槽位的填充情况通常是最重要的状态表示指标。</p>
+<p><img src="/dialog_sys/dialog_sys/state_representation.png" alt="state_representation.png"></p>
+<p>根据DST对NLU输出信息的保留程度，状态维护又分两种形式：</p>
+<ol>
+<li>1-Best：只保留NLU结果中置信度最高的槽位，维护对话状态时，只需等同于槽位数量的空间（k）。</li>
+<li>N-Best： 保留每个槽位NLU结果中N-best的结果，还要维护一个槽位组合在一起的整体（overall）置信度。</li>
+</ol>
+<h4 id="状态表示的简化"><a href="#状态表示的简化" class="headerlink" title="状态表示的简化"></a>状态表示的简化</h4><p>理论上完整的状态表示，需要维护的状态数是：所有slot的所有可能值的的累乘。因为所有slot搭配都有可能出现。</p>
+<p><img src="/dialog_sys/dialog_sys/all_states.png" alt="all_states.png"></p>
+<p>举例：咖啡种类是N1种，即3种，包括Frappuccino（默认是冰的）、Latte、Mocha。温度N2种，即梁两种：Iced、Hot。因此这里需要维护的状态总数是2*3=6。</p>
+<p>下面是两种简化：</p>
+<h4 id="隐藏信息状态模型-Hidden-Information-State-Model-HIS"><a href="#隐藏信息状态模型-Hidden-Information-State-Model-HIS" class="headerlink" title="隐藏信息状态模型 Hidden Information State Model (HIS)"></a>隐藏信息状态模型 Hidden Information State Model (HIS)</h4><p>类似于决策树，决策树是对特征空间的切割；HIS是对状态空间的切割。每轮对话，当前空间切分成两个partition。最后需要维护的个数是2的n次方个（切割后空间partition的个数）。处在同一个partition里的状态默认概率相同。</p>
+<p><img src="/dialog_sys/dialog_sys/his.png" alt="his.png"></p>
+<p>举例：第一轮判断类型是Latte的概率很高，所以可以忽略Frappuccino和Mocha的各自分别（这二者合并成一个partition）。最终需要维护的partition数量为2^2=4。</p>
+<p>原文描述：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HIS system uses a full state representation in which similar states are grouped into partitions and a single belief is maintained for each partition. The system typically maintains a dis- tribution of upto several hundred partitions corresponding to many thousands of dialogue states.</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>优点：可以对任何两种状态之间的转换进行建模。</li>
+<li>缺点：只有前n个状态被追踪。</li>
+</ul>
+<p>资料：</p>
+<ul>
+<li><a href="http://farm2.user.srcf.net/research/papers/ygkm09.pdf" target="_blank" rel="noopener">The hidden information state approach to dialog management.</a></li>
+</ul>
+<h4 id="对话状态的贝叶斯更新-Bayesian-Update-of-Dialogue-States-BUDS"><a href="#对话状态的贝叶斯更新-Bayesian-Update-of-Dialogue-States-BUDS" class="headerlink" title="对话状态的贝叶斯更新 Bayesian Update of Dialogue States (BUDS)"></a>对话状态的贝叶斯更新 Bayesian Update of Dialogue States (BUDS)</h4><p>假设不同的槽位之间的取值是相互独立的。</p>
+<p><img src="/dialog_sys/dialog_sys/buds.png" alt="buds.png"></p>
+<p>举例：需要维护的是N1+N2个状态数，这里即3+2=5种。</p>
+<ul>
+<li>优点：可以追踪所有可能的状态。</li>
+<li>缺点：不能处理复杂的转换。</li>
+</ul>
+<p>资料：</p>
+<ul>
+<li><a href="https://www.researchgate.net/profile/Steve_Young3/publication/224762279_Bayesian_update_of_dialogue_state_for_robust_dialogue_systems/links/0deec51d918e358316000000/Bayesian-update-of-dialogue-state-for-robust-dialogue-systems.pdf" target="_blank" rel="noopener">Bayesian update of dialogue state for robust dialogue systems.</a>  </li>
+</ul>
+<h4 id="状态追踪"><a href="#状态追踪" class="headerlink" title="状态追踪"></a>状态追踪</h4><h4 id="Hand-Crafted"><a href="#Hand-Crafted" class="headerlink" title="Hand Crafted"></a>Hand Crafted</h4><p>输入上一个状态和当前的最佳（1-best）NLU结果，输出目前状态。</p>
+<ul>
+<li>优点：不需要训练数据，适合冷启动。</li>
+<li>缺点：需要人力手动设计规则，不能从实际对话中学习。不能充分挖掘NLU的n-best的结果。</li>
+</ul>
+<h4 id="Neural-Belief-Tracker"><a href="#Neural-Belief-Tracker" class="headerlink" title="Neural Belief Tracker"></a>Neural Belief Tracker</h4><ul>
+<li>三个输入：上一次的系统动作+用户输入+候选的slot名-值对</li>
+<li>输出：是否选用当前的候选slot对。</li>
+</ul>
+<h4 id="资料-1"><a href="#资料-1" class="headerlink" title="资料"></a>资料</h4><ul>
+<li><a href="https://arxiv.org/pdf/1805.09655.pdf" target="_blank" rel="noopener">Global-Locally Self-Attentive Dialogue State Tracker (2018)</a></li>
+<li><a href="https://arxiv.org/pdf/1606.03777.pdf" target="_blank" rel="noopener">Neural Belief Tracker: Data-Driven Dialogue State Tracking ,Mrkšić et al., ACL 2017</a></li>
+</ul>
+<h3 id="DPL"><a href="#DPL" class="headerlink" title="DPL"></a>DPL</h3><p><strong>对话策略学习</strong>（Dialogue Policy Learning），通过当前的状态表示，做出响应动作的选择。常用监督学习+强化学习。</p>
+<h4 id="资料-2"><a href="#资料-2" class="headerlink" title="资料"></a>资料</h4><ul>
+<li><a href="http://mi.eng.cam.ac.uk/research/dialogue/papers/sgmr16.pdf" target="_blank" rel="noopener">Continuously Learning Neural Dialogue Management  (2016)</a> </li>
+<li><a href="http://mi.eng.cam.ac.uk/~sjy/papers/wgmv17.pdf" target="_blank" rel="noopener">A network-based end-to-end trainable task-oriented dialogue system. Wen et al. 2016b</a></li>
+</ul>
+<h3 id="DSTC"><a href="#DSTC" class="headerlink" title="DSTC"></a>DSTC</h3><p>DSTC：Dialog System Technology Challenge。</p>
+<p><a href="https://www.microsoft.com/en-us/research/event/dialog-state-tracking-challenge/" target="_blank" rel="noopener">https://www.microsoft.com/en-us/research/event/dialog-state-tracking-challenge/</a></p>
+<h4 id="DSTC1"><a href="#DSTC1" class="headerlink" title="DSTC1"></a>DSTC1</h4><ul>
+<li>内容：Bus route</li>
+<li>主题：探索衡量指标。</li>
+<li>示例：</li>
+</ul>
+<p><img src="/dialog_sys/dialog_sys/dstc1.png" alt="dstc1.png"></p>
+<p>资料：</p>
+<ul>
+<li><a href="https://pdfs.semanticscholar.org/4ba3/39bd571585fadb1fb1d14ef902b6784f574f.pdf" target="_blank" rel="noopener">The Dialog State Tracking Challenge Series: A Review （2016）</a></li>
+</ul>
+<h3 id="Knowledge-Base"><a href="#Knowledge-Base" class="headerlink" title="Knowledge Base"></a>Knowledge Base</h3><p>知识库引入：<code>Memory network</code>是引入知识库的典型的解决方案。</p>
+<p><strong>资料</strong>：</p>
+<p><a href="https://arxiv.org/pdf/1702.01932.pdf" target="_blank" rel="noopener">A Knowledge-Grounded Neural Conversation Model  (2017)</a></p>
+<h2 id="End2End"><a href="#End2End" class="headerlink" title="End2End"></a>End2End</h2><p><img src="/dialog_sys/dialog_sys/end2end_1.png" alt="end2end_1.png"></p>
+<p><strong>资料</strong>：</p>
+<ul>
+<li>Williams J D, Asadi K, Zweig Gc. Hybrid Code Networks: practical and efficient end-to-end dialog control with supervised and reinforcement learning [J]. 2017:665-677.</li>
+<li><a href="http://www.aclweb.org/anthology/W16-3601" target="_blank" rel="noopener">Towards end-to-end learning for dialog state tracking and management using deep reinforcement learning. (2016)</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Dialogue-System/" rel="tag"># Dialogue System</a>
+          
+            <a href="/tags/NLP/" rel="tag"># NLP</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/python/register/" rel="next" title="Python中的注册器模块">
+                <i class="fa fa-chevron-left"></i> Python中的注册器模块
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/dialog_sys/sequicity/" rel="prev" title="Sequicity: Simplifying Task-oriented Dialogue Systems with Single Sequence-to-Sequence Architectures">
+                Sequicity: Simplifying Task-oriented Dialogue Systems with Single Sequence-to-Sequence Architectures <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/red.jpg" alt="Javen Chen">
+            
+              <p class="site-author-name" itemprop="name">Javen Chen</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">92</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/applenob" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:applecer@pku.edu.cn" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#资料"><span class="nav-number">1.</span> <span class="nav-text">资料</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#综述类"><span class="nav-number">1.1.</span> <span class="nav-text">综述类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#科普类"><span class="nav-number">1.2.</span> <span class="nav-text">科普类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pipeline"><span class="nav-number">2.</span> <span class="nav-text">Pipeline</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NLU"><span class="nav-number">3.</span> <span class="nav-text">NLU</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dialogue-Manager"><span class="nav-number">4.</span> <span class="nav-text">Dialogue Manager</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Rule-Based"><span class="nav-number">4.1.</span> <span class="nav-text">Rule Based</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#基于FSM"><span class="nav-number">4.1.1.</span> <span class="nav-text">基于FSM</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DST"><span class="nav-number">4.2.</span> <span class="nav-text">DST</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#状态表示"><span class="nav-number">4.2.1.</span> <span class="nav-text">状态表示</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#状态表示的简化"><span class="nav-number">4.2.2.</span> <span class="nav-text">状态表示的简化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#隐藏信息状态模型-Hidden-Information-State-Model-HIS"><span class="nav-number">4.2.3.</span> <span class="nav-text">隐藏信息状态模型 Hidden Information State Model (HIS)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#对话状态的贝叶斯更新-Bayesian-Update-of-Dialogue-States-BUDS"><span class="nav-number">4.2.4.</span> <span class="nav-text">对话状态的贝叶斯更新 Bayesian Update of Dialogue States (BUDS)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#状态追踪"><span class="nav-number">4.2.5.</span> <span class="nav-text">状态追踪</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Hand-Crafted"><span class="nav-number">4.2.6.</span> <span class="nav-text">Hand Crafted</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Neural-Belief-Tracker"><span class="nav-number">4.2.7.</span> <span class="nav-text">Neural Belief Tracker</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#资料-1"><span class="nav-number">4.2.8.</span> <span class="nav-text">资料</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DPL"><span class="nav-number">4.3.</span> <span class="nav-text">DPL</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#资料-2"><span class="nav-number">4.3.1.</span> <span class="nav-text">资料</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DSTC"><span class="nav-number">4.4.</span> <span class="nav-text">DSTC</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#DSTC1"><span class="nav-number">4.4.1.</span> <span class="nav-text">DSTC1</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Knowledge-Base"><span class="nav-number">4.5.</span> <span class="nav-text">Knowledge Base</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#End2End"><span class="nav-number">5.</span> <span class="nav-text">End2End</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("9s7vKaOPY7lMWuX9YVLasdnq-gzGzoHsz", "gOEj5qIEBIz5eDM3F5Nn90Jg");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
