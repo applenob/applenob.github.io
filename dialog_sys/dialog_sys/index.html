@@ -90,7 +90,7 @@
 <meta property="og:image" content="http://yoursite.com/dialog_sys/dialog_sys/buds.png">
 <meta property="og:image" content="http://yoursite.com/dialog_sys/dialog_sys/dstc1.png">
 <meta property="og:image" content="http://yoursite.com/dialog_sys/dialog_sys/end2end_1.png">
-<meta property="og:updated_time" content="2019-10-05T10:50:39.020Z">
+<meta property="og:updated_time" content="2019-10-07T10:05:16.855Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="任务型对话系统综述">
 <meta name="twitter:description" content="资料综述类 A Survey of Task-oriented Dialogue Systems Kaixiang Mo (2017) Neural Approaches to Conversational AI (2018) 柳泽明学长的对话系统专栏（2018） A Survey on Dialogue Systems: Recent Advances and New Frontiers（201">
@@ -390,6 +390,10 @@
 <h3 id="科普类"><a href="#科普类" class="headerlink" title="科普类"></a>科普类</h3><ul>
 <li><a href="https://tutorials.botsfloor.com/dialog-management-799c20a39aad" target="_blank" rel="noopener">Dialog management（2017）</a></li>
 </ul>
+<h3 id="SIGDIAL"><a href="#SIGDIAL" class="headerlink" title="SIGDIAL"></a>SIGDIAL</h3><ul>
+<li><a href="https://www.sigdial.org/files/workshops/conference19/proceedings/" target="_blank" rel="noopener">Proceedings of the 19th Annual SIGdial Meeting on Discourse and Dialogue 2018</a></li>
+<li><a href="https://www.sigdial.org/files/workshops/conference18/proceedings/index.html" target="_blank" rel="noopener">Proceedings of the 18th Annual SIGdial Meeting on Discourse and Dialogue 2017</a></li>
+</ul>
 <h2 id="Pipeline"><a href="#Pipeline" class="headerlink" title="Pipeline"></a>Pipeline</h2><p><code>如果把对话系统比作计算机的话，SLU相当于输入，NLG相当于输出设备，而DM相当于CPU（运算器+控制器）。</code></p>
 <p>所谓Pipeline就是将对话系统模块化。每个模块实现一定的功能，将问题逐个击破。</p>
 <p><img src="/dialog_sys/dialog_sys/pipeline.png" alt="pipeline.png"></p>
@@ -399,14 +403,16 @@
 <li>2.模块间的相互依赖：如果修改某个模块，相关的模块也需要修改。</li>
 </ul>
 <h2 id="NLU"><a href="#NLU" class="headerlink" title="NLU"></a>NLU</h2><p>NLU即Natural Language Understanding，负责理解用户的语句输入，一般是做<strong>意图识别</strong>（intent detection）和<strong>槽位抽取</strong>（slots filling）。</p>
-<p><strong>开源代码</strong>：</p>
-<ul>
+<h3 id="开源代码"><a href="#开源代码" class="headerlink" title="开源代码"></a>开源代码</h3><ul>
 <li><a href="https://github.com/RasaHQ/rasa_nlu" target="_blank" rel="noopener">rasa_nlu</a>：Open source library for natural language understanding and machine learning-based dialogue management. - All things around intent classification, entity extraction and action predictions - DIY NLP and chatbot framwork. <a href="https://rasa.com/docs/" target="_blank" rel="noopener">https://rasa.com/docs/</a></li>
 <li><a href="https://github.com/crownpku/Rasa_NLU_Chi" target="_blank" rel="noopener">Rasa_NLU_Chi</a>：Turn Chinese natural language into structured data 中文自然语言理解。</li>
 </ul>
-<p><strong>工具</strong>：</p>
-<ul>
+<h3 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h3><ul>
 <li><a href="https://pyltp.readthedocs.io/zh_CN/latest/api.html" target="_blank" rel="noopener">pyltp</a> : <code>pyltp</code> 是 <code>LTP</code> 的 Python 封装，提供了分词，词性标注，命名实体识别，依存句法分析，语义角色标注的功能。</li>
+</ul>
+<h3 id="资料-1"><a href="#资料-1" class="headerlink" title="资料"></a>资料</h3><ul>
+<li>Spoken language understanding from unaligned data using discriminative classification models， ICAPP 2009 <code>*</code> <a href="http://mi.eng.cam.ac.uk/~sjy/papers/mgjk09.pdf" target="_blank" rel="noopener">pdf</a></li>
+<li>Onenet: Joint domain, intent, slot prediction for spoken language understanding, ASRU 2017 <code>*</code> <a href="https://arxiv.org/pdf/1801.05149.pdf" target="_blank" rel="noopener">pdf</a> </li>
 </ul>
 <h2 id="Dialogue-Manager"><a href="#Dialogue-Manager" class="headerlink" title="Dialogue Manager"></a>Dialogue Manager</h2><p>对话管理（Dialogue Manager），通常包括DST（对话状态的追踪，Dialogue State Track）以及DPL（对话策略的学习，Dialogue Policy Learning）。</p>
 <p>dialogue management的种类（从简单到复杂）：</p>
@@ -443,7 +449,7 @@
 <li>输出：当前对话的状态评估<code>s</code>。</li>
 </ul>
 <p>由于ASR、SLU等组件的识别结果往往会出错，所以常常会输出N-best列表（带置信度概率），这就要求DST拥有比较强的鲁棒性。所以DST往往输出各个状态的概率分布，b(s)。</p>
-<h4 id="状态表示"><a href="#状态表示" class="headerlink" title="状态表示"></a>状态表示</h4><p>对话状态表示（DST-State Representation）通常由以下3部分组成：</p>
+<h4 id="状态表示"><a href="#状态表示" class="headerlink" title="状态表示"></a>状态表示</h4><p><strong>对话状态表示</strong>（DST-State Representation）通常由以下3部分组成：</p>
 <ul>
 <li>1.目前为止的槽位填充情况。</li>
 <li>2.本轮对话过程中的用户动作。</li>
@@ -494,14 +500,21 @@
 <li>三个输入：上一次的系统动作+用户输入+候选的slot名-值对</li>
 <li>输出：是否选用当前的候选slot对。</li>
 </ul>
-<h4 id="资料-1"><a href="#资料-1" class="headerlink" title="资料"></a>资料</h4><ul>
+<h4 id="资料-2"><a href="#资料-2" class="headerlink" title="资料"></a>资料</h4><ul>
 <li><a href="https://arxiv.org/pdf/1805.09655.pdf" target="_blank" rel="noopener">Global-Locally Self-Attentive Dialogue State Tracker (2018)</a></li>
 <li><a href="https://arxiv.org/pdf/1606.03777.pdf" target="_blank" rel="noopener">Neural Belief Tracker: Data-Driven Dialogue State Tracking ,Mrkšić et al., ACL 2017</a></li>
 </ul>
 <h3 id="DPL"><a href="#DPL" class="headerlink" title="DPL"></a>DPL</h3><p><strong>对话策略学习</strong>（Dialogue Policy Learning），通过当前的状态表示，做出响应动作的选择。常用监督学习+强化学习。</p>
-<h4 id="资料-2"><a href="#资料-2" class="headerlink" title="资料"></a>资料</h4><ul>
+<h4 id="资料-3"><a href="#资料-3" class="headerlink" title="资料"></a>资料</h4><ul>
 <li><a href="http://mi.eng.cam.ac.uk/research/dialogue/papers/sgmr16.pdf" target="_blank" rel="noopener">Continuously Learning Neural Dialogue Management  (2016)</a> </li>
-<li><a href="http://mi.eng.cam.ac.uk/~sjy/papers/wgmv17.pdf" target="_blank" rel="noopener">A network-based end-to-end trainable task-oriented dialogue system. Wen et al. 2016b</a></li>
+<li>A network-based end-to-end trainable task-oriented dialogue system. Wen et al. 2016b <code>*</code> <a href="http://mi.eng.cam.ac.uk/~sjy/papers/wgmv17.pdf" target="_blank" rel="noopener">pdf</a></li>
+<li>k-Nearest Neighbor Monte-Carlo Control Alg <code>*</code> <a href="http://mi.eng.cam.ac.uk/~sjy/papers/lgjk09.pdf" target="_blank" rel="noopener">pdf</a></li>
+<li>End-to-End Task-Completion Neural Dialogue Systems <code>*</code> <a href="https://arxiv.org/pdf/1703.01008.pdf" target="_blank" rel="noopener">pdf</a> <code>*</code> <a href="https://github.com/MiuLab/TC-Bot" target="_blank" rel="noopener">code</a></li>
+<li>Transfer Learning for User Adaptation in Spoken Dialogue Systems <code>*</code> <a href="http://www.ifaamas.org/Proceedings/aamas2016/pdfs/p975.pdf" target="_blank" rel="noopener">pdf</a></li>
+<li>Few-Shot Generalization Across Dialogue Tasks <code>*</code> <a href="https://arxiv.org/pdf/1811.11707.pdf" target="_blank" rel="noopener">pdf</a> <code>*</code> <a href="https://github.com/RasaHQ/rasa" target="_blank" rel="noopener">code</a></li>
+<li>Sample-efficient Actor-Critic Reinforcement Learning with Supervised Data for Dialogue Management <code>*</code> <a href="https://arxiv.org/pdf/1707.00130.pdf" target="_blank" rel="noopener">pdf</a> </li>
+<li>Deep Dyna-Q: Integrating Planning for Task-Completion Dialogue Policy Learning, ACL2018 <code>*</code> <a href="https://arxiv.org/pdf/1801.06176v3.pdf" target="_blank" rel="noopener">pdf</a> <code>*</code> <a href="https://github.com/MiuLab/DDQ" target="_blank" rel="noopener">code</a></li>
+<li>Switch-based Active Deep Dyna-Q: Efficient Adaptive Planning for Task-Completion Dialogue Policy Learning, aaai 2019 <code>*</code> <a href="https://arxiv.org/pdf/1811.07550v1.pdf" target="_blank" rel="noopener">pdf</a> <code>*</code> <a href="https://github.com/CrickWu/Swtich-DDQ" target="_blank" rel="noopener">code</a></li>
 </ul>
 <h3 id="DSTC"><a href="#DSTC" class="headerlink" title="DSTC"></a>DSTC</h3><p>DSTC：Dialog System Technology Challenge。</p>
 <p><a href="https://www.microsoft.com/en-us/research/event/dialog-state-tracking-challenge/" target="_blank" rel="noopener">https://www.microsoft.com/en-us/research/event/dialog-state-tracking-challenge/</a></p>
@@ -511,18 +524,31 @@
 <li>示例：</li>
 </ul>
 <p><img src="/dialog_sys/dialog_sys/dstc1.png" alt="dstc1.png"></p>
-<p>资料：</p>
-<ul>
+<h4 id="资料-4"><a href="#资料-4" class="headerlink" title="资料"></a>资料</h4><ul>
 <li><a href="https://pdfs.semanticscholar.org/4ba3/39bd571585fadb1fb1d14ef902b6784f574f.pdf" target="_blank" rel="noopener">The Dialog State Tracking Challenge Series: A Review （2016）</a></li>
 </ul>
 <h3 id="Knowledge-Base"><a href="#Knowledge-Base" class="headerlink" title="Knowledge Base"></a>Knowledge Base</h3><p>知识库引入：<code>Memory network</code>是引入知识库的典型的解决方案。</p>
-<p><strong>资料</strong>：</p>
-<p><a href="https://arxiv.org/pdf/1702.01932.pdf" target="_blank" rel="noopener">A Knowledge-Grounded Neural Conversation Model  (2017)</a></p>
+<h4 id="资料-5"><a href="#资料-5" class="headerlink" title="资料"></a>资料</h4><p><a href="https://arxiv.org/pdf/1702.01932.pdf" target="_blank" rel="noopener">A Knowledge-Grounded Neural Conversation Model  (2017)</a></p>
+<h3 id="NLG"><a href="#NLG" class="headerlink" title="NLG"></a>NLG</h3><p>自然语言生成（Natural Language Generation）。</p>
+<h4 id="资料-6"><a href="#资料-6" class="headerlink" title="资料"></a>资料</h4><ul>
+<li>Semantically Conditioned LSTM-based Natural Language Generation for Spoken Dialogue Systems <code>*</code> <a href="https://arxiv.org/pdf/1508.01745.pdf" target="_blank" rel="noopener">pdf</a></li>
+</ul>
 <h2 id="End2End"><a href="#End2End" class="headerlink" title="End2End"></a>End2End</h2><p><img src="/dialog_sys/dialog_sys/end2end_1.png" alt="end2end_1.png"></p>
 <p><strong>资料</strong>：</p>
 <ul>
 <li>Williams J D, Asadi K, Zweig Gc. Hybrid Code Networks: practical and efficient end-to-end dialog control with supervised and reinforcement learning [J]. 2017:665-677.</li>
-<li><a href="http://www.aclweb.org/anthology/W16-3601" target="_blank" rel="noopener">Towards end-to-end learning for dialog state tracking and management using deep reinforcement learning. (2016)</a></li>
+<li>Towards end-to-end learning for dialog state tracking and management using deep reinforcement learning. (2016) <code>*</code> <a href="https://www.aclweb.org/anthology/W16-3601.pdf" target="_blank" rel="noopener">pdf</a></li>
+<li>End-to-End Task-Completion Neural Dialogue Systems <code>*</code> <a href="https://arxiv.org/pdf/1703.01008.pdf" target="_blank" rel="noopener">pdf</a> <code>*</code> <a href="https://github.com/MiuLab/TC-Bot" target="_blank" rel="noopener">code</a></li>
+</ul>
+<h3 id="开源项目"><a href="#开源项目" class="headerlink" title="开源项目"></a>开源项目</h3><h3 id="框架"><a href="#框架" class="headerlink" title="框架"></a>框架</h3><ul>
+<li><a href="https://github.com/RasaHQ" target="_blank" rel="noopener">rasa</a>: Open source chatbot framework with machine learning-based dialogue management - Build contextual AI assistants</li>
+<li><a href="https://github.com/ConvLab/ConvLab" target="_blank" rel="noopener">convlab</a> : ConvLab is an open-source multi-domain end-to-end dialog system platform, aiming to enable researchers to quickly set up experiments with reusable components and compare a large set of different approaches, ranging from conventional pipeline systems to end-to-end neural models, in common environments.</li>
+</ul>
+<h3 id="数据"><a href="#数据" class="headerlink" title="数据"></a>数据</h3><ul>
+<li><a href="https://github.com/AtmaHou/Task-Oriented-Dialogue-Dataset-Survey" target="_blank" rel="noopener">Task-Oriented-Dialogue-Dataset-Survey</a> : A dataset survey about task-oriented dialogue, including recent datasets and SoA results &amp; papers.</li>
+</ul>
+<h3 id="Demo"><a href="#Demo" class="headerlink" title="Demo"></a>Demo</h3><ul>
+<li><a href="https://github.com/Hironsan/HotPepperGourmetDialogue" target="_blank" rel="noopener">HotPepperGourmetDialogue</a> ：Restaurant Search System through Dialogue in Japanese. </li>
 </ul>
 
       
@@ -647,7 +673,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">92</span>
+                  <span class="site-state-item-count">94</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -718,7 +744,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#资料"><span class="nav-number">1.</span> <span class="nav-text">资料</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#综述类"><span class="nav-number">1.1.</span> <span class="nav-text">综述类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#科普类"><span class="nav-number">1.2.</span> <span class="nav-text">科普类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pipeline"><span class="nav-number">2.</span> <span class="nav-text">Pipeline</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NLU"><span class="nav-number">3.</span> <span class="nav-text">NLU</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dialogue-Manager"><span class="nav-number">4.</span> <span class="nav-text">Dialogue Manager</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Rule-Based"><span class="nav-number">4.1.</span> <span class="nav-text">Rule Based</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#基于FSM"><span class="nav-number">4.1.1.</span> <span class="nav-text">基于FSM</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DST"><span class="nav-number">4.2.</span> <span class="nav-text">DST</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#状态表示"><span class="nav-number">4.2.1.</span> <span class="nav-text">状态表示</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#状态表示的简化"><span class="nav-number">4.2.2.</span> <span class="nav-text">状态表示的简化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#隐藏信息状态模型-Hidden-Information-State-Model-HIS"><span class="nav-number">4.2.3.</span> <span class="nav-text">隐藏信息状态模型 Hidden Information State Model (HIS)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#对话状态的贝叶斯更新-Bayesian-Update-of-Dialogue-States-BUDS"><span class="nav-number">4.2.4.</span> <span class="nav-text">对话状态的贝叶斯更新 Bayesian Update of Dialogue States (BUDS)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#状态追踪"><span class="nav-number">4.2.5.</span> <span class="nav-text">状态追踪</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Hand-Crafted"><span class="nav-number">4.2.6.</span> <span class="nav-text">Hand Crafted</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Neural-Belief-Tracker"><span class="nav-number">4.2.7.</span> <span class="nav-text">Neural Belief Tracker</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#资料-1"><span class="nav-number">4.2.8.</span> <span class="nav-text">资料</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DPL"><span class="nav-number">4.3.</span> <span class="nav-text">DPL</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#资料-2"><span class="nav-number">4.3.1.</span> <span class="nav-text">资料</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DSTC"><span class="nav-number">4.4.</span> <span class="nav-text">DSTC</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#DSTC1"><span class="nav-number">4.4.1.</span> <span class="nav-text">DSTC1</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Knowledge-Base"><span class="nav-number">4.5.</span> <span class="nav-text">Knowledge Base</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#End2End"><span class="nav-number">5.</span> <span class="nav-text">End2End</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#资料"><span class="nav-number">1.</span> <span class="nav-text">资料</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#综述类"><span class="nav-number">1.1.</span> <span class="nav-text">综述类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#科普类"><span class="nav-number">1.2.</span> <span class="nav-text">科普类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SIGDIAL"><span class="nav-number">1.3.</span> <span class="nav-text">SIGDIAL</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pipeline"><span class="nav-number">2.</span> <span class="nav-text">Pipeline</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NLU"><span class="nav-number">3.</span> <span class="nav-text">NLU</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#开源代码"><span class="nav-number">3.1.</span> <span class="nav-text">开源代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#工具"><span class="nav-number">3.2.</span> <span class="nav-text">工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#资料-1"><span class="nav-number">3.3.</span> <span class="nav-text">资料</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dialogue-Manager"><span class="nav-number">4.</span> <span class="nav-text">Dialogue Manager</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Rule-Based"><span class="nav-number">4.1.</span> <span class="nav-text">Rule Based</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#基于FSM"><span class="nav-number">4.1.1.</span> <span class="nav-text">基于FSM</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DST"><span class="nav-number">4.2.</span> <span class="nav-text">DST</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#状态表示"><span class="nav-number">4.2.1.</span> <span class="nav-text">状态表示</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#状态表示的简化"><span class="nav-number">4.2.2.</span> <span class="nav-text">状态表示的简化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#隐藏信息状态模型-Hidden-Information-State-Model-HIS"><span class="nav-number">4.2.3.</span> <span class="nav-text">隐藏信息状态模型 Hidden Information State Model (HIS)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#对话状态的贝叶斯更新-Bayesian-Update-of-Dialogue-States-BUDS"><span class="nav-number">4.2.4.</span> <span class="nav-text">对话状态的贝叶斯更新 Bayesian Update of Dialogue States (BUDS)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#状态追踪"><span class="nav-number">4.2.5.</span> <span class="nav-text">状态追踪</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Hand-Crafted"><span class="nav-number">4.2.6.</span> <span class="nav-text">Hand Crafted</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Neural-Belief-Tracker"><span class="nav-number">4.2.7.</span> <span class="nav-text">Neural Belief Tracker</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#资料-2"><span class="nav-number">4.2.8.</span> <span class="nav-text">资料</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DPL"><span class="nav-number">4.3.</span> <span class="nav-text">DPL</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#资料-3"><span class="nav-number">4.3.1.</span> <span class="nav-text">资料</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DSTC"><span class="nav-number">4.4.</span> <span class="nav-text">DSTC</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#DSTC1"><span class="nav-number">4.4.1.</span> <span class="nav-text">DSTC1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#资料-4"><span class="nav-number">4.4.2.</span> <span class="nav-text">资料</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Knowledge-Base"><span class="nav-number">4.5.</span> <span class="nav-text">Knowledge Base</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#资料-5"><span class="nav-number">4.5.1.</span> <span class="nav-text">资料</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NLG"><span class="nav-number">4.6.</span> <span class="nav-text">NLG</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#资料-6"><span class="nav-number">4.6.1.</span> <span class="nav-text">资料</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#End2End"><span class="nav-number">5.</span> <span class="nav-text">End2End</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#开源项目"><span class="nav-number">5.1.</span> <span class="nav-text">开源项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#框架"><span class="nav-number">5.2.</span> <span class="nav-text">框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据"><span class="nav-number">5.3.</span> <span class="nav-text">数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Demo"><span class="nav-number">5.4.</span> <span class="nav-text">Demo</span></a></li></ol></li></ol></div>
             
 
           </div>
