@@ -86,7 +86,7 @@
 <meta property="og:image" content="http://yoursite.com/python/python_geek_class/guide.png">
 <meta property="og:image" content="http://yoursite.com/python/python_geek_class/stat_arb_arc.png">
 <meta property="og:image" content="http://yoursite.com/python/python_geek_class/message_queue.png">
-<meta property="og:updated_time" content="2019-08-18T08:32:56.076Z">
+<meta property="og:updated_time" content="2019-10-20T11:45:29.241Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《Python核心技术与实战》学习笔记">
 <meta name="twitter:description" content="动机最近在极客时间上买了一个课程名字叫《Python核心技术与实战》。链接戳这里：https://time.geekbang.org/column/intro/176 我挺喜欢这种课程形式：一个业内比较资深的老师整理内容，然后找一个专业的声优再朗读一遍；文章中还有一些代码。我比较习惯上下班的时候听，这种碎片时间巩固下编程语言还是可以的。 不过后面感觉这个课程讲的不错，有些内容值得复习和深度阅读，因">
@@ -392,6 +392,28 @@
 <p>新版哈希表结构：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">Indices</span><br><span class="line">----------------------------------------------------</span><br><span class="line">None | index | None | None | index | None | index ...</span><br><span class="line">----------------------------------------------------</span><br><span class="line"></span><br><span class="line">Entries</span><br><span class="line">--------------------</span><br><span class="line">hash0   key0  value0</span><br><span class="line">---------------------</span><br><span class="line">hash1   key1  value1</span><br><span class="line">---------------------</span><br><span class="line">hash2   key2  value2</span><br><span class="line">---------------------</span><br><span class="line">        ...</span><br><span class="line">---------------------</span><br></pre></td></tr></table></figure>
 
+<h1 id="进阶篇"><a href="#进阶篇" class="headerlink" title="进阶篇"></a>进阶篇</h1><h3 id="18-metaclass，是潘多拉魔盒还是阿拉丁神灯？"><a href="#18-metaclass，是潘多拉魔盒还是阿拉丁神灯？" class="headerlink" title="18 | metaclass，是潘多拉魔盒还是阿拉丁神灯？"></a>18 | metaclass，是潘多拉魔盒还是阿拉丁神灯？</h3><p><code>Meta</code>的两种意思：</p>
+<ul>
+<li>“Beyond”，例如技术词汇 <code>metadata</code>，意思是描述数据的超越数据；</li>
+<li>“Change”，例如技术词汇 <code>metamorphosis</code>，意思是改变的形态。</li>
+</ul>
+<p>即，<code>metaclass</code>具有<strong>超越变形</strong>特性。</p>
+<p>YAMLObject源代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">YAMLObjectMetaclass</span><span class="params">(type)</span>:</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(cls, name, bases, kwds)</span>:</span></span><br><span class="line">    super(YAMLObjectMetaclass, cls).__init__(name, bases, kwds)</span><br><span class="line">    <span class="keyword">if</span> <span class="string">'yaml_tag'</span> <span class="keyword">in</span> kwds <span class="keyword">and</span> kwds[<span class="string">'yaml_tag'</span>] <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">      cls.yaml_loader.add_constructor(cls.yaml_tag, cls.from_yaml)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">YAMLObject</span><span class="params">(metaclass=YAMLObjectMetaclass)</span>:</span></span><br><span class="line">  yaml_loader = Loader</span><br><span class="line">  <span class="comment"># 省略其余定义</span></span><br></pre></td></tr></table></figure>
+
+<p>在你定义任何 YAMLObject 子类时，Python 会强行插入运行下面这段代码:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cls.yaml_loader.add_constructor(cls.yaml_tag, cls.from_yaml)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>所有Python的用户定义类都是<code>type</code>这个类的实例。</li>
+<li>用户自定义类，只不过是<code>type</code>类的<code>__call__</code>运算符重载。</li>
+<li><code>metaclass</code>是<code>type</code>的子类，通过替换<code>type</code>的<code>__call__</code>运算符重载机制，“超越变形”正常的类。</li>
+</ul>
+<p>建议：<code>metaclass</code>用于框架层开发，不用在应用层开发。</p>
+<p>1</p>
+<p>1</p>
+<p>1</p>
+<p>1</p>
 <h1 id="量化交易实战篇"><a href="#量化交易实战篇" class="headerlink" title="量化交易实战篇"></a>量化交易实战篇</h1><h2 id="33-带你初探量化世界"><a href="#33-带你初探量化世界" class="headerlink" title="33 | 带你初探量化世界"></a>33 | 带你初探量化世界</h2><ul>
 <li><p><strong>程序化交易</strong>：它通常用计算机程序代替交易员，来具体执行金融产品的买卖。比如，一个基金经理需要卖出大量股票。如果直接挂一个大的卖单，可能会影响市场，那就用计算机程序拆分成小单慢慢执行。量化交易的下层通常是程序交易。</p>
 </li>
@@ -566,7 +588,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">94</span>
+                  <span class="site-state-item-count">96</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -577,7 +599,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">15</span>
                   <span class="site-state-item-name">categories</span>
                 </a>
               </div>
@@ -637,7 +659,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#动机"><span class="nav-number">1.</span> <span class="nav-text">动机</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基础篇"><span class="nav-number">2.</span> <span class="nav-text">基础篇</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#01-如何逐步突破，成为Python高手？"><span class="nav-number">2.1.</span> <span class="nav-text">01 | 如何逐步突破，成为Python高手？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#02-Jupyter-Notebook为什么是现代Python的必学技术？"><span class="nav-number">2.2.</span> <span class="nav-text">02 | Jupyter Notebook为什么是现代Python的必学技术？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#03-列表和元组，到底用哪一个？"><span class="nav-number">2.3.</span> <span class="nav-text">03 | 列表和元组，到底用哪一个？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#04-字典、集合，你真的了解吗？"><span class="nav-number">2.4.</span> <span class="nav-text">04 | 字典、集合，你真的了解吗？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#量化交易实战篇"><span class="nav-number">3.</span> <span class="nav-text">量化交易实战篇</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#33-带你初探量化世界"><span class="nav-number">3.1.</span> <span class="nav-text">33 | 带你初探量化世界</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#34-RESTful-amp-Socket-搭建交易执行层核心"><span class="nav-number">3.2.</span> <span class="nav-text">34 | RESTful &amp; Socket: 搭建交易执行层核心</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#35-RESTful-amp-Socket-行情数据对接和抓取"><span class="nav-number">3.3.</span> <span class="nav-text">35 | RESTful &amp; Socket: 行情数据对接和抓取</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#36-Pandas-amp-Numpy-策略与回测系统"><span class="nav-number">3.4.</span> <span class="nav-text">36 | Pandas &amp; Numpy: 策略与回测系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#37-Kafka-amp-ZMQ：自动化交易流水线"><span class="nav-number">3.5.</span> <span class="nav-text">37 | Kafka &amp; ZMQ：自动化交易流水线</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#动机"><span class="nav-number">1.</span> <span class="nav-text">动机</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基础篇"><span class="nav-number">2.</span> <span class="nav-text">基础篇</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#01-如何逐步突破，成为Python高手？"><span class="nav-number">2.1.</span> <span class="nav-text">01 | 如何逐步突破，成为Python高手？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#02-Jupyter-Notebook为什么是现代Python的必学技术？"><span class="nav-number">2.2.</span> <span class="nav-text">02 | Jupyter Notebook为什么是现代Python的必学技术？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#03-列表和元组，到底用哪一个？"><span class="nav-number">2.3.</span> <span class="nav-text">03 | 列表和元组，到底用哪一个？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#04-字典、集合，你真的了解吗？"><span class="nav-number">2.4.</span> <span class="nav-text">04 | 字典、集合，你真的了解吗？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#进阶篇"><span class="nav-number">3.</span> <span class="nav-text">进阶篇</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#18-metaclass，是潘多拉魔盒还是阿拉丁神灯？"><span class="nav-number">3.0.1.</span> <span class="nav-text">18 | metaclass，是潘多拉魔盒还是阿拉丁神灯？</span></a></li></ol></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#量化交易实战篇"><span class="nav-number">4.</span> <span class="nav-text">量化交易实战篇</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#33-带你初探量化世界"><span class="nav-number">4.1.</span> <span class="nav-text">33 | 带你初探量化世界</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#34-RESTful-amp-Socket-搭建交易执行层核心"><span class="nav-number">4.2.</span> <span class="nav-text">34 | RESTful &amp; Socket: 搭建交易执行层核心</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#35-RESTful-amp-Socket-行情数据对接和抓取"><span class="nav-number">4.3.</span> <span class="nav-text">35 | RESTful &amp; Socket: 行情数据对接和抓取</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#36-Pandas-amp-Numpy-策略与回测系统"><span class="nav-number">4.4.</span> <span class="nav-text">36 | Pandas &amp; Numpy: 策略与回测系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#37-Kafka-amp-ZMQ：自动化交易流水线"><span class="nav-number">4.5.</span> <span class="nav-text">37 | Kafka &amp; ZMQ：自动化交易流水线</span></a></li></ol></li></div>
             
 
           </div>
