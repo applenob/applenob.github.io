@@ -84,7 +84,7 @@
 <meta property="og:description" content="基础概念 Logger： 向应用程序代码公开了几种方法(info等)，以便应用程序可以在运行时记录消息。 根据严重性（默认Filter）或自定义Filter确定要处理的日志消息。 将相关的日志消息传递给所有感兴趣的Handler。 建议使用logging.getLogger(name)获取 用Logger.addHandler()和 Logger.removeHandler()增删Handler">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/python/logging/1.png">
-<meta property="og:updated_time" content="2019-11-10T02:24:05.520Z">
+<meta property="og:updated_time" content="2019-11-16T09:28:38.552Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="python中的Logging总结">
 <meta name="twitter:description" content="基础概念 Logger： 向应用程序代码公开了几种方法(info等)，以便应用程序可以在运行时记录消息。 根据严重性（默认Filter）或自定义Filter确定要处理的日志消息。 将相关的日志消息传递给所有感兴趣的Handler。 建议使用logging.getLogger(name)获取 用Logger.addHandler()和 Logger.removeHandler()增删Handler">
@@ -276,7 +276,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Javen Chen">
       <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/red.jpg">
+      <meta itemprop="image" content="/images/ggb.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -440,6 +440,12 @@
 <h2 id="基础使用"><a href="#基础使用" class="headerlink" title="基础使用"></a>基础使用</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> logging</span><br><span class="line"></span><br><span class="line">logging.basicConfig(filename=<span class="string">"test.log"</span>, filemode=<span class="string">"w"</span>, format=<span class="string">"%(asctime)s %(name)s:%(levelname)s:%(message)s"</span>, datefmt=<span class="string">"%d-%M-%Y %H:%M:%S"</span>, level=logging.DEBUG)</span><br><span class="line">logging.debug(<span class="string">'This is a debug message'</span>)</span><br><span class="line">logging.info(<span class="string">'This is an info message'</span>)</span><br><span class="line">logging.warning(<span class="string">'This is a warning message'</span>)</span><br><span class="line">logging.error(<span class="string">'This is an error message'</span>)</span><br><span class="line">logging.critical(<span class="string">'This is a critical message'</span>)</span><br></pre></td></tr></table></figure>
 
 <p>直接使用<code>logging.xxx()</code>实际上是使用了<code>root</code>的<code>logger</code>。</p>
+<h3 id="format细节"><a href="#format细节" class="headerlink" title="format细节"></a>format细节</h3><p>详见<a href="https://docs.python.org/3/library/logging.html#logrecord-attributes" target="_blank" rel="noopener">python官网</a></p>
+<p>典型使用：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[日期 日志级别 源文件 行号 进程号] 日志信息</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[ %(asctime)<span class="number">-15</span>s %(levelname)s %(filename)<span class="number">15</span>s:%(lineno)<span class="number">-4</span>d pid:%(process)<span class="number">-5</span>d]  %(message)s<span class="string">"</span></span><br></pre></td></tr></table></figure>
+
 <h2 id="进阶使用"><a href="#进阶使用" class="headerlink" title="进阶使用"></a>进阶使用</h2><h3 id="Logger层级"><a href="#Logger层级" class="headerlink" title="Logger层级"></a>Logger层级</h3><p>在命名记录器时使用的一个好习惯是在每个使用日志记录的模块中使用模块级记录器，命名如下:</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">logger = logging.getLogger(__name__)</span><br></pre></td></tr></table></figure>
 
@@ -450,6 +456,8 @@
 
 <p>分割日志用先往默认的文件(my_app.log)里打，等到分割条件的时候，把之前打的那部分日志转移到对应的分割文件里。</p>
 <h3 id="获得某个package里所有的logger"><a href="#获得某个package里所有的logger" class="headerlink" title="获得某个package里所有的logger"></a>获得某个package里所有的logger</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> logging</span><br><span class="line"></span><br><span class="line">loggers = [logging.getLogger(name) <span class="keyword">for</span> name <span class="keyword">in</span> logging.root.manager.loggerDict]</span><br></pre></td></tr></table></figure>
+
+<h3 id="关闭第三方package的logger"><a href="#关闭第三方package的logger" class="headerlink" title="关闭第三方package的logger"></a>关闭第三方package的logger</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> logging</span><br><span class="line"></span><br><span class="line">logging.getLogger(<span class="string">"urllib3"</span>).setLevel(logging.WARNING)</span><br></pre></td></tr></table></figure>
 
 <h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p>官方文档：</p>
 <ul>
@@ -507,6 +515,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/python/threading/" rel="prev" title="python多线程模块threading">
+                python多线程模块threading <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -572,7 +584,7 @@
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
-              <img class="site-author-image" itemprop="image" src="/images/red.jpg" alt="Javen Chen">
+              <img class="site-author-image" itemprop="image" src="/images/ggb.png" alt="Javen Chen">
             
               <p class="site-author-name" itemprop="name">Javen Chen</p>
               <p class="site-description motion-element" itemprop="description"></p>
@@ -585,7 +597,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">98</span>
+                  <span class="site-state-item-count">100</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -656,7 +668,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#基础概念"><span class="nav-number">1.</span> <span class="nav-text">基础概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#日志级别"><span class="nav-number">1.1.</span> <span class="nav-text">日志级别</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基础使用"><span class="nav-number">2.</span> <span class="nav-text">基础使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进阶使用"><span class="nav-number">3.</span> <span class="nav-text">进阶使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Logger层级"><span class="nav-number">3.1.</span> <span class="nav-text">Logger层级</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#好用的Handler"><span class="nav-number">3.2.</span> <span class="nav-text">好用的Handler</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获得某个package里所有的logger"><span class="nav-number">3.3.</span> <span class="nav-text">获得某个package里所有的logger</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#基础概念"><span class="nav-number">1.</span> <span class="nav-text">基础概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#日志级别"><span class="nav-number">1.1.</span> <span class="nav-text">日志级别</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基础使用"><span class="nav-number">2.</span> <span class="nav-text">基础使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#format细节"><span class="nav-number">2.1.</span> <span class="nav-text">format细节</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进阶使用"><span class="nav-number">3.</span> <span class="nav-text">进阶使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Logger层级"><span class="nav-number">3.1.</span> <span class="nav-text">Logger层级</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#好用的Handler"><span class="nav-number">3.2.</span> <span class="nav-text">好用的Handler</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获得某个package里所有的logger"><span class="nav-number">3.3.</span> <span class="nav-text">获得某个package里所有的logger</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关闭第三方package的logger"><span class="nav-number">3.4.</span> <span class="nav-text">关闭第三方package的logger</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
             
 
           </div>
