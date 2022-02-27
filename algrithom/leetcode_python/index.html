@@ -78,15 +78,15 @@
 <meta name="description" content="数组 Array   分类 leetcode 提示    哈希表 1. 两数之和    双指针 15. 三数之和 先排序    16. 最接近的三数之和 先排序    18. 四数之和     27. 移除元素 类似partition的交换    26. 删除排序数组中的重复项 不用交换，直接将需要的拷贝    283. 移动零 类似partition的交换   搜索 74. 搜索二维矩阵 从右上">
 <meta name="keywords" content="Python">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Leetcode刷题攻略之Python">
+<meta property="og:title" content="Leetcode算法题攻略之Python">
 <meta property="og:url" content="http://yoursite.com/algrithom/leetcode_python/index.html">
 <meta property="og:site_name" content="Javen Chen&#39;s Blog">
 <meta property="og:description" content="数组 Array   分类 leetcode 提示    哈希表 1. 两数之和    双指针 15. 三数之和 先排序    16. 最接近的三数之和 先排序    18. 四数之和     27. 移除元素 类似partition的交换    26. 删除排序数组中的重复项 不用交换，直接将需要的拷贝    283. 移动零 类似partition的交换   搜索 74. 搜索二维矩阵 从右上">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/algrithom/leetcode_python/2020-04-11-22-13-14.png">
-<meta property="og:updated_time" content="2020-07-08T06:43:54.550Z">
+<meta property="og:updated_time" content="2022-02-21T15:38:57.083Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Leetcode刷题攻略之Python">
+<meta name="twitter:title" content="Leetcode算法题攻略之Python">
 <meta name="twitter:description" content="数组 Array   分类 leetcode 提示    哈希表 1. 两数之和    双指针 15. 三数之和 先排序    16. 最接近的三数之和 先排序    18. 四数之和     27. 移除元素 类似partition的交换    26. 删除排序数组中的重复项 不用交换，直接将需要的拷贝    283. 移动零 类似partition的交换   搜索 74. 搜索二维矩阵 从右上">
 <meta name="twitter:image" content="http://yoursite.com/algrithom/leetcode_python/2020-04-11-22-13-14.png">
 
@@ -124,7 +124,7 @@
 
 
 
-  <title>Leetcode刷题攻略之Python | Javen Chen's Blog</title>
+  <title>Leetcode算法题攻略之Python | Javen Chen's Blog</title>
   
 
 
@@ -288,7 +288,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Leetcode刷题攻略之Python</h1>
+          <h1 class="post-title" itemprop="name headline">Leetcode算法题攻略之Python</h1>
         
 
         <div class="post-meta">
@@ -340,7 +340,7 @@
 
           
           
-             <span id="/algrithom/leetcode_python/" class="leancloud_visitors" data-flag-title="Leetcode刷题攻略之Python">
+             <span id="/algrithom/leetcode_python/" class="leancloud_visitors" data-flag-title="Leetcode算法题攻略之Python">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -778,7 +778,7 @@
 </ul>
 <p>对于一个大小为$n$的集合，任何$m$次<code>union</code>或<code>find</code>操作所需要的时间复杂度都 是$O((m+n) α(n))$，其中$α$是Ackermann 函数的反函数，一般可以视为常量4。</p>
 <p>需要自实现，因此需要记住并查集的实现方法。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UnionFind</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, n)</span>:</span></span><br><span class="line">        self.up = list(range(n))</span><br><span class="line">        self.rank = [<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(n)]</span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">find</span><span class="params">(self, x)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> self.up[x] == x:</span><br><span class="line">            <span class="keyword">return</span> x</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.up[x] = self.find(self.up[x])</span><br><span class="line">        <span class="keyword">return</span> self.up[x]</span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">union</span><span class="params">(self, x, y)</span>:</span></span><br><span class="line">        repr_x = self.find(x)</span><br><span class="line">        repr_y = self.find(y)</span><br><span class="line">        <span class="keyword">if</span> repr_x == repr_y: <span class="comment"># 已在同一个集合中</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        <span class="keyword">if</span> self.rank[repr_x] == self.rank[repr_y]:</span><br><span class="line">            self.rank[repr_x] += <span class="number">1</span></span><br><span class="line">            self.up[repr_y] = repr_x</span><br><span class="line">        <span class="keyword">elif</span> self.rank[repr_x] &gt; self.rank[repr_y]:</span><br><span class="line">            self.up[repr_y] = repr_x</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.up[repr_x] = repr_y</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UnionFind</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, n)</span>:</span></span><br><span class="line">        self.up = list(range(n))</span><br><span class="line">        self.rank = [<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(n)]</span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">find</span><span class="params">(self, x)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> self.up[x] == x:</span><br><span class="line">            <span class="keyword">return</span> x</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.up[x] = self.find(self.up[x])</span><br><span class="line">        <span class="keyword">return</span> self.up[x]</span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">union</span><span class="params">(self, x, y)</span>:</span></span><br><span class="line">        repr_x = self.find(x)</span><br><span class="line">        repr_y = self.find(y)</span><br><span class="line">        <span class="keyword">if</span> repr_x == repr_y:  <span class="comment"># 已在同一个集合中</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        <span class="keyword">if</span> self.rank[repr_x] == self.rank[repr_y]:  <span class="comment"># 若同两个集合rank相同，把y所属的集合挂在x所属的集合下，并将x所属的集合的rank增加1</span></span><br><span class="line">            self.rank[repr_x] += <span class="number">1</span></span><br><span class="line">            self.up[repr_y] = repr_x</span><br><span class="line">        <span class="keyword">elif</span> self.rank[repr_x] &gt; self.rank[repr_y]:  <span class="comment"># 否则谁的rank大，谁是被挂的，rank不需要改变</span></span><br><span class="line">            self.up[repr_y] = repr_x</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.up[repr_x] = repr_y</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
 
 <p>常用技巧：</p>
 <ul>
@@ -802,6 +802,7 @@
 <li><a href="https://leetcode-cn.com/problems/01-matrix/" target="_blank" rel="noopener">542. 01 矩阵</a></li>
 <li><a href="https://leetcode-cn.com/problems/word-ladder/" target="_blank" rel="noopener">127. 单词接龙</a>  提示：先利用桶（bucket）更高效地构建词图。</li>
 <li><a href="https://leetcode-cn.com/problems/minimum-height-trees/" target="_blank" rel="noopener">310. 最小高度树</a> </li>
+<li><a href="https://leetcode-cn.com/problems/push-dominoes/" target="_blank" rel="noopener">838. 推多米诺</a></li>
 </ul>
 <h3 id="深度优先搜索-Depth-First-Search-DFS"><a href="#深度优先搜索-Depth-First-Search-DFS" class="headerlink" title="深度优先搜索 Depth First Search, DFS"></a>深度优先搜索 Depth First Search, DFS</h3><p>使用递归和非递归。非递归借助一个栈实现。思路类似于树的前中后序遍历，但由于图可能存在环，所以需要一个数据结构记录某个顶点是否访问过。</p>
 <ul>
@@ -914,6 +915,7 @@
 <li><a href="https://leetcode-cn.com/problems/word-search/" target="_blank" rel="noopener">79. 单词搜索</a></li>
 </ul>
 <h2 id="提升题-1"><a href="#提升题-1" class="headerlink" title="提升题"></a>提升题</h2><ul>
+<li><a href="https://leetcode-cn.com/problems/sudoku-solver/" target="_blank" rel="noopener">37. 解数独</a></li>
 <li><a href="https://leetcode-cn.com/problems/n-queens/" target="_blank" rel="noopener">51. N皇后</a></li>
 </ul>
 <h1 id="贪心算法-Greedy-Algorithm"><a href="#贪心算法-Greedy-Algorithm" class="headerlink" title="贪心算法 Greedy Algorithm"></a>贪心算法 Greedy Algorithm</h1><p>贪心算法对问题求解时，总是做出在当前看来是最好的选择。选择的贪心策略必须具备<strong>无后效性</strong>，即某个状态以前的过程不会影响以后的状态，只与当前状态有关。</p>
@@ -934,27 +936,27 @@
 </thead>
 <tbody><tr>
 <td><a href="https://leetcode-cn.com/problems/climbing-stairs/" target="_blank" rel="noopener">70. 爬楼梯</a></td>
-<td>$F(i) = F(i-1) + F(i-2)$</td>
+<td>F(i) = F(i-1) + F(i-2)</td>
 </tr>
 <tr>
 <td><a href="https://leetcode-cn.com/problems/maximum-subarray/submissions/" target="_blank" rel="noopener">53. 最大子序和</a></td>
-<td>$F(i) = max{F(i-1) + v(i), v(i)}$</td>
+<td>F(i) = max{F(i-1) + v(i), v(i)}</td>
 </tr>
 <tr>
 <td><a href="https://leetcode-cn.com/problems/unique-paths/" target="_blank" rel="noopener">62. 不同路径</a></td>
-<td>$F(i, j) = F(i-1, j) + F(i, j-1)$</td>
+<td>F(i, j) = F(i-1, j) + F(i, j-1)</td>
 </tr>
 <tr>
 <td><a href="https://leetcode-cn.com/problems/unique-paths-ii/" target="_blank" rel="noopener">63. 不同路径 II</a></td>
-<td>$F(i, j) = F(i-1, j) + F(i, j-1)$</td>
+<td>F(i, j) = F(i-1, j) + F(i, j-1)</td>
 </tr>
 <tr>
 <td><a href="https://leetcode-cn.com/problems/minimum-path-sum/" target="_blank" rel="noopener">64. 最小路径和</a></td>
-<td>$F(i, j) = min{F(i-1, j), F(i, j-1)} + d(i, j)$</td>
+<td>F(i, j) = min{F(i-1, j), F(i, j-1)} + d(i, j)}</td>
 </tr>
 <tr>
 <td><a href="https://leetcode-cn.com/problems/house-robber" target="_blank" rel="noopener">198. 打家劫舍</a></td>
-<td>$F(i) = max{F(i-3) + F(i-2)} + v(i)$</td>
+<td>F(i) = max{F(i-3) + F(i-2)} + v(i)}</td>
 </tr>
 </tbody></table>
 <h2 id="提升题-2"><a href="#提升题-2" class="headerlink" title="提升题"></a>提升题</h2><p>递推关系不明显。</p>
@@ -979,17 +981,17 @@
 <tr>
 <td><a href="https://leetcode-cn.com/problems/edit-distance/" target="_blank" rel="noopener">72. 编辑距离</a></td>
 <td>$F(i, j)$代表<code>word1[:i+1]</code>位置转换成<code>word2[:j+1]</code>位置需要最少步数</td>
-<td>$F(i,j) = min{dp(i-1,j-1), dp(i-1,j), dp(i,j-1)} + 1$</td>
+<td>F(i,j) = min{F(i-1,j-1), F(i-1,j), F(i,j-1)} + 1</td>
 </tr>
 <tr>
 <td><a href="https://leetcode-cn.com/problems/longest-palindromic-subsequence/" target="_blank" rel="noopener">516. 最长回文子序列</a></td>
 <td>$F(i,j)$表示<code>s</code>第i个字符到第j个字符的子串最长回文长度</td>
-<td>若<code>s[i]==s[j]</code>，$F(i,j)=F(i+1,j-1)+2$；否则$F(i,j)=max{F(i+1,j),F(i,j-1)}$</td>
+<td>若<code>s[i]==s[j]</code>，F(i,j)=F(i+1,j-1)+2；否则F(i,j)=max{F(i+1,j),F(i,j-1)}</td>
 </tr>
 <tr>
 <td><a href="https://leetcode-cn.com/problems/longest-common-subsequence/" target="_blank" rel="noopener">1143. 最长公共子序列</a></td>
 <td>$F(i, j)$代表<code>text1[:i+1]</code>和<code>text2[:j+1]</code>之间的最长公共子序列</td>
-<td>若<code>text1[i]==text2[j]</code>则$F(i,j)=1+F(i-1,j-1)$;否则$F(i,j)=max{F(i-1,j),F(i,j-1)}$</td>
+<td>若<code>text1[i]==text2[j]</code>则F(i,j)=1+F(i-1,j-1);否则F(i,j)=max{F(i-1,j),F(i,j-1)}</td>
 </tr>
 </tbody></table>
 <h2 id="多个状态函数"><a href="#多个状态函数" class="headerlink" title="多个状态函数"></a>多个状态函数</h2><p>有的时候状态函数可能不只一个，最终结果可能是多个状态函数综合计算的结果。</p>
@@ -1005,13 +1007,13 @@
 <tbody><tr>
 <td><a href="https://leetcode-cn.com/problems/trapping-rain-water/" target="_blank" rel="noopener">42. 接雨水</a></td>
 <td><code>max_left[i]</code>代表从最左到i的最大长度；<code>max_right[i]</code>代表从右到i的最大长度</td>
-<td>$max_left[i] = max{max_left[i-1], height[i]}$，$max_right[i] = max{max_right[i+1], height[i]}$ ，$\sum_i{min(max_left[i],max_right[i])−height[i]}$</td>
-<td><code>max_right</code>代表从右往左投影的面积；<code>max_left</code>代表从左往右投影的面积。二者相交部分，减去固有柱子面积，即水的面积。</td>
+<td>max_left[i] = max{max_left[i-1], height[i]}，max_right[i] = max{max_right[i+1], height[i]} ，Σi{min(max_left[i],max_right[i])−height[i]} <code>max_right</code>代表从右往左投影的面积；<code>max_left</code>代表从左往右投影的面积。二者相交部分，减去固有柱子面积，即水的面积。</td>
+<td></td>
 </tr>
 <tr>
 <td><a href="https://leetcode-cn.com/problems/paint-house/" target="_blank" rel="noopener">256. 粉刷房子</a></td>
 <td>$R[k]$表示第k个房子是红色的时候，前k个房子的最小花销；$B[k]$和$G[k]$定义类似</td>
-<td>$R[k] = min{B[k-1], G[k-1]} + cost[k][0]$，$B[k] = min{R[k-1], G[k-1]} + cost[k][1]$，$G[k] = min{R[k-1], B[k-1]} + cost[k][2]$，$result = min{R[n-1], B[n-1], G[n-1]}$</td>
+<td>R[k] = min{B[k-1], G[k-1]} + cost[k][0]，B[k] = min{R[k-1], G[k-1]} + cost[k][1]，G[k] = min{R[k-1], B[k-1]} + cost[k][2]，result = min{R[n-1], B[n-1], G[n-1]}</td>
 <td>此题像极解码器中的维特比算法</td>
 </tr>
 </tbody></table>
@@ -1065,16 +1067,16 @@
 <tbody><tr>
 <td>0-1背包问题</td>
 <td>$F(i, v)$代表只考虑前i种物品放进容量为v的背包的最大价值。</td>
-<td>$F(i, v) = max{F(i-1, v), F(i-1, v-C(i)) + W(i)}$</td>
+<td>F(i, v) = max{F(i-1, v), F(i-1, v-C(i)) + W(i)}</td>
 <td><a href="https://leetcode-cn.com/problems/partition-equal-subset-sum/" target="_blank" rel="noopener">416. 分割等和子集</a></td>
-<td>问题转换成(sum/2)的容量的0-1背包。状态$F(i,v)$表示使用前i种物品能否完全填满背包。$F(i,v)=F(i-1,v) or F(i-1,v-C(i))$</td>
+<td>问题转换成(sum/2)的容量的0-1背包。状态$F(i,v)$表示使用前i种物品能否完全填满背包。F(i,v)=F(i-1,v) or F(i-1,v-C(i))</td>
 </tr>
 <tr>
 <td>完全背包</td>
 <td>同上</td>
-<td>$F(i, v) = max{F(i-1, v-kC(i)) + kW(i) |0 &lt;= kC(i) &lt;= v}$</td>
+<td>F(i, v) = max{F(i-1, v-kC(i)) + kW(i)}，其中0 &lt;= kC(i) &lt;= v</td>
 <td><a href="https://leetcode-cn.com/problems/coin-change/" target="_blank" rel="noopener">322.零钱兑换</a></td>
-<td>$F(i,v)=min_i{F(i,v), F(i-1,v-C(i))+1}$</td>
+<td>F(i,v)=min_i{F(i,v), F(i-1,v-C(i))+1}</td>
 </tr>
 </tbody></table>
 <h1 id="数学-Math"><a href="#数学-Math" class="headerlink" title="数学 Math"></a>数学 Math</h1><p>常用python中的数学操作：</p>
@@ -1287,7 +1289,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">109</span>
+                  <span class="site-state-item-count">111</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -1378,7 +1380,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
