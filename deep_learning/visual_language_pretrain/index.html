@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+
+
+
+
+  <meta name="keywords" content="Deep Learning,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="小引去年在工作中，研究了一段时间的图文预训练，对这块的发展脉络比较清楚，也在工作中尝试捣鼓了一些解决方案。这里记录梳理一下。本文的目标是梳理图文预训练整体的发展方向，着重分析为什么会这么发展，而不仅仅是论文解读的罗列。追溯的时间区间为2019年到2022年初。 什么是图文预训练？先用一句话概括：图文预训练借鉴了文本预训练的范式，对图文输入进行预训练，并应用于下游图文交互任务。 现实的人工智能一定是">
+<meta name="keywords" content="Deep Learning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="图文预训练梳理">
+<meta property="og:url" content="http://yoursite.com/deep_learning/visual_language_pretrain/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="小引去年在工作中，研究了一段时间的图文预训练，对这块的发展脉络比较清楚，也在工作中尝试捣鼓了一些解决方案。这里记录梳理一下。本文的目标是梳理图文预训练整体的发展方向，着重分析为什么会这么发展，而不仅仅是论文解读的罗列。追溯的时间区间为2019年到2022年初。 什么是图文预训练？先用一句话概括：图文预训练借鉴了文本预训练的范式，对图文输入进行预训练，并应用于下游图文交互任务。 现实的人工智能一定是">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/deep_learning/visual_language_pretrain/vqa.png">
+<meta property="og:image" content="http://yoursite.com/deep_learning/visual_language_pretrain/nlvr.png">
+<meta property="og:image" content="http://yoursite.com/deep_learning/visual_language_pretrain/flickr.png">
+<meta property="og:image" content="http://yoursite.com/deep_learning/visual_language_pretrain/VL-BERT.png">
+<meta property="og:image" content="http://yoursite.com/deep_learning/visual_language_pretrain/UNITER.png">
+<meta property="og:image" content="http://yoursite.com/deep_learning/visual_language_pretrain/VILT.png">
+<meta property="og:image" content="http://yoursite.com/deep_learning/visual_language_pretrain/CLIP.png">
+<meta property="og:image" content="http://yoursite.com/deep_learning/visual_language_pretrain/ALBEF.png">
+<meta property="og:image" content="http://yoursite.com/deep_learning/visual_language_pretrain/VLMO.png">
+<meta property="og:image" content="http://yoursite.com/deep_learning/visual_language_pretrain/METER.png">
+<meta property="og:image" content="http://yoursite.com/deep_learning/visual_language_pretrain/FLORENCE.png">
+<meta property="og:updated_time" content="2022-05-04T15:45:46.309Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="图文预训练梳理">
+<meta name="twitter:description" content="小引去年在工作中，研究了一段时间的图文预训练，对这块的发展脉络比较清楚，也在工作中尝试捣鼓了一些解决方案。这里记录梳理一下。本文的目标是梳理图文预训练整体的发展方向，着重分析为什么会这么发展，而不仅仅是论文解读的罗列。追溯的时间区间为2019年到2022年初。 什么是图文预训练？先用一句话概括：图文预训练借鉴了文本预训练的范式，对图文输入进行预训练，并应用于下游图文交互任务。 现实的人工智能一定是">
+<meta name="twitter:image" content="http://yoursite.com/deep_learning/visual_language_pretrain/vqa.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/deep_learning/visual_language_pretrain/">
+
+
+
+
+
+  <title>图文预训练梳理 | Javen Chen's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?239bba0e8b78c0293b8e646237f788cd";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Javen Chen's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Tech and Life~</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-所有专栏">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            所有专栏
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-历史文章">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            历史文章
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/deep_learning/visual_language_pretrain/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Javen Chen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/ggb.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">图文预训练梳理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2022-04-11T22:57:00+08:00">
+                2022-04-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Deep-Learning/" itemprop="url" rel="index">
+                    <span itemprop="name">Deep Learning</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/deep_learning/visual_language_pretrain/" class="leancloud_visitors" data-flag-title="图文预训练梳理">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="小引"><a href="#小引" class="headerlink" title="小引"></a>小引</h2><p>去年在工作中，研究了一段时间的图文预训练，对这块的发展脉络比较清楚，也在工作中尝试捣鼓了一些解决方案。这里记录梳理一下。本文的目标是梳理图文预训练整体的发展方向，着重分析为什么会这么发展，而不仅仅是论文解读的罗列。追溯的时间区间为2019年到2022年初。</p>
+<h2 id="什么是图文预训练？"><a href="#什么是图文预训练？" class="headerlink" title="什么是图文预训练？"></a>什么是图文预训练？</h2><p>先用一句话概括：图文预训练借鉴了文本预训练的范式，对图文输入进行预训练，并应用于下游图文交互任务。</p>
+<p>现实的人工智能一定是多模态的，对人类来说，图文是两个很重要的模态，以至于在AI领域，CV和NLP也几乎是各占半壁江山。那问题就来了，我们能不能直接研究图文兼备的模型呢？CV和NLP的交叉领域的问题应该怎么解呢？这些问题，都催生出了图文预训练。</p>
+<h3 id="图文预训练解决什么问题？"><a href="#图文预训练解决什么问题？" class="headerlink" title="图文预训练解决什么问题？"></a>图文预训练解决什么问题？</h3><p>图文预训练两个最常用的下游任务即<strong>VQA</strong>（Visual Question Answering）和<strong>图文检索</strong>（Image Text Retrieval），抽象来说就是<strong>分类问题</strong>和<strong>匹配问题</strong>。还有一些工作也会关注<strong>生成问题</strong>。</p>
+<h4 id="VQA"><a href="#VQA" class="headerlink" title="VQA"></a>VQA</h4><p>VQA（Visual Question Answering）的任务是给定一张图片和一个与图片内容相关的问题，找到对应的答案。答案的类型由问题的类型确定。比如“is the”类的问题，答案就是“yes”或者“no”。“what color”类型的问题，答案就是“red”、“white”等颜色。实践中通常把整个数据集中的answer进行计数统计，最终转换成一个分类问题。</p>
+<p>典型数据集：<a href="https://paperswithcode.com/dataset/visual-question-answering-v2-0" target="_blank" rel="noopener">VQA v2</a></p>
+<p><img src="/deep_learning/visual_language_pretrain/vqa.png" alt="VQA v2"></p>
+<h4 id="NLVR"><a href="#NLVR" class="headerlink" title="NLVR"></a>NLVR</h4><p>NLVR （Natural Language for Visual Reasoning），给定一张图片和一个推论，判断这个推论是否正确。实践中是一个二分类问题（“true”或者“false”）。</p>
+<p>典型数据集：<a href="https://paperswithcode.com/dataset/nlvr" target="_blank" rel="noopener">NLVR2</a></p>
+<p><img src="/deep_learning/visual_language_pretrain/nlvr.png" alt="NLVR2"></p>
+<h4 id="图文检索"><a href="#图文检索" class="headerlink" title="图文检索"></a>图文检索</h4><p>图文检索（Image Text Retrieval）即给定图片检索相关文本或者给定文本检索相关图片。通常关注的指标是Recall@top n。</p>
+<p>典型数据集：<a href="https://paperswithcode.com/dataset/flickr30k" target="_blank" rel="noopener">Flickr30k</a></p>
+<p><img src="/deep_learning/visual_language_pretrain/flickr.png" alt="Flickr30k"></p>
+<h4 id="任务总结"><a href="#任务总结" class="headerlink" title="任务总结"></a>任务总结</h4><table>
+<thead>
+<tr>
+<th>任务</th>
+<th>典型数据集</th>
+<th>当前sota</th>
+<th>原始论文</th>
+<th>类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>VQA</td>
+<td><a href="https://paperswithcode.com/dataset/visual-question-answering-v2-0" target="_blank" rel="noopener">VQA v2</a></td>
+<td><a href="https://paperswithcode.com/sota/visual-question-answering-on-vqa-v2-test-std" target="_blank" rel="noopener">https://paperswithcode.com/sota/visual-question-answering-on-vqa-v2-test-std</a></td>
+<td><a href="https://arxiv.org/pdf/1612.00837v3.pdf" target="_blank" rel="noopener">https://arxiv.org/pdf/1612.00837v3.pdf</a></td>
+<td>分类</td>
+</tr>
+<tr>
+<td>NLVR</td>
+<td><a href="https://paperswithcode.com/dataset/nlvr" target="_blank" rel="noopener">NLVR2</a></td>
+<td><a href="https://paperswithcode.com/sota/visual-reasoning-on-nlvr2-dev" target="_blank" rel="noopener">https://paperswithcode.com/sota/visual-reasoning-on-nlvr2-dev</a></td>
+<td><a href="https://aclanthology.org/P17-2034.pdf" target="_blank" rel="noopener">https://aclanthology.org/P17-2034.pdf</a></td>
+<td>分类</td>
+</tr>
+<tr>
+<td>图文检索</td>
+<td><a href="https://paperswithcode.com/dataset/flickr30k" target="_blank" rel="noopener">Flickr30k</a></td>
+<td><a href="https://paperswithcode.com/sota/image-retrieval-on-flickr30k-1k-test" target="_blank" rel="noopener">https://paperswithcode.com/sota/image-retrieval-on-flickr30k-1k-test</a></td>
+<td><a href="https://aclanthology.org/Q14-1006.pdf" target="_blank" rel="noopener">https://aclanthology.org/Q14-1006.pdf</a></td>
+<td>检索</td>
+</tr>
+</tbody></table>
+<h3 id="图文预训练和多模态融合的区别和联系"><a href="#图文预训练和多模态融合的区别和联系" class="headerlink" title="图文预训练和多模态融合的区别和联系"></a>图文预训练和多模态融合的区别和联系</h3><p>这里主要探讨目标问题域的问题。从上面图文预训练主要关注的任务可以发现，图文预训练主要专注于挖掘<strong>图文信息的交互</strong>。比如在NLVR中，文本中说“tower”，模型需要知道这个概念在图片中指的是用小积木堆成的矩形。</p>
+<p>多模态融合主要关注各种模态的表示的融合问题，首先它并不限制模态必须是图文，音频、数值特征、用户特征等等也都可以。但通常模态间融合是<strong>粗粒度</strong>的。它虽然能学习到一些共现模式，但对细节关系的捕捉能力较弱。另外多模态融合通常还会用到很多backbone去提取模态表示，整体架构也较少使用端到端。</p>
+<h2 id="图文预训练工作梳理"><a href="#图文预训练工作梳理" class="headerlink" title="图文预训练工作梳理"></a>图文预训练工作梳理</h2><h3 id="关注的几个维度"><a href="#关注的几个维度" class="headerlink" title="关注的几个维度"></a>关注的几个维度</h3><p>想梳理清楚图文预训练的发展趋势，主要关注以下几个维度：</p>
+<ul>
+<li><strong>数据</strong>：用什么数据做图文预训练？</li>
+<li><strong>模型结构</strong>：单流还是双流？</li>
+<li><strong>图文特征的提取方式</strong>：图片是先做目标检测还是用patch分割？</li>
+<li><strong>预训练的目标</strong>：mlm、itm、itc如何选择？</li>
+<li><strong>预训练的范式</strong>：直接图文一起预训练，还是单模态先预训练？</li>
+</ul>
+<h3 id="从BERT开始"><a href="#从BERT开始" class="headerlink" title="从BERT开始"></a>从BERT开始</h3><p>2018年，BERT横空出世，在NLP领域建立了预训练的范式，这种充分利用大量无标注数据从而碾压下游任务的范式取得了极大成功，使得CV领域和图文领域在接下来的几年，一直在努力引入这种成功的范式。</p>
+<p>2019年图文领域对应的工作出来了，比较典型的有<strong>VisualBERT</strong>、<strong>VL-BERT</strong>，还有相对较晚的<strong>UNITER</strong>。从名字就可以看出，这些工作受BERT的启发，本身的工作也都和BERT很像。</p>
+<p>我们回到当时的场景思考一下，如何把图文的数据都丢到BERT里去呢？文本部分还好，不用改，主要的问题在于图片怎么转换成embedding？这里可以有很多不同方式，早期的方法通常是先对图片做通用的目标检测，得到一系列的region box，然后过CNN，得到一系列图片embedding。</p>
+<p>输入搞定了，预训练任务怎么扩展？文本可以继续使用MLM，图片部分怎么处理？</p>
+<ul>
+<li>VisualBERT参考BERT里的NSP（给定一个文本pair判断是否是连贯上下文）提出了<strong>Sentence-image prediction</strong>，也就是给定一个图文对判断是随机组合还是原始组合。</li>
+<li>VL-BERT的做法是参考MLM，提出了<strong>Masked RoI Classification with Linguistic Clues</strong>，也就是将一部分region mask掉，然后根据文本和其他图片信息去预测这个region的类目。</li>
+<li>UNITER将这些预训练任务整理了下：<ul>
+<li>将mask region类的任务称为<strong>Masked Region Modeling (MRM)</strong>，这里面又可以分为回归和分类。</li>
+<li>将图文匹配的任务称为<strong>Image-Text Matching (ITM)</strong>。</li>
+<li>将细粒度的图文匹配任务称为<strong>Word-Region Alignment (WRA)</strong>。这里使用了Optimal Transport (OT)的思想，将细粒度的对齐问题建模成一个运输优化问题。</li>
+<li>UNITER还对不同的预训练任务做了消融实验，其结论为：预训练任务的作用排序：MLM &gt; ITM &gt; MRC &gt; WRA</li>
+</ul>
+</li>
+</ul>
+<p>预训练范式方面，这些工作直接用BERT的参数初始化模型，然后再进行图文预训练。</p>
+<p>数据方面，这些工作通常都是使用开源的图文数据集，如CC、COCO，体量大致在百万级别。</p>
+<p><img src="/deep_learning/visual_language_pretrain/VL-BERT.png" alt="VL-BERT"></p>
+<p><img src="/deep_learning/visual_language_pretrain/UNITER.png" alt="UNITER"></p>
+<h2 id="ViT来了"><a href="#ViT来了" class="headerlink" title="ViT来了"></a>ViT来了</h2><p>2020年，CV圈也迎来了里程碑式的工作：<strong>ViT</strong>，它对图片输入的处理简单粗暴，直接划分成16 × 16个<strong>patch</strong>，并在论文的题目中宣称：“一张图等于16 × 16个字”。ViT引发了transformer在CV界的广泛应用，于是自然有人将这个思路引入到图文预训练中来，这就是<strong>ViLT</strong>。</p>
+<p>ViLT的做法其实几乎和UNITER如出一辙，不过将所有的region都替换成了patch。这里会产生一个小问题：region是有类别的，而patch因为是随机切分，没有类别，所以也就没有MRM这类的任务了。不过这个影响不大，因为MRM的贡献本来就不大。</p>
+<p>ViLT和UNITER不同的是，ViLT基于ViT参数进行了初始化，而UNITER是基于BERT。另外ViLT也提出了两个提点建议：全词mask和图片的数据增强。</p>
+<p>那引入patch有什么好处呢？</p>
+<ul>
+<li><strong>提速</strong>：ViLT和UNITER的预测速度比为15ms:900ms，而diff部分也主要来自于目标检测的耗时。</li>
+<li>结构统一、简单。图片省去了额外的特征提取操作。</li>
+</ul>
+<p>但整体来说，ViLT的性能并没有优于UNITER，它的贡献在于让大家认识到省掉目标检测是可能的；且这是一个工业应用affordable的方案。我们也在实际应用中采用了ViLT的方案，在下游任务上取得了不错的效果。</p>
+<p><img src="/deep_learning/visual_language_pretrain/VILT.png" alt="ViLT"></p>
+<h3 id="来点对比学习？"><a href="#来点对比学习？" class="headerlink" title="来点对比学习？"></a>来点对比学习？</h3><p>2021年图文领域也出现了一个里程碑式的工作：<strong>CLIP</strong>。CLIP最初的动机是学习一个迁移性能好的图片表示。它的想法很简单：用文本信息作为弱监督，通过对比学习来学习图片表示。它的整体架构很简单，采用了文本encoder和图片encoder双流的结构，融合的head只是一个简单的相似度计算。</p>
+<p>那么优秀的迁移性是通过什么实现的呢？</p>
+<ul>
+<li>基于wikipedia的海量图文对（4亿对），涵盖各种领域。</li>
+<li>基于和文本表示对比学习的弱监督：文本表示相比于类目信息量更丰富。</li>
+</ul>
+<p>CLIP最终的性能是令人惊艳的，最让人经验的是图文匹配的能力。当时一些基于CLIP去做以文搜图、以文搜视频的应用层出不穷。这个结果让人感受到：<strong>对比学习在跨模态对齐的任务中，大有可为</strong>。我们当时也迅速跟：先是迁移了一个中文版的encoder；然后又基于我们自己的业务数据，预训练了一个CLIP模型。</p>
+<p><img src="/deep_learning/visual_language_pretrain/CLIP.png" alt="CLIP"></p>
+<p>CLIP这种<strong>双流结构+对比学习</strong>在模态对齐的任务上效果拔群，但在VQA这中分类任务中就表现平平了。究其原因，还是因为CLIP的融合头太简单了，于是出现了一些后续工作，将双流+对比学习的范式和之前的单流范式进行结合。</p>
+<p>首先出现的是<strong>CLiP-ViL</strong>：文本还是不变，图片先过CLIP的图片encoder生成一系列图片表示，然后再一起进入一个单流的transformer。这种范式，也就是<strong>先多流后单流</strong>，后来称为新的潮流。</p>
+<p>采用<strong>先多流后单流</strong>范式的影响力更大的工作是<strong>ALBEF</strong>。</p>
+<p>ALBEF前面的多流和CLIP一样，做对比学习。而它是这么解释为什么要先多流的：</p>
+<ul>
+<li>图文embedding对齐后，让单流的encoder学习更容易。</li>
+<li>单模态（特别是图片）的encoder可以学得更好。</li>
+<li>相对于之前简单的ITM，可以引入更多负例。</li>
+</ul>
+<p>另外考虑到现实数据可能比较noisy，ALBEF还提出了MoD（momentum distillation）。整体思路就是引入动量更新，即一个相对平滑的teacher模型，用于生成伪标签，让目标模型利用伪标签进行一致性正则约束。</p>
+<p>但不得不说的是，既然引入了对比学习，鉴于CLIP的经验，图文预训练的数据其实应该更多。因此ALBEF除了和之前其他工作对齐的百万级数据外，海训练了千万级数据的版本。至此，ALBEF的性能碾压了UNITER，基于patch的方案也终于在数据量和对比学习的加持下，打败了基于region的方案。</p>
+<p><img src="/deep_learning/visual_language_pretrain/ALBEF.png" alt="ALBEF"></p>
+<p>除了这种<strong>先多流后单流</strong>的方式，还有没有其他可能的方式去引进对比学习呢？有没有办法改造下单流让它可以直接使用对比学习呢？<strong>VLMO</strong>提供了另一种思路：我们可以只替换ffn来表示不同模态的encoder（MoME），这样encoder其他地方都可以复用，attention也只有self attention，没有cross attention。</p>
+<p><img src="/deep_learning/visual_language_pretrain/VLMO.png" alt="VLMO"></p>
+<p>这里的预训练范式也改成了：</p>
+<ul>
+<li>1.单模态预训练<ul>
+<li>图片用BEIT</li>
+<li>文本用BERT</li>
+</ul>
+</li>
+<li>2.图文预训练</li>
+</ul>
+<p>预训练范式改进了以后，性能又得到了提升。</p>
+<h3 id="整理一下"><a href="#整理一下" class="headerlink" title="整理一下"></a>整理一下</h3><p>2021年<strong>METER</strong>曾经就训练任务、模型架构等方面做过统一比较：</p>
+<ul>
+<li>模型结构：<ul>
+<li>融合头用cross-attention优于用merge-attention</li>
+<li>backbone最佳组合：RoBERTa + Swin Transformer / CLIP-ViT</li>
+<li>decoder类型的结构并不能带来增益</li>
+</ul>
+</li>
+<li>预训练任务：<ul>
+<li>MLM + ITM是基石，图片的mask预训练任务像MIM其实可有可无（注意这里是多模态数据训练时，前置的单图预训练还是很有增益的）</li>
+</ul>
+</li>
+</ul>
+<p><img src="/deep_learning/visual_language_pretrain/METER.png" alt="METER"></p>
+<h3 id="更大更强"><a href="#更大更强" class="headerlink" title="更大更强"></a>更大更强</h3><p>为了追求极致性能，后面出现了一些彻底“不讲武德”的工作，继续充分挖掘大模型、大数据。</p>
+<p><strong>Florence</strong>在做图文对比学习时，直接怼了<strong>9亿图文对</strong>；再配合roberta的预训练文本encoder（VQA架构基于METER），最终效果也再度炸裂。</p>
+<p><img src="/deep_learning/visual_language_pretrain/FLORENCE.png" alt="Florence"></p>
+<h2 id="总结梳理"><a href="#总结梳理" class="headerlink" title="总结梳理"></a>总结梳理</h2><p>再来整体梳理下发展脉络：</p>
+<ul>
+<li>第一阶段：从BERT中发展而来。<ul>
+<li>代表作：<strong>VisualBERT</strong>、<strong>VL-BERT</strong>、<strong>UNITER</strong></li>
+<li>特点：图片特征抽取还是依赖于目标检测；图文预训练任务使用itm（Image text match）</li>
+</ul>
+</li>
+<li>第二阶段：引入patch。<ul>
+<li>代表作：<strong>ViLT</strong></li>
+<li>特点：借鉴ViT的输入方式，直接分割patch，然后线性映射为embedding；推理速度较快</li>
+</ul>
+</li>
+<li>第三阶段：和对比学习结合。<ul>
+<li>代表作：<strong>CLIP</strong>、<strong>CLiP-ViL</strong>、<strong>ALBEF</strong>、<strong>VLMO</strong></li>
+<li>特点：引入对比学习，在前置环节学好图片encoder；开始尝试各种多流/单流、merge attention/cross attention的组合。</li>
+</ul>
+</li>
+<li>第四阶段：更大更强<ul>
+<li>代表作：<strong>METER</strong>、<strong>Florence</strong></li>
+<li>特点：整合现有方案；用更多的图文数据碾压。</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/diary/spring_rain/" rel="next" title="夜闻春雨">
+                <i class="fa fa-chevron-left"></i> 夜闻春雨
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/ggb.png" alt="Javen Chen">
+            
+              <p class="site-author-name" itemprop="name">Javen Chen</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">113</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/applenob" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:applecer@pku.edu.cn" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#小引"><span class="nav-number">1.</span> <span class="nav-text">小引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是图文预训练？"><span class="nav-number">2.</span> <span class="nav-text">什么是图文预训练？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#图文预训练解决什么问题？"><span class="nav-number">2.1.</span> <span class="nav-text">图文预训练解决什么问题？</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#VQA"><span class="nav-number">2.1.1.</span> <span class="nav-text">VQA</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#NLVR"><span class="nav-number">2.1.2.</span> <span class="nav-text">NLVR</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#图文检索"><span class="nav-number">2.1.3.</span> <span class="nav-text">图文检索</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#任务总结"><span class="nav-number">2.1.4.</span> <span class="nav-text">任务总结</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#图文预训练和多模态融合的区别和联系"><span class="nav-number">2.2.</span> <span class="nav-text">图文预训练和多模态融合的区别和联系</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#图文预训练工作梳理"><span class="nav-number">3.</span> <span class="nav-text">图文预训练工作梳理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#关注的几个维度"><span class="nav-number">3.1.</span> <span class="nav-text">关注的几个维度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从BERT开始"><span class="nav-number">3.2.</span> <span class="nav-text">从BERT开始</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ViT来了"><span class="nav-number">4.</span> <span class="nav-text">ViT来了</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#来点对比学习？"><span class="nav-number">4.1.</span> <span class="nav-text">来点对比学习？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#整理一下"><span class="nav-number">4.2.</span> <span class="nav-text">整理一下</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#更大更强"><span class="nav-number">4.3.</span> <span class="nav-text">更大更强</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结梳理"><span class="nav-number">5.</span> <span class="nav-text">总结梳理</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("9s7vKaOPY7lMWuX9YVLasdnq-gzGzoHsz", "gOEj5qIEBIz5eDM3F5Nn90Jg");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
