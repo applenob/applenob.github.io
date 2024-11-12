@@ -419,7 +419,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-11-11 22:22:32" itemprop="dateModified" datetime="2024-11-11T22:22:32-08:00">2024-11-11</time>
+      <time title="Modified: 2024-11-11 22:35:47" itemprop="dateModified" datetime="2024-11-11T22:35:47-08:00">2024-11-11</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -442,9 +442,17 @@
     
     <div class="post-body" itemprop="articleBody">
           <h1 id="策略梯度的通用形式"><a href="#策略梯度的通用形式" class="headerlink" title="策略梯度的通用形式"></a>策略梯度的通用形式</h1><p>$\nabla_\theta J(\theta)&#x3D;E_{\tau \sim \pi_\theta}[\sum_{t&#x3D;0}^T\nabla_\theta log \pi_\theta(a_t|s_t)\Phi_t]$</p>
-<p>其中，$\Phi_t$可以是各种形式，如$\Phi_t &#x3D; R(\tau)$或者$\Phi_t &#x3D; \sum_{t’&#x3D;t}^T R(s’<em>t, a_t’)$或者$\Phi_t &#x3D; \sum</em>{t’&#x3D;t}^T R(s’_t, a_t’) - b(s_t)$，也可以是$\Phi_t &#x3D; A(s_t,a_t)&#x3D;Q(s_t,a_t)-V(s_t)$</p>
-<p>用优势函数可以降低$\Phi_t$的方差。</p>
-<p>策略梯度的$\Phi_t$如果用蒙特卡洛的方式来估算，就是<strong>REINFORCE</strong>算法；如果用一个critic model来学，就是<strong>Actor-Critic</strong>架构。PPO本质上采用了<strong>Actor-Critic</strong>架构。</p>
+<ul>
+<li>其中，$\Phi_t$可以是各种形式：<ul>
+<li>如 $\Phi_t &#x3D; R(\tau)$ </li>
+<li>或者 $\Phi_t &#x3D; \sum_{t’&#x3D;t}^T R(s’_t, a_t’)$ </li>
+<li>或者 $\Phi_t &#x3D; \sum_{t’&#x3D;t}^T R(s’_t, a_t’) - b(s_t)$</li>
+<li>也可以是 $\Phi_t &#x3D; A(s_t,a_t)&#x3D;Q(s_t,a_t)-V(s_t)$</li>
+</ul>
+</li>
+</ul>
+<p>用优势函数可以降低 $\Phi_t$ 的方差。</p>
+<p>策略梯度的 $\Phi_t$ 如果用蒙特卡洛的方式来估算，就是<strong>REINFORCE</strong>算法；如果用一个critic model来学，就是<strong>Actor-Critic</strong>架构。PPO本质上采用了<strong>Actor-Critic</strong>架构。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/llm/ppo/#more" rel="contents">

@@ -19,19 +19,19 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="策略梯度的通用形式$\nabla_\theta J(\theta)&#x3D;E_{\tau \sim \pi_\theta}[\sum_{t&#x3D;0}^T\nabla_\theta log \pi_\theta(a_t|s_t)\Phi_t]$ 其中，$\Phi_t$可以是各种形式，如$\Phi_t &#x3D; R(\tau)$或者$\Phi_t &#x3D; \sum_{t’&amp;#x3D">
+    <meta name="description" content="策略梯度的通用形式$\nabla_\theta J(\theta)&#x3D;E_{\tau \sim \pi_\theta}[\sum_{t&#x3D;0}^T\nabla_\theta log \pi_\theta(a_t|s_t)\Phi_t]$  其中，$\Phi_t$可以是各种形式： 如 $\Phi_t &#x3D; R(\tau)$  或者 $\Phi_t &#x3D; \sum_{t">
 <meta property="og:type" content="article">
 <meta property="og:title" content="PPO in LLM详解">
 <meta property="og:url" content="https://applenob.github.io/llm/ppo/index.html">
 <meta property="og:site_name" content="Javen Chen&#39;s Blog">
-<meta property="og:description" content="策略梯度的通用形式$\nabla_\theta J(\theta)&#x3D;E_{\tau \sim \pi_\theta}[\sum_{t&#x3D;0}^T\nabla_\theta log \pi_\theta(a_t|s_t)\Phi_t]$ 其中，$\Phi_t$可以是各种形式，如$\Phi_t &#x3D; R(\tau)$或者$\Phi_t &#x3D; \sum_{t’&amp;#x3D">
+<meta property="og:description" content="策略梯度的通用形式$\nabla_\theta J(\theta)&#x3D;E_{\tau \sim \pi_\theta}[\sum_{t&#x3D;0}^T\nabla_\theta log \pi_\theta(a_t|s_t)\Phi_t]$  其中，$\Phi_t$可以是各种形式： 如 $\Phi_t &#x3D; R(\tau)$  或者 $\Phi_t &#x3D; \sum_{t">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://applenob.github.io/llm/ppo/ppo.png">
 <meta property="og:image" content="https://applenob.github.io/llm/ppo/ppo_algo.png">
 <meta property="og:image" content="https://applenob.github.io/llm/ppo/ppo_clip.png">
 <meta property="og:image" content="https://applenob.github.io/llm/ppo/ppo_code_arch.png">
 <meta property="article:published_time" content="2024-02-25T07:35:00.000Z">
-<meta property="article:modified_time" content="2024-11-12T06:22:32.832Z">
+<meta property="article:modified_time" content="2024-11-12T06:35:47.890Z">
 <meta property="article:author" content="Javen Chen">
 <meta property="article:tag" content="LLM">
 <meta name="twitter:card" content="summary">
@@ -217,7 +217,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-11-11 22:22:32" itemprop="dateModified" datetime="2024-11-11T22:22:32-08:00">2024-11-11</time>
+      <time title="Modified: 2024-11-11 22:35:47" itemprop="dateModified" datetime="2024-11-11T22:35:47-08:00">2024-11-11</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -239,9 +239,17 @@
     
     
     <div class="post-body" itemprop="articleBody"><h1 id="策略梯度的通用形式"><a href="#策略梯度的通用形式" class="headerlink" title="策略梯度的通用形式"></a>策略梯度的通用形式</h1><p>$\nabla_\theta J(\theta)&#x3D;E_{\tau \sim \pi_\theta}[\sum_{t&#x3D;0}^T\nabla_\theta log \pi_\theta(a_t|s_t)\Phi_t]$</p>
-<p>其中，$\Phi_t$可以是各种形式，如$\Phi_t &#x3D; R(\tau)$或者$\Phi_t &#x3D; \sum_{t’&#x3D;t}^T R(s’<em>t, a_t’)$或者$\Phi_t &#x3D; \sum</em>{t’&#x3D;t}^T R(s’_t, a_t’) - b(s_t)$，也可以是$\Phi_t &#x3D; A(s_t,a_t)&#x3D;Q(s_t,a_t)-V(s_t)$</p>
-<p>用优势函数可以降低$\Phi_t$的方差。</p>
-<p>策略梯度的$\Phi_t$如果用蒙特卡洛的方式来估算，就是<strong>REINFORCE</strong>算法；如果用一个critic model来学，就是<strong>Actor-Critic</strong>架构。PPO本质上采用了<strong>Actor-Critic</strong>架构。</p>
+<ul>
+<li>其中，$\Phi_t$可以是各种形式：<ul>
+<li>如 $\Phi_t &#x3D; R(\tau)$ </li>
+<li>或者 $\Phi_t &#x3D; \sum_{t’&#x3D;t}^T R(s’_t, a_t’)$ </li>
+<li>或者 $\Phi_t &#x3D; \sum_{t’&#x3D;t}^T R(s’_t, a_t’) - b(s_t)$</li>
+<li>也可以是 $\Phi_t &#x3D; A(s_t,a_t)&#x3D;Q(s_t,a_t)-V(s_t)$</li>
+</ul>
+</li>
+</ul>
+<p>用优势函数可以降低 $\Phi_t$ 的方差。</p>
+<p>策略梯度的 $\Phi_t$ 如果用蒙特卡洛的方式来估算，就是<strong>REINFORCE</strong>算法；如果用一个critic model来学，就是<strong>Actor-Critic</strong>架构。PPO本质上采用了<strong>Actor-Critic</strong>架构。</p>
 <h1 id="RLHF到底为LLM贡献了啥？"><a href="#RLHF到底为LLM贡献了啥？" class="headerlink" title="RLHF到底为LLM贡献了啥？"></a>RLHF到底为LLM贡献了啥？</h1><p>对齐！对齐人类的沟通方式，对齐人类的价值体系，比如安全性、真实性等等。</p>
 <h1 id="PPO的由来"><a href="#PPO的由来" class="headerlink" title="PPO的由来"></a>PPO的由来</h1><p>随机梯度策略  —为了限制梯度更新过大—&gt;  TRPO —将约束直接加载目标函数里（大幅简化）—&gt; PPO</p>
 <p>总而言之，TRPO和PPO的核心思想都是采用<strong>更小更稳定的策略更新</strong>，只不过PPO实现更简单。</p>
@@ -251,13 +259,13 @@
 <ul>
 <li>Policy模型的训练：<ul>
 <li>CLIP形式：$L_{ppo-clip}(\theta) &#x3D; \hat E_t[min(\frac{\pi_{\theta}(a_t|s_t)}{\pi_{\theta_{old}}(a_t|s_t)}\hat A_t, clip(\frac{\pi_{\theta}(a_t|s_t)}{\pi_{\theta_{old}}(a_t|s_t)}, 1-\epsilon, 1+\epsilon)\hat A_t)]$<ul>
-<li>$\hat A_t$是优势函数的近似，这里用GAE（Generalized Advantage Estimation）：<ul>
+<li>$\hat A_t$ 是优势函数的近似，这里用<strong>GAE</strong>（Generalized Advantage Estimation）：<ul>
 <li>$\hat A_t^{GAE(\gamma, \lambda)} &#x3D; \sum_{l&#x3D;0}^{\infty}(\gamma\lambda)^l\delta_{t+l}$</li>
-<li>$\lambda$是指数滑动平均的超参，$\gamma$是折扣系数</li>
+<li>$\lambda$ 是指数滑动平均的超参，$\gamma$ 是折扣系数</li>
 <li>$\delta_t &#x3D; r_t + \gamma V(s_{t+1}) - V(s_t)$</li>
 <li>为什么用GAE估计优势函数？<ul>
 <li><a href="https://zhuanlan.zhihu.com/p/345687962">https://zhuanlan.zhihu.com/p/345687962</a></li>
-<li>泛化优化估计(GAE)实际上是$\lambda$-return应用在估计优势函数的版本。</li>
+<li>泛化优化估计(GAE)实际上是 $\lambda$ -return应用在估计优势函数的版本。</li>
 </ul>
 </li>
 </ul>
@@ -268,7 +276,7 @@
 </ul>
 </li>
 <li>Critic模型的训练： $L_{critic(\phi)} &#x3D; \hat{E_t}[||V_{\phi}(s_t)-\hat R_t||^2]$<ul>
-<li>$\hat R_t$是状态$s_t$下的实际收益：$\hat R_t &#x3D; \sum_{l&#x3D;0}^{\infty}\gamma^l r_{t+l}$</li>
+<li>$\hat R_t$ 是状态$s_t$下的实际收益：$\hat R_t &#x3D; \sum_{l&#x3D;0}^{\infty}\gamma^l r_{t+l}$</li>
 </ul>
 </li>
 <li>Reward模型是提前训练好的：$L(\psi)&#x3D;log;\sigma(r(x,y_w)-r(x,y_l))$<ul>
