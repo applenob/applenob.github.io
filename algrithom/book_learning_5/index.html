@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="1对应本书第五章。  原目录 笔记这章开始进入算法部分，讲解排序和查找。 二分查找">
+<meta property="og:type" content="article">
+<meta property="og:title" content="五. Sorting and Searching">
+<meta property="og:url" content="https://applenob.github.io/algrithom/book_learning_5/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="1对应本书第五章。  原目录 笔记这章开始进入算法部分，讲解排序和查找。 二分查找">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://applenob.github.io/algrithom/book_learning_5/map.png">
+<meta property="og:image" content="https://applenob.github.io/algrithom/book_learning_5/Shell-Sort.png">
+<meta property="og:image" content="https://applenob.github.io/algrithom/book_learning_5/stringhash2.png">
+<meta property="article:published_time" content="2017-02-23T05:00:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.028Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="Algorithm">
+<meta property="article:tag" content="笔记">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://applenob.github.io/algrithom/book_learning_5/map.png">
+
+
+<link rel="canonical" href="https://applenob.github.io/algrithom/book_learning_5/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/algrithom/book_learning_5/","path":"algrithom/book_learning_5/","title":"五. Sorting and Searching"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>五. Sorting and Searching | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%94%E8%AE%B0"><span class="nav-number">1.</span> <span class="nav-text">笔记</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE"><span class="nav-number">1.1.</span> <span class="nav-text">二分查找</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8Hash%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AAMap%E6%8A%BD%E8%B1%A1%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.2.</span> <span class="nav-text">用Hash实现一个Map抽象数据类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F"><span class="nav-number">1.3.</span> <span class="nav-text">冒泡排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F"><span class="nav-number">1.4.</span> <span class="nav-text">选择排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F"><span class="nav-number">1.5.</span> <span class="nav-text">插入排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%8C%E5%B0%94%E6%8E%92%E5%BA%8F"><span class="nav-number">1.6.</span> <span class="nav-text">希尔排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%88%E5%B9%B6%E6%8E%92%E5%BA%8F"><span class="nav-number">1.7.</span> <span class="nav-text">合并排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F"><span class="nav-number">1.8.</span> <span class="nav-text">快速排序</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%9C%E4%B8%9A"><span class="nav-number">2.</span> <span class="nav-text">作业</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#q1"><span class="nav-number">2.1.</span> <span class="nav-text">q1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q2"><span class="nav-number">2.2.</span> <span class="nav-text">q2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q4"><span class="nav-number">2.3.</span> <span class="nav-text">q4</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q9"><span class="nav-number">2.4.</span> <span class="nav-text">q9</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/algrithom/book_learning_5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="五. Sorting and Searching | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          五. Sorting and Searching
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-02-22 21:00:00" itemprop="dateCreated datePublished" datetime="2017-02-22T21:00:00-08:00">2017-02-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E3%80%8AProblem-Solving-with-Algorithms-and-Data-Structures-using-Python%E3%80%8B%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E5%92%8C%E8%AF%BE%E5%90%8E%E4%BD%9C%E4%B8%9A%E7%AD%94%E6%A1%88/" itemprop="url" rel="index"><span itemprop="name">《Problem Solving with Algorithms and Data Structures using Python》的学习笔记和课后作业答案</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">对应本书第五章。</span><br></pre></td></tr></table></figure>
+
+<p><a href="http://interactivepython.org/courselib/static/pythonds/SortSearch/toctree.html">原目录</a></p>
+<h2 id="笔记"><a href="#笔记" class="headerlink" title="笔记"></a>笔记</h2><p>这章开始进入算法部分，讲解排序和查找。</p>
+<h3 id="二分查找"><a href="#二分查找" class="headerlink" title="二分查找"></a>二分查找</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> print_function</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">binarySearch</span>(<span class="params">alist, item</span>):</span><br><span class="line">    first = <span class="number">0</span></span><br><span class="line">    last = <span class="built_in">len</span>(alist)-<span class="number">1</span></span><br><span class="line">    found = <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> first&lt;=last <span class="keyword">and</span> <span class="keyword">not</span> found:</span><br><span class="line">        midpoint = (first + last)//<span class="number">2</span></span><br><span class="line">        <span class="keyword">if</span> alist[midpoint] == item:</span><br><span class="line">            found = <span class="literal">True</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">if</span> item &lt; alist[midpoint]:</span><br><span class="line">                last = midpoint-<span class="number">1</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                first = midpoint+<span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> found</span><br><span class="line"></span><br><span class="line">testlist = [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">8</span>, <span class="number">13</span>, <span class="number">17</span>, <span class="number">19</span>, <span class="number">32</span>, <span class="number">42</span>,]</span><br><span class="line"><span class="built_in">print</span>(binarySearch(testlist, <span class="number">3</span>))</span><br><span class="line"><span class="built_in">print</span>(binarySearch(testlist, <span class="number">13</span>))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">False</span><br><span class="line">True</span><br></pre></td></tr></table></figure>
+
+<h3 id="用Hash实现一个Map抽象数据类型"><a href="#用Hash实现一个Map抽象数据类型" class="headerlink" title="用Hash实现一个Map抽象数据类型"></a>用Hash实现一个Map抽象数据类型</h3><p>Hash碰到collision的时候一般有两种解决方法：</p>
+<ul>
+<li>开放寻址（open addressing）：寻找下一个空的slot；</li>
+<li>链接法（Chaining）：允许一个hash值对应的slot中可以存放多个元素。<br><img src="/algrithom/book_learning_5/map.png"></li>
+</ul>
+<p>使用Hash的Map，查找的理想的时间复杂度是$O(1)$。</p>
+<p>实际上，对于占用度是$λ$的HashTable，开放寻址的线性探测的比较次数是：$\frac{1}{2}(1+\frac{1}{1−λ})$；链接法的比较次数是：$\frac{1}{2}(1+(\frac{1}{1−λ})^2)$。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">HashTable</span>:</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="variable language_">self</span>.size = <span class="number">11</span></span><br><span class="line">        <span class="variable language_">self</span>.slots = [<span class="literal">None</span>] * <span class="variable language_">self</span>.size</span><br><span class="line">        <span class="variable language_">self</span>.data = [<span class="literal">None</span>] * <span class="variable language_">self</span>.size</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">put</span>(<span class="params">self,key,data</span>):</span><br><span class="line">        <span class="comment"># 计算key的hash值</span></span><br><span class="line">        hashvalue = <span class="variable language_">self</span>.hashfunction(key,<span class="built_in">len</span>(<span class="variable language_">self</span>.slots))</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.slots[hashvalue] == <span class="literal">None</span>:</span><br><span class="line">            <span class="variable language_">self</span>.slots[hashvalue] = key</span><br><span class="line">            <span class="variable language_">self</span>.data[hashvalue] = data</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">if</span> <span class="variable language_">self</span>.slots[hashvalue] == key:</span><br><span class="line">                <span class="variable language_">self</span>.data[hashvalue] = data  <span class="comment">#replace</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="comment"># 碰到collision， rehash</span></span><br><span class="line">                nextslot = <span class="variable language_">self</span>.rehash(hashvalue,<span class="built_in">len</span>(<span class="variable language_">self</span>.slots))</span><br><span class="line">                <span class="keyword">while</span> <span class="variable language_">self</span>.slots[nextslot] != <span class="literal">None</span> <span class="keyword">and</span> <span class="variable language_">self</span>.slots[nextslot] != key:</span><br><span class="line">                    nextslot = <span class="variable language_">self</span>.rehash(nextslot,<span class="built_in">len</span>(<span class="variable language_">self</span>.slots))</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> <span class="variable language_">self</span>.slots[nextslot] == <span class="literal">None</span>:</span><br><span class="line">                    <span class="variable language_">self</span>.slots[nextslot]=key</span><br><span class="line">                    <span class="variable language_">self</span>.data[nextslot]=data</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    <span class="variable language_">self</span>.data[nextslot] = data <span class="comment">#replace</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">hashfunction</span>(<span class="params">self,key,size</span>):</span><br><span class="line">        <span class="comment"># 根据key计算hash值</span></span><br><span class="line">        <span class="keyword">return</span> key%size</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">rehash</span>(<span class="params">self,oldhash,size</span>):</span><br><span class="line">        <span class="keyword">return</span> (oldhash+<span class="number">1</span>)%size</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">get</span>(<span class="params">self,key</span>):</span><br><span class="line">        startslot = <span class="variable language_">self</span>.hashfunction(key,<span class="built_in">len</span>(<span class="variable language_">self</span>.slots))</span><br><span class="line"></span><br><span class="line">        data = <span class="literal">None</span></span><br><span class="line">        stop = <span class="literal">False</span></span><br><span class="line">        found = <span class="literal">False</span></span><br><span class="line">        position = startslot</span><br><span class="line">        <span class="keyword">while</span> <span class="variable language_">self</span>.slots[position] != <span class="literal">None</span> <span class="keyword">and</span> <span class="keyword">not</span> found <span class="keyword">and</span> <span class="keyword">not</span> stop:</span><br><span class="line">            <span class="keyword">if</span> <span class="variable language_">self</span>.slots[position] == key:</span><br><span class="line">                found = <span class="literal">True</span></span><br><span class="line">                data = <span class="variable language_">self</span>.data[position]</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                position=<span class="variable language_">self</span>.rehash(position,<span class="built_in">len</span>(<span class="variable language_">self</span>.slots))</span><br><span class="line">                <span class="keyword">if</span> position == startslot:</span><br><span class="line">                    stop = <span class="literal">True</span></span><br><span class="line">        <span class="keyword">return</span> data</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__getitem__</span>(<span class="params">self,key</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.get(key)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__setitem__</span>(<span class="params">self,key,data</span>):</span><br><span class="line">        <span class="variable language_">self</span>.put(key,data)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">H=HashTable()</span><br><span class="line">H[<span class="number">54</span>]=<span class="string">&quot;cat&quot;</span></span><br><span class="line">H[<span class="number">26</span>]=<span class="string">&quot;dog&quot;</span></span><br><span class="line">H[<span class="number">93</span>]=<span class="string">&quot;lion&quot;</span></span><br><span class="line">H[<span class="number">17</span>]=<span class="string">&quot;tiger&quot;</span></span><br><span class="line">H[<span class="number">77</span>]=<span class="string">&quot;bird&quot;</span></span><br><span class="line">H[<span class="number">31</span>]=<span class="string">&quot;cow&quot;</span></span><br><span class="line">H[<span class="number">44</span>]=<span class="string">&quot;goat&quot;</span></span><br><span class="line">H[<span class="number">55</span>]=<span class="string">&quot;pig&quot;</span></span><br><span class="line">H[<span class="number">20</span>]=<span class="string">&quot;chicken&quot;</span></span><br><span class="line">H.slots</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[77, 44, 55, 20, 26, 93, 17, None, None, 31, 54]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">H.data</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[&#x27;bird&#x27;,</span><br><span class="line"> &#x27;goat&#x27;,</span><br><span class="line"> &#x27;pig&#x27;,</span><br><span class="line"> &#x27;chicken&#x27;,</span><br><span class="line"> &#x27;dog&#x27;,</span><br><span class="line"> &#x27;lion&#x27;,</span><br><span class="line"> &#x27;tiger&#x27;,</span><br><span class="line"> None,</span><br><span class="line"> None,</span><br><span class="line"> &#x27;cow&#x27;,</span><br><span class="line"> &#x27;cat&#x27;]</span><br></pre></td></tr></table></figure>
+
+<h3 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h3><p>默认从小到大排序。 两两比较，逆序则两两互换。</p>
+<p>时间复杂度：$O(n^2)$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">bubbleSort</span>(<span class="params">alist</span>):</span><br><span class="line">    <span class="keyword">for</span> passnum <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(alist)-<span class="number">1</span>,<span class="number">0</span>,-<span class="number">1</span>):</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(passnum):</span><br><span class="line">            <span class="comment"># 逆序</span></span><br><span class="line">            <span class="keyword">if</span> alist[i]&gt;alist[i+<span class="number">1</span>]:</span><br><span class="line">                <span class="comment"># 互换</span></span><br><span class="line">                temp = alist[i]</span><br><span class="line">                alist[i] = alist[i+<span class="number">1</span>]</span><br><span class="line">                alist[i+<span class="number">1</span>] = temp</span><br><span class="line"></span><br><span class="line">alist = [<span class="number">54</span>,<span class="number">26</span>,<span class="number">93</span>,<span class="number">17</span>,<span class="number">77</span>,<span class="number">31</span>,<span class="number">44</span>,<span class="number">55</span>,<span class="number">20</span>]</span><br><span class="line">bubbleSort(alist)</span><br><span class="line"><span class="built_in">print</span>(alist)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[17, 20, 26, 31, 44, 54, 55, 77, 93]</span><br></pre></td></tr></table></figure>
+
+<h3 id="选择排序"><a href="#选择排序" class="headerlink" title="选择排序"></a>选择排序</h3><p>每次找到第k大的数，移动到倒数第k位。</p>
+<p>时间复杂度：$O(n^2)$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">selectionSort</span>(<span class="params">alist</span>):</span><br><span class="line">    <span class="keyword">for</span> fillslot <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(alist)-<span class="number">1</span>,<span class="number">0</span>,-<span class="number">1</span>):</span><br><span class="line">        positionOfMax=<span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> location <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>,fillslot+<span class="number">1</span>):</span><br><span class="line">            <span class="keyword">if</span> alist[location]&gt;alist[positionOfMax]:</span><br><span class="line">                positionOfMax = location</span><br><span class="line"></span><br><span class="line">        temp = alist[fillslot]</span><br><span class="line">        alist[fillslot] = alist[positionOfMax]</span><br><span class="line">        alist[positionOfMax] = temp</span><br><span class="line"></span><br><span class="line">alist = [<span class="number">54</span>,<span class="number">26</span>,<span class="number">93</span>,<span class="number">17</span>,<span class="number">77</span>,<span class="number">31</span>,<span class="number">44</span>,<span class="number">55</span>,<span class="number">20</span>]</span><br><span class="line">selectionSort(alist)</span><br><span class="line"><span class="built_in">print</span>(alist)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[17, 20, 26, 31, 44, 54, 55, 77, 93]</span><br></pre></td></tr></table></figure>
+
+<h3 id="插入排序"><a href="#插入排序" class="headerlink" title="插入排序"></a>插入排序</h3><p>递归思想，前面的子序列先排完序，再<strong>插入</strong>下一个元素排序。</p>
+<p>时间复杂度：$O(n^2)$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">insertionSort</span>(<span class="params">alist</span>):</span><br><span class="line">    <span class="keyword">for</span> index <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>,<span class="built_in">len</span>(alist)):</span><br><span class="line"></span><br><span class="line">        currentvalue = alist[index]</span><br><span class="line">        position = index</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> position&gt;<span class="number">0</span> <span class="keyword">and</span> alist[position-<span class="number">1</span>]&gt;currentvalue:</span><br><span class="line">            <span class="comment"># 大于插入元素的元素后移</span></span><br><span class="line">            alist[position]=alist[position-<span class="number">1</span>]</span><br><span class="line">            <span class="comment"># 插入元素前移</span></span><br><span class="line">            position = position-<span class="number">1</span></span><br><span class="line"></span><br><span class="line">        alist[position]=currentvalue</span><br><span class="line"></span><br><span class="line">alist = [<span class="number">54</span>,<span class="number">26</span>,<span class="number">93</span>,<span class="number">17</span>,<span class="number">77</span>,<span class="number">31</span>,<span class="number">44</span>,<span class="number">55</span>,<span class="number">20</span>]</span><br><span class="line">insertionSort(alist)</span><br><span class="line"><span class="built_in">print</span>(alist)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[17, 20, 26, 31, 44, 54, 55, 77, 93]</span><br></pre></td></tr></table></figure>
+
+<h3 id="希尔排序"><a href="#希尔排序" class="headerlink" title="希尔排序"></a>希尔排序</h3><p>使用由大到小的gap，将将list分割成几个sublist，对每个sublist做插入排序。</p>
+<p><img src="/algrithom/book_learning_5/Shell-Sort.png"></p>
+<p>时间复杂度：介于$O(n)$和$O(n^2)$之间。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">shellSort</span>(<span class="params">alist</span>):</span><br><span class="line">    <span class="comment"># gap为len的一半， gap等于sublistcount</span></span><br><span class="line">    sublistcount = <span class="built_in">len</span>(alist)//<span class="number">2</span></span><br><span class="line">    <span class="keyword">while</span> sublistcount &gt; <span class="number">0</span>:</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> startposition <span class="keyword">in</span> <span class="built_in">range</span>(sublistcount):</span><br><span class="line">            gapInsertionSort(alist,startposition,sublistcount)</span><br><span class="line"></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;After increments of size&quot;</span>,sublistcount,</span><br><span class="line">                                   <span class="string">&quot;The list is&quot;</span>,alist)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># gap再减半</span></span><br><span class="line">        sublistcount = sublistcount // <span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">gapInsertionSort</span>(<span class="params">alist,start,gap</span>):</span><br><span class="line">    <span class="comment"># 对sublist进行插入排序</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(start+gap,<span class="built_in">len</span>(alist),gap):</span><br><span class="line"></span><br><span class="line">        currentvalue = alist[i]</span><br><span class="line">        position = i</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> position&gt;=gap <span class="keyword">and</span> alist[position-gap]&gt;currentvalue:</span><br><span class="line">            alist[position]=alist[position-gap]</span><br><span class="line">            position = position-gap</span><br><span class="line"></span><br><span class="line">        alist[position]=currentvalue</span><br><span class="line">        </span><br><span class="line">alist = [<span class="number">54</span>,<span class="number">26</span>,<span class="number">93</span>,<span class="number">17</span>,<span class="number">77</span>,<span class="number">31</span>,<span class="number">44</span>,<span class="number">55</span>,<span class="number">20</span>]</span><br><span class="line">shellSort(alist)</span><br><span class="line"><span class="built_in">print</span>(alist)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">After increments of size 4 The list is [20, 26, 44, 17, 54, 31, 93, 55, 77]</span><br><span class="line">After increments of size 2 The list is [20, 17, 44, 26, 54, 31, 77, 55, 93]</span><br><span class="line">After increments of size 1 The list is [17, 20, 26, 31, 44, 54, 55, 77, 93]</span><br><span class="line">[17, 20, 26, 31, 44, 54, 55, 77, 93]</span><br></pre></td></tr></table></figure>
+
+<h3 id="合并排序"><a href="#合并排序" class="headerlink" title="合并排序"></a>合并排序</h3><p>递归地将一个list拆分成两个sublist，然后merge。</p>
+<p>时间复杂度是：$O(nlogn)$。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">mergeSort</span>(<span class="params">alist</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Splitting &quot;</span>,alist)</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(alist)&gt;<span class="number">1</span>:</span><br><span class="line">        <span class="comment"># 拆分成两个子序列</span></span><br><span class="line">        mid = <span class="built_in">len</span>(alist)//<span class="number">2</span></span><br><span class="line">        <span class="comment"># 注意：使用切片的方式空间复杂度较高</span></span><br><span class="line">        lefthalf = alist[:mid]</span><br><span class="line">        righthalf = alist[mid:]</span><br><span class="line"></span><br><span class="line">        mergeSort(lefthalf)</span><br><span class="line">        mergeSort(righthalf)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 执行merge</span></span><br><span class="line">        i=<span class="number">0</span></span><br><span class="line">        j=<span class="number">0</span></span><br><span class="line">        k=<span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> i &lt; <span class="built_in">len</span>(lefthalf) <span class="keyword">and</span> j &lt; <span class="built_in">len</span>(righthalf):</span><br><span class="line">            <span class="keyword">if</span> lefthalf[i] &lt; righthalf[j]:</span><br><span class="line">                alist[k]=lefthalf[i]</span><br><span class="line">                i=i+<span class="number">1</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                alist[k]=righthalf[j]</span><br><span class="line">                j=j+<span class="number">1</span></span><br><span class="line">            k=k+<span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> i &lt; <span class="built_in">len</span>(lefthalf):</span><br><span class="line">            alist[k]=lefthalf[i]</span><br><span class="line">            i=i+<span class="number">1</span></span><br><span class="line">            k=k+<span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> j &lt; <span class="built_in">len</span>(righthalf):</span><br><span class="line">            alist[k]=righthalf[j]</span><br><span class="line">            j=j+<span class="number">1</span></span><br><span class="line">            k=k+<span class="number">1</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Merging &quot;</span>,alist)</span><br><span class="line"></span><br><span class="line">alist = [<span class="number">54</span>,<span class="number">26</span>,<span class="number">93</span>,<span class="number">17</span>,<span class="number">77</span>,<span class="number">31</span>,<span class="number">44</span>,<span class="number">55</span>,<span class="number">20</span>]</span><br><span class="line">mergeSort(alist)</span><br><span class="line"><span class="built_in">print</span>(alist)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">Splitting  [54, 26, 93, 17, 77, 31, 44, 55, 20]</span><br><span class="line">Splitting  [54, 26, 93, 17]</span><br><span class="line">Splitting  [54, 26]</span><br><span class="line">Splitting  [54]</span><br><span class="line">Merging  [54]</span><br><span class="line">Splitting  [26]</span><br><span class="line">Merging  [26]</span><br><span class="line">Merging  [26, 54]</span><br><span class="line">Splitting  [93, 17]</span><br><span class="line">Splitting  [93]</span><br><span class="line">Merging  [93]</span><br><span class="line">Splitting  [17]</span><br><span class="line">Merging  [17]</span><br><span class="line">Merging  [17, 93]</span><br><span class="line">Merging  [17, 26, 54, 93]</span><br><span class="line">Splitting  [77, 31, 44, 55, 20]</span><br><span class="line">Splitting  [77, 31]</span><br><span class="line">Splitting  [77]</span><br><span class="line">Merging  [77]</span><br><span class="line">Splitting  [31]</span><br><span class="line">Merging  [31]</span><br><span class="line">Merging  [31, 77]</span><br><span class="line">Splitting  [44, 55, 20]</span><br><span class="line">Splitting  [44]</span><br><span class="line">Merging  [44]</span><br><span class="line">Splitting  [55, 20]</span><br><span class="line">Splitting  [55]</span><br><span class="line">Merging  [55]</span><br><span class="line">Splitting  [20]</span><br><span class="line">Merging  [20]</span><br><span class="line">Merging  [20, 55]</span><br><span class="line">Merging  [20, 44, 55]</span><br><span class="line">Merging  [20, 31, 44, 55, 77]</span><br><span class="line">Merging  [17, 20, 26, 31, 44, 54, 55, 77, 93]</span><br><span class="line">[17, 20, 26, 31, 44, 54, 55, 77, 93]</span><br></pre></td></tr></table></figure>
+
+<h3 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h3><p>递归地执行：小的元素移到pivot左边，大的元素移到pivot的右边。</p>
+<p>类比军训时，教官会找出一个同学说，以这位同学为基准，矮的站右边，高的站右边。</p>
+<p>一般在实现的时候，上面提到的这步使用<strong>双指针</strong>的技巧实现。<br>时间复杂度是：$O(nlogn)$。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">quickSort</span>(<span class="params">alist</span>):</span><br><span class="line">    quickSortHelper(alist,<span class="number">0</span>,<span class="built_in">len</span>(alist)-<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">quickSortHelper</span>(<span class="params">alist,first,last</span>):</span><br><span class="line">    <span class="keyword">if</span> first&lt;last:</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 执行军训排序部分</span></span><br><span class="line">        splitpoint = partition(alist,first,last)</span><br><span class="line">        <span class="comment"># 递归地对子序列进行排序</span></span><br><span class="line">        quickSortHelper(alist,first,splitpoint-<span class="number">1</span>)</span><br><span class="line">        quickSortHelper(alist,splitpoint+<span class="number">1</span>,last)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">partition</span>(<span class="params">alist,first,last</span>):</span><br><span class="line">    <span class="comment"># 第一个元素作为标杆</span></span><br><span class="line">    pivotvalue = alist[first]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 使用双指针从两边向中间靠拢</span></span><br><span class="line">    leftmark = first+<span class="number">1</span></span><br><span class="line">    rightmark = last</span><br><span class="line"></span><br><span class="line">    done = <span class="literal">False</span></span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">not</span> done:</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> leftmark &lt;= rightmark <span class="keyword">and</span> alist[leftmark] &lt;= pivotvalue:</span><br><span class="line">            leftmark = leftmark + <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> alist[rightmark] &gt;= pivotvalue <span class="keyword">and</span> rightmark &gt;= leftmark:</span><br><span class="line">            rightmark = rightmark -<span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> rightmark &lt; leftmark:</span><br><span class="line">            done = <span class="literal">True</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># 空间复杂度是1</span></span><br><span class="line">            temp = alist[leftmark]</span><br><span class="line">            alist[leftmark] = alist[rightmark]</span><br><span class="line">            alist[rightmark] = temp</span><br><span class="line"></span><br><span class="line">    temp = alist[first]</span><br><span class="line">    alist[first] = alist[rightmark]</span><br><span class="line">    alist[rightmark] = temp</span><br><span class="line">    <span class="keyword">return</span> rightmark</span><br><span class="line"></span><br><span class="line">alist = [<span class="number">54</span>,<span class="number">26</span>,<span class="number">93</span>,<span class="number">17</span>,<span class="number">77</span>,<span class="number">31</span>,<span class="number">44</span>,<span class="number">55</span>,<span class="number">20</span>]</span><br><span class="line">quickSort(alist)</span><br><span class="line"><span class="built_in">print</span>(alist)</span><br></pre></td></tr></table></figure>
+
+<h2 id="作业"><a href="#作业" class="headerlink" title="作业"></a>作业</h2><p><a href="http://interactivepython.org/courselib/static/pythonds/SortSearch/DiscussionQuestions.html">作业原地址</a></p>
+<h3 id="q1"><a href="#q1" class="headerlink" title="q1"></a>q1</h3><p>计算装填因子$λ$分别是：0.1, 0.25, 0.5, 0.75, 0.9, 0.99时需要的比较次数。</p>
+<p>计算公式：$\frac{1}{2}(1+\frac{1}{1−λ})$。</p>
+<p>直接封装一个函数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">hash_compare</span>(<span class="params">load_fraction</span>):</span><br><span class="line">    lam = (<span class="number">1</span> + <span class="number">1.</span>/(<span class="number">1</span>-load_fraction)) / <span class="number">2</span></span><br><span class="line">    <span class="keyword">return</span> lam</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> [<span class="number">0.1</span>, <span class="number">0.25</span>, <span class="number">0.5</span>, <span class="number">0.75</span>, <span class="number">0.9</span>, <span class="number">0.99</span>]:</span><br><span class="line">    <span class="built_in">print</span>(i, <span class="string">&quot; : &quot;</span>, hash_compare(i))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">0.1  :  1.05555555556</span><br><span class="line">0.25  :  1.16666666667</span><br><span class="line">0.5  :  1.5</span><br><span class="line">0.75  :  2.5</span><br><span class="line">0.9  :  5.5</span><br><span class="line">0.99  :  50.5</span><br></pre></td></tr></table></figure>
+
+<h3 id="q2"><a href="#q2" class="headerlink" title="q2"></a>q2</h3><p>设计计算字符串的hash值的hash函数。</p>
+<p>使用positional weight：</p>
+<p><img src="/algrithom/book_learning_5/stringhash2.png"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">hash_function_4str</span>(<span class="params">key_str, size</span>):</span><br><span class="line">    hash_value = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i, c <span class="keyword">in</span> <span class="built_in">enumerate</span>(key_str):</span><br><span class="line">        hash_value += (i+<span class="number">1</span>)* <span class="built_in">ord</span>(c)</span><br><span class="line">    <span class="built_in">print</span>(hash_value)</span><br><span class="line">    hash_value %= size</span><br><span class="line">    <span class="built_in">print</span>(hash_value)</span><br><span class="line">    <span class="keyword">return</span> hash_value</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">hash_function_4str(<span class="string">&quot;cat&quot;</span>, <span class="number">11</span>)</span><br><span class="line">hash_function_4str(<span class="string">&quot;happy&quot;</span>, <span class="number">11</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">641</span><br><span class="line">3</span><br><span class="line">1687</span><br><span class="line">4</span><br><span class="line"></span><br><span class="line">4</span><br></pre></td></tr></table></figure>
+
+<h3 id="q4"><a href="#q4" class="headerlink" title="q4"></a>q4</h3><p>调研string的hash函数：</p>
+<p>参考<a href="https://www.byvoid.com/zhs/blog/string-hash-compare">这篇博客</a></p>
+<h3 id="q9"><a href="#q9" class="headerlink" title="q9"></a>q9</h3><p>修改快排中pivot的位置（原算法的pivot是第一个元素，题目推荐尝试中间元素），对比性能。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">quickSort</span>(<span class="params">alist</span>):</span><br><span class="line">    quickSortHelper(alist,<span class="number">0</span>,<span class="built_in">len</span>(alist)-<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">quickSortHelper</span>(<span class="params">alist,first,last</span>):</span><br><span class="line">    <span class="keyword">if</span> first&lt;last:</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 执行军训排序部分</span></span><br><span class="line">        splitpoint = partition(alist,first,last)</span><br><span class="line">        <span class="comment"># 递归地对子序列进行排序</span></span><br><span class="line">        quickSortHelper(alist,first,splitpoint-<span class="number">1</span>)</span><br><span class="line">        quickSortHelper(alist,splitpoint+<span class="number">1</span>,last)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">partition</span>(<span class="params">alist,first,last</span>):</span><br><span class="line">    <span class="comment"># 中间的元素作为标杆</span></span><br><span class="line">    pivotindex = (first + last) / <span class="number">2</span></span><br><span class="line">    pivotvalue = alist[pivotindex]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 使用双指针从两边向中间靠拢</span></span><br><span class="line">    leftmark = first</span><br><span class="line">    rightmark = last</span><br><span class="line"></span><br><span class="line">    done = <span class="literal">False</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;pivotvalue: &quot;</span>, pivotvalue)</span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">not</span> done:</span><br><span class="line">        <span class="keyword">while</span> leftmark &lt;= rightmark <span class="keyword">and</span> alist[leftmark] &lt;= pivotvalue:</span><br><span class="line">            leftmark = leftmark + <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> alist[rightmark] &gt;= pivotvalue <span class="keyword">and</span> rightmark &gt;= leftmark <span class="keyword">and</span> rightmark &gt; first:</span><br><span class="line">            rightmark = rightmark -<span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> rightmark &lt; leftmark <span class="keyword">or</span> rightmark == first:</span><br><span class="line">            done = <span class="literal">True</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># 空间复杂度是1</span></span><br><span class="line">            temp = alist[leftmark]</span><br><span class="line">            alist[leftmark] = alist[rightmark]</span><br><span class="line">            alist[rightmark] = temp</span><br><span class="line">    temp = alist[pivotindex]</span><br><span class="line">    alist[pivotindex] = alist[rightmark]</span><br><span class="line">    alist[rightmark] = temp</span><br><span class="line">    <span class="keyword">return</span> leftmark</span><br><span class="line"></span><br><span class="line">alist = [<span class="number">54</span>,<span class="number">26</span>,<span class="number">93</span>,<span class="number">17</span>,<span class="number">77</span>,<span class="number">31</span>,<span class="number">44</span>,<span class="number">55</span>,<span class="number">20</span>]</span><br><span class="line">quickSort(alist)</span><br><span class="line"><span class="comment"># partition(alist,0, 8)</span></span><br><span class="line"><span class="built_in">print</span>(alist)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">pivotvalue:  77</span><br><span class="line">pivotvalue:  17</span><br><span class="line">pivotvalue:  55</span><br><span class="line">pivotvalue:  54</span><br><span class="line">pivotvalue:  31</span><br><span class="line">pivotvalue:  20</span><br><span class="line">pivotvalue:  26</span><br><span class="line">[17, 20, 26, 31, 44, 54, 55, 77, 93]</span><br></pre></td></tr></table></figure>
+
+<p>pivot设置在中间位置可以让已经排好序的list不用再做交换操作。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Algorithm/" rel="tag"># Algorithm</a>
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"># 笔记</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/algrithom/book_learning_4/" rel="prev" title="四. Recursion">
+                  <i class="fa fa-angle-left"></i> 四. Recursion
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/algrithom/book_learning_6/" rel="next" title="六. Trees and Tree Algorithms">
+                  六. Trees and Tree Algorithms <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

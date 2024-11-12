@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="1对应本书第四章。  目录原目录 笔记第四章主讲递归，用了很多有意思的例子（可视化的），所以这章的作业会比较有料。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="四. Recursion">
+<meta property="og:url" content="https://applenob.github.io/algrithom/book_learning_4/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="1对应本书第四章。  目录原目录 笔记第四章主讲递归，用了很多有意思的例子（可视化的），所以这章的作业会比较有料。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://applenob.github.io/algrithom/book_learning_4/Hilbert_curve.gif">
+<meta property="og:image" content="https://applenob.github.io/algrithom/book_learning_4/hilbert1.gif">
+<meta property="og:image" content="https://applenob.github.io/algrithom/book_learning_4/hilbert2.gif">
+<meta property="og:image" content="https://applenob.github.io/algrithom/book_learning_4/Von_Koch_curve.gif">
+<meta property="og:image" content="https://applenob.github.io/algrithom/book_learning_4/koch_order_1.png">
+<meta property="article:published_time" content="2017-02-21T05:00:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.028Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="Algorithm">
+<meta property="article:tag" content="笔记">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://applenob.github.io/algrithom/book_learning_4/Hilbert_curve.gif">
+
+
+<link rel="canonical" href="https://applenob.github.io/algrithom/book_learning_4/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/algrithom/book_learning_4/","path":"algrithom/book_learning_4/","title":"四. Recursion"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>四. Recursion | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%AE%E5%BD%95"><span class="nav-number">1.</span> <span class="nav-text">目录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%94%E8%AE%B0"><span class="nav-number">2.</span> <span class="nav-text">笔记</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%88%86%E5%BD%A2"><span class="nav-number">2.1.</span> <span class="nav-text">1.分形</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%B1%89%E8%AF%BA%E5%A1%94"><span class="nav-number">2.2.</span> <span class="nav-text">2.汉诺塔</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E8%BF%B7%E5%AE%AB%E9%97%AE%E9%A2%98"><span class="nav-number">2.3.</span> <span class="nav-text">3.迷宫问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E6%AF%94%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92"><span class="nav-number">2.4.</span> <span class="nav-text">对比动态规划</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%9C%E4%B8%9A"><span class="nav-number">3.</span> <span class="nav-text">作业</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#q1"><span class="nav-number">3.1.</span> <span class="nav-text">q1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q2"><span class="nav-number">3.2.</span> <span class="nav-text">q2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q3"><span class="nav-number">3.3.</span> <span class="nav-text">q3</span></a></li><li class="nav-item nav-level-3"><a class="nav-link"><span class="nav-number">3.4.</span> <span class="nav-text"></span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q5"><span class="nav-number">3.5.</span> <span class="nav-text">q5</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q6"><span class="nav-number">3.6.</span> <span class="nav-text">q6</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q7"><span class="nav-number">3.7.</span> <span class="nav-text">q7</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q8"><span class="nav-number">3.8.</span> <span class="nav-text">q8</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/algrithom/book_learning_4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="四. Recursion | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          四. Recursion
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-02-20 21:00:00" itemprop="dateCreated datePublished" datetime="2017-02-20T21:00:00-08:00">2017-02-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E3%80%8AProblem-Solving-with-Algorithms-and-Data-Structures-using-Python%E3%80%8B%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E5%92%8C%E8%AF%BE%E5%90%8E%E4%BD%9C%E4%B8%9A%E7%AD%94%E6%A1%88/" itemprop="url" rel="index"><span itemprop="name">《Problem Solving with Algorithms and Data Structures using Python》的学习笔记和课后作业答案</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">对应本书第四章。</span><br></pre></td></tr></table></figure>
+
+<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><p><a href="http://interactivepython.org/courselib/static/pythonds/Recursion/toctree.html#">原目录</a></p>
+<h2 id="笔记"><a href="#笔记" class="headerlink" title="笔记"></a>笔记</h2><p>第四章主讲递归，用了很多有意思的例子（可视化的），所以这章的作业会比较有料。</p>
+<p><strong>使用递归的三条件</strong>：</p>
+<ol>
+<li>问题必须有<strong>基础情况</strong>;</li>
+<li>问题必须可以被分解，直至基础情况；</li>
+<li>递归算法必须自己调用自己。</li>
+</ol>
+<p><strong>例子</strong>：</p>
+<p>下面的例子都用到了python的画图模块turtle，但貌似只是个toy，用于教学的，这里有一篇<a href="http://www.jb51.net/article/52659.htm">入门教程</a>，随便看看。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> print_function</span><br><span class="line"><span class="keyword">import</span> turtle</span><br><span class="line"></span><br><span class="line"><span class="comment"># 初始化乌龟对象和屏幕对象</span></span><br><span class="line">t = turtle.Turtle()</span><br><span class="line">myWin = turtle.Screen()</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://github.com/applenob/algorithm_note/raw/master/res/turtle_init.png">https://github.com/applenob/algorithm_note/raw/master/res/turtle_init.png</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">t.left(<span class="number">90</span>)  <span class="comment"># 方向默认是朝右，向左九十度使其向正上方</span></span><br></pre></td></tr></table></figure>
+
+<p><a href="https://github.com/applenob/algorithm_note/raw/master/res/left_90.png">https://github.com/applenob/algorithm_note/raw/master/res/left_90.png</a></p>
+<ul>
+<li>t.up()和t.down()是指画笔的起落，落下则行动中会留下轨迹，起来则行动不留痕迹；</li>
+<li>t.right(degree)和t.left(degree)调整乌龟的方向；</li>
+<li>t.forward(distance)和t.backward(distance)使乌龟前进后退；</li>
+<li>t.goto(x,y)使乌龟移动到指定点；</li>
+<li>t.color(color_str)设置乌龟颜色；</li>
+<li>t.fillcolor(color)设置填充颜色，t.begin_fill()在画需要填充颜色的形状前调用，t.end_fill()在画需要填充颜色的形状后调用；</li>
+<li>t.setheading()设置乌龟方向：0 - east，90 - north，180 - west，270 - south；</li>
+<li>t.pensize()调整画笔尺寸。</li>
+</ul>
+<h3 id="1-分形"><a href="#1-分形" class="headerlink" title="1.分形"></a>1.分形</h3><p>分形（fractal），就是满足如下条件的图形，无论对图像如何进行放大，它的局部图像和总体图像总是一致的。<a href="https://en.wikipedia.org/wiki/Fractal">wikipedia的解释</a>。大自然中的分形有雪花&#x2F;海岸线等等。</p>
+<p>你可以想象如果你是上帝，你在创造海岸线的时候，首先在空中画了一副轮廓，当你想进一步描绘海岸线的细节时，你下降了一些高度，然后按照你刚才的思路，接着画了一模一样的轮廓，如此循环。</p>
+<p>上面这个过程，正好符合递归的思路。</p>
+<p>下面的代码，画一棵分形的树：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">tree</span>(<span class="params">branchLen,t</span>):</span><br><span class="line">    <span class="keyword">if</span> branchLen &gt; <span class="number">5</span>:</span><br><span class="line">        t.forward(branchLen)</span><br><span class="line">        t.right(<span class="number">20</span>)</span><br><span class="line">        tree(branchLen-<span class="number">15</span>,t)</span><br><span class="line">        t.left(<span class="number">40</span>)</span><br><span class="line">        tree(branchLen-<span class="number">15</span>,t)</span><br><span class="line">        t.right(<span class="number">20</span>)</span><br><span class="line">        t.backward(branchLen)</span><br><span class="line"></span><br><span class="line">        </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">draw_tree</span>():</span><br><span class="line">    <span class="comment">#t = turtle.Turtle()</span></span><br><span class="line">    <span class="comment">#myWin = turtle.Screen()</span></span><br><span class="line">    t.left(<span class="number">90</span>)</span><br><span class="line">    t.up()</span><br><span class="line">    t.backward(<span class="number">100</span>)</span><br><span class="line">    t.down()</span><br><span class="line">    t.color(<span class="string">&quot;green&quot;</span>)</span><br><span class="line">    tree(<span class="number">75</span>,t)</span><br><span class="line">    </span><br><span class="line">draw_tree()</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://github.com/applenob/algorithm_note/raw/master/res/basic_tree.png">https://github.com/applenob/algorithm_note/raw/master/res/basic_tree.png</a></p>
+<p>接着画一个分形的三角：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">drawTriangle</span>(<span class="params">points,color,myTurtle</span>):</span><br><span class="line">    myTurtle.fillcolor(color)</span><br><span class="line">    myTurtle.up()</span><br><span class="line">    myTurtle.goto(points[<span class="number">0</span>][<span class="number">0</span>],points[<span class="number">0</span>][<span class="number">1</span>])</span><br><span class="line">    myTurtle.down()</span><br><span class="line">    myTurtle.begin_fill()</span><br><span class="line">    myTurtle.goto(points[<span class="number">1</span>][<span class="number">0</span>],points[<span class="number">1</span>][<span class="number">1</span>])</span><br><span class="line">    myTurtle.goto(points[<span class="number">2</span>][<span class="number">0</span>],points[<span class="number">2</span>][<span class="number">1</span>])</span><br><span class="line">    myTurtle.goto(points[<span class="number">0</span>][<span class="number">0</span>],points[<span class="number">0</span>][<span class="number">1</span>])</span><br><span class="line">    myTurtle.end_fill()</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">getMid</span>(<span class="params">p1,p2</span>):</span><br><span class="line">    <span class="keyword">return</span> ( (p1[<span class="number">0</span>]+p2[<span class="number">0</span>]) / <span class="number">2</span>, (p1[<span class="number">1</span>] + p2[<span class="number">1</span>]) / <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">sierpinski</span>(<span class="params">points,degree,myTurtle</span>):</span><br><span class="line">    colormap = [<span class="string">&#x27;blue&#x27;</span>,<span class="string">&#x27;red&#x27;</span>,<span class="string">&#x27;green&#x27;</span>,<span class="string">&#x27;white&#x27;</span>,<span class="string">&#x27;yellow&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;violet&#x27;</span>,<span class="string">&#x27;orange&#x27;</span>]</span><br><span class="line">    drawTriangle(points,colormap[degree],myTurtle)</span><br><span class="line">    <span class="keyword">if</span> degree &gt; <span class="number">0</span>:</span><br><span class="line">        sierpinski([points[<span class="number">0</span>],</span><br><span class="line">                        getMid(points[<span class="number">0</span>], points[<span class="number">1</span>]),</span><br><span class="line">                        getMid(points[<span class="number">0</span>], points[<span class="number">2</span>])],</span><br><span class="line">                   degree-<span class="number">1</span>, myTurtle)</span><br><span class="line">        sierpinski([points[<span class="number">1</span>],</span><br><span class="line">                        getMid(points[<span class="number">0</span>], points[<span class="number">1</span>]),</span><br><span class="line">                        getMid(points[<span class="number">1</span>], points[<span class="number">2</span>])],</span><br><span class="line">                   degree-<span class="number">1</span>, myTurtle)</span><br><span class="line">        sierpinski([points[<span class="number">2</span>],</span><br><span class="line">                        getMid(points[<span class="number">2</span>], points[<span class="number">1</span>]),</span><br><span class="line">                        getMid(points[<span class="number">0</span>], points[<span class="number">2</span>])],</span><br><span class="line">                   degree-<span class="number">1</span>, myTurtle)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    <span class="comment"># myTurtle = turtle.Turtle()</span></span><br><span class="line">    myTurtle = t</span><br><span class="line">    <span class="comment"># myWin = turtle.Screen()</span></span><br><span class="line">    myPoints = [[-<span class="number">100</span>,-<span class="number">50</span>],[<span class="number">0</span>,<span class="number">100</span>],[<span class="number">100</span>,-<span class="number">50</span>]]</span><br><span class="line">    sierpinski(myPoints,<span class="number">3</span>,myTurtle)</span><br><span class="line"></span><br><span class="line">myWin.clearscreen()</span><br><span class="line">main()</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://github.com/applenob/algorithm_note/raw/master/res/triangle.png">https://github.com/applenob/algorithm_note/raw/master/res/triangle.png</a></p>
+<h3 id="2-汉诺塔"><a href="#2-汉诺塔" class="headerlink" title="2.汉诺塔"></a>2.汉诺塔</h3><p>汉诺塔规则：</p>
+<p>有三根柱子和一些大小不同的盘子。初始状态是所有盘子从大到小一直往上堆积在起始柱上。<br>每次可以移动一个盘子，到其他两根柱子上，必须保证大的盘子在下面，小的盘子在上面。</p>
+<p>最终的目标是把所有盘子从大到小往上堆积在目标柱上。</p>
+<p><a href="https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3171323217,1599602218&fm=23&gp=0.jpg">https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3171323217,1599602218&amp;fm=23&amp;gp=0.jpg</a></p>
+<p><strong>分析</strong>：</p>
+<p>考虑问题的分解：</p>
+<p>如果有n片盘子，那么可以分解成先将n-1片移到中间柱上，再把最大的一片从起始柱移到目标柱上，再把n-1片移到目标柱上。<br>移动n片盘子和移动n-1片盘子是完全相同的问题，所以可以使用自己调用自己。</p>
+<p>那么基础情况呢？如果只是移动一片盘子，那就直接从起始柱移到目标柱上，就解决了。<br>根据上面的分析，使用递归的三个条件都满足了。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">moveTower</span>(<span class="params">height,fromPole, toPole, withPole</span>):</span><br><span class="line">    <span class="keyword">if</span> height &gt;= <span class="number">1</span>:</span><br><span class="line">        moveTower(height-<span class="number">1</span>,fromPole,withPole,toPole)</span><br><span class="line">        moveDisk(fromPole,toPole)</span><br><span class="line">        moveTower(height-<span class="number">1</span>,withPole,toPole,fromPole)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">moveDisk</span>(<span class="params">fp,tp</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;moving disk from&quot;</span>,fp,<span class="string">&quot;to&quot;</span>,tp)</span><br><span class="line"></span><br><span class="line">moveTower(<span class="number">3</span>,<span class="string">&quot;A&quot;</span>,<span class="string">&quot;B&quot;</span>,<span class="string">&quot;C&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">(&#x27;moving disk from&#x27;, &#x27;A&#x27;, &#x27;to&#x27;, &#x27;B&#x27;)</span><br><span class="line">(&#x27;moving disk from&#x27;, &#x27;A&#x27;, &#x27;to&#x27;, &#x27;C&#x27;)</span><br><span class="line">(&#x27;moving disk from&#x27;, &#x27;B&#x27;, &#x27;to&#x27;, &#x27;C&#x27;)</span><br><span class="line">(&#x27;moving disk from&#x27;, &#x27;A&#x27;, &#x27;to&#x27;, &#x27;B&#x27;)</span><br><span class="line">(&#x27;moving disk from&#x27;, &#x27;C&#x27;, &#x27;to&#x27;, &#x27;A&#x27;)</span><br><span class="line">(&#x27;moving disk from&#x27;, &#x27;C&#x27;, &#x27;to&#x27;, &#x27;B&#x27;)</span><br><span class="line">(&#x27;moving disk from&#x27;, &#x27;A&#x27;, &#x27;to&#x27;, &#x27;B&#x27;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-迷宫问题"><a href="#3-迷宫问题" class="headerlink" title="3.迷宫问题"></a>3.迷宫问题</h3><p>想必这个问题就不用介绍了，就是给定起点和迷宫信息，要找到一条出去的路径。</p>
+<p><strong>分析</strong>：</p>
+<p>如何找到一条可以出去的路呢？</p>
+<p>不考虑出去的路的长短的话，我们可以先考虑当前点可能的操作，无非是上下左右移动（能不能移动另说）。</p>
+<p>那么我们可以把问题等价于在当前点的所有可能操作+假设这样做了一步之后的整体搜索。</p>
+<p>其实说白了就是深度优先搜索。</p>
+<p>作者给出了一个turtle实现的案例（都可以做一个游戏了，老外写书真心认真～）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br></pre></td><td class="code"><pre><span class="line">PART_OF_PATH = <span class="string">&#x27;O&#x27;</span></span><br><span class="line">TRIED = <span class="string">&#x27;.&#x27;</span></span><br><span class="line">OBSTACLE = <span class="string">&#x27;+&#x27;</span></span><br><span class="line">DEAD_END = <span class="string">&#x27;-&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Maze</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self,mazeFileName</span>):</span><br><span class="line">        rowsInMaze = <span class="number">0</span></span><br><span class="line">        columnsInMaze = <span class="number">0</span></span><br><span class="line">        <span class="variable language_">self</span>.mazelist = []</span><br><span class="line">        <span class="comment"># 从文件中读取迷宫信息：包括每个坐标的点是墙还是路；起始坐标；迷宫的宽/高</span></span><br><span class="line">        mazeFile = <span class="built_in">open</span>(mazeFileName,<span class="string">&#x27;r&#x27;</span>)</span><br><span class="line">        rowsInMaze = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> line <span class="keyword">in</span> mazeFile:</span><br><span class="line">            rowList = []</span><br><span class="line">            col = <span class="number">0</span></span><br><span class="line">            <span class="keyword">for</span> ch <span class="keyword">in</span> line[:-<span class="number">1</span>]:</span><br><span class="line">                rowList.append(ch)</span><br><span class="line">                <span class="keyword">if</span> ch == <span class="string">&#x27;S&#x27;</span>:</span><br><span class="line">                    <span class="variable language_">self</span>.startRow = rowsInMaze</span><br><span class="line">                    <span class="variable language_">self</span>.startCol = col</span><br><span class="line">                col = col + <span class="number">1</span></span><br><span class="line">            rowsInMaze = rowsInMaze + <span class="number">1</span></span><br><span class="line">            <span class="variable language_">self</span>.mazelist.append(rowList)</span><br><span class="line">            columnsInMaze = <span class="built_in">len</span>(rowList)</span><br><span class="line"></span><br><span class="line">        <span class="variable language_">self</span>.rowsInMaze = rowsInMaze</span><br><span class="line">        <span class="variable language_">self</span>.columnsInMaze = columnsInMaze</span><br><span class="line">        <span class="comment"># x和y的起点默认在屏幕中心，所以要移到</span></span><br><span class="line">        <span class="variable language_">self</span>.xTranslate = -columnsInMaze/<span class="number">2</span></span><br><span class="line">        <span class="variable language_">self</span>.yTranslate = rowsInMaze/<span class="number">2</span></span><br><span class="line">        <span class="comment"># self.t = turtle.Turtle()</span></span><br><span class="line">        <span class="variable language_">self</span>.t = t</span><br><span class="line">        <span class="variable language_">self</span>.t.shape(<span class="string">&#x27;turtle&#x27;</span>)</span><br><span class="line">        <span class="comment"># self.wn = turtle.Screen()</span></span><br><span class="line">        <span class="variable language_">self</span>.wn = myWin</span><br><span class="line">        <span class="comment"># 设置窗口的左下角坐标和右上角坐标</span></span><br><span class="line">        <span class="variable language_">self</span>.wn.setworldcoordinates(-(columnsInMaze-<span class="number">1</span>)/<span class="number">2</span>-<span class="number">.5</span>,-(rowsInMaze-<span class="number">1</span>)/<span class="number">2</span>-<span class="number">.5</span>,</span><br><span class="line">                                    (columnsInMaze-<span class="number">1</span>)/<span class="number">2</span>+<span class="number">.5</span>,(rowsInMaze-<span class="number">1</span>)/<span class="number">2</span>+<span class="number">.5</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">drawMaze</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;画迷宫&quot;&quot;&quot;</span></span><br><span class="line">        <span class="variable language_">self</span>.t.speed(<span class="number">10</span>)</span><br><span class="line">        <span class="variable language_">self</span>.wn.tracer(<span class="number">0</span>)</span><br><span class="line">        <span class="keyword">for</span> y <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>.rowsInMaze):</span><br><span class="line">            <span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>.columnsInMaze):</span><br><span class="line">                <span class="keyword">if</span> <span class="variable language_">self</span>.mazelist[y][x] == OBSTACLE:</span><br><span class="line">                    <span class="variable language_">self</span>.drawCenteredBox(x+<span class="variable language_">self</span>.xTranslate,-y+<span class="variable language_">self</span>.yTranslate,<span class="string">&#x27;orange&#x27;</span>)</span><br><span class="line">        <span class="variable language_">self</span>.t.color(<span class="string">&#x27;black&#x27;</span>)</span><br><span class="line">        <span class="variable language_">self</span>.t.fillcolor(<span class="string">&#x27;blue&#x27;</span>)</span><br><span class="line">        <span class="variable language_">self</span>.wn.update()</span><br><span class="line">        <span class="variable language_">self</span>.wn.tracer(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">drawCenteredBox</span>(<span class="params">self,x,y,color</span>):</span><br><span class="line">        <span class="variable language_">self</span>.t.up()</span><br><span class="line">        <span class="variable language_">self</span>.t.goto(x-<span class="number">.5</span>,y-<span class="number">.5</span>)</span><br><span class="line">        <span class="variable language_">self</span>.t.color(color)</span><br><span class="line">        <span class="variable language_">self</span>.t.fillcolor(color)</span><br><span class="line">        <span class="variable language_">self</span>.t.setheading(<span class="number">90</span>)</span><br><span class="line">        <span class="variable language_">self</span>.t.down()</span><br><span class="line">        <span class="variable language_">self</span>.t.begin_fill()</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">4</span>):</span><br><span class="line">            <span class="variable language_">self</span>.t.forward(<span class="number">1</span>)</span><br><span class="line">            <span class="variable language_">self</span>.t.right(<span class="number">90</span>)</span><br><span class="line">        <span class="variable language_">self</span>.t.end_fill()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">moveTurtle</span>(<span class="params">self,x,y</span>):</span><br><span class="line">        <span class="variable language_">self</span>.t.up()</span><br><span class="line">        <span class="variable language_">self</span>.t.setheading(<span class="variable language_">self</span>.t.towards(x+<span class="variable language_">self</span>.xTranslate,-y+<span class="variable language_">self</span>.yTranslate))</span><br><span class="line">        <span class="variable language_">self</span>.t.goto(x+<span class="variable language_">self</span>.xTranslate,-y+<span class="variable language_">self</span>.yTranslate)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">dropBreadcrumb</span>(<span class="params">self,color</span>):</span><br><span class="line">        <span class="variable language_">self</span>.t.dot(<span class="number">10</span>,color)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">updatePosition</span>(<span class="params">self,row,col,val=<span class="literal">None</span></span>):</span><br><span class="line">        <span class="keyword">if</span> val:</span><br><span class="line">            <span class="variable language_">self</span>.mazelist[row][col] = val</span><br><span class="line">        <span class="variable language_">self</span>.moveTurtle(col,row)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> val == PART_OF_PATH:</span><br><span class="line">            color = <span class="string">&#x27;green&#x27;</span></span><br><span class="line">        <span class="keyword">elif</span> val == OBSTACLE:</span><br><span class="line">            color = <span class="string">&#x27;red&#x27;</span></span><br><span class="line">        <span class="keyword">elif</span> val == TRIED:</span><br><span class="line">            color = <span class="string">&#x27;black&#x27;</span></span><br><span class="line">        <span class="keyword">elif</span> val == DEAD_END:</span><br><span class="line">            color = <span class="string">&#x27;red&#x27;</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            color = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> color:</span><br><span class="line">            <span class="variable language_">self</span>.dropBreadcrumb(color)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">isExit</span>(<span class="params">self,row,col</span>):</span><br><span class="line">        <span class="keyword">return</span> (row == <span class="number">0</span> <span class="keyword">or</span></span><br><span class="line">                row == <span class="variable language_">self</span>.rowsInMaze-<span class="number">1</span> <span class="keyword">or</span></span><br><span class="line">                col == <span class="number">0</span> <span class="keyword">or</span></span><br><span class="line">                col == <span class="variable language_">self</span>.columnsInMaze-<span class="number">1</span> )</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__getitem__</span>(<span class="params">self,idx</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.mazelist[idx]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">searchFrom</span>(<span class="params">maze, startRow, startColumn</span>):</span><br><span class="line">    <span class="comment"># try each of four directions from this point until we find a way out.</span></span><br><span class="line">    <span class="comment"># base Case return values:</span></span><br><span class="line">    <span class="comment">#  1. We have run into an obstacle, return false</span></span><br><span class="line">    maze.updatePosition(startRow, startColumn)</span><br><span class="line">    <span class="keyword">if</span> maze[startRow][startColumn] == OBSTACLE :</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">    <span class="comment">#  2. We have found a square that has already been explored</span></span><br><span class="line">    <span class="keyword">if</span> maze[startRow][startColumn] == TRIED <span class="keyword">or</span> maze[startRow][startColumn] == DEAD_END:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">    <span class="comment"># 3. We have found an outside edge not occupied by an obstacle</span></span><br><span class="line">    <span class="keyword">if</span> maze.isExit(startRow,startColumn):</span><br><span class="line">        maze.updatePosition(startRow, startColumn, PART_OF_PATH)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">    maze.updatePosition(startRow, startColumn, TRIED)</span><br><span class="line">    <span class="comment"># Otherwise, use logical short circuiting to try each direction</span></span><br><span class="line">    <span class="comment"># in turn (if needed)</span></span><br><span class="line">    found = searchFrom(maze, startRow-<span class="number">1</span>, startColumn) <span class="keyword">or</span> \</span><br><span class="line">            searchFrom(maze, startRow+<span class="number">1</span>, startColumn) <span class="keyword">or</span> \</span><br><span class="line">            searchFrom(maze, startRow, startColumn-<span class="number">1</span>) <span class="keyword">or</span> \</span><br><span class="line">            searchFrom(maze, startRow, startColumn+<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">if</span> found:</span><br><span class="line">        maze.updatePosition(startRow, startColumn, PART_OF_PATH)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        maze.updatePosition(startRow, startColumn, DEAD_END)</span><br><span class="line">    <span class="keyword">return</span> found</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">myWin.clearscreen()</span><br><span class="line">myMaze = Maze(<span class="string">&#x27;maze2.txt&#x27;</span>)</span><br><span class="line">myMaze.drawMaze()</span><br><span class="line">myMaze.updatePosition(myMaze.startRow,myMaze.startCol)</span><br><span class="line"></span><br><span class="line">searchFrom(myMaze, myMaze.startRow, myMaze.startCol)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">True</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://github.com/applenob/algorithm_note/raw/master/res/maze.png">https://github.com/applenob/algorithm_note/raw/master/res/maze.png</a></p>
+<h3 id="对比动态规划"><a href="#对比动态规划" class="headerlink" title="对比动态规划"></a>对比动态规划</h3><p><strong>动态规划（Dynamic Programming）</strong>。</p>
+<p>递归虽然好用，写起来简单，代码易读，但是依然有很多问题不适合用递归。</p>
+<p>比如说动态规划，拿最简单的<strong>硬币找钱</strong>问题举例子。</p>
+<p>比如有三种硬币1,2,5元的，现在有一定数额的总数，请问怎么找前可以使得硬币数最少？<br>类似的还有<strong>背包问题</strong>：</p>
+<p>比如背包可以装的物品有1，2，5公斤的物品，带来的效益分别是1,3,10元，如何安排物品，使得背包的总效益最大？</p>
+<p>如果采用递归去解决这些问题，会产生时间复杂度非常大的问题，为什么呢？比如你要求的是规模是10的问题，你把它缩小成规模是5和5的问题，这两个子问题虽然是相同的问题，但由于递归不会记录子问题的答案，所以会计算两次。</p>
+<p>那么我们把每次递归计算的不同规模的问题的答案记录下来呢？</p>
+<p>当然可以，这会节省很多时间，但在很多情况下，这不是最高明的算法。</p>
+<p>如果采用动态规划，<strong>直接从最小规模的问题开始出发，记录所有规模下的问题答案，直到指定的规模，获得结果。</strong></p>
+<p>当然，需要具体问题具体分析。</p>
+<h2 id="作业"><a href="#作业" class="headerlink" title="作业"></a>作业</h2><p><a href="http://interactivepython.org/courselib/static/pythonds/Recursion/pythondsProgrammingExercises.html">作业原地址</a></p>
+<h3 id="q1"><a href="#q1" class="headerlink" title="q1"></a>q1</h3><p>用递归的方法写一个阶乘函数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">factorial</span>(<span class="params">n</span>):</span><br><span class="line">    <span class="keyword">if</span> n &lt;= <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    <span class="keyword">elif</span> n == <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> n*factorial(n-<span class="number">1</span>)</span><br><span class="line">    </span><br><span class="line">factorial(<span class="number">4</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">24</span><br></pre></td></tr></table></figure>
+
+<h3 id="q2"><a href="#q2" class="headerlink" title="q2"></a>q2</h3><p>用递归的方法逆转一个list：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">reverse</span>(<span class="params">l</span>):</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(l) == <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span> l</span><br><span class="line">    <span class="keyword">elif</span> <span class="built_in">len</span>(l) == <span class="number">2</span>:</span><br><span class="line">        l[<span class="number">0</span>], l[<span class="number">1</span>] = l[<span class="number">1</span>], l[<span class="number">0</span>]</span><br><span class="line">        <span class="keyword">return</span> l</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        l[<span class="number">0</span>], l[-<span class="number">1</span>] = l[-<span class="number">1</span>], l[<span class="number">0</span>]</span><br><span class="line">        l[<span class="number">1</span>:-<span class="number">1</span>] = reverse(l[<span class="number">1</span>:-<span class="number">1</span>])</span><br><span class="line">        <span class="keyword">return</span> l</span><br><span class="line">    </span><br><span class="line">l = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>]</span><br><span class="line"><span class="built_in">print</span> reverse(l)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[6, 5, 4, 3, 2, 1]</span><br></pre></td></tr></table></figure>
+
+<h3 id="q3"><a href="#q3" class="headerlink" title="q3"></a>q3</h3><p>修改作者的分形树：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">myTree</span>(<span class="params">branchLen,t</span>):</span><br><span class="line">    <span class="comment"># print branchLen</span></span><br><span class="line">    <span class="keyword">if</span> branchLen &gt; <span class="number">5</span>:</span><br><span class="line">        step = random.randrange(<span class="number">15</span>, <span class="number">29</span>)</span><br><span class="line">        angle = random.randrange(<span class="number">15</span>, <span class="number">45</span>)</span><br><span class="line">        t.pensize(<span class="built_in">max</span>(<span class="number">4</span>, branchLen/step*<span class="number">5</span>))</span><br><span class="line">        <span class="keyword">if</span> branchLen &lt; <span class="number">30</span>:</span><br><span class="line">            t.color(<span class="string">&quot;green&quot;</span>)</span><br><span class="line">        t.forward(branchLen)</span><br><span class="line">        t.right(angle)</span><br><span class="line">        myTree(branchLen-step, t)</span><br><span class="line">        t.left(angle*<span class="number">2</span>)</span><br><span class="line">        myTree(branchLen-step, t)</span><br><span class="line">        t.right(angle)</span><br><span class="line">        t.backward(branchLen)</span><br><span class="line">        t.color(<span class="string">&quot;brown&quot;</span>)</span><br><span class="line">        </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">my_draw_tree</span>():</span><br><span class="line">    t.left(<span class="number">90</span>)</span><br><span class="line">    t.up()</span><br><span class="line">    t.backward(<span class="number">100</span>)</span><br><span class="line">    t.down()</span><br><span class="line">    t.color(<span class="string">&quot;brown&quot;</span>)</span><br><span class="line">    myTree(<span class="number">100</span>,t)</span><br><span class="line">    </span><br><span class="line">myWin.clearscreen()    </span><br><span class="line">my_draw_tree()</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://github.com/applenob/algorithm_note/raw/master/res/my_tree.png">https://github.com/applenob/algorithm_note/raw/master/res/my_tree.png</a></p>
+<h3 id><a href="#" class="headerlink" title></a></h3><p>q4</p>
+<p>画一座分形的山：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">drawTriangle</span>(<span class="params">points,color,myTurtle</span>):</span><br><span class="line">    myTurtle.fillcolor(color)</span><br><span class="line">    myTurtle.up()</span><br><span class="line">    myTurtle.goto(points[<span class="number">0</span>][<span class="number">0</span>],points[<span class="number">0</span>][<span class="number">1</span>])</span><br><span class="line">    myTurtle.down()</span><br><span class="line">    myTurtle.begin_fill()</span><br><span class="line">    myTurtle.goto(points[<span class="number">1</span>][<span class="number">0</span>],points[<span class="number">1</span>][<span class="number">1</span>])</span><br><span class="line">    myTurtle.goto(points[<span class="number">2</span>][<span class="number">0</span>],points[<span class="number">2</span>][<span class="number">1</span>])</span><br><span class="line">    myTurtle.goto(points[<span class="number">0</span>][<span class="number">0</span>],points[<span class="number">0</span>][<span class="number">1</span>])</span><br><span class="line">    myTurtle.end_fill()</span><br><span class="line">    </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">drawPlatform</span>(<span class="params">points,color,myTurtle</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;画一个梯形的平台,其实也可以直接写一个drawPolygon的方法&quot;&quot;&quot;</span></span><br><span class="line">    myTurtle.fillcolor(color)</span><br><span class="line">    myTurtle.up()</span><br><span class="line">    myTurtle.goto(points[<span class="number">0</span>][<span class="number">0</span>],points[<span class="number">0</span>][<span class="number">1</span>])</span><br><span class="line">    myTurtle.down()</span><br><span class="line">    myTurtle.begin_fill()</span><br><span class="line">    myTurtle.goto(points[<span class="number">1</span>][<span class="number">0</span>],points[<span class="number">1</span>][<span class="number">1</span>])</span><br><span class="line">    myTurtle.goto(points[<span class="number">2</span>][<span class="number">0</span>],points[<span class="number">2</span>][<span class="number">1</span>])</span><br><span class="line">    myTurtle.goto(points[<span class="number">3</span>][<span class="number">0</span>],points[<span class="number">3</span>][<span class="number">1</span>])</span><br><span class="line">    myTurtle.goto(points[<span class="number">0</span>][<span class="number">0</span>],points[<span class="number">0</span>][<span class="number">1</span>])</span><br><span class="line">    myTurtle.end_fill()</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">getMid</span>(<span class="params">p1,p2</span>):</span><br><span class="line">    <span class="keyword">return</span> ( (p1[<span class="number">0</span>]+p2[<span class="number">0</span>]) / <span class="number">2</span>, (p1[<span class="number">1</span>] + p2[<span class="number">1</span>]) / <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">mountain</span>(<span class="params">width,level,color,myTurtle</span>):</span><br><span class="line">    <span class="keyword">if</span> width &gt; <span class="number">9</span>:</span><br><span class="line">        drawTriangle([(-width/<span class="number">2.</span>,level),(-width/<span class="number">3.</span>,level+width/<span class="number">3.</span>),(-width/<span class="number">6.</span>,level)],</span><br><span class="line">                     color,myTurtle)</span><br><span class="line">        drawTriangle([(width/<span class="number">6.</span>,level),(width/<span class="number">3.</span>,level+width/<span class="number">3.</span>),(width/<span class="number">2.</span>,level)],</span><br><span class="line">                     color,myTurtle)</span><br><span class="line">        drawPlatform([(-width/<span class="number">3.</span>,level),(-width/<span class="number">6.</span>,level+width/<span class="number">3.</span>),</span><br><span class="line">                      (width/<span class="number">6.</span>,level+width/<span class="number">3.</span>),(width/<span class="number">3.</span>,level)],</span><br><span class="line">                     color,myTurtle)</span><br><span class="line">        mountain(width/<span class="number">3.</span>,level+width/<span class="number">3.</span>,color,myTurtle)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        drawTriangle([(-width/<span class="number">2.</span>,level),(<span class="number">0.</span>,level+width),(width/<span class="number">2.</span>,level)],</span><br><span class="line">                     color,myTurtle)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    myTurtle = t</span><br><span class="line">    t.color(<span class="string">&quot;white&quot;</span>)</span><br><span class="line">    mountain(<span class="number">900</span>,-<span class="number">450</span>,<span class="string">&quot;blue&quot;</span>,myTurtle)</span><br><span class="line"></span><br><span class="line">myWin.clearscreen()</span><br><span class="line">main()</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://github.com/applenob/algorithm_note/raw/master/res/mountain.png">https://github.com/applenob/algorithm_note/raw/master/res/mountain.png</a></p>
+<p>画风有点像葫芦娃。</p>
+<h3 id="q5"><a href="#q5" class="headerlink" title="q5"></a>q5</h3><p>用递归的方法解决斐波那契数列：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">genFibonacci</span>(<span class="params">n</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;递归方法&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">if</span> n&lt;=<span class="number">2</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">    <span class="keyword">else</span> :</span><br><span class="line">        <span class="keyword">return</span> genFibonacci(n-<span class="number">1</span>)+genFibonacci(n-<span class="number">2</span>)</span><br><span class="line">    </span><br><span class="line">genFibonacci(<span class="number">7</span>)</span><br><span class="line">l = []</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">20</span>):</span><br><span class="line">    l.append(genFibonacci(i))</span><br><span class="line"><span class="built_in">print</span> l</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">genFibonacciSequence</span>(<span class="params">n</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;循环方法&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">if</span> n&lt;=<span class="number">2</span>:</span><br><span class="line">        <span class="keyword">return</span> [<span class="number">1</span>]*n</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        l = [<span class="number">1</span>, <span class="number">1</span>]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>, n):</span><br><span class="line">            l.append(l[i-<span class="number">1</span>]+l[i-<span class="number">2</span>])</span><br><span class="line">    <span class="keyword">return</span> l</span><br><span class="line">          </span><br><span class="line"><span class="built_in">print</span> genFibonacciSequence(<span class="number">19</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181]</span><br></pre></td></tr></table></figure>
+
+<p>分析：</p>
+<p>如果只是生成一个指定序号的斐波那契数，那么两种方法的时间复杂度是一样的。</p>
+<p>但是如果生成的是一个序列的话，还是循环方法时间复杂度小，是$O(n)$；递归方法的时间复杂度是$O(n^2)$。</p>
+<p>关键还是在于递归方法没有记录计算过的指定序号的斐波那契数的数值。</p>
+<h3 id="q6"><a href="#q6" class="headerlink" title="q6"></a>q6</h3><p>改进汉诺塔的算法，使用3个栈记录三个柱子的实时情况：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Tower</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, name</span>):</span><br><span class="line">        <span class="variable language_">self</span>.name = name</span><br><span class="line">        <span class="variable language_">self</span>.stack = []</span><br><span class="line">        </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_tower_by_name</span>(<span class="params">name, ts</span>):</span><br><span class="line">    <span class="keyword">for</span> t <span class="keyword">in</span> ts:</span><br><span class="line">        <span class="keyword">if</span> t.name == name:</span><br><span class="line">            <span class="keyword">return</span> t</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">moveTower</span>(<span class="params">height,fromPole, toPole, withPole</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;宏观上的移动&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">if</span> height &gt;= <span class="number">1</span>:</span><br><span class="line">        moveTower(height-<span class="number">1</span>, fromPole, withPole, toPole)</span><br><span class="line">        moveDisk(fromPole, toPole, withPole)</span><br><span class="line">        moveTower(height-<span class="number">1</span>, withPole, toPole, fromPole)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">moveDisk</span>(<span class="params">fromPole, toPole, withPole</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;具体移动一个盘子&quot;&quot;&quot;</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;moving disk from&quot;</span>, fromPole.name, <span class="string">&quot;to&quot;</span>, toPole.name)</span><br><span class="line">    toPole.stack.append(fromPole.stack.pop())</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Tower A: &quot;</span>, get_tower_by_name(<span class="string">&quot;A&quot;</span>, [fromPole, toPole, withPole]).stack)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Tower B: &quot;</span>, get_tower_by_name(<span class="string">&quot;B&quot;</span>, [fromPole, toPole, withPole]).stack)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Tower C: &quot;</span>, get_tower_by_name(<span class="string">&quot;C&quot;</span>, [fromPole, toPole, withPole]).stack)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main_hanoi</span>(<span class="params">height</span>):</span><br><span class="line">    t_from = Tower(<span class="string">&quot;A&quot;</span>)</span><br><span class="line">    t_to = Tower(<span class="string">&quot;B&quot;</span>)</span><br><span class="line">    t_with = Tower(<span class="string">&quot;C&quot;</span>)</span><br><span class="line">    t_from.stack = <span class="built_in">range</span>(height, <span class="number">0</span>, -<span class="number">1</span>)</span><br><span class="line">    moveTower(height, t_from, t_to, t_with)</span><br><span class="line">    </span><br><span class="line">main_hanoi(<span class="number">3</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">moving disk from A to B</span><br><span class="line">Tower A:  [3, 2]</span><br><span class="line">Tower B:  [1]</span><br><span class="line">Tower C:  []</span><br><span class="line">moving disk from A to C</span><br><span class="line">Tower A:  [3]</span><br><span class="line">Tower B:  [1]</span><br><span class="line">Tower C:  [2]</span><br><span class="line">moving disk from B to C</span><br><span class="line">Tower A:  [3]</span><br><span class="line">Tower B:  []</span><br><span class="line">Tower C:  [2, 1]</span><br><span class="line">moving disk from A to B</span><br><span class="line">Tower A:  []</span><br><span class="line">Tower B:  [3]</span><br><span class="line">Tower C:  [2, 1]</span><br><span class="line">moving disk from C to A</span><br><span class="line">Tower A:  [1]</span><br><span class="line">Tower B:  [3]</span><br><span class="line">Tower C:  [2]</span><br><span class="line">moving disk from C to B</span><br><span class="line">Tower A:  [1]</span><br><span class="line">Tower B:  [3, 2]</span><br><span class="line">Tower C:  []</span><br><span class="line">moving disk from A to B</span><br><span class="line">Tower A:  []</span><br><span class="line">Tower B:  [3, 2, 1]</span><br><span class="line">Tower C:  []</span><br></pre></td></tr></table></figure>
+
+<h3 id="q7"><a href="#q7" class="headerlink" title="q7"></a>q7</h3><p>使用turtle模块，画出Hilbert curve。</p>
+<p>Hilbert curve的介绍：<a href="https://en.wikipedia.org/wiki/Hilbert_curve">wikipedia</a></p>
+<p><img src="/algrithom/book_learning_4/Hilbert_curve.gif"></p>
+<p>思路：</p>
+<p>参考<a href="http://www.soc.napier.ac.uk/~andrew/hilbert.html">这里</a>，将问题分解成画“三笔凸包”和连接线。</p>
+<p><img src="/algrithom/book_learning_4/hilbert1.gif"></p>
+<p><img src="/algrithom/book_learning_4/hilbert2.gif"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">draw_hilbert</span>(<span class="params">x0, y0, xis, yis, xjs, yjs, n</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    x0 和 y0是左下角的坐标；</span></span><br><span class="line"><span class="string">    xis 和 yis是右下角坐标（凸包的终点方向）；</span></span><br><span class="line"><span class="string">    xjs 和 yjs是左上角坐标（下一笔方向）；</span></span><br><span class="line"><span class="string">    上述坐标皆是相对于缺口朝下的方向。</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">if</span> n &lt;= <span class="number">0</span>:</span><br><span class="line">        t.goto(x0+(xis+yis)/<span class="number">2</span>, y0+(xjs+yjs)/<span class="number">2</span>);</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        draw_hilbert(x0, y0, yis/<span class="number">2</span>, xis/<span class="number">2</span>, yjs/<span class="number">2</span>, xjs/<span class="number">2</span>, n-<span class="number">1</span>)  <span class="comment"># 画左下角分区 </span></span><br><span class="line">        draw_hilbert(x0+xis/<span class="number">2</span>, y0+xjs/<span class="number">2</span> ,xis/<span class="number">2</span>, yis/<span class="number">2</span>, xjs/<span class="number">2</span>, yjs/<span class="number">2</span>, n-<span class="number">1</span>)  <span class="comment"># 画左上角分区 </span></span><br><span class="line">        draw_hilbert(x0+xis/<span class="number">2</span>+yis/<span class="number">2</span>, y0+xjs/<span class="number">2</span>+yjs/<span class="number">2</span>, xis/<span class="number">2</span>, yis/<span class="number">2</span>, xjs/<span class="number">2</span>, yjs/<span class="number">2</span>,n-<span class="number">1</span>)  <span class="comment"># 画右上角分区 </span></span><br><span class="line">        draw_hilbert(x0+xis/<span class="number">2</span>+yis, y0+xjs/<span class="number">2</span>+yjs, -yis/<span class="number">2</span>, -xis/<span class="number">2</span>, -yjs/<span class="number">2</span>, -xjs/<span class="number">2</span>, n-<span class="number">1</span>)  <span class="comment"># 画右下角分区 </span></span><br><span class="line"></span><br><span class="line">myWin.clearscreen()</span><br><span class="line">t.up()</span><br><span class="line">t.goto(<span class="number">0</span>, <span class="number">0</span>)</span><br><span class="line">t.down()</span><br><span class="line">draw_hilbert(<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">300.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">300.</span>, <span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="q8"><a href="#q8" class="headerlink" title="q8"></a>q8</h3><p>使用turtle模块，画出Koch snowflake。</p>
+<p>介绍参考<a href="https://en.wikipedia.org/wiki/Koch_snowflake">wiki-pedia</a>。</p>
+<p><img src="/algrithom/book_learning_4/Von_Koch_curve.gif"></p>
+<p>思路：</p>
+<ol>
+<li>首先将任务分成三个相同的三部分，即三角形的三条边，不管每条边如何复杂化，都是相同的操作。</li>
+<li>对于每条边，宏观上的操作如下，（在一根直线上长出一个角）：</li>
+</ol>
+<p><img src="/algrithom/book_learning_4/koch_order_1.png"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">koch</span>(<span class="params">length, order</span>):</span><br><span class="line">    <span class="keyword">if</span> order &gt; <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">for</span> turn <span class="keyword">in</span> [<span class="number">0</span>, <span class="number">60</span>, -<span class="number">120</span>, <span class="number">60</span>]:</span><br><span class="line">            t.left(turn)</span><br><span class="line">            koch(length/<span class="number">3.</span>, order-<span class="number">1</span>)            </span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        t.forward(length)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">draw_koch</span>(<span class="params">length, order</span>):</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">3</span>):</span><br><span class="line">        koch(length, order)</span><br><span class="line">        t.right(<span class="number">120</span>)</span><br><span class="line">        </span><br><span class="line">myWin.clearscreen()</span><br><span class="line">t.pensize(<span class="number">2</span>)</span><br><span class="line">t.speed(<span class="number">10</span>)</span><br><span class="line">t.goto(<span class="number">0</span>, <span class="number">0</span>)</span><br><span class="line">t.down()</span><br><span class="line">draw_koch(<span class="number">100.</span>, <span class="number">3</span>)</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Algorithm/" rel="tag"># Algorithm</a>
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"># 笔记</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/algrithom/book_learning_3/" rel="prev" title="三. Basic Data Structures">
+                  <i class="fa fa-angle-left"></i> 三. Basic Data Structures
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/algrithom/book_learning_5/" rel="next" title="五. Sorting and Searching">
+                  五. Sorting and Searching <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

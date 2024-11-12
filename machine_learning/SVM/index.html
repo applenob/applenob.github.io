@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="1.手推失败原因总结 没有重点。完整的推倒过程非常复杂，全部讲清楚是一个大工程，如何选择重点非常重要，如果只是花时间去记具体细节的公式化简，很容易手推失败。 先验知识掌握不牢。 比如KKT&#x2F;Hinge Loss&#x2F;kernel。 这些知识应该拆开来分块学，避免学混了，以为kernel就是给SVM用的。 在模型中使用trick的地方没有着重记忆。  2.先验知识2.1 拉格朗日对偶">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何优雅地手推SVM">
+<meta property="og:url" content="https://applenob.github.io/machine_learning/SVM/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="1.手推失败原因总结 没有重点。完整的推倒过程非常复杂，全部讲清楚是一个大工程，如何选择重点非常重要，如果只是花时间去记具体细节的公式化简，很容易手推失败。 先验知识掌握不牢。 比如KKT&#x2F;Hinge Loss&#x2F;kernel。 这些知识应该拆开来分块学，避免学混了，以为kernel就是给SVM用的。 在模型中使用trick的地方没有着重记忆。  2.先验知识2.1 拉格朗日对偶">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://applenob.github.io/machine_learning/SVM/lNgJE.png">
+<meta property="og:image" content="https://applenob.github.io/machine_learning/SVM/kernel-trick.png">
+<meta property="og:image" content="https://applenob.github.io/machine_learning/SVM/svm.png">
+<meta property="og:image" content="https://applenob.github.io/machine_learning/SVM/svm_basics3.png">
+<meta property="article:published_time" content="2016-12-03T07:29:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.078Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="Machine Learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://applenob.github.io/machine_learning/SVM/lNgJE.png">
+
+
+<link rel="canonical" href="https://applenob.github.io/machine_learning/SVM/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/machine_learning/SVM/","path":"machine_learning/SVM/","title":"如何优雅地手推SVM"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>如何优雅地手推SVM | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E6%89%8B%E6%8E%A8%E5%A4%B1%E8%B4%A5%E5%8E%9F%E5%9B%A0%E6%80%BB%E7%BB%93"><span class="nav-number">1.</span> <span class="nav-text">1.手推失败原因总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%85%88%E9%AA%8C%E7%9F%A5%E8%AF%86"><span class="nav-number">2.</span> <span class="nav-text">2.先验知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E5%AF%B9%E5%81%B6%E6%80%A7"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 拉格朗日对偶性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-Hinge-Loss"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 Hinge Loss</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-Kernel-Trick"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 Kernel Trick</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%85%B7%E4%BD%93%E6%8E%A8%E5%AF%BC"><span class="nav-number">3.</span> <span class="nav-text">3 具体推导</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E7%A1%AC%E9%97%B4%E9%9A%94%E6%9C%80%E5%A4%A7%E5%8C%96"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 硬间隔最大化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E8%BD%AF%E9%97%B4%E9%9A%94%E6%9C%80%E5%A4%A7%E5%8C%96"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 软间隔最大化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%9E%E7%BA%BF%E6%80%A7%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA"><span class="nav-number">3.3.</span> <span class="nav-text">非线性支持向量机</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/machine_learning/SVM/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="如何优雅地手推SVM | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          如何优雅地手推SVM
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2016-12-02 23:29:00" itemprop="dateCreated datePublished" datetime="2016-12-02T23:29:00-08:00">2016-12-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="1-手推失败原因总结"><a href="#1-手推失败原因总结" class="headerlink" title="1.手推失败原因总结"></a>1.手推失败原因总结</h2><ol>
+<li>没有重点。完整的推倒过程非常复杂，全部讲清楚是一个大工程，如何选择重点非常重要，如果只是花时间去记具体细节的公式化简，很容易手推失败。</li>
+<li>先验知识掌握不牢。 比如KKT&#x2F;Hinge Loss&#x2F;kernel。 这些知识应该拆开来分块学，避免学混了，以为kernel就是给SVM用的。</li>
+<li>在模型中使用trick的地方没有着重记忆。</li>
+</ol>
+<h2 id="2-先验知识"><a href="#2-先验知识" class="headerlink" title="2.先验知识"></a>2.先验知识</h2><h3 id="2-1-拉格朗日对偶性"><a href="#2-1-拉格朗日对偶性" class="headerlink" title="2.1 拉格朗日对偶性"></a>2.1 拉格朗日对偶性</h3><p><strong>原始问题</strong>：</p>
+<p>$f(x),c_i(x),h_j(x)$是定义在$R^n$上的连续可微函数，考虑约束最优化问题：</p>
+<p>$$\underset{x\in R^n}{min}f(x)$$</p>
+<p>$$s.t. \; c_i(x)\leq 0 \;\; i&#x3D;1,…,k$$</p>
+<p>$$h_j(x)&#x3D;0 \;\; j&#x3D;1,…,l$$</p>
+<p>即有$k$个不等式约束：$c_i(x)$和$l$个等式约束：$h_j(x)$。</p>
+<p><strong>拉格朗日函数</strong>：</p>
+<ul>
+<li>$L(x,\alpha,\beta)&#x3D;f(x)+\sum_{i&#x3D;1}^k\alpha_i c_i(x)+\sum_{j&#x3D;1}^l\beta_jh_j(x)$</li>
+<li>$\alpha_i$和$\beta_j$，称为<strong>拉格朗日乘子</strong>，$\alpha_i\geq 0$。</li>
+</ul>
+<p><strong>拉格朗日函数的极大极小问题</strong>：</p>
+<ul>
+<li>令$\theta_P(x) &#x3D; \underset{\alpha,\beta}{max};L(x,\alpha,\beta)$</li>
+<li>如果存在$x$违反了原始问题的约束条件，则$\theta_P(x)&#x3D;\infty$，当$x$不违反原始问题的约束条件，则$\theta_P(x)&#x3D;f(x)$</li>
+<li>因此：$\underset{x}{min}\theta_P(x)&#x3D;\underset{x}{min}\underset{\alpha,\beta}{max}L(x,\alpha,\beta)$等价于原问题。</li>
+</ul>
+<p><strong>对偶问题</strong>：</p>
+<ul>
+<li>$\underset{\alpha,\beta}{max}\underset{x}{min};L(x,\alpha,\beta)$</li>
+<li>定理：如果函数$f(x)$和$c_i(x)$是凸函数，$h_j(x)$是仿射函数，则$x^*,\alpha^*,\beta^*$是同时是原始问题和对偶问题的解的必要条件是满足KKT条件。</li>
+</ul>
+<p><strong>KKT条件</strong>：</p>
+<ul>
+<li>1.拉格朗日函数对$x$，$λ$，$α$求偏导都为0：<ul>
+<li>$\triangledown_xL(x^*,\alpha^*,\beta^*)&#x3D;0$</li>
+<li>$\triangledown_{\alpha}L(x^*,\alpha^*,\beta^*)&#x3D;0$</li>
+<li>$\triangledown_{\beta}L(x^*,\alpha^*,\beta^*)&#x3D;0$</li>
+</ul>
+</li>
+<li>2.对于不等式约束，$\alpha_i^*c_i(x^*)&#x3D;0\;\;\;i&#x3D;1,…,k$（对偶互补条件）。</li>
+</ul>
+<h3 id="2-2-Hinge-Loss"><a href="#2-2-Hinge-Loss" class="headerlink" title="2.2 Hinge Loss"></a>2.2 Hinge Loss</h3><p>参考<a href="https://en.wikipedia.org/wiki/Hinge_loss">wikipedia</a>以及<a href="https://quomodocumque.wordpress.com/2016/01/23/ranking-mathematicians-by-hinge-loss/">这篇博客</a>和<a href="https://arxiv.org/pdf/1512.08949.pdf">这篇paper</a>。</p>
+<p>对于二分类问题：</p>
+<p>$HingeLoss &#x3D; max(0, 1-y_{true}\cdot y_{pred})$，也就是说，如果$y_{true}\cdot y_{pred}&gt;1$，$HingeLoss&#x3D;0$，在svm中，$y_{true}\cdot y_{pred}&#x3D;y_{true}(w\cdot x+b)$，即函数间隔。也就是说，<strong>我们希望这个函数间隔大于1就好</strong>，具体在svm上的应用，后文继续。</p>
+<p><img src="/machine_learning/SVM/lNgJE.png"></p>
+<p>对于ranking问题：</p>
+<p>$HingeLoss(f) &#x3D; max(0, 1-f(a)+f(a’))$，下面介绍下ranking的$HingeLoss$的intuition。</p>
+<p>三元组：$(r,a,a’)$代表rater（评分人），$a$和$a’$代表两个app，并且$a$的评分高于$a’$。我们需要找到一个ranking方式，使得对所有$a &gt; a’$，都有$f(a) &gt; f(a’)$。</p>
+<p>最直接地，会想到0-1损失函数，即$mistake_j(f) &#x3D; 1, \; if\; f(a) &lt; f(a’) + 1$，$mistake_j(f) &#x3D; 0, \;if\; f(a) &gt;&#x3D; f(a’) + 1$，然后最终的损失函数是：$M &#x3D; \sum_j mistake_j(f)$。</p>
+<p>但是这么做，M是<strong>非凸</strong>的，直接使用梯度下降去优化很可能只能获得局部最优。</p>
+<p>所以使用$hinge_j(f) &#x3D; max(0, 1-f(a)+f(a’))$来替换$mistake_j(f)$，这样最终的损失函数是<strong>凸函数</strong>。</p>
+<h3 id="2-3-Kernel-Trick"><a href="#2-3-Kernel-Trick" class="headerlink" title="2.3 Kernel Trick"></a>2.3 Kernel Trick</h3><p>简单地说，Kernel Trick通过一个<strong>非线性变换</strong>，将<strong>输入空间（欧氏空间$R^n$或者离散集合）</strong>映射到<strong>特征空间（希尔伯特空间$Η$）</strong>，一般是<strong>升维</strong>的映射，所以有些人会说核技巧就是升维的，但这个说法并不严谨。</p>
+<p><img src="/machine_learning/SVM/kernel-trick.png"></p>
+<p><strong>核函数</strong>：<br>设$X$是输入空间（欧氏空间$R^n$或者离散集合），$H$是特征空间（希尔伯特空间），若存在一个从$X$到$H$的映射，即$φ(x):X\rightarrow H$，使得对所有$x,z∈X$，有$K(x,z)&#x3D;φ(x)\cdot φ(z)$，也就是说<strong>核函数是两个映射函数的点乘</strong>。</p>
+<p><strong>核技巧</strong>：<br>核技巧不显式地定义映射函数$φ(x)$，只定义$K(x,z)$，这样计算更容易。</p>
+<p><strong>常用的核函数</strong>：</p>
+<ol>
+<li>多项式核函数（polynomial kernel function）：$K(x,z) &#x3D; (x\cdot z)^p$</li>
+<li>高斯核函数（Gaussian kernel function）：$K(x,z) &#x3D; exp(-\frac{||x-z||^2}{2σ^2})$</li>
+</ol>
+<h2 id="3-具体推导"><a href="#3-具体推导" class="headerlink" title="3 具体推导"></a>3 具体推导</h2><h3 id="3-1-硬间隔最大化"><a href="#3-1-硬间隔最大化" class="headerlink" title="3.1 硬间隔最大化"></a>3.1 硬间隔最大化</h3><p>对于二分类线性可分的问题，我们想要找到一个分割超平面，使得在平面的正面一侧的点都是正类，在反面一侧的点都是负类。</p>
+<p><strong>分割超平面</strong>的表达式：$wx+b&#x3D;0$。</p>
+<p>svm的独特之处在于，它认为什么样的分割超平面是最好的，也就是分割超平面的评价标准。这个评价标准就是：<strong>两边离超平面最近的点，它们离超平面的距离要最远</strong>。用通俗一点的话去类比就是，如果要评价一个酒店的服务质量好坏，可以比较它们的差评，哪个差评相对好一些的，就认为这个酒店服务质量还不错。两边离分割超平面最近的点即<strong>支撑向量（support vector）</strong>。</p>
+<p>假设我们找到了这些点，并做两个平行于分割超平面的<strong>支撑平面</strong>。</p>
+<p>两个支撑平面的表达式：</p>
+<p>$wx+b&#x3D;1$，$wx+b&#x3D;-1$；</p>
+<p><img src="/machine_learning/SVM/svm.png"></p>
+<p>上面的支撑平面使用了第一个<strong>trick</strong>，也就是限定支撑平面等式右面的系数是$1$和$-1$，这是利用了$w$和$b$可以等比例缩放的性质，固定支撑平面的系数，可以方便后续计算。</p>
+<p>对于所有训练数据：</p>
+<p>要满足$wx_++b≥1$，$wx_-+b≤-1$；</p>
+<p>因为$y_+&#x3D;1$，$y_-&#x3D;-1$，可以使用使用一个<strong>trick</strong>将上面两个式子合成一个：</p>
+<p>$y(wx+b)≥1$</p>
+<p>下面是个<strong>重点</strong>，来推导两个支撑平面的间隔：</p>
+<p>$width&#x3D;(x_+-x_-)\frac{w}{||w||}&#x3D;\frac{x_+w}{||w||}-\frac{x_-w}{||w||}&#x3D;\frac{2}{||w||}$</p>
+<p>而最大化$\frac{2}{||w||}$和最小化$\frac{1}{2}||w||^2$是等价的，至此问题转换成了一个<strong>带不等式约束的凸优化问题</strong>，其中的不等式约束是：$y(wx+b)≥1$。</p>
+<p>参考上面介绍的<strong>KKT条件</strong>，拉格朗日函数为：$L(w,b,α)&#x3D;\frac{1}{2}||w||^2-\sum_1^Nα_iy_i(wx_i+b)+\sum_1^Nα_i$，问题转换为：$\underset{w,b}{min};\underset{α,α\geq 0}{max}L(w,b,α)$。令拉格朗日函数对$w$和$b$求偏导，并使之为0，可以得到：$w&#x3D;\sum_i^Nα_iy_ix_i$，$\sum_i^Nα_iy_i&#x3D;0$。</p>
+<p>从$w&#x3D;\sum_i^Nα_iy_ix_i$可以看出，模型的参数$w$可以完全用数据和$α$来计算，模型在优化的时候，**保存的参数是$α$**。优化完$α$以后，直接计算出$w$即可。</p>
+<p>继续回到推导上来，将上面的两个式子带回到拉格朗日函数，化简得到：$L(w,b,α)&#x3D;-\frac{1}{2}\sum_i^N\sum_j^Nα_iα_jy_iy_j(x_i\cdot x_j)+\sum_i^Nα_i$。</p>
+<p>问题通过引入<strong>KKT条件</strong>做了一番推导以后可以归纳成：</p>
+<p>$minL(α) &#x3D; \frac{1}{2}\sum_i^N\sum_j^Nα_iα_jy_iy_j(x_i\cdot x_j)-\sum_i^Nα_i$<br>约束条件：$\sum_i^Nα_iy_i&#x3D;0$和$α_i\geq 0$。</p>
+<p>推导到这里，可以直接把问题交给优化算法SMO了。SMO算法就不展开说了，<a href="https://zhuanlan.zhihu.com/p/23068673">这篇文章</a>不错，可以参考。</p>
+<h3 id="3-2-软间隔最大化"><a href="#3-2-软间隔最大化" class="headerlink" title="3.2 软间隔最大化"></a>3.2 软间隔最大化</h3><p>硬间隔最大化的一个很难实现的前提是：<strong>线性可分</strong>。现实中很多数据正负类相互交缠，不太可能严格满足线性可分，这个时候就需要<strong>软间隔最大化</strong>。</p>
+<p>可以认为存在一些特异点（outlier），去除了这些特异点之后，模型依然是可分的。</p>
+<p>于是引入一个**松弛变量$ξ_i$**，约束条件变成：$y_i(wx_i+b)≥1-ξ_i$。</p>
+<p>再引入<strong>惩罚参数</strong>：$C&gt;0$，目标函数变成：$min;\frac{1}{2}||w||^2+C\sum_i^Nξ_i$。</p>
+<p><img src="/machine_learning/SVM/svm_basics3.png"></p>
+<p>接下来的推导和硬间隔的类似，最终的优化式子不变，只有其中一个约束变成：$0 \leq α_i\leq C$</p>
+<p>得出了这个结果之后，我们终于到了Hinge Loss了，让我们来看看软间隔最大化和Hinge Loss的关系：</p>
+<p><strong>软间隔最大化</strong>：</p>
+<p>目标函数：<br>$\underset{w,b,ξ}{min}\frac{1}{2}||w||^2+C\sum_i^Nξ_i$</p>
+<p>约束条件：<br>$y_i(wx_i+b)≥1-ξ_i$，$ξ_i \geq 0$</p>
+<p><strong>Hinge Loss</strong>：</p>
+<p>目标函数：</p>
+<p>$min \sum_i^N max(0, 1-y_i(wx_i+b)) + λ||w||^2$ </p>
+<p><strong>证明等价</strong>：从Hinge Loss往回推导，令$1-y_i(wx_i+b)&#x3D;ξ_i$，且$ξ_i \geq 0$，于是有$max(0, 1-y_i(wx_i+b))&#x3D;max(0,ξ_i)&#x3D;ξ_i$，所以Hinge Loss变成了$\underset{w,b}{min}; \sum_i^Nξ_i + λ||w||^2$。取$λ&#x3D;\frac{1}{2C}$，又写成：$\frac{1}{C}(C\sum_i^Nξ_i + \frac{1}{2}||w||^2)$，与<strong>软间隔最大化</strong>等价。</p>
+<h3 id="非线性支持向量机"><a href="#非线性支持向量机" class="headerlink" title="非线性支持向量机"></a>非线性支持向量机</h3><p>从推导后的式子可以看出，目标函数只使用了数据集两两点乘的结果。这样我们可以直接使用核函数来代替这个点乘，实现空间非线性映射。</p>
+<p><strong>非线性支持向量机表述</strong>：</p>
+<p>目标函数：</p>
+<p>$minL(α) &#x3D; \frac{1}{2}\sum_i^N\sum_j^Nα_iα_jy_iy_jK(x_i,x_j)-\sum_i^Nα_i$</p>
+<p>约束条件：$\sum_i^Nα_iy_i&#x3D;0$和$0 \leq α_i \leq C$。</p>
+<p>分割平面：</p>
+<p>$\sum_i^Nα_iy_iK(x,x_i)+b$</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+              <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/machine_learning/PCA/" rel="prev" title="PCA（主成分分析）学习总结（原理+代码）">
+                  <i class="fa fa-angle-left"></i> PCA（主成分分析）学习总结（原理+代码）
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/machine_learning/graph/" rel="next" title="图模型总结">
+                  图模型总结 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

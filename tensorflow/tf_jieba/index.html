@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="简介本文介绍了如何将基于C++的分词工具cppjieba封装成一个Tensorflow Custom Op。  仓库地址 原始的cppjieba仓库 我们修改的分支cppjieba仓库 我们在深度学习开源平台DELTA中也使用了这个OP。  安装目前支持python3.6；支持MacOS和Linux；在tf1.14下测试通过。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何将分词工具Jieba封装成一个Tensorflow Operator">
+<meta property="og:url" content="https://applenob.github.io/tensorflow/tf_jieba/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="简介本文介绍了如何将基于C++的分词工具cppjieba封装成一个Tensorflow Custom Op。  仓库地址 原始的cppjieba仓库 我们修改的分支cppjieba仓库 我们在深度学习开源平台DELTA中也使用了这个OP。  安装目前支持python3.6；支持MacOS和Linux；在tf1.14下测试通过。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://applenob.github.io/tensorflow/tf_jieba/1.png">
+<meta property="og:image" content="https://applenob.github.io/tensorflow/tf_jieba/2.png">
+<meta property="article:published_time" content="2019-10-21T02:37:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.118Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="Tensorflow">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://applenob.github.io/tensorflow/tf_jieba/1.png">
+
+
+<link rel="canonical" href="https://applenob.github.io/tensorflow/tf_jieba/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/tensorflow/tf_jieba/","path":"tensorflow/tf_jieba/","title":"如何将分词工具Jieba封装成一个Tensorflow Operator"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>如何将分词工具Jieba封装成一个Tensorflow Operator | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">1.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8"><span class="nav-number">1.2.</span> <span class="nav-text">快速使用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Tensorflow-Custom-Op"><span class="nav-number">2.</span> <span class="nav-text">Tensorflow Custom Op</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%A7%E8%87%B4%E6%B5%81%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">大致流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%B3%A8%E5%86%8Cop"><span class="nav-number">3.1.</span> <span class="nav-text">1.注册op</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%AE%9E%E7%8E%B0kernel"><span class="nav-number">3.2.</span> <span class="nav-text">2.实现kernel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E7%BC%96%E8%AF%91"><span class="nav-number">3.3.</span> <span class="nav-text">3.编译</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-python%E5%B0%81%E8%A3%85"><span class="nav-number">3.4.</span> <span class="nav-text">4.python封装</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/tensorflow/tf_jieba/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="如何将分词工具Jieba封装成一个Tensorflow Operator | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          如何将分词工具Jieba封装成一个Tensorflow Operator
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2019-10-20 19:37:00" itemprop="dateCreated datePublished" datetime="2019-10-20T19:37:00-07:00">2019-10-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Tensorflow/" itemprop="url" rel="index"><span itemprop="name">Tensorflow</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>本文介绍了如何将基于<code>C++</code>的分词工具<code>cppjieba</code>封装成一个Tensorflow Custom Op。</p>
+<ul>
+<li><a href="https://github.com/applenob/tf_jieba">仓库地址</a></li>
+<li><a href="https://github.com/yanyiwu/cppjieba">原始的cppjieba仓库</a></li>
+<li><a href="https://github.com/applenob/cppjieba">我们修改的分支cppjieba仓库</a></li>
+<li>我们在深度学习开源平台<a href="https://github.com/didi/delta">DELTA</a>中也使用了这个OP。</li>
+</ul>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>目前支持python3.6；支持MacOS和Linux；在tf1.14下测试通过。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install tf-jieba</span><br></pre></td></tr></table></figure>
+
+<h3 id="快速使用"><a href="#快速使用" class="headerlink" title="快速使用"></a>快速使用</h3><p>创建一个测试目录，在该目录下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https://github.com/applenob/tf_jieba/raw/master/custom_test.py</span><br><span class="line">python3 custom_test.py</span><br></pre></td></tr></table></figure>
+
+<p><img src="/tensorflow/tf_jieba/1.png" alt="image"></p>
+<h2 id="Tensorflow-Custom-Op"><a href="#Tensorflow-Custom-Op" class="headerlink" title="Tensorflow Custom Op"></a>Tensorflow Custom Op</h2><ul>
+<li>官方文档：<a href="https://www.tensorflow.org/guide/create_op">https://www.tensorflow.org/guide/create_op</a></li>
+<li>官方仓库：<a href="https://github.com/tensorflow/custom-op">https://github.com/tensorflow/custom-op</a></li>
+<li>可借鉴的op：<a href="https://github.com/tensorflow/lingvo/tree/master/lingvo/core/ops">https://github.com/tensorflow/lingvo/tree/master/lingvo/core/ops</a></li>
+</ul>
+<p>编写Custom Op (Operator)就是将一些用<code>C/C++</code>写的特定的计算操作，封装成tensorflow平台的算子。用户可以通过不同的语言使用这些op，比如<code>C++</code>或者Python，就像使用官方的op一样。</p>
+<p>工业届使用Tensorflow，一般是用python开发，用<code>C++</code>上线。这样，一些非Tensorflow的操作，就需要维护两个语言的版本。比如分词，Jieba是大家熟知的常用的分词工具，它的实现有python也有<code>C++</code>，甚至还有其他语言。但不同的实现往往具体计算会有微小差异，这样就会导致线上和线下的模型结果差异。使用OP封装就可以解决这个问题。</p>
+<p>另外一个解决方案是将<code>C++</code>的代码用<code>swig</code>这类工具添加python接口。但是使用OP 封装，还可以将这些操作序列化（Protobufer），在所有支持tensorflow的地方都可以跑这些操作。想象一下，你把所有的数据预处理都写成op，你拿着一个<code>SavedModel</code>，部署到<code>tf-serving</code>上后，不需要其他额外代码，就可以拿到模型结果。</p>
+<h2 id="大致流程"><a href="#大致流程" class="headerlink" title="大致流程"></a>大致流程</h2><p>目前Tensorflow官网的介绍其实已经非常详细了，建议详细阅读。我根据自己的理解再做一些补充。</p>
+<p>编译一个自定义op主要流程是下面五步：</p>
+<ul>
+<li>1.在c++文件中注册新的op。</li>
+<li>2.用c++实现这个op。(kernel)</li>
+<li>3.新建一个python的wrapper（可选）。</li>
+<li>4.写一个计算该op的梯度的方式（可选）。</li>
+<li>5.测试该op。</li>
+</ul>
+<h3 id="1-注册op"><a href="#1-注册op" class="headerlink" title="1.注册op"></a>1.注册op</h3><p>注册op不仅是让系统知道这个op的存在，还定义了这个op的<code>C++</code>版接口。</p>
+<p>核心代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">REGISTER_OP</span>(<span class="string">&quot;JiebaCut&quot;</span>)</span><br><span class="line">    .<span class="built_in">Input</span>(<span class="string">&quot;sentence_in: string&quot;</span>)</span><br><span class="line">    .<span class="built_in">Output</span>(<span class="string">&quot;sentence_out: string&quot;</span>)</span><br><span class="line">    .<span class="built_in">Attr</span>(<span class="string">&quot;use_file: bool = false&quot;</span>)</span><br><span class="line">    .<span class="built_in">Attr</span>(<span class="string">&quot;dict_lines: list(string) = [&#x27;&#x27;]&quot;</span>)</span><br><span class="line">    .<span class="built_in">Attr</span>(<span class="string">&quot;model_lines: list(string) = [&#x27;&#x27;]&quot;</span>)</span><br><span class="line">    .<span class="built_in">Attr</span>(<span class="string">&quot;user_dict_lines: list(string) = [&#x27;&#x27;]&quot;</span>)</span><br><span class="line">    .<span class="built_in">Attr</span>(<span class="string">&quot;idf_lines: list(string) = [&#x27;&#x27;]&quot;</span>)</span><br><span class="line">    .<span class="built_in">Attr</span>(<span class="string">&quot;stop_word_lines: list(string) = [&#x27;&#x27;]&quot;</span>)</span><br><span class="line">    .<span class="built_in">Attr</span>(<span class="string">&quot;dict_path: string = &#x27;&#x27;&quot;</span>)</span><br><span class="line">    .<span class="built_in">Attr</span>(<span class="string">&quot;hmm_path: string = &#x27;&#x27;&quot;</span>)</span><br><span class="line">    .<span class="built_in">Attr</span>(<span class="string">&quot;user_dict_path: string = &#x27;&#x27;&quot;</span>)</span><br><span class="line">    .<span class="built_in">Attr</span>(<span class="string">&quot;idf_path: string = &#x27;&#x27;&quot;</span>)</span><br><span class="line">    .<span class="built_in">Attr</span>(<span class="string">&quot;stop_word_path: string = &#x27;&#x27;&quot;</span>)</span><br><span class="line">    .<span class="built_in">Attr</span>(<span class="string">&quot;hmm: bool = true&quot;</span>)</span><br><span class="line">    .<span class="built_in">SetShapeFn</span>(UnchangedShape)</span><br><span class="line">    .<span class="built_in">Doc</span>(<span class="string">R&quot;doc(</span></span><br><span class="line"><span class="string">Cut the Chines sentence into words.</span></span><br><span class="line"><span class="string">sentence_in: A scalar or list of strings.</span></span><br><span class="line"><span class="string">sentence_out: A scalar or list of strings.</span></span><br><span class="line"><span class="string">)doc&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p><code>Input</code>和<code>Output</code>是这个op的输入和输出，<code>Attr</code>指的是其他参数。这里注意的是输入输出和<code>Attr</code>的类型表示不一样。输入输出的类型更像是python中tensorflow的类型；而<code>Attr</code>的类型参考<a href="https://www.tensorflow.org/guide/create_op#attr_types">这里</a>：</p>
+<p><img src="/tensorflow/tf_jieba/2.png" alt="image"></p>
+<p>另外需要注意<code>ShapeFn</code>，用于支持tensorflow中<code>shape inference</code>的功能，主要实现两个功能：1.确保输入shape没有问题；2.确定输出的shape。这里使用的是<code>UnchangedShape</code>函数，因为输入和输出的shape是一样的。</p>
+<h3 id="2-实现kernel"><a href="#2-实现kernel" class="headerlink" title="2.实现kernel"></a>2.实现kernel</h3><p>自定义op类要继承<code>OpKernel</code>类。</p>
+<p>构造函数中初始化相关参数，在构图的时候调用；<code>compute</code>函数中定义前向计算流程，在<code>session run</code>的时候调用。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">Compute</span><span class="params">(OpKernelContext* ctx)</span> <span class="keyword">override</span> </span>&#123;</span><br><span class="line">    std::vector&lt;string&gt; words;</span><br><span class="line">    <span class="type">const</span> Tensor* t_sentence_in;</span><br><span class="line">    <span class="built_in">OP_REQUIRES_OK</span>(ctx, ctx-&gt;<span class="built_in">input</span>(<span class="string">&quot;sentence_in&quot;</span>, &amp;t_sentence_in));</span><br><span class="line">    Tensor* t_sentence_out;</span><br><span class="line">    <span class="built_in">OP_REQUIRES_OK</span>(ctx,</span><br><span class="line">                   ctx-&gt;<span class="built_in">allocate_output</span>(<span class="string">&quot;sentence_out&quot;</span>, t_sentence_in-&gt;<span class="built_in">shape</span>(),</span><br><span class="line">                                        &amp;t_sentence_out));</span><br><span class="line">    <span class="keyword">if</span> (t_sentence_in-&gt;<span class="built_in">dims</span>() == <span class="number">0</span>) &#123;</span><br><span class="line">      jieba_-&gt;<span class="built_in">Cut</span>(t_sentence_in-&gt;<span class="built_in">scalar</span>&lt;string&gt;()(), words, <span class="literal">true</span>);</span><br><span class="line">      t_sentence_out-&gt;<span class="built_in">scalar</span>&lt;string&gt;()() = str_util::<span class="built_in">Join</span>(words, <span class="string">&quot; &quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="built_in">OP_REQUIRES</span>(</span><br><span class="line">          ctx, t_sentence_in-&gt;<span class="built_in">dims</span>() == <span class="number">1</span>,</span><br><span class="line">          errors::<span class="built_in">InvalidArgument</span>(<span class="string">&quot;Input must be a scalar or 1D tensor.&quot;</span>));</span><br><span class="line">      <span class="type">int</span> batch = t_sentence_in-&gt;<span class="built_in">dim_size</span>(<span class="number">0</span>);</span><br><span class="line">      <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; batch; i++) &#123;</span><br><span class="line">        jieba_-&gt;<span class="built_in">Cut</span>(t_sentence_in-&gt;<span class="built_in">vec</span>&lt;string&gt;()(i), words, <span class="literal">true</span>);</span><br><span class="line">        t_sentence_out-&gt;<span class="built_in">vec</span>&lt;string&gt;()(i) = str_util::<span class="built_in">Join</span>(words, <span class="string">&quot; &quot;</span>);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>compute</code>函数大致就是先把<code>tensor</code>数据结构转成<code>C++</code>数据结构；然后进行计算；然后再将计算结果包装成<code>tensor</code>数据结构返回。因此，<code>C++</code>数据结构和<code>tensor</code>的数据交换比较重要：</p>
+<ul>
+<li><code>tensor</code>到<code>C++</code>：<code>tensor</code>对象可以调用<code>scalar&lt;string&gt;()</code>或<code>vector&lt;string&gt;()</code>或<code>matrix&lt;string&gt;()</code>来获取其内部数据，然后再直接<code>(i)</code>或者<code>(i,j)</code>获取某个位置的元素的引用。</li>
+<li><code>C++</code>到<code>tensor</code>：先声明一个<code>tensor</code>对象，然后类似于上面的操作，将<code>C++</code>数据赋值给相应的引用。</li>
+<li>具体操作参考<a href="https://www.tensorflow.org/api_docs/cc/class/tensorflow/tensor">这里</a></li>
+<li>多线程和GPU相关请参考<a href="https://www.tensorflow.org/guide/create_op#gpu_kernels">官网</a></li>
+</ul>
+<p>实现完以后，后面还需加上注册kernel的代码。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">REGISTER_KERNEL_BUILDER</span>(<span class="built_in">Name</span>(<span class="string">&quot;JiebaCut&quot;</span>).<span class="built_in">Device</span>(DEVICE_CPU), JiebaCutOp);</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://www.tensorflow.org/api_docs/cc/class/tensorflow/tensor">c++相关文档</a></p>
+<h3 id="3-编译"><a href="#3-编译" class="headerlink" title="3.编译"></a>3.编译</h3><p>这里主要介绍使用Makefile编译的方法，使用bazel编译参考官网。</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">TF_CFLAGS=( <span class="variable">$(python -c &#x27;import tensorflow as tf; print(&quot; &quot;.<span class="built_in">join</span>(tf.sysconfig.get_compile_flags()</span>))&#x27;) )</span><br><span class="line">TF_LFLAGS=( <span class="variable">$(python -c &#x27;import tensorflow as tf; print(&quot; &quot;.<span class="built_in">join</span>(tf.sysconfig.get_link_flags()</span>))&#x27;) )</span><br><span class="line">g++ -std=c++11 -shared zero_out.cc -o zero_out.so -fPIC $&#123;TF_CFLAGS[@]&#125; $&#123;TF_LFLAGS[@]&#125; -O2</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-python封装"><a href="#4-python封装" class="headerlink" title="4.python封装"></a>4.python封装</h3><p>python封装主要实现两步：</p>
+<p>1.将op从编译好的<code>.so</code>库中取出：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">path = glob(os.path.join(this_directory, <span class="string">&#x27;x_ops.*so&#x27;</span>))[<span class="number">0</span>]</span><br><span class="line">logging.info(<span class="string">f&#x27;x_ops.so path: <span class="subst">&#123;path&#125;</span>&#x27;</span>)</span><br><span class="line">gen_x_ops = tf.load_op_library(path)</span><br></pre></td></tr></table></figure>
+
+<p>2.设置一些参数检查：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">jieba_cut</span>(<span class="params">input_sentence,</span></span><br><span class="line"><span class="params">              use_file=<span class="literal">True</span>,</span></span><br><span class="line"><span class="params">              dict_path=<span class="string">&quot;&quot;</span>,</span></span><br><span class="line"><span class="params">              hmm_path=<span class="string">&quot;&quot;</span>,</span></span><br><span class="line"><span class="params">              user_dict_path=<span class="string">&quot;&quot;</span>,</span></span><br><span class="line"><span class="params">              idf_path=<span class="string">&quot;&quot;</span>,</span></span><br><span class="line"><span class="params">              stop_word_path=<span class="string">&quot;&quot;</span>,</span></span><br><span class="line"><span class="params">              dict_lines=[<span class="string">&quot;&quot;</span>],</span></span><br><span class="line"><span class="params">              model_lines=[<span class="string">&quot;&quot;</span>],</span></span><br><span class="line"><span class="params">              user_dict_lines=[<span class="string">&quot;&quot;</span>],</span></span><br><span class="line"><span class="params">              idf_lines=[<span class="string">&quot;&quot;</span>],</span></span><br><span class="line"><span class="params">              stop_word_lines=[<span class="string">&quot;&quot;</span>],</span></span><br><span class="line"><span class="params">              hmm=<span class="literal">True</span></span>):</span><br><span class="line">  <span class="keyword">if</span> use_file:</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(dict_path):</span><br><span class="line">      <span class="keyword">raise</span> FileNotFoundError(<span class="string">&quot;Dict file not found: &#123;&#125;!&quot;</span>.<span class="built_in">format</span>(dict_path))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(hmm_path):</span><br><span class="line">      <span class="keyword">raise</span> FileNotFoundError(<span class="string">&quot;HMM Model file not found: &#123;&#125;!&quot;</span>.<span class="built_in">format</span>(hmm_path))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(user_dict_path):</span><br><span class="line">      <span class="keyword">raise</span> FileNotFoundError(<span class="string">&quot;User dict file not found: &#123;&#125;!&quot;</span>.<span class="built_in">format</span>(user_dict_path))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(idf_path):</span><br><span class="line">      <span class="keyword">raise</span> FileNotFoundError(<span class="string">&quot;IDF file not found: &#123;&#125;!&quot;</span>.<span class="built_in">format</span>(idf_path))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(stop_word_path):</span><br><span class="line">      <span class="keyword">raise</span> FileNotFoundError(<span class="string">&quot;Stop words file not found: &#123;&#125;!&quot;</span>.<span class="built_in">format</span>(stop_word_path))</span><br><span class="line">  ...</span><br></pre></td></tr></table></figure>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文介绍了如何将基于<code>C++</code>的分词工具<code>cppjieba</code>封装成一个Tensorflow Custom Op。欢迎使用<a href="https://github.com/applenob/tf_jieba">tf-jieba</a>和<a href="https://github.com/didi/delta">DELTA</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Tensorflow/" rel="tag"># Tensorflow</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/python/setup/" rel="prev" title="python基于setuptools的打包和分发">
+                  <i class="fa fa-angle-left"></i> python基于setuptools的打包和分发
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/python/import/" rel="next" title="python中的Import总结">
+                  python中的Import总结 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

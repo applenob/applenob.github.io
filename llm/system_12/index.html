@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="一个有趣&amp;有用的topic，跟大家一起探讨~引子   丹尼尔卡尼曼在《思考，快与慢》中引入了人脑的系统一和系统二的概念：  系统一：不费力的反应，比如老司机开车、大人回答一位数的加减法问题等。 系统二：需要动用注意力&#x2F;心智资源，去仔细思考，比如回答为什么一个指标变化了，做n位的乘法题。  大语言模型上的类比：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="大模型中的系统一和系统二">
+<meta property="og:url" content="https://applenob.github.io/llm/system_12/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="一个有趣&amp;有用的topic，跟大家一起探讨~引子   丹尼尔卡尼曼在《思考，快与慢》中引入了人脑的系统一和系统二的概念：  系统一：不费力的反应，比如老司机开车、大人回答一位数的加减法问题等。 系统二：需要动用注意力&#x2F;心智资源，去仔细思考，比如回答为什么一个指标变化了，做n位的乘法题。  大语言模型上的类比：">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://applenob.github.io/llm/system_12/system_2.PNG">
+<meta property="og:image" content="https://applenob.github.io/llm/system_12/cot_examples.PNG">
+<meta property="og:image" content="https://applenob.github.io/llm/system_12/tot.PNG">
+<meta property="og:image" content="https://applenob.github.io/llm/system_12/tot_dfs_bfs.PNG">
+<meta property="og:image" content="https://applenob.github.io/llm/system_12/tot_24.PNG">
+<meta property="og:image" content="https://applenob.github.io/llm/system_12/tot_creative_writing.PNG">
+<meta property="og:image" content="https://applenob.github.io/llm/system_12/got.png">
+<meta property="og:image" content="https://applenob.github.io/llm/system_12/got1.png">
+<meta property="og:image" content="https://applenob.github.io/llm/system_12/got2.png">
+<meta property="og:image" content="https://applenob.github.io/llm/system_12/got3.png">
+<meta property="og:image" content="https://applenob.github.io/llm/system_12/bsm.png">
+<meta property="og:image" content="https://applenob.github.io/llm/system_12/bsm_example.png">
+<meta property="og:image" content="https://applenob.github.io/llm/system_12/system_2_attention.png">
+<meta property="og:image" content="https://applenob.github.io/llm/system_12/rephrase_respond.png">
+<meta property="og:image" content="https://applenob.github.io/llm/system_12/cpo.png">
+<meta property="og:image" content="https://applenob.github.io/llm/system_12/cpo_result.png">
+<meta property="og:image" content="https://applenob.github.io/llm/system_12/branch_solve_merge.png">
+<meta property="article:published_time" content="2024-08-21T02:00:00.000Z">
+<meta property="article:modified_time" content="2024-11-12T05:41:00.403Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="LLM">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://applenob.github.io/llm/system_12/system_2.PNG">
+
+
+<link rel="canonical" href="https://applenob.github.io/llm/system_12/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/llm/system_12/","path":"llm/system_12/","title":"大模型中的系统一和系统二"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>大模型中的系统一和系统二 | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#LLM%E5%9C%A8%E7%B3%BB%E7%BB%9F%E4%BA%8C%E4%B8%8A%E7%9A%84%E6%8E%A2%E7%B4%A2"><span class="nav-number">1.</span> <span class="nav-text">LLM在系统二上的探索</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%9D%E7%BB%B4%E9%93%BE%EF%BC%88Chain-of-Thought%EF%BC%8CCoT%EF%BC%89"><span class="nav-number">1.1.</span> <span class="nav-text">思维链（Chain of Thought，CoT）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%9D%E7%BB%B4%E6%A0%91%EF%BC%88Tree-of-Thought%EF%BC%8CToT%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">思维树（Tree of Thought，ToT）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%9D%E7%BB%B4%E5%9B%BE%EF%BC%88Graph-of-Thought%EF%BC%8CGoT%EF%BC%89"><span class="nav-number">1.3.</span> <span class="nav-text">思维图（Graph of Thought，GoT）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Branch-Solve-Merge"><span class="nav-number">1.4.</span> <span class="nav-text">Branch-Solve-Merge</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#System-2-Attention"><span class="nav-number">1.5.</span> <span class="nav-text">System 2 Attention</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rephrase-and-Respond"><span class="nav-number">1.6.</span> <span class="nav-text">Rephrase and Respond</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#From-System-2-to-System-1"><span class="nav-number">2.</span> <span class="nav-text">From System 2 to System 1</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E4%B8%80"><span class="nav-number">2.1.</span> <span class="nav-text">方案一</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E4%BA%8C"><span class="nav-number">2.2.</span> <span class="nav-text">方案二</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E6%80%9D%E8%80%83"><span class="nav-number">3.</span> <span class="nav-text">应用思考</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E4%B8%80"><span class="nav-number">3.1.</span> <span class="nav-text">应用一</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Reference"><span class="nav-number">4.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/llm/system_12/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="大模型中的系统一和系统二 | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          大模型中的系统一和系统二
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2024-08-20 19:00:00" itemprop="dateCreated datePublished" datetime="2024-08-20T19:00:00-07:00">2024-08-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-11 21:41:00" itemprop="dateModified" datetime="2024-11-11T21:41:00-08:00">2024-11-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/LLM/" itemprop="url" rel="index"><span itemprop="name">LLM</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><blockquote>
+<p>一个有趣&amp;有用的topic，跟大家一起探讨~<br>引子</p>
+</blockquote>
+<p><img src="/llm/system_12/system_2.PNG" alt="system_12_book"></p>
+<p>丹尼尔卡尼曼在《思考，快与慢》中引入了<strong>人脑的系统一和系统二</strong>的概念：</p>
+<ul>
+<li><strong>系统一</strong>：不费力的反应，比如老司机开车、大人回答一位数的加减法问题等。</li>
+<li><strong>系统二</strong>：需要动用注意力&#x2F;心智资源，去仔细思考，比如回答为什么一个指标变化了，做n位的乘法题。</li>
+</ul>
+<p>大语言模型上的类比：</p>
+<ul>
+<li><strong>系统一</strong>：**不生成中间 Token **而直接生成答案的方案。$S_{I}(x) &#x3D; p_{\theta}(x) \rightarrow y$</li>
+<li><strong>系统二</strong>：<strong>生成中间 Token 的方案</strong>，包括执行搜索或多次提示来生成最终响应。$S_{II}(x;p_{\theta}) \rightarrow z,y$</li>
+</ul>
+<p>人脑的系统一和系统二有一个特质是：系统二在足够熟练后有可能向系统一转变，在心理学上称为 <strong>“Automaticity”（自动化）</strong>。比如新手司机逐渐熟练开车后，开车也不再那么费精力。这个过程可以形象地理解成是神经回路的固化：当我们不熟练时，某个process可能是需要在多种选项中进行搜索的，我们对不同选项的优劣还没那么清楚；当我们足够熟练以后，某个process的所有选项的优劣我们已经了然于胸，因此不用怎么搜索，能够很快地得到结果。</p>
+<p>总结下：所谓系统二的做法其实就是要<strong>多输出很多中间输出，或者增加对话的轮数，进行自问自答</strong>。这些增加的输出可以理解成是模型的<strong>思考流</strong>。而系统一则是跳过所有中间输出，直接得到结果。</p>
+<h1 id="LLM在系统二上的探索"><a href="#LLM在系统二上的探索" class="headerlink" title="LLM在系统二上的探索"></a>LLM在系统二上的探索</h1><h2 id="思维链（Chain-of-Thought，CoT）"><a href="#思维链（Chain-of-Thought，CoT）" class="headerlink" title="思维链（Chain of Thought，CoT）"></a>思维链（Chain of Thought，CoT）</h2><blockquote>
+<p>Chain-of-Thought Prompting Elicits Reasoning in Large Language Models<br>Large Language Models are Zero-Shot Reasoners</p>
+</blockquote>
+<ul>
+<li>Few-Shot:<ul>
+<li>提供对问题进行拆解的解答样例。</li>
+</ul>
+</li>
+<li>Zero-Shot:<ul>
+<li><ul>
+<li>Please think step by step; + Give me the detailed reasons.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="/llm/system_12/cot_examples.PNG" alt="cot_examples"></p>
+<h2 id="思维树（Tree-of-Thought，ToT）"><a href="#思维树（Tree-of-Thought，ToT）" class="headerlink" title="思维树（Tree of Thought，ToT）"></a>思维树（Tree of Thought，ToT）</h2><blockquote>
+<p>Tree of Thoughts: Deliberate Problem Solving with Large Language Models<br><a href="https://github.com/princeton-nlp/tree-of-thought-llm">https://github.com/princeton-nlp/tree-of-thought-llm</a></p>
+</blockquote>
+<p><img src="/llm/system_12/tot.PNG" alt="tot"></p>
+<ul>
+<li>定义：state表示当前的部分解法。$s&#x3D;[x,z_{1…i}]$</li>
+<li>流程：<ul>
+<li>问题拆解：分析下task的特质，定义好thought是啥。thought的大小应该是足够小到让llm可以生成diverse的候选；但同时足够大到让llm可以评估是不是向着问题解决更近了一步。</li>
+<li>生成thought候选：<ul>
+<li><strong>sample</strong>：每个step独立同分布采样k个though候选，$z^{(j)} \sim p_{\theta}^{CoT}(z_{i+1}|s)$。适用于思考空间比较大的情况，比如创造性写作，每个thought是一个段落。</li>
+<li><strong>propose</strong>：用一个所谓的“propose prompt”同时生成一系列的thoughts，$[z^{(1)},z^{(2)},…,z^{(k)}] \sim p_{\theta}^{propose}(z_{i+1}^{(1…k)}|s)$。适用于思考空间比较小的情况，用于避免重复的thought候选。比如玩24点，可能的解法是比较有限的。</li>
+</ul>
+</li>
+<li>状态评估：<ul>
+<li>给每个状态独立地Value (pointwise)： <ul>
+<li>$V(p_{\theta},S)(s) \sim p_{\theta}^{value}(x|s) \forall s \in S$</li>
+<li>比如从1-10打分，或者sure&#x2F;likely&#x2F;impossible分类</li>
+</ul>
+</li>
+<li>结合所有的候选状态进行Vote (listwise)：<ul>
+<li>$V(p_{\theta},S)(s) &#x3D; 1[s&#x3D;s^*]$</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>搜索算法：<ul>
+<li><strong>BFS</strong>：<ul>
+<li>每个step维护一个最promising的状态的set。</li>
+</ul>
+</li>
+<li><strong>DFS</strong><ul>
+<li>先探索最promising的state</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="/llm/system_12/tot_dfs_bfs.PNG" alt="tot_dfs_bfs"></p>
+<ul>
+<li>效果：<ul>
+<li>在一些需要强推理的任务上效果显著，比如计算24点，问题解决率从CoT的4%上涨到74%。</li>
+</ul>
+</li>
+</ul>
+<p>24点：</p>
+<p><img src="/llm/system_12/tot_24.PNG" alt="tot_24"></p>
+<p>创意写作：<br><img src="/llm/system_12/tot_creative_writing.PNG" alt="tot_creative_writing"></p>
+<h2 id="思维图（Graph-of-Thought，GoT）"><a href="#思维图（Graph-of-Thought，GoT）" class="headerlink" title="思维图（Graph of Thought，GoT）"></a>思维图（Graph of Thought，GoT）</h2><blockquote>
+<p>Graph of thoughts: Solving elaborate problems with large language models.<br><a href="https://github.com/spcl/graph-of-thoughts">https://github.com/spcl/graph-of-thoughts</a></p>
+</blockquote>
+<ul>
+<li>思考结构可以是任何的图。支持了refining和merging</li>
+</ul>
+<p><img src="/llm/system_12/got.png" alt="got"></p>
+<ul>
+<li>搞了一个框架，定义了一些列接口用于构建图：<ul>
+<li>Generate，1 -&gt; k</li>
+<li>Validate, 当前节点自我检查</li>
+<li>Aggregate, k -&gt; 1</li>
+<li>Score, 评估当前节点</li>
+</ul>
+</li>
+</ul>
+<p><img src="/llm/system_12/got1.png" alt="got"></p>
+<ul>
+<li>Latency-Volume Tradeoff<ul>
+<li>N（节点个数，thought个数）</li>
+<li>volume的定义是在途中有多少个节点有路径可以到达一个指定的节点。</li>
+</ul>
+</li>
+</ul>
+<p><img src="/llm/system_12/got2.png" alt="got"></p>
+<p>数组排序的例子：</p>
+<p><img src="/llm/system_12/got3.png" alt="got"></p>
+<h2 id="Branch-Solve-Merge"><a href="#Branch-Solve-Merge" class="headerlink" title="Branch-Solve-Merge"></a>Branch-Solve-Merge</h2><blockquote>
+<p>Branch-Solve-Merge Improves Large Language Model Evaluation and Generation </p>
+</blockquote>
+<ul>
+<li>Branch模块：给定任务，生成一些子任务，每个子任务是一个branch，每个branch输入原始问题，生成新的prompt；</li>
+<li>Solve模块：针对每个branch模块生成的prompt，生成答案；</li>
+<li>Merge模块：对所有Solve模块生成的prompt进行合并，给出最终的答案。</li>
+</ul>
+<p><img src="/llm/system_12/bsm.png" alt="branch_solve_merge"></p>
+<p>创意写作的例子：</p>
+<p><img src="/llm/system_12/bsm_example.png" alt="branch_solve_merge"></p>
+<h2 id="System-2-Attention"><a href="#System-2-Attention" class="headerlink" title="System 2 Attention"></a>System 2 Attention</h2><blockquote>
+<p>System 2 Attention (is something you might need too)</p>
+</blockquote>
+<ol>
+<li>先重新生成输入x’，将无关内容去除（所谓的attention）</li>
+<li>重新让大语言模型生成结果：$y \sim LLM(x’)$</li>
+</ol>
+<p><img src="/llm/system_12/system_2_attention.png" alt="system_2_attention"></p>
+<h2 id="Rephrase-and-Respond"><a href="#Rephrase-and-Respond" class="headerlink" title="Rephrase and Respond"></a>Rephrase and Respond</h2><blockquote>
+<p>Rephrase and respond: Let large language models ask better questions for themselves.</p>
+</blockquote>
+<ol>
+<li>重写问题</li>
+<li>给出回答</li>
+</ol>
+<p>和CoT互补，可以一起用。<br><img src="/llm/system_12/rephrase_respond.png" alt="rephrase_respond"></p>
+<p>系统二的有效性看起来是比较solid的。那么大模型是否也能做Automaticity的类比，将系统二的能力，迁移到一个更低成本的系统一呢？</p>
+<h1 id="From-System-2-to-System-1"><a href="#From-System-2-to-System-1" class="headerlink" title="From System 2 to System 1"></a>From System 2 to System 1</h1><h2 id="方案一"><a href="#方案一" class="headerlink" title="方案一"></a>方案一</h2><blockquote>
+<p>Distilling System 2 into System 1 </p>
+</blockquote>
+<p>做法：</p>
+<ul>
+<li>收集一些<strong>无监督数据X</strong>，用系统二生成回复：$y^i_{S_{II}}&#x3D;S_{II}(x^i;p_{\theta}),  \forall x_i \in X $</li>
+<li><strong>self-consistency约束</strong>：对一个输入，采样N次，然后使用出现次数最多的那个答案。</li>
+<li>系统一和系统二是同一个模型！</li>
+<li>用生成的$(X_{II},Y_{II})$来finetune LLM，得到系统一。</li>
+</ul>
+<p>效果：</p>
+<ul>
+<li><strong>COT</strong>蒸馏的效果基本上还是原来系统一的水平。</li>
+<li><strong>Branch-Solve-Merge</strong>的效果接近甚至超过原来系统二的水平。</li>
+<li><strong>System 2 Attention</strong> 蒸馏效果超过系统二</li>
+<li><strong>Rephrase and Respond</strong> 蒸馏效果接近甚至超过系统二</li>
+</ul>
+<p>方案一相当于是我自己先按照详细的思路先计算一堆题目，然后去背这些题目的答案，背多了也学会套路了。但这些系统二的思路，系统一其实并不清楚。（所以其实还有种finetune的办法是把解法也加到输入里）</p>
+<p>这里的<strong>局限性</strong>以乘法题为例，我可能能背出99乘法表，也知道多位乘法的算法，但给我一个多位乘法的题目，我总是需要拿个草稿纸把中间过程算一下，无法直接给出答案。</p>
+<h2 id="方案二"><a href="#方案二" class="headerlink" title="方案二"></a>方案二</h2><blockquote>
+<p>Chain of Preference Optimization: Improving Chain-of-Thought Reasoning in LLMs<br><a href="https://github.com/sail-sg/CPO">https://github.com/sail-sg/CPO</a></p>
+</blockquote>
+<p>做法：<br><img src="/llm/system_12/cpo.png" alt="cpo"></p>
+<ul>
+<li><ol>
+<li>生成Thoughts：</li>
+<li>$z^{j}<em>i \sim \pi</em>{\theta}(z_i|s_{i-1}) &#x3D; \pi_{\theta}(z_i|x,z_1,…,z_{i-1}), ; for ; j&#x3D;1,…,k$</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>state评估：</li>
+</ol>
+<ul>
+<li>独立打分</li>
+</ul>
+</li>
+<li><ol start="3">
+<li>搜索，然后收集数据：</li>
+</ol>
+<ul>
+<li>用BFS搜索，收集在状态$s_{i-1}^w$下的偏好数据对$(z_i^w, z_i^l)$</li>
+</ul>
+</li>
+<li><ol start="4">
+<li>用CPO目标进行训练（其实就是DPO）：</li>
+</ol>
+<ul>
+<li>$L_i(\pi_{\theta};\pi_{ref}) &#x3D; -log \sigma(\beta log\frac{\pi_{\theta}(z_i^w|x,s^w_{i-1})}{\pi_{ref}(z_i^w|x,s^w_{i-1})} - \beta log\frac{\pi_{\theta}(z_i^l|x,s^w_{i-1})}{\pi_{ref}(z_i^l|x,s^w_{i-1})})$</li>
+<li>$L_{CPO}(\pi_{theta};\pi_{ref}) &#x3D; E_{(x,z^w_i,z^l_i,s_{i-1}^w)\sim D}[L_i(\pi_{\theta};\pi_{ref})]$</li>
+</ul>
+</li>
+</ul>
+<p>效果：<br><img src="/llm/system_12/cpo_result.png" alt="cpo_result"></p>
+<p>可见CPO在latency下降显著的情况下，还能保持较高的Acc。不过ToT的latency的确高的有点离谱。</p>
+<p>这个思路和人脑实际发生的自动化更相似。</p>
+<h1 id="应用思考"><a href="#应用思考" class="headerlink" title="应用思考"></a>应用思考</h1><h2 id="应用一"><a href="#应用一" class="headerlink" title="应用一"></a>应用一</h2><p>任何复杂的推理任务，比如说我们想用大语言模型做推荐，也是一个复杂的逻辑推理过程。我们可以用Branch-Solve-Merge来生成多个推荐维度（用户喜欢类似的视频、多样性、informativeness），再merge成最终的推荐结果：</p>
+<p><img src="/llm/system_12/branch_solve_merge.png" alt="branch_solve_merge"></p>
+<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><ul>
+<li>Distilling System 2 into System 1</li>
+<li>Chain of Preference Optimization: Improving Chain-of-Thought Reasoning in LLMs </li>
+<li>Branch-Solve-Merge Improves Large Language Model Evaluation and Generation </li>
+<li>System 2 Attention (is something you might need too)</li>
+<li>Rephrase and respond: Let large language models ask better questions for themselves.</li>
+<li>Chain-of-Thought Prompting Elicits Reasoning in Large Language Models</li>
+<li>Tree of Thoughts: Deliberate Problem Solving with Large Language Models</li>
+<li>Graph of thoughts: Solving elaborate problems with large language models.</li>
+<li>Towards Goal-oriented Prompt Engineering for Large Language Models: A Survey</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/LLM/" rel="tag"># LLM</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/llm/alignment/" rel="prev" title="Alignment in LLM">
+                  <i class="fa fa-angle-left"></i> Alignment in LLM
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

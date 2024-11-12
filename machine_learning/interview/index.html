@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="计算CNN输出尺寸公式：输出尺寸&#x3D;(输入尺寸-filter尺寸+2*padding）&#x2F;stride+1 ROC 和AUCROC曲线的x轴是伪阳率即$\frac{伪阳}{真阴+伪阳}$，y轴是真阳率即$\frac{真阳}{真阳+伪阴}$。  thresh-hold很高，导致全部预测阴，则真阳率为0，伪阳率为0，在坐标点$(0, 0)$； thresh-hold很低，导致全部预测阳，则真阳率为1，伪阳">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习基础知识汇总">
+<meta property="og:url" content="https://applenob.github.io/machine_learning/interview/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="计算CNN输出尺寸公式：输出尺寸&#x3D;(输入尺寸-filter尺寸+2*padding）&#x2F;stride+1 ROC 和AUCROC曲线的x轴是伪阳率即$\frac{伪阳}{真阴+伪阳}$，y轴是真阳率即$\frac{真阳}{真阳+伪阴}$。  thresh-hold很高，导致全部预测阴，则真阳率为0，伪阳率为0，在坐标点$(0, 0)$； thresh-hold很低，导致全部预测阳，则真阳率为1，伪阳">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2017-08-11T21:00:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.078Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="Machine Learning">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://applenob.github.io/machine_learning/interview/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/machine_learning/interview/","path":"machine_learning/interview/","title":"机器学习基础知识汇总"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>机器学习基础知识汇总 | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97CNN%E8%BE%93%E5%87%BA%E5%B0%BA%E5%AF%B8"><span class="nav-number">1.</span> <span class="nav-text">计算CNN输出尺寸</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ROC-%E5%92%8CAUC"><span class="nav-number">2.</span> <span class="nav-text">ROC 和AUC</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%A1%E6%96%B9%E6%A3%80%E9%AA%8C"><span class="nav-number">3.</span> <span class="nav-text">卡方检验</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%A4%E5%8F%89%E7%86%B5%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0"><span class="nav-number">4.</span> <span class="nav-text">交叉熵损失函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Perplexity"><span class="nav-number">5.</span> <span class="nav-text">Perplexity</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Haffman-%E7%BC%96%E7%A0%81"><span class="nav-number">6.</span> <span class="nav-text">Haffman 编码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RNN%E5%92%8CLSTM"><span class="nav-number">7.</span> <span class="nav-text">RNN和LSTM</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/machine_learning/interview/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="机器学习基础知识汇总 | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          机器学习基础知识汇总
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-08-11 14:00:00" itemprop="dateCreated datePublished" datetime="2017-08-11T14:00:00-07:00">2017-08-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="计算CNN输出尺寸"><a href="#计算CNN输出尺寸" class="headerlink" title="计算CNN输出尺寸"></a>计算CNN输出尺寸</h2><p>公式：<code>输出尺寸=(输入尺寸-filter尺寸+2*padding）/stride+1</code></p>
+<h2 id="ROC-和AUC"><a href="#ROC-和AUC" class="headerlink" title="ROC 和AUC"></a>ROC 和AUC</h2><p>ROC曲线的x轴是伪阳率即$\frac{伪阳}{真阴+伪阳}$，y轴是真阳率即$\frac{真阳}{真阳+伪阴}$。</p>
+<ul>
+<li>thresh-hold很高，导致全部预测阴，则真阳率为0，伪阳率为0，在坐标点$(0, 0)$；</li>
+<li>thresh-hold很低，导致全部预测阳，则真阳率为1，伪阳率为1，在坐标点$(1, 1)$；</li>
+<li>如果分类效果很好，则真阳率很高，伪阳率很低，接近坐标点$(0, 1)$。AUC即（Area Under Curve），即ROC曲线下的面积。如果分类效果越好，点越接近$(0, 1)$则AUC越大。</li>
+</ul>
+<p><a href="https://www.zhihu.com/question/39840928?from=profile_question_card">参考链接</a></p>
+<h2 id="卡方检验"><a href="#卡方检验" class="headerlink" title="卡方检验"></a>卡方检验</h2><p>卡方检验可以用于两个变量间的<strong>相关性检测</strong>。</p>
+<p>核心思想：卡方衡量了<strong>实际值与理论值的差异程度</strong>。</p>
+<p>即，先假设两个变量之间是<strong>相互独立的</strong>，计算一组理论值$T$，设实际值是$A$，则$\mathfrak{X}^2&#x3D;\frac{\sum(A-T)^2}{T}$</p>
+<p><a href="https://segmentfault.com/a/1190000003719712">参考链接</a></p>
+<h2 id="交叉熵损失函数"><a href="#交叉熵损失函数" class="headerlink" title="交叉熵损失函数"></a>交叉熵损失函数</h2><p>$H(p, q) &#x3D; \sum_i p_i × log\frac{1}{q_i}$，可以衡量两个分布的相似度。</p>
+<p>可以配合sigmoid，使其在误差下降的时候，梯度不会太小。</p>
+<h2 id="Perplexity"><a href="#Perplexity" class="headerlink" title="Perplexity"></a>Perplexity</h2><p>困惑度，如果语言模型生成的句子越不像是人说的，困惑度越大，语言模型越差。</p>
+<p>在语言模型中，可以将一句话的似然函数，用来描述这句话的困惑度。似然函数越大，困惑度越小。</p>
+<p>于是有：</p>
+<p>$$PPL&#x3D;\sqrt[n]{\frac{1}{P(w_1,w_2,…,w_N)}}$$</p>
+<p>$$&#x3D;e^{\frac{1}{N}ln\frac{1}{P(w_1,w_2,…,w_N)}}$$</p>
+<p>$$&#x3D;e^{-\frac{1}{N}\sum_{i&#x3D;1}^NlnP(w_i)}$$</p>
+<p><a href="http://blog.csdn.net/luo123n/article/details/48902815">参考链接</a></p>
+<h2 id="Haffman-编码"><a href="#Haffman-编码" class="headerlink" title="Haffman 编码"></a>Haffman 编码</h2><p>本身概念不难，最短编码。构造也很简单，每次把两个最小的拿出来，合并，再丢回去。</p>
+<p>需要注意的是，编码的时候，所有的编码，不可以是其他的任何编码的前缀。</p>
+<h2 id="RNN和LSTM"><a href="#RNN和LSTM" class="headerlink" title="RNN和LSTM"></a>RNN和LSTM</h2><p>RNN有什么问题？LSTM为何可以解决这个问题？</p>
+<p>RNN由于长期依赖的问题，经过许多阶段传播后，梯度<strong>倾向于消失（大部分情况）</strong>或**爆炸（很少，但对优化过程影响很大）。</p>
+<ul>
+<li>LSTM的自循环的权重视上下文而定，而不是固定的；而普通的RNN是固定的W。</li>
+<li>内部状态$s$或者$h$：<ul>
+<li>RNN：$h^{(t)}&#x3D;\sigma(b+Wh^{(t−1)}+Ux^{(t)})$</li>
+<li>LSTM：$s^{(t)}_i&#x3D;f^{(t)}_is^{(t−1)}_i+g^{(t)}_ii^{(t)}_i$，$g^{(t)}_i$又称为“备选状态”。</li>
+<li>GRU：$h^{(t)}_i&#x3D;u^{(t−1)}_ih^{(t−1)}_i+(1−u^{(t−1)}_i)\tilde h_t$</li>
+<li>传统的RNN使用<strong>“覆写”</strong>的方式计算状态：$S_t&#x3D;f(S_{t-1},x_t)$，根据求导的链式法则，这种形式直接导致梯度别表示成连积的形式，容易导致梯度消失或者梯度爆炸。</li>
+<li>现代的RNN（包括但不限于LSTM单元），使用<strong>“累加”</strong>的方式计算状态：$S_t &#x3D; \sum_{\tau&#x3D;1}^t\Delta S_{\tau}$，这种累加形式导致导数也是累加的形式，因此避免了梯度的消失。</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/machine_learning/tran_learn/" rel="prev" title="迁移学习入门">
+                  <i class="fa fa-angle-left"></i> 迁移学习入门
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/deep_learning/generative_model/" rel="next" title="深度生成模型总结--原始GAN和VAE">
+                  深度生成模型总结--原始GAN和VAE <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

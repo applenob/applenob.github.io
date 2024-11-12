@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="动机最近的一些基于python的框架型的工作，有很多涉及到动态用户代码加载的功能。因此，对python的导入（import）做一个梳理总结。 基础概念 模块（module）：一般是指python源代码文件，即.py文件。还有可能是：.pyo、.pyc、.pyd、.so文件。 包（package）：包是含有module的文件夹，为了避免模块名冲突而引入的。当一个文件夹下有__init__.py时，代">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python中的Import总结">
+<meta property="og:url" content="https://applenob.github.io/python/import/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="动机最近的一些基于python的框架型的工作，有很多涉及到动态用户代码加载的功能。因此，对python的导入（import）做一个梳理总结。 基础概念 模块（module）：一般是指python源代码文件，即.py文件。还有可能是：.pyo、.pyc、.pyd、.so文件。 包（package）：包是含有module的文件夹，为了避免模块名冲突而引入的。当一个文件夹下有__init__.py时，代">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-10-26T17:37:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.088Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://applenob.github.io/python/import/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/python/import/","path":"python/import/","title":"python中的Import总结"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>python中的Import总结 | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%9C%BA"><span class="nav-number">1.</span> <span class="nav-text">动机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5"><span class="nav-number">2.</span> <span class="nav-text">基础概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#import"><span class="nav-number">3.</span> <span class="nav-text">import</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%90%9C%E7%B4%A2"><span class="nav-number">3.1.</span> <span class="nav-text">搜索</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A0%E8%BD%BD"><span class="nav-number">3.2.</span> <span class="nav-text">加载</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#importlib"><span class="nav-number">4.</span> <span class="nav-text">importlib</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#exec"><span class="nav-number">5.</span> <span class="nav-text">exec</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">6.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/python/import/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="python中的Import总结 | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          python中的Import总结
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2019-10-26 10:37:00" itemprop="dateCreated datePublished" datetime="2019-10-26T10:37:00-07:00">2019-10-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="动机"><a href="#动机" class="headerlink" title="动机"></a>动机</h2><p>最近的一些基于python的<strong>框架型</strong>的工作，有很多涉及到<strong>动态用户代码加载的功能</strong>。因此，对python的<strong>导入</strong>（import）做一个梳理总结。</p>
+<h2 id="基础概念"><a href="#基础概念" class="headerlink" title="基础概念"></a>基础概念</h2><ul>
+<li><strong>模块（module）</strong>：一般是指python源代码文件，即<code>.py</code>文件。还有可能是：<code>.pyo</code>、<code>.pyc</code>、<code>.pyd</code>、<code>.so</code>文件。</li>
+<li><strong>包（package）</strong>：包是含有module的文件夹，为了避免模块名冲突而引入的。当一个文件夹下有<code>__init__.py</code>时，代表这个文件夹是一个package。package也可以看做是特殊的module，它的替身就是对应的<code>__init.py__</code>文件。</li>
+<li><strong>命名空间（namespace）</strong>：<ul>
+<li><code>local namespace</code>：每个<strong>函数function</strong>特有，用于保存函数的变量。可用内置函数<code>locals()</code>查看，该函数不可写。</li>
+<li><code>enclosing function namespace</code>：闭包命名空间：闭包函数 的名称空间（Python 3 引入）。</li>
+<li><code>global namespace</code>：每个<strong>模块module</strong>特有，用于保存模块的变量。可用内置函数<code>globals()</code>查看，该函数可写。</li>
+<li><code>builtin namespace</code>：内建命名空间：Python 解释器启动时自动载入<code>__built__</code>模块后所形成的名称空间；如 <code>str/list/dict</code>等内置对象的名称就出于这里。</li>
+</ul>
+</li>
+</ul>
+<p>相关的内置属性：</p>
+<ul>
+<li><code>__all__</code>：一般在<code>__init__.py</code>中用于指定此package在被外部代码import时，哪些module会被引进当前作用域中。</li>
+<li><code>__name__</code>：直接运行本module，值为<code>__main__</code>；<code>import module</code>，值为module名字。</li>
+<li><code>__path__</code>：保存当前package的路径。修改<code>__path__</code>可以改变package内的搜索路径。任何具有<code>__path__</code>属性的模块都会被当作是包。</li>
+<li><code>__file__</code>：如果是package，则保存<code>__init__.py</code>的绝对路径；如果是module，返回module本身的绝对路径。</li>
+<li><code>__package__</code>：保存module对应的package名称。</li>
+</ul>
+<h2 id="import"><a href="#import" class="headerlink" title="import"></a>import</h2><p><code>import</code>语句时发起导入机制的最常用方式，会调用内置的<code>__import__()</code>。包括以下两个操作：</p>
+<ul>
+<li><ol>
+<li><strong>搜索</strong>指定名称的模块。</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>将搜索结果绑定到<strong>当前作用域</strong>中。</li>
+</ol>
+</li>
+</ul>
+<h3 id="搜索"><a href="#搜索" class="headerlink" title="搜索"></a>搜索</h3><ul>
+<li><ol>
+<li>先检查<code>sys.modules</code>中是否有模块缓存；</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>如果没有缓存，会接着搜索<code>sys.meta_path</code>路径下的查找器再进行查找。</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>查找器会使用<code>sys.path</code>来搜索模块。<code>sys.path</code>会将环境变量<code>PYTHONPATH</code>指定的路径添加进去，并且<code>path[0]</code>会给脚本存放的路径保留。</li>
+</ol>
+</li>
+</ul>
+<h3 id="加载"><a href="#加载" class="headerlink" title="加载"></a>加载</h3><ul>
+<li><ol>
+<li>如果之前没有缓存，会将模块加入到<code>sys.modules</code>中。</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>注册到当前module的全局命名空间中。</li>
+</ol>
+</li>
+</ul>
+<h2 id="importlib"><a href="#importlib" class="headerlink" title="importlib"></a>importlib</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">importlib.import_module(name, package=None)</span><br></pre></td></tr></table></figure>
+
+<p>在实践中，我会经常用importlib去加载用户指定的代码，比如<code>user_project/module.py</code>，可以用<code>importlib.import_module(&quot;user_project.module&quot;)</code>来导入。另外需要确保<code>user_project</code>是包含在<code>sys.path</code>的。</p>
+<h2 id="exec"><a href="#exec" class="headerlink" title="exec"></a>exec</h2><p><code>exec</code>和<code>eval</code>都可以用来动态地执行python代码，区别是前者可以是大段的代码；后者是一个python表达式。</p>
+<p>因此，用户的代码片段，使用<code>exec</code>来动态加载也是一个不错的选项。</p>
+<p>需要注意的是，<code>exec</code>除了接收代码对象外，还接受执行的上下文：<code>exec(object[, globals[, locals]])</code>，也就是两个重要的参数：<code>globals</code>和<code>locals</code>。</p>
+<ul>
+<li><code>globals</code>用来<strong>指定代码执行时可以使用的全局变量</strong>以及<strong>收集代码执行后的全局变量</strong>。而且默认会加上<code>__builtins__</code>。</li>
+<li><code>locals</code>用来<strong>指定代码执行时的局部变量</strong>以及<strong>收集代码执行后的局部变量</strong>。</li>
+</ul>
+<p>上面的描述不能完全表达这两个参数的逻辑，注意理解下面代码的逻辑：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">1</span>]: code = <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">   ...: def func():</span></span><br><span class="line"><span class="string">   ...:     pass</span></span><br><span class="line"><span class="string">   ...: a = 1&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">In [<span class="number">2</span>]: g=&#123;<span class="string">&quot;__builtins__&quot;</span>:&#123;&#125;&#125;</span><br><span class="line"></span><br><span class="line">In [<span class="number">3</span>]: l = &#123;&#125;</span><br><span class="line"></span><br><span class="line">In [<span class="number">4</span>]: <span class="built_in">exec</span>(code, g, l)</span><br><span class="line"></span><br><span class="line">In [<span class="number">5</span>]: g</span><br><span class="line">Out[<span class="number">5</span>]: &#123;<span class="string">&#x27;__builtins__&#x27;</span>: &#123;&#125;&#125;</span><br><span class="line"></span><br><span class="line">In [<span class="number">6</span>]: l</span><br><span class="line">Out[<span class="number">6</span>]: &#123;<span class="string">&#x27;func&#x27;</span>: &lt;function func()&gt;, <span class="string">&#x27;a&#x27;</span>: <span class="number">1</span>&#125;</span><br><span class="line"></span><br><span class="line">In [<span class="number">7</span>]: <span class="built_in">exec</span>(code, g)</span><br><span class="line"></span><br><span class="line">In [<span class="number">8</span>]: g</span><br><span class="line">Out[<span class="number">8</span>]: &#123;<span class="string">&#x27;__builtins__&#x27;</span>: &#123;&#125;, <span class="string">&#x27;func&#x27;</span>: &lt;function func()&gt;, <span class="string">&#x27;a&#x27;</span>: <span class="number">1</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>总结</strong>：代码片段中新增加的变量，都保存在<code>locals</code>中；若只传一个<code>globals</code>参数，则<code>locals</code>也会使用<code>globals</code>传入的参数，所以这时<code>globals</code>中会有代码片段执行后新增加的变量。至于为什么新增的变量会只在<code>locals</code>中，可以这么理解：<code>exec</code>中执行的代码是在函数<code>exec_xxx()</code>中执行，而不是直接在当前上下文执行；如果需要达到当前上下文执行的效果，就把<code>globals()</code>传给<code>locals</code>参数即可。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="https://docs.python.org/zh-cn/3/reference/import.html">5. 导入系统</a></li>
+<li><a href="https://docs.python.org/zh-cn/3/library/importlib.html#module-importlib">importlib — import 的实现</a></li>
+<li><a href="https://blog.csdn.net/weixin_38256474/article/details/81228492">Python 3.x可能是史上最详解的import</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/tensorflow/tf_jieba/" rel="prev" title="如何将分词工具Jieba封装成一个Tensorflow Operator">
+                  <i class="fa fa-angle-left"></i> 如何将分词工具Jieba封装成一个Tensorflow Operator
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/python/logging/" rel="next" title="python中的Logging总结">
+                  python中的Logging总结 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

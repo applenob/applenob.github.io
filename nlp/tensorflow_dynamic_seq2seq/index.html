@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="动机其实差不多半年之前就想吐槽Tensorflow的seq2seq了（后面博主去干了些别的事情），官方的代码已经抛弃原来用静态rnn实现的版本了，而官网的tutorial现在还是介绍基于静态的rnn的模型，加bucket那套，看这里。 看到了吗？是legacy_seq2seq的。本来Tensorflow的seq2seq的实现相比于pytorch已经很复杂了，还没有个正经的tutorial，哎。好的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Tensorflow动态seq2seq使用总结（r1.3）">
+<meta property="og:url" content="https://applenob.github.io/nlp/tensorflow_dynamic_seq2seq/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="动机其实差不多半年之前就想吐槽Tensorflow的seq2seq了（后面博主去干了些别的事情），官方的代码已经抛弃原来用静态rnn实现的版本了，而官网的tutorial现在还是介绍基于静态的rnn的模型，加bucket那套，看这里。 看到了吗？是legacy_seq2seq的。本来Tensorflow的seq2seq的实现相比于pytorch已经很复杂了，还没有个正经的tutorial，哎。好的">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://applenob.github.io/nlp/tensorflow_dynamic_seq2seq/tutorial.png">
+<meta property="og:image" content="https://applenob.github.io/nlp/tensorflow_dynamic_seq2seq/seq2seq.png">
+<meta property="og:image" content="https://applenob.github.io/nlp/tensorflow_dynamic_seq2seq/attention.png">
+<meta property="og:image" content="https://applenob.github.io/nlp/tensorflow_dynamic_seq2seq/attention_2.png">
+<meta property="og:image" content="https://applenob.github.io/nlp/tensorflow_dynamic_seq2seq/attention_3.png">
+<meta property="og:image" content="https://applenob.github.io/nlp/tensorflow_dynamic_seq2seq/AttentionWrapper.png">
+<meta property="article:published_time" content="2017-12-26T00:10:20.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.088Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="NLP">
+<meta property="article:tag" content="Tensorflow">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://applenob.github.io/nlp/tensorflow_dynamic_seq2seq/tutorial.png">
+
+
+<link rel="canonical" href="https://applenob.github.io/nlp/tensorflow_dynamic_seq2seq/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/nlp/tensorflow_dynamic_seq2seq/","path":"nlp/tensorflow_dynamic_seq2seq/","title":"Tensorflow动态seq2seq使用总结（r1.3）"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Tensorflow动态seq2seq使用总结（r1.3） | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%9C%BA"><span class="nav-number">1.</span> <span class="nav-text">动机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%A6%E4%B9%A0%E7%9A%84%E8%B5%84%E6%96%99"><span class="nav-number">2.</span> <span class="nav-text">学习的资料</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Tensorflow%E7%9A%84%E5%8A%A8%E6%80%81rnn"><span class="nav-number">3.</span> <span class="nav-text">Tensorflow的动态rnn</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Seq2Seq%E7%BB%93%E6%9E%84%E5%88%86%E6%9E%90"><span class="nav-number">4.</span> <span class="nav-text">Seq2Seq结构分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E8%BF%87%E7%A4%BA%E4%BE%8B%E8%AE%B2%E8%A7%A3"><span class="nav-number">5.</span> <span class="nav-text">通过示例讲解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Encoder%E7%9A%84%E5%AE%9E%E7%8E%B0%E7%A4%BA%E4%BE%8B"><span class="nav-number">6.</span> <span class="nav-text">Encoder的实现示例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Decoder%E5%AE%9E%E7%8E%B0%E7%A4%BA%E4%BE%8B"><span class="nav-number">7.</span> <span class="nav-text">Decoder实现示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Helper"><span class="nav-number">7.1.</span> <span class="nav-text">Helper</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BasicDecoder"><span class="nav-number">8.</span> <span class="nav-text">BasicDecoder</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9E%E5%88%B0%E7%A4%BA%E4%BE%8B"><span class="nav-number">9.</span> <span class="nav-text">回到示例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Attntion"><span class="nav-number">10.</span> <span class="nav-text">Attntion</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Loss-Function"><span class="nav-number">11.</span> <span class="nav-text">Loss Function</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8E%E8%AE%B0"><span class="nav-number">12.</span> <span class="nav-text">后记</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/nlp/tensorflow_dynamic_seq2seq/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Tensorflow动态seq2seq使用总结（r1.3） | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Tensorflow动态seq2seq使用总结（r1.3）
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-12-25 16:10:20" itemprop="dateCreated datePublished" datetime="2017-12-25T16:10:20-08:00">2017-12-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NLP/" itemprop="url" rel="index"><span itemprop="name">NLP</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="动机"><a href="#动机" class="headerlink" title="动机"></a>动机</h2><p>其实差不多半年之前就想吐槽Tensorflow的seq2seq了（后面博主去干了些别的事情），官方的代码已经抛弃原来用静态rnn实现的版本了，而官网的tutorial现在还是介绍基于静态的rnn的模型，加bucket那套，<a href="https://www.tensorflow.org/tutorials/seq2seq">看这里</a>。</p>
+<p><img src="/nlp/tensorflow_dynamic_seq2seq/tutorial.png" alt="tutorial.png"><br>看到了吗？是legacy_seq2seq的。本来Tensorflow的seq2seq的实现相比于pytorch已经很复杂了，还没有个正经的tutorial，哎。<br>好的，回到正题，遇到问题解决问题，想办法找一个<strong>最佳的Tensorflow的seq2seq解决方案</strong>！</p>
+<h2 id="学习的资料"><a href="#学习的资料" class="headerlink" title="学习的资料"></a>学习的资料</h2><ul>
+<li>知名博主WildML给google写了个通用的seq2seq，<a href="https://google.github.io/seq2seq/">文档地址</a>，<a href="https://github.com/google/seq2seq">Github地址</a>。这个框架已经被Tensorflow采用，后面我们的代码也会基于这里的实现。但本身这个框架是为了让用户直接写参数就能简单地构建网络，因此文档没有太多参考价值，我们直接借用其中的代码构建自己的网络。</li>
+<li>俄罗斯小伙<a href="https://github.com/ematvey">ematvey</a>写的：tensorflow-seq2seq-tutorials，<a href="https://github.com/ematvey/tensorflow-seq2seq-tutorials">Github地址</a>。介绍使用动态rnn构建seq2seq，decoder使用<code>raw_rnn</code>，原理和WildML的方案差不多。多说一句，这哥们当时也是吐槽Tensorflow的文档，写了那么个仓库当第三方的文档使，现在都400+个star了。真是有漏洞就有机遇啊，哈哈。</li>
+</ul>
+<h2 id="Tensorflow的动态rnn"><a href="#Tensorflow的动态rnn" class="headerlink" title="Tensorflow的动态rnn"></a>Tensorflow的动态rnn</h2><p>先来简单介绍动态rnn和静态rnn的区别。<br><code>tf.nn.rnn creates an unrolled graph for a fixed RNN length. That means, if you call tf.nn.rnn with inputs having 200 time steps you are creating a static graph with 200 RNN steps. First, graph creation is slow. Second, you’re unable to pass in longer sequences (&gt; 200) than you’ve originally specified.tf.nn.dynamic_rnn solves this. It uses a tf.While loop to dynamically construct the graph when it is executed. That means graph creation is faster and you can feed batches of variable size.</code></p>
+<p>摘自<a href="https://stackoverflow.com/questions/39734146/whats-the-difference-between-tensorflow-dynamic-rnn-and-rnn">Whats the difference between tensorflow dynamic_rnn and rnn?</a>。也就是说，静态的rnn必须提前将图展开，在执行的时候，图是固定的，并且最大长度有限制。而动态rnn可以在执行的时候，将图循环地的复用。</p>
+<p>一句话，<strong>能用动态的rnn就尽量用动态的吧</strong>。</p>
+<h2 id="Seq2Seq结构分析"><a href="#Seq2Seq结构分析" class="headerlink" title="Seq2Seq结构分析"></a>Seq2Seq结构分析</h2><p><img src="/nlp/tensorflow_dynamic_seq2seq/seq2seq.png" alt="seq2seq.png"></p>
+<p>seq2seq由Encoder和Decoder组成，一般Encoder和Decoder都是基于RNN。Encoder相对比较简单，不管是多层还是双向或者更换具体的Cell，使用原生API还是比较容易实现的。难点在于Decoder：<strong>不同的Decoder对应的rnn cell的输入不同</strong>，比如上图的示例中，每个cell的输入是上一个时刻cell输出的预测对应的embedding。</p>
+<p><img src="/nlp/tensorflow_dynamic_seq2seq/attention.png" alt="attention.png"></p>
+<p>如果像上图那样使用Attention，则decoder的cell输入还包括attention加权求和过的context。</p>
+<h2 id="通过示例讲解"><a href="#通过示例讲解" class="headerlink" title="通过示例讲解"></a>通过示例讲解</h2><p>![slot filling.png](&#x2F;nlp&#x2F;tensorflow_dynamic_seq2seq&#x2F;slot filling.png)<br>下面通过一个用seq2seq做slot filling（一种序列标注）的例子讲解。完整代码地址：<a href="https://github.com/applenob/RNN-for-Joint-NLU">https://github.com/applenob/RNN-for-Joint-NLU</a></p>
+<h2 id="Encoder的实现示例"><a href="#Encoder的实现示例" class="headerlink" title="Encoder的实现示例"></a>Encoder的实现示例</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 首先构造单个rnn cell</span></span><br><span class="line">encoder_f_cell = LSTMCell(<span class="variable language_">self</span>.hidden_size)</span><br><span class="line">encoder_b_cell = LSTMCell(<span class="variable language_">self</span>.hidden_size)</span><br><span class="line"> (encoder_fw_outputs, encoder_bw_outputs),</span><br><span class="line"> (encoder_fw_final_state, encoder_bw_final_state) = \</span><br><span class="line">        tf.nn.bidirectional_dynamic_rnn(cell_fw=encoder_f_cell,</span><br><span class="line">                                            cell_bw=encoder_b_cell,</span><br><span class="line">                                            inputs=<span class="variable language_">self</span>.encoder_inputs_embedded,</span><br><span class="line">                                            sequence_length=<span class="variable language_">self</span>.encoder_inputs_actual_length,</span><br><span class="line">                                            dtype=tf.float32, time_major=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<p>上面的代码使用了<code>tf.nn.bidirectional_dynamic_rnn</code>构建单层双向的LSTM的RNN作为Encoder。</p>
+<p>参数：</p>
+<ul>
+<li><code>cell_fw</code>：前向的lstm cell</li>
+<li><code>cell_bw</code>：后向的lstm cell</li>
+<li><code>time_major</code>：如果是True，则输入需要是T×B×E，T代表时间序列的长度，B代表batch size，E代表词向量的维度。否则，为B×T×E。输出也是类似。</li>
+</ul>
+<p>返回：</p>
+<ul>
+<li><code>outputs</code>：针对所有时间序列上的输出。</li>
+<li><code>final_state</code>：只是最后一个时间节点的状态。</li>
+</ul>
+<p>一句话，<strong>Encoder的构造就是构造一个RNN，获得输出和最后的状态。</strong></p>
+<h2 id="Decoder实现示例"><a href="#Decoder实现示例" class="headerlink" title="Decoder实现示例"></a>Decoder实现示例</h2><p>下面着重介绍如何使用Tensorflow的<code>tf.contrib.seq2seq</code>实现一个Decoder。<br>我们这里的Decoder中，每个输入除了上一个时间节点的输出以外，还有对应时间节点的Encoder的输出，以及attention的context。</p>
+<h3 id="Helper"><a href="#Helper" class="headerlink" title="Helper"></a>Helper</h3><p>常用的<code>Helper</code>：</p>
+<ul>
+<li><code>TrainingHelper</code>：适用于训练的helper。</li>
+<li><code>InferenceHelper</code>：适用于测试的helper。</li>
+<li><code>GreedyEmbeddingHelper</code>：适用于测试中采用Greedy策略sample的helper。</li>
+<li><code>CustomHelper</code>：用户自定义的helper。</li>
+</ul>
+<p>先来说明helper是干什么的：参考上面提到的俄罗斯小哥用<code>raw_rnn</code>实现decoder，需要传进一个<code>loop_fn</code>。这个<code>loop_fn</code>其实是控制每个cell在不同的时间节点，给定上一个时刻的输出，如何决定下一个时刻的输入。<br>helper干的事情和这个<code>loop_fn</code>基本一致。这里<strong>着重介绍</strong><code>CustomHelper</code>，要传入三个函数作为参数：</p>
+<ul>
+<li><code>initialize_fn</code>：返回<code>finished</code>，<code>next_inputs</code>。其中<code>finished</code>不是scala，是一个一维向量。这个函数即获取第一个时间节点的输入。</li>
+<li><code>sample_fn</code>：接收参数<code>(time, outputs, state)</code> 返回<code> sample_ids</code>。即，根据每个cell的输出，如何sample。</li>
+<li><code>next_inputs_fn</code>：接收参数<code>(time, outputs, state, sample_ids)</code> 返回 <code>(finished, next_inputs, next_state)</code>，根据上一个时刻的输出，决定下一个时刻的输入。</li>
+</ul>
+<h2 id="BasicDecoder"><a href="#BasicDecoder" class="headerlink" title="BasicDecoder"></a>BasicDecoder</h2><p>有了自定义的helper以后，可以使用<code>tf.contrib.seq2seq.BasicDecoder</code>定义自己的Decoder了。再使用<code>tf.contrib.seq2seq.dynamic_decode</code>执行decode，最终返回：<code>(final_outputs, final_state, final_sequence_lengths)</code>。其中：<code>final_outputs</code>是<code>tf.contrib.seq2seq.BasicDecoderOutput</code>类型，包括两个字段：<code>rnn_output</code>，<code>sample_id</code>。</p>
+<h2 id="回到示例"><a href="#回到示例" class="headerlink" title="回到示例"></a>回到示例</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 传给CustomHelper的三个函数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">initial_fn</span>():</span><br><span class="line">    initial_elements_finished = (<span class="number">0</span> &gt;= decoder_lengths)  <span class="comment"># all False at the initial step</span></span><br><span class="line">    initial_input = tf.concat((sos_step_embedded, encoder_outputs[<span class="number">0</span>]), <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> initial_elements_finished, initial_input</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">sample_fn</span>(<span class="params">time, outputs, state</span>):</span><br><span class="line">    <span class="comment"># 选择logit最大的下标作为sample</span></span><br><span class="line">    prediction_id = tf.to_int32(tf.argmax(outputs, axis=<span class="number">1</span>))</span><br><span class="line">    <span class="keyword">return</span> prediction_id</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">next_inputs_fn</span>(<span class="params">time, outputs, state, sample_ids</span>):</span><br><span class="line">    <span class="comment"># 上一个时间节点上的输出类别，获取embedding再作为下一个时间节点的输入</span></span><br><span class="line">    pred_embedding = tf.nn.embedding_lookup(<span class="variable language_">self</span>.embeddings, sample_ids)</span><br><span class="line">    <span class="comment"># 输入是h_i+o_&#123;i-1&#125;+c_i</span></span><br><span class="line">    next_input = tf.concat((pred_embedding, encoder_outputs[time]), <span class="number">1</span>)</span><br><span class="line">    elements_finished = (time &gt;= decoder_lengths)  <span class="comment"># this operation produces boolean tensor of [batch_size]</span></span><br><span class="line">    all_finished = tf.reduce_all(elements_finished)  <span class="comment"># -&gt; boolean scalar</span></span><br><span class="line">    next_inputs = tf.cond(all_finished, <span class="keyword">lambda</span>: pad_step_embedded, <span class="keyword">lambda</span>: next_input)</span><br><span class="line">    next_state = state</span><br><span class="line">    <span class="keyword">return</span> elements_finished, next_inputs, next_state</span><br><span class="line"></span><br><span class="line"><span class="comment"># 自定义helper</span></span><br><span class="line">my_helper = tf.contrib.seq2seq.CustomHelper(initial_fn, sample_fn, next_inputs_fn)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">decode</span>(<span class="params">helper, scope, reuse=<span class="literal">None</span></span>):</span><br><span class="line">    <span class="keyword">with</span> tf.variable_scope(scope, reuse=reuse):</span><br><span class="line">        memory = tf.transpose(encoder_outputs, [<span class="number">1</span>, <span class="number">0</span>, <span class="number">2</span>])</span><br><span class="line">        attention_mechanism = tf.contrib.seq2seq.BahdanauAttention(</span><br><span class="line">            num_units=<span class="variable language_">self</span>.hidden_size, memory=memory,</span><br><span class="line">            memory_sequence_length=<span class="variable language_">self</span>.encoder_inputs_actual_length)</span><br><span class="line">        cell = tf.contrib.rnn.LSTMCell(num_units=<span class="variable language_">self</span>.hidden_size * <span class="number">2</span>)</span><br><span class="line">        attn_cell = tf.contrib.seq2seq.AttentionWrapper(</span><br><span class="line">            cell, attention_mechanism, attention_layer_size=<span class="variable language_">self</span>.hidden_size)</span><br><span class="line">        out_cell = tf.contrib.rnn.OutputProjectionWrapper(</span><br><span class="line">            attn_cell, <span class="variable language_">self</span>.slot_size, reuse=reuse</span><br><span class="line">        )</span><br><span class="line">        <span class="comment"># 使用自定义helper的decoder</span></span><br><span class="line">        decoder = tf.contrib.seq2seq.BasicDecoder(</span><br><span class="line">            cell=out_cell, helper=helper,</span><br><span class="line">            initial_state=out_cell.zero_state(</span><br><span class="line">                dtype=tf.float32, batch_size=<span class="variable language_">self</span>.batch_size))</span><br><span class="line">        <span class="comment"># 获取decode结果</span></span><br><span class="line">        final_outputs, final_state, final_sequence_lengths = tf.contrib.seq2seq.dynamic_decode(</span><br><span class="line">            decoder=decoder, output_time_major=<span class="literal">True</span>,</span><br><span class="line">            impute_finished=<span class="literal">True</span>, maximum_iterations=<span class="variable language_">self</span>.input_steps</span><br><span class="line">        )</span><br><span class="line">        <span class="keyword">return</span> final_outputs</span><br><span class="line"></span><br><span class="line">outputs = decode(my_helper, <span class="string">&#x27;decode&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="Attntion"><a href="#Attntion" class="headerlink" title="Attntion"></a>Attntion</h2><p>上面的代码，还有几个地方没有解释：<code>BahdanauAttention</code>，<code>AttentionWrapper</code>，<code>OutputProjectionWrapper</code>。</p>
+<p>先从简单的开始：<code>OutputProjectionWrapper</code>即做一个线性映射，比如之前的cell的ouput是T×B×D，D是hidden size，那么这里做一个线性映射，直接到T×B×S，这里S是slot class num。wrapper内部维护一个线性映射用的变量：<code>W</code>和<code>b</code>。</p>
+<p><img src="/nlp/tensorflow_dynamic_seq2seq/attention_2.png" alt="attention.png"></p>
+<p><code>BahdanauAttention</code>是一种<code>AttentionMechanism</code>，另外一种是：<code>BahdanauMonotonicAttention</code>。具体二者的区别，读者请自行深入调查。关键参数：</p>
+<ul>
+<li><code>num_units</code>：隐层维度。</li>
+<li><code>memory</code>：通常就是RNN encoder的输出</li>
+<li><code>memory_sequence_length=None</code>：可选参数，即memory的mask，超过长度数据不计入attention。</li>
+</ul>
+<p>继续介绍<code>AttentionWrapper</code>：这也是一个cell wrapper，关键参数：</p>
+<ul>
+<li><code>cell</code>：被包装的cell。</li>
+<li><code>attention_mechanism</code>：使用的attention机制，上面介绍的。</li>
+</ul>
+<p><img src="/nlp/tensorflow_dynamic_seq2seq/attention_3.png" alt="attention.png"></p>
+<p>memory对应公式中的h，wrapper的输出是s。</p>
+<p>那么一个<code>AttentionWrapper</code>具体的操作流程如何呢？看官网给的流程：</p>
+<p><img src="/nlp/tensorflow_dynamic_seq2seq/AttentionWrapper.png" alt="AttentionWrapper.png"></p>
+<h2 id="Loss-Function"><a href="#Loss-Function" class="headerlink" title="Loss Function"></a>Loss Function</h2><p><code>tf.contrib.seq2seq.sequence_loss</code>可以直接计算序列的损失函数，重要参数：</p>
+<ul>
+<li><code>logits</code>：尺寸<code>[batch_size, sequence_length, num_decoder_symbols]</code></li>
+<li><code>targets</code>：尺寸<code>[batch_size, sequence_length]</code>，不用做one_hot。</li>
+<li><code>weights</code>：<code>[batch_size, sequence_length]</code>，即mask，滤去padding的loss计算，使loss计算更准确。</li>
+</ul>
+<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>这里只讨论了seq2seq在序列标注上的应用。seq2seq还广泛应用于翻译和对话生成，涉及到生成的策略问题，比如beam search。后面会继续研究。除了sample的策略，其他seq2seq的主要技术，本文已经基本涵盖，希望对大家踩坑有帮助。</p>
+<p>完整代码：<a href="https://github.com/applenob/RNN-for-Joint-NLU">https://github.com/applenob/RNN-for-Joint-NLU</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/NLP/" rel="tag"># NLP</a>
+              <a href="/tags/Tensorflow/" rel="tag"># Tensorflow</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/machine_learning/CRF/" rel="prev" title="条件随机场 CRF总结和实现">
+                  <i class="fa fa-angle-left"></i> 条件随机场 CRF总结和实现
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/tensorflow/6_optimizer/" rel="next" title="六. Optimizer">
+                  六. Optimizer <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

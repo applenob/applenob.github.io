@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="简介ConvLab是微软和清华开源的一个多领域的端到端对话系统平台。旨在为对话系统的研究人员提供一个可以快速启动的实验平台。为此该平台提供了两个标注好的数据集、一些算法的实现（包括pipeline和end2end）、相关的预训练模型和其他可复用的组件。另外，ConvLab也是DSTC8 track1的官方平台。  ConvLab Code Repository: https:&#x2F;&#x2F;github.co">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ConvLab探索记">
+<meta property="og:url" content="https://applenob.github.io/dialog_sys/convlab/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="简介ConvLab是微软和清华开源的一个多领域的端到端对话系统平台。旨在为对话系统的研究人员提供一个可以快速启动的实验平台。为此该平台提供了两个标注好的数据集、一些算法的实现（包括pipeline和end2end）、相关的预训练模型和其他可复用的组件。另外，ConvLab也是DSTC8 track1的官方平台。  ConvLab Code Repository: https:&#x2F;&#x2F;github.co">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://applenob.github.io/dialog_sys/convlab/1.png">
+<meta property="og:image" content="https://applenob.github.io/dialog_sys/convlab/2.png">
+<meta property="og:image" content="https://applenob.github.io/dialog_sys/convlab/3.png">
+<meta property="article:published_time" content="2019-10-08T04:35:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.038Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="Dialogue System">
+<meta property="article:tag" content="NLP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://applenob.github.io/dialog_sys/convlab/1.png">
+
+
+<link rel="canonical" href="https://applenob.github.io/dialog_sys/convlab/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/dialog_sys/convlab/","path":"dialog_sys/convlab/","title":"ConvLab探索记"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>ConvLab探索记 | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B4%E4%BD%93%E7%BB%93%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">整体结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E6%95%B0%E9%85%8D%E7%BD%AE"><span class="nav-number">2.1.</span> <span class="nav-text">参数配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E7%9A%84%E6%A8%A1%E5%9E%8B"><span class="nav-number">3.</span> <span class="nav-text">使用的模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE"><span class="nav-number">4.</span> <span class="nav-text">数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MultiWOZ"><span class="nav-number">4.1.</span> <span class="nav-text">MultiWOZ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Movie"><span class="nav-number">4.2.</span> <span class="nav-text">Movie</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/dialog_sys/convlab/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="ConvLab探索记 | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ConvLab探索记
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2019-10-07 21:35:00" itemprop="dateCreated datePublished" datetime="2019-10-07T21:35:00-07:00">2019-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AF%B9%E8%AF%9D%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index"><span itemprop="name">对话系统</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p><strong>ConvLab</strong>是微软和清华开源的一个<strong>多领域</strong>的<strong>端到端</strong>对话系统平台。旨在为对话系统的研究人员提供一个可以快速启动的实验平台。为此该平台提供了<strong>两个标注好的数据集、一些算法的实现（包括pipeline和end2end）、相关的预训练模型和其他可复用的组件</strong>。另外，ConvLab也是DSTC8 track1的官方平台。</p>
+<ul>
+<li>ConvLab Code Repository: <a href="https://github.com/ConvLab/ConvLab">https://github.com/ConvLab/ConvLab</a></li>
+<li>ConvLab Paper: <a href="https://arxiv.org/pdf/1904.08637.pdf">https://arxiv.org/pdf/1904.08637.pdf</a></li>
+</ul>
+<h2 id="整体结构"><a href="#整体结构" class="headerlink" title="整体结构"></a>整体结构</h2><p><img src="/dialog_sys/convlab/1.png" alt="image.png"></p>
+<p>ConvLab的实现基于<a href="https://github.com/kengz/SLM-Lab">SLM-Lab</a>，因此继承了其有关强化学习的术语：<strong>AEB</strong>（Agent、Environment、Body），具体参考<a href="https://kengz.gitbooks.io/slm-lab/content/">文档</a>。</p>
+<p>ConvLab支持：<strong>Multi-agent learning</strong>、<strong>Multi-task learning</strong>和<strong>Role play</strong>。</p>
+<h3 id="参数配置"><a href="#参数配置" class="headerlink" title="参数配置"></a>参数配置</h3><p><img src="/dialog_sys/convlab/2.png" alt="image.png"></p>
+<p>整体的参数配置可以参考上图（<strong>横着看</strong>）：可以是按照pipeline所有的模块一个个配置，也可以配置一个完整的end2end，还有其他支持的组合。</p>
+<p><img src="/dialog_sys/convlab/3.png" alt="image.png"></p>
+<p>类似的，环境的构建也是需要构造支持的模块参数组合。</p>
+<h2 id="使用的模型"><a href="#使用的模型" class="headerlink" title="使用的模型"></a>使用的模型</h2><ul>
+<li>NLU<ul>
+<li>Semantic Tuple Classifier (STC) <code>*</code> <a href="http://mi.eng.cam.ac.uk/~sjy/papers/mgjk09.pdf">pdf</a> ： 支持多领域、多意图。</li>
+<li>OneNet <code>*</code> <a href="https://arxiv.org/pdf/1801.05149.pdf">pdf</a>：可以解决OOV问题。</li>
+<li>MILU（综合了上面二者）：可同时处理多意图和OOV。</li>
+</ul>
+</li>
+<li>DST<ul>
+<li>rule based （类似于DSTC的baseline）</li>
+</ul>
+</li>
+<li>Word-level Dialog State Tracking（从用户语句直接更新对话状态，免去NLU）<ul>
+<li>MDBT <code>*</code>  <a href="https://arxiv.org/pdf/1807.06517.pdf">pdf</a></li>
+</ul>
+</li>
+<li>DPL（系统策略）<ul>
+<li>DQN <code>*</code> <a href="https://arxiv.org/pdf/1312.5602.pdf">pdf</a></li>
+<li>REINFORCE <code>*</code> <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.31.2545&rep=rep1&type=pdf">pdf</a></li>
+<li>PPO <code>*</code> <a href="https://arxiv.org/pdf/1707.06347.pdf">pdf</a></li>
+</ul>
+</li>
+<li>NLG<ul>
+<li>a template-based model</li>
+<li>SC-LSTM <code>*</code> <a href="https://arxiv.org/pdf/1508.01745.pdf">pdf</a></li>
+</ul>
+</li>
+<li>Word-level Policy (从对话状态直接到response)<ul>
+<li>seq2seq (dialogue state encoder + database query result encoder) <code>*</code> <a href="https://arxiv.org/pdf/1810.00278.pdf">pdf</a></li>
+</ul>
+</li>
+<li>用户策略（用户模拟）<ul>
+<li>agenda-based <code>*</code> <a href="http://mi.eng.cam.ac.uk/~sjy/papers/stwy07.pdf">pdf</a></li>
+<li>data-driven : HUS <code>*</code> <a href="https://arxiv.org/pdf/1811.04369.pdf">pdf</a></li>
+</ul>
+</li>
+<li>End2End<ul>
+<li>Mem2Seq <code>*</code> <a href="https://www.aclweb.org/anthology/P18-1136.pdf">pdf</a></li>
+<li>Sequicity <code>*</code> <a href="https://www.aclweb.org/anthology/P18-1133.pdf">pdf</a> ：为了支持多领域，在切换领域时需要重置belief span。</li>
+</ul>
+</li>
+</ul>
+<h2 id="数据"><a href="#数据" class="headerlink" title="数据"></a>数据</h2><h3 id="MultiWOZ"><a href="#MultiWOZ" class="headerlink" title="MultiWOZ"></a>MultiWOZ</h3><p>Multiwoz-a large-scale multi-domain wizard-of-oz dataset for task-oriented dialogue modelling.  <code>*</code> <a href="https://arxiv.org/pdf/1810.00278.pdf">pdf</a></p>
+<p>MultiWoz的主任务是帮助游客解决各类问题。问题又分为7个子领域：Attraction, Hospital, Police, Hotel, Restaurant, Taxi, Train。一共有10438个对话，单领域的平均轮数是8.93；跨领域的平均轮数是15.39。</p>
+<h3 id="Movie"><a href="#Movie" class="headerlink" title="Movie"></a>Movie</h3><p>来自微软对话挑战赛，一共2890个对话，平均轮数7.5。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Dialogue-System/" rel="tag"># Dialogue System</a>
+              <a href="/tags/NLP/" rel="tag"># NLP</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/dialog_sys/daml/" rel="prev" title="Domain Adaptive Dialog Generation via Meta Learning">
+                  <i class="fa fa-angle-left"></i> Domain Adaptive Dialog Generation via Meta Learning
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/python/setup/" rel="next" title="python基于setuptools的打包和分发">
+                  python基于setuptools的打包和分发 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

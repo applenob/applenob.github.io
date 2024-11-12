@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="本篇博客探索所用tensorflow的优化器解决最优化问题 定义目标函数， $loss &#x3D; (x-3)^2$， 求goal最小时，x的值： 12345678910import tensorflow as tf# x &#x3D; tf.placeholder(tf.float32)x &#x3D; tf.Variable(tf.truncated_normal([1]), name&#x3D;&quot;x&amp;quot">
+<meta property="og:type" content="article">
+<meta property="og:title" content="六. Optimizer">
+<meta property="og:url" content="https://applenob.github.io/tensorflow/6_optimizer/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="本篇博客探索所用tensorflow的优化器解决最优化问题 定义目标函数， $loss &#x3D; (x-3)^2$， 求goal最小时，x的值： 12345678910import tensorflow as tf# x &#x3D; tf.placeholder(tf.float32)x &#x3D; tf.Variable(tf.truncated_normal([1]), name&#x3D;&quot;x&amp;quot">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2018-01-15T19:00:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.118Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="Tensorflow">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://applenob.github.io/tensorflow/6_optimizer/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/tensorflow/6_optimizer/","path":"tensorflow/6_optimizer/","title":"六. Optimizer"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>六. Optimizer | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E4%BD%BF%E7%94%A8minimize"><span class="nav-number">1.</span> <span class="nav-text">1. 使用minimize()</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E6%9E%9C%E6%98%AF%E6%9C%80%E5%A4%A7%E5%8C%96%E5%91%A2%EF%BC%9F"><span class="nav-number">1.1.</span> <span class="nav-text">如果是最大化呢？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-minimize-compute-gradients-apply-gradients"><span class="nav-number">2.</span> <span class="nav-text">2 . minimize() &#x3D; compute_gradients() + apply_gradients()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E8%BF%9B%E4%B8%80%E6%AD%A5"><span class="nav-number">3.</span> <span class="nav-text">3. 进一步</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#clip-by-global-norm-%E4%BF%AE%E6%AD%A3%E6%A2%AF%E5%BA%A6%E5%80%BC"><span class="nav-number">3.1.</span> <span class="nav-text">clip_by_global_norm:修正梯度值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#exponential-decay-%E5%8A%A0%E5%85%A5%E5%AD%A6%E4%B9%A0%E7%8E%87%E8%A1%B0%E5%87%8F%EF%BC%9A"><span class="nav-number">3.2.</span> <span class="nav-text">exponential_decay 加入学习率衰减：</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/tensorflow/6_optimizer/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="六. Optimizer | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          六. Optimizer
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2018-01-15 11:00:00" itemprop="dateCreated datePublished" datetime="2018-01-15T11:00:00-08:00">2018-01-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Tensorflow%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">Tensorflow学习笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>本篇博客探索所用tensorflow的优化器解决最优化问题</p>
+<p>定义目标函数， $loss &#x3D; (x-3)^2$， 求goal最小时，x的值：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"></span><br><span class="line"><span class="comment"># x = tf.placeholder(tf.float32)</span></span><br><span class="line">x = tf.Variable(tf.truncated_normal([<span class="number">1</span>]), name=<span class="string">&quot;x&quot;</span>)</span><br><span class="line">goal = tf.<span class="built_in">pow</span>(x-<span class="number">3</span>,<span class="number">2</span>, name=<span class="string">&quot;goal&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</span><br><span class="line">    x.initializer.run()</span><br><span class="line">    <span class="built_in">print</span>(x.<span class="built_in">eval</span>())</span><br><span class="line">    <span class="built_in">print</span>(goal.<span class="built_in">eval</span>())</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[-0.15094033]</span><br><span class="line">[ 9.92842579]</span><br></pre></td></tr></table></figure>
+
+<p>使用梯度下降优化器解决问题。</p>
+<h2 id="1-使用minimize"><a href="#1-使用minimize" class="headerlink" title="1. 使用minimize()"></a>1. 使用minimize()</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">optimizer = tf.train.GradientDescentOptimizer(learning_rate=<span class="number">0.1</span>)</span><br><span class="line">train_step = optimizer.minimize(goal)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">train</span>():</span><br><span class="line">    <span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</span><br><span class="line">        x.initializer.run()</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):</span><br><span class="line">            <span class="built_in">print</span> <span class="string">&quot;x: &quot;</span>, x.<span class="built_in">eval</span>()</span><br><span class="line">            train_step.run()</span><br><span class="line">            <span class="built_in">print</span> <span class="string">&quot;goal: &quot;</span>,goal.<span class="built_in">eval</span>()    </span><br><span class="line">train()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">x:  [ 0.0178078]</span><br><span class="line">goal:  [ 5.69182014]</span><br><span class="line">x:  [ 0.61424625]</span><br><span class="line">goal:  [ 3.64276576]</span><br><span class="line">x:  [ 1.09139693]</span><br><span class="line">goal:  [ 2.33137012]</span><br><span class="line">x:  [ 1.47311759]</span><br><span class="line">goal:  [ 1.49207664]</span><br><span class="line">x:  [ 1.77849412]</span><br><span class="line">goal:  [ 0.95492917]</span><br><span class="line">x:  [ 2.0227952]</span><br><span class="line">goal:  [ 0.61115462]</span><br><span class="line">x:  [ 2.21823621]</span><br><span class="line">goal:  [ 0.39113891]</span><br><span class="line">x:  [ 2.37458897]</span><br><span class="line">goal:  [ 0.25032887]</span><br><span class="line">x:  [ 2.49967122]</span><br><span class="line">goal:  [ 0.16021053]</span><br><span class="line">x:  [ 2.59973693]</span><br><span class="line">goal:  [ 0.10253474]</span><br></pre></td></tr></table></figure>
+
+<h3 id="如果是最大化呢？"><a href="#如果是最大化呢？" class="headerlink" title="如果是最大化呢？"></a>如果是最大化呢？</h3><p>很简单，给目标函数套上<code>tf.negative</code>就可以了。不过好像写成-1 * 完全没有区别～～</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">y = tf.Variable(tf.truncated_normal([<span class="number">1</span>]))</span><br><span class="line">max_goal = tf.sin(y)</span><br><span class="line">optimizer = tf.train.GradientDescentOptimizer(learning_rate=<span class="number">0.1</span>)</span><br><span class="line"><span class="comment"># train_step = optimizer.minimize(tf.negative(max_goal))</span></span><br><span class="line">train_step = optimizer.minimize(-<span class="number">1</span> * max_goal)</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</span><br><span class="line">    y.initializer.run()</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):</span><br><span class="line">        <span class="built_in">print</span> <span class="string">&quot;y: &quot;</span>, y.<span class="built_in">eval</span>()</span><br><span class="line">        train_step.run()</span><br><span class="line">        <span class="built_in">print</span> <span class="string">&quot;max_goal: &quot;</span>,max_goal.<span class="built_in">eval</span>()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">y:  [ 0.44078666]</span><br><span class="line">max_goal:  [ 0.50659275]</span><br><span class="line">y:  [ 0.5312283]</span><br><span class="line">max_goal:  [ 0.57895529]</span><br><span class="line">y:  [ 0.61744684]</span><br><span class="line">max_goal:  [ 0.64343935]</span><br><span class="line">y:  [ 0.69898278]</span><br><span class="line">max_goal:  [ 0.70009637]</span><br><span class="line">y:  [ 0.77553248]</span><br><span class="line">max_goal:  [ 0.7492556]</span><br><span class="line">y:  [ 0.8469373]</span><br><span class="line">max_goal:  [ 0.79144251]</span><br><span class="line">y:  [ 0.91316539]</span><br><span class="line">max_goal:  [ 0.82730311]</span><br><span class="line">y:  [ 0.97428977]</span><br><span class="line">max_goal:  [ 0.85753846]</span><br><span class="line">y:  [ 1.03046536]</span><br><span class="line">max_goal:  [ 0.88285518]</span><br><span class="line">y:  [ 1.08190739]</span><br><span class="line">max_goal:  [ 0.90393031]</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-minimize-compute-gradients-apply-gradients"><a href="#2-minimize-compute-gradients-apply-gradients" class="headerlink" title="2 . minimize() &#x3D; compute_gradients() + apply_gradients()"></a>2 . minimize() &#x3D; compute_gradients() + apply_gradients()</h2><p>拆分成计算梯度和应用梯度两个步骤。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># compute_gradients 返回的是：A list of (gradient, variable) pairs</span></span><br><span class="line">gra_and_var = optimizer.compute_gradients(goal)</span><br><span class="line">train_step = optimizer.apply_gradients(gra_and_var)</span><br><span class="line">train()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">x:  [ 0.40001234]</span><br><span class="line">goal:  [ 4.32635927]</span><br><span class="line">x:  [ 0.92000991]</span><br><span class="line">goal:  [ 2.7688694]</span><br><span class="line">x:  [ 1.33600795]</span><br><span class="line">goal:  [ 1.77207625]</span><br><span class="line">x:  [ 1.66880643]</span><br><span class="line">goal:  [ 1.13412893]</span><br><span class="line">x:  [ 1.93504512]</span><br><span class="line">goal:  [ 0.72584224]</span><br><span class="line">x:  [ 2.14803624]</span><br><span class="line">goal:  [ 0.46453902]</span><br><span class="line">x:  [ 2.31842899]</span><br><span class="line">goal:  [ 0.29730505]</span><br><span class="line">x:  [ 2.45474315]</span><br><span class="line">goal:  [ 0.19027515]</span><br><span class="line">x:  [ 2.56379461]</span><br><span class="line">goal:  [ 0.12177601]</span><br><span class="line">x:  [ 2.65103579]</span><br><span class="line">goal:  [ 0.07793671]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="3-进一步"><a href="#3-进一步" class="headerlink" title="3. 进一步"></a>3. 进一步</h2><h3 id="clip-by-global-norm-修正梯度值"><a href="#clip-by-global-norm-修正梯度值" class="headerlink" title="clip_by_global_norm:修正梯度值"></a>clip_by_global_norm:修正梯度值</h3><p>用于控制梯度爆炸的问题。梯度爆炸和梯度弥散的原因一样，都是因为链式法则求导的关系，导致梯度的指数级衰减。为了避免梯度爆炸，需要对梯度进行修剪。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">gradients, vriables = <span class="built_in">zip</span>(*optimizer.compute_gradients(goal))</span><br><span class="line">gradients, _ = tf.clip_by_global_norm(gradients, <span class="number">1.25</span>)</span><br><span class="line">train_step = optimizer.apply_gradients(<span class="built_in">zip</span>(gradients, vriables))</span><br><span class="line">train()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">x:  [-0.76665598]</span><br><span class="line">goal:  [ 13.26165771]</span><br><span class="line">x:  [-0.64165598]</span><br><span class="line">goal:  [ 12.36686897]</span><br><span class="line">x:  [-0.51665598]</span><br><span class="line">goal:  [ 11.50333118]</span><br><span class="line">x:  [-0.39165598]</span><br><span class="line">goal:  [ 10.67104053]</span><br><span class="line">x:  [-0.26665598]</span><br><span class="line">goal:  [ 9.87000275]</span><br><span class="line">x:  [-0.14165597]</span><br><span class="line">goal:  [ 9.10021305]</span><br><span class="line">x:  [-0.01665596]</span><br><span class="line">goal:  [ 8.36167431]</span><br><span class="line">x:  [ 0.10834403]</span><br><span class="line">goal:  [ 7.65438461]</span><br><span class="line">x:  [ 0.23334403]</span><br><span class="line">goal:  [ 6.97834587]</span><br><span class="line">x:  [ 0.35834405]</span><br><span class="line">goal:  [ 6.33355713]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="exponential-decay-加入学习率衰减："><a href="#exponential-decay-加入学习率衰减：" class="headerlink" title="exponential_decay 加入学习率衰减："></a>exponential_decay 加入学习率衰减：</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># global_step 记录当前是第几个batch</span></span><br><span class="line">global_step = tf.Variable(<span class="number">0</span>)</span><br><span class="line">learning_rate = tf.train.exponential_decay(</span><br><span class="line">    <span class="number">3.0</span>, global_step, <span class="number">3</span>, <span class="number">0.3</span>, staircase=<span class="literal">True</span>)</span><br><span class="line">optimizer2 = tf.train.GradientDescentOptimizer(learning_rate)</span><br><span class="line">gradients, vriables = <span class="built_in">zip</span>(*optimizer2.compute_gradients(goal))</span><br><span class="line">gradients, _ = tf.clip_by_global_norm(gradients, <span class="number">1.25</span>)</span><br><span class="line">train_step = optimizer2.apply_gradients(<span class="built_in">zip</span>(gradients, vriables), </span><br><span class="line">                                       global_step=global_step)</span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</span><br><span class="line">        global_step.initializer.run()</span><br><span class="line">        x.initializer.run()</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;x: &quot;</span>, x.<span class="built_in">eval</span>())</span><br><span class="line">            train_step.run()</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;goal: &quot;</span>,goal.<span class="built_in">eval</span>())</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">x:  [-0.92852646]</span><br><span class="line">goal:  [ 0.03187185]</span><br><span class="line">x:  [ 2.82147312]</span><br><span class="line">goal:  [ 0.79679614]</span><br><span class="line">x:  [ 3.89263439]</span><br><span class="line">goal:  [ 8.16453552]</span><br><span class="line">x:  [ 0.14263475]</span><br><span class="line">goal:  [ 3.00108886]</span><br><span class="line">x:  [ 1.26763487]</span><br><span class="line">goal:  [ 0.3688924]</span><br><span class="line">x:  [ 2.39263487]</span><br><span class="line">goal:  [ 0.23609133]</span><br><span class="line">x:  [ 3.4858923]</span><br><span class="line">goal:  [ 0.04995694]</span><br><span class="line">x:  [ 3.2235105]</span><br><span class="line">goal:  [ 0.01057091]</span><br><span class="line">x:  [ 3.10281491]</span><br><span class="line">goal:  [ 0.0022368]</span><br><span class="line">x:  [ 3.04729486]</span><br><span class="line">goal:  [ 0.00157078]</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Tensorflow/" rel="tag"># Tensorflow</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/nlp/tensorflow_dynamic_seq2seq/" rel="prev" title="Tensorflow动态seq2seq使用总结（r1.3）">
+                  <i class="fa fa-angle-left"></i> Tensorflow动态seq2seq使用总结（r1.3）
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/tensorflow/7_multi_gpu/" rel="next" title="七. Tensorflow 多GPU操作">
+                  七. Tensorflow 多GPU操作 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

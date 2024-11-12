@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="2. Linear Algebra基础概念：  Scalars: 一个数； Vctors: 一列数； Matrices: 二位数组的数，每个元素由两个下标确定； Tensors: 多维数组的数。  转置（transpose）：$(A^T)_{i,j}&#x3D;A_{j,i}$ 矩阵乘法: $C&#x3D;AB$， $C_{i,j}&#x3D;\sum_kA_{i,k}B_{k,j}$">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第二章：Linear Algebra">
+<meta property="og:url" content="https://applenob.github.io/deep_learning_book/deep_learning_2/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="2. Linear Algebra基础概念：  Scalars: 一个数； Vctors: 一列数； Matrices: 二位数组的数，每个元素由两个下标确定； Tensors: 多维数组的数。  转置（transpose）：$(A^T)_{i,j}&#x3D;A_{j,i}$ 矩阵乘法: $C&#x3D;AB$， $C_{i,j}&#x3D;\sum_kA_{i,k}B_{k,j}$">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2017-05-09T09:00:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.028Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="笔记">
+<meta property="article:tag" content="Deep Learning">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://applenob.github.io/deep_learning_book/deep_learning_2/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/deep_learning_book/deep_learning_2/","path":"deep_learning_book/deep_learning_2/","title":"第二章：Linear Algebra"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>第二章：Linear Algebra | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#2-Linear-Algebra"><span class="nav-number">1.</span> <span class="nav-text">2. Linear Algebra</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning_book/deep_learning_2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="第二章：Linear Algebra | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第二章：Linear Algebra
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-05-09 02:00:00" itemprop="dateCreated datePublished" datetime="2017-05-09T02:00:00-07:00">2017-05-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E3%80%8ADeep-Learning%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">《Deep Learning》读书笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="2-Linear-Algebra"><a href="#2-Linear-Algebra" class="headerlink" title="2. Linear Algebra"></a>2. Linear Algebra</h1><p><strong>基础概念</strong>：</p>
+<ul>
+<li>Scalars: 一个数；</li>
+<li>Vctors: 一列数；</li>
+<li>Matrices: 二位数组的数，每个元素由两个下标确定；</li>
+<li>Tensors: 多维数组的数。</li>
+</ul>
+<p><strong>转置</strong>（transpose）：$(A^T)_{i,j}&#x3D;A_{j,i}$</p>
+<p><strong>矩阵乘法</strong>: $C&#x3D;AB$， $C_{i,j}&#x3D;\sum_kA_{i,k}B_{k,j}$</p>
+<p><strong>元素乘法</strong>(element product; Hardamard product)：$A \bigodot B$</p>
+<p><strong>点乘</strong>(dot product): 向量<strong>x</strong>，<strong>y</strong>的点乘：$x^Ty$</p>
+<p><strong>单位矩阵</strong>(identic matrix): $I_n$， 斜对角的元素值是1,其他地方都是0</p>
+<p><strong>逆矩阵</strong>（inverse matrix）:</p>
+<ul>
+<li>$A^{-1}$, $A^{-1}A&#x3D;I_n$</li>
+<li>方程Ax&#x3D;b，如果A可逆，则$x&#x3D;A^{-1}b$</li>
+</ul>
+<p><strong>线性组合</strong>（linear combination）：</p>
+<p>将矩阵$A$看作是不同的列向量的组合$[d1,d2,…,dn]$，每个列向量代表一个方向，$x$可以代表在每个方向上移动的距离，那么$Ax&#x3D;b$可以理解成原点如何在$A$指定的各个方向上移动，最后到达$b$点。</p>
+<ul>
+<li>$Ax$即为线性组合，组合的对象是各个列向量，方式是$x$的元素。</li>
+</ul>
+<p><strong>生成空间</strong>（span）：对所有的$x$，生成的点$Ax$的集合，即为$A$的生成空间。</p>
+<p><strong>范数</strong>（Norm）：</p>
+<ul>
+<li>用来衡量vector的尺寸。</li>
+<li>$L^p$ norm: $||x||_p &#x3D; \left ( \sum_i{|x_i|^p} \right )^{\frac{1}{p}}$</li>
+</ul>
+<p><strong>Frobenius-norm</strong>: </p>
+<ul>
+<li>用来衡量matrix的尺寸。</li>
+<li>类似于$L_2$<br>norm:$||A||<em>F&#x3D;\sqrt{\sum</em>{i,j}{A_{i,j}^2}}$</li>
+</ul>
+<p><strong>对角阵</strong>（diagnal matrix）：除了对角线上的元素不为0,其他元素都为0。可以表示为$diag(v)$。</p>
+<p><strong>对称阵</strong>（symmetric matrix）：$A&#x3D;A^T$</p>
+<p><strong>单位向量</strong>（unit vector）：$||x||_2 &#x3D; 1$<br><strong>正交</strong>（orthogonal）：如果$x^Ty&#x3D;0$，则向量$x$和向量$y$彼此正交。</p>
+<p><strong>正交归一化矩阵</strong>（orthonormal matrix）：</p>
+<ul>
+<li>每行都相互正交并且都是单位向量。</li>
+<li>$A^TA&#x3D;AA^T&#x3D;I$，有$A^{-1}&#x3D;A^T$。</li>
+</ul>
+<p><strong>特征分解</strong>：</p>
+<ul>
+<li>特征向量$v$和特征值$λ$，满足：$Av &#x3D;<br>λv$，方阵A可以这样分解：$A&#x3D;Vdiag(λ)V^{-1}$，其中,$V&#x3D;[v^{(1)},…,v^{(n)}]$,$λ&#x3D;[λ_1, …,<br>λ_n]^T$。</li>
+<li>特别的，如果A是一个实对称阵，那么$A&#x3D;Q∧Q^T$</li>
+</ul>
+<p><strong>正定</strong>（positive definite）：一个矩阵的所有特征值都是正的，则称这个矩阵正定。</p>
+<p><strong>奇异值分解</strong>（singular value decomposition）：</p>
+<ul>
+<li>$A &#x3D; UDV^T$</li>
+<li>其中$A$是$m×n$矩阵。</li>
+<li>$U$是$m×m$正交矩阵，$U$的列向量称为左奇异向量，是$AA^T$的特征向量。<br>-$D$是$m×n$对角矩阵，对角线上的元素称为<strong>奇异值</strong>。</li>
+<li>$V$是正交$n×n$矩阵，$V$的列向量称为右奇异向量，是$A^TA$的特征向量。<br><strong>伪逆（Moore-Penrose Pseudoinverse）</strong>：</li>
+<li>$A^+ &#x3D; VD^+U^T$</li>
+<li>其中，$D^+$是由D的每个对角线元素取倒数（reciprocal）获得。</li>
+</ul>
+<p><strong>迹</strong>（Trace）：$Tr(A) &#x3D; \sum_i A_{i,i}<br>$，即<strong>对角线元素之和</strong>。</p>
+<p><strong>行列式</strong>（Determinant）：</p>
+<ul>
+<li>$det(A)$，是一个将一个matrix映射到一个实数的function。</li>
+<li>行列式的值等于矩阵的所有特征值的乘积。</li>
+</ul>
+<p><strong>奇异矩阵</strong>（singular matrix）：</p>
+<ul>
+<li>前提是方阵</li>
+<li>如果A(n×n)为奇异矩阵（singular matrix）&lt;&#x3D;&gt; A的秩$Rank(A)&lt;n$</li>
+<li>如果A(n×n)为非奇异矩阵（nonsingular matrix）&lt;&#x3D;&gt; A满秩，$Rank(A)&#x3D;n$。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"># 笔记</a>
+              <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/deep_learning_book/deep_learning_1/" rel="prev" title="第一章：introduction">
+                  <i class="fa fa-angle-left"></i> 第一章：introduction
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/deep_learning_book/deep_learning_3/" rel="next" title="第三章：Probability and Information Theory">
+                  第三章：Probability and Information Theory <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

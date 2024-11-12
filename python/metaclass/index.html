@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="什么是metaclass？metaclass一般翻译成“元类”，但也有人认为应该更关注元类“超越变形”的能力，应该翻译成超越类之类的。但是个人觉得“元类”比较顺口，其“本元”的含义也是实打实存在的，故本文用元类作为metaclass的中文翻译。 metaclass(元类)可以理解成是类的抽象、本元。类元编程即使用自定义metaclass获取极强灵活性的一种编程方式。 不过，在多处都有提到的需要注意">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python的metaclass类元编程">
+<meta property="og:url" content="https://applenob.github.io/python/metaclass/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="什么是metaclass？metaclass一般翻译成“元类”，但也有人认为应该更关注元类“超越变形”的能力，应该翻译成超越类之类的。但是个人觉得“元类”比较顺口，其“本元”的含义也是实打实存在的，故本文用元类作为metaclass的中文翻译。 metaclass(元类)可以理解成是类的抽象、本元。类元编程即使用自定义metaclass获取极强灵活性的一种编程方式。 不过，在多处都有提到的需要注意">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-12-15T07:22:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.088Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://applenob.github.io/python/metaclass/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/python/metaclass/","path":"python/metaclass/","title":"python的metaclass类元编程"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>python的metaclass类元编程 | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFmetaclass%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">什么是metaclass？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%9C%AC%E5%85%83%EF%BC%9F"><span class="nav-number">2.</span> <span class="nav-text">什么是本元？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#type"><span class="nav-number">2.1.</span> <span class="nav-text">type</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MetaClass"><span class="nav-number">3.</span> <span class="nav-text">MetaClass</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B8%E5%9E%8B%E6%A1%88%E4%BE%8B"><span class="nav-number">4.</span> <span class="nav-text">典型案例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Singleton%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F"><span class="nav-number">4.1.</span> <span class="nav-text">Singleton单例模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E6%98%93ORM%E6%A1%86%E6%9E%B6"><span class="nav-number">4.2.</span> <span class="nav-text">简易ORM框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#YAMLObject"><span class="nav-number">4.3.</span> <span class="nav-text">YAMLObject</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PyText"><span class="nav-number">4.4.</span> <span class="nav-text">PyText</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/python/metaclass/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="python的metaclass类元编程 | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          python的metaclass类元编程
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2019-12-14 23:22:00" itemprop="dateCreated datePublished" datetime="2019-12-14T23:22:00-08:00">2019-12-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="什么是metaclass？"><a href="#什么是metaclass？" class="headerlink" title="什么是metaclass？"></a>什么是metaclass？</h2><p>metaclass一般翻译成“<strong>元类</strong>”，但也有人认为应该更关注元类“<strong>超越变形</strong>”的能力，应该翻译成<strong>超越类</strong>之类的。但是个人觉得“元类”比较顺口，其“<strong>本元</strong>”的含义也是实打实存在的，故本文用元类作为metaclass的中文翻译。</p>
+<p>metaclass(元类)可以理解成是<strong>类的抽象、本元</strong>。类元编程即使用<strong>自定义metaclass</strong>获取极强灵活性的一种编程方式。</p>
+<p>不过，在多处都有提到的<strong>需要注意</strong>的是：如果不是开发<strong>框架</strong>，不要使用元类，除非只是为了<strong>寻找乐趣：）</strong>。</p>
+<h2 id="什么是本元？"><a href="#什么是本元？" class="headerlink" title="什么是本元？"></a>什么是本元？</h2><p>首先还是要搞清楚什么是本元？这个概念很抽象，必须弄清楚。</p>
+<p>本元可以理解成一种更高程度的抽象。首先，类（class）是对象（object）的抽象，对象是类的实例。因此可以说类是对象的本元。而在python中，所有类都是<code>type</code>类的实例，也就是说<code>type</code>是所有类的抽象，所以你可以理解<code>type</code>就是那个<strong>元类</strong>。</p>
+<h3 id="type"><a href="#type" class="headerlink" title="type"></a>type</h3><p>一般我们会常用<code>type(obj)</code>来获取<code>obj</code>对象的类型。但<code>type</code>也可以用<strong>来创建新类型</strong>。这时需要传入三个参数：<strong>类名</strong>、<strong>父类tuple</strong>、<strong>属性字典</strong>。</p>
+<p><code>class MyClass: ...</code> 等价于<code>MyClass = type(classname, superclasses, attributedict)</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">SuperCls</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;__init__ in super class.&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span>(<span class="title class_ inherited__">SuperCls</span>):</span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">B = <span class="built_in">type</span>(<span class="string">&quot;B&quot;</span>, (SuperCls, ), &#123;&#125;)</span><br><span class="line"></span><br><span class="line">a = A()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 输出</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">__init__ in super class.</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">b = B()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 输出</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">__init__ in super class.</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(A.mro())</span><br><span class="line"></span><br><span class="line"><span class="comment"># 输出</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">[&lt;class &#x27;__main__.A&#x27;&gt;, &lt;class &#x27;__main__.SuperCls&#x27;&gt;, &lt;class &#x27;object&#x27;&gt;] </span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(B.mro())</span><br><span class="line"></span><br><span class="line"><span class="comment"># 输出</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">[&lt;class &#x27;__main__.B&#x27;&gt;, &lt;class &#x27;__main__.SuperCls&#x27;&gt;, &lt;class &#x27;object&#x27;&gt;]</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>上面类对象的<code>mro()</code>方法代表Method Resolution Order，即方法解析顺序，可以看到这个类的继承顺序。</p>
+<p>通过上面的代码可以看出，使用<code>type</code>来动态创建类和你自己写代码创建一个类是<strong>完全一样</strong>的。</p>
+<p>还有个问题，当我们使用<code>type</code>的时候，它自己是个<code>type</code>类还是<code>type</code>对象？如果你直接在解释器中输入<code>print(type)</code>会得到返回<code>&lt;class &#39;type&#39;&gt;</code>，因此可以认为你使用的就是<code>type</code>类。</p>
+<h2 id="MetaClass"><a href="#MetaClass" class="headerlink" title="MetaClass"></a>MetaClass</h2><p>OK，搞清楚了什么是“本元”和<code>type</code>，我们再来看<code>metaclass</code>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 自定义metaclass</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyMeta</span>(<span class="title class_ inherited__">type</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__call__</span>(<span class="params">self, *args, **kwargs</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;__call__ in MyMeta&quot;</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">super</span>().__call__(*args, **kwargs)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">cls, what, bases=<span class="literal">None</span>, <span class="built_in">dict</span>=<span class="literal">None</span></span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;__init__ in MyMeta&quot;</span>)</span><br><span class="line">        <span class="built_in">super</span>().__init__(what, bases, <span class="built_in">dict</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__new__</span>(<span class="params">*args, **kwargs</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;__new__ in MyMeta&quot;</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">type</span>.__new__(*args, **kwargs)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">SuperCls</span>:</span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用metaclass方法1：类定义代码中指定</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyClass</span>(SuperCls, metaclass=MyMeta):</span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line">    </span><br><span class="line"><span class="comment"># 输出</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">__new__ in MyMeta</span></span><br><span class="line"><span class="string">__init__ in MyMeta</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用metaclass方法2：直接像调用type那样调用MyMeta</span></span><br><span class="line">MyClass = MyMeta(<span class="string">&quot;MyClass&quot;</span>, (SuperCls, ), &#123;&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 输出</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">__new__ in MyMeta</span></span><br><span class="line"><span class="string">__init__ in MyMeta</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 实例化</span></span><br><span class="line">my_obj = MyClass()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 输出</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">__call__ in MyMeta</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>看，我们的元类继承自<code>type</code>类。你在<strong>使用这个元类去定义一个新的类时</strong>，会调用元类的<code>__new__</code>和<code>__init__</code>；当你<strong>用这个新类去实例化一个新对象时</strong>又会调用元类的<code>__new__</code>。</p>
+<p>因此，你可以可以重载<code>type</code>的这三个方法来修改<code>type</code>的行为，但要<strong>理清这几个方法被调用的时机</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">__init__(cls, what, bases=<span class="literal">None</span>, <span class="built_in">dict</span>=<span class="literal">None</span>)</span><br><span class="line">__new__(*args, **kwargs)</span><br><span class="line">__call__(<span class="variable language_">self</span>, *args, **kwargs)</span><br></pre></td></tr></table></figure>
+
+<h2 id="典型案例"><a href="#典型案例" class="headerlink" title="典型案例"></a>典型案例</h2><p>来看几个类元编程的典型案例。</p>
+<h3 id="Singleton单例模式"><a href="#Singleton单例模式" class="headerlink" title="Singleton单例模式"></a>Singleton单例模式</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">SingletonMeta</span>(<span class="title class_ inherited__">type</span>):</span><br><span class="line">    instance = <span class="literal">None</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__call__</span>(<span class="params">cls, *args, **kwargs</span>):</span><br><span class="line">        <span class="keyword">if</span> cls.instance <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            cls.instance = <span class="built_in">super</span>(SingletonMeta, cls).__call__(*args, **kwargs)</span><br><span class="line">        <span class="keyword">return</span> cls.instance</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">CurrentUser</span>(<span class="built_in">object</span>, metaclass=SingletonMeta):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, name=<span class="literal">None</span></span>):</span><br><span class="line">        <span class="built_in">super</span>(CurrentUser, <span class="variable language_">self</span>).__init__()</span><br><span class="line">        <span class="variable language_">self</span>.name = name</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__str__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">repr</span>(<span class="variable language_">self</span>) + <span class="string">&quot;:&quot;</span> + <span class="built_in">repr</span>(<span class="variable language_">self</span>.name)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    u = CurrentUser(<span class="string">&quot;liu&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(u)</span><br><span class="line">    u2 = CurrentUser()</span><br><span class="line">    u2.name = <span class="string">&quot;xin&quot;</span></span><br><span class="line">    <span class="built_in">print</span>(u2)</span><br><span class="line">    <span class="built_in">print</span>(u)</span><br><span class="line">    <span class="keyword">assert</span> u <span class="keyword">is</span> u2</span><br></pre></td></tr></table></figure>
+
+<p>注：代码来自 <a href="https://github.com/Meteorix/python-design-patterns">https://github.com/Meteorix/python-design-patterns</a> 。</p>
+<p>这里重载的是<code>type</code>的<code>__call__</code>方法。改变了<strong>用户类实例化的行为</strong>，使其只能得到唯一的实例。</p>
+<h3 id="简易ORM框架"><a href="#简易ORM框架" class="headerlink" title="简易ORM框架"></a>简易ORM框架</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Field</span>(<span class="title class_ inherited__">object</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, name, column_type</span>):</span><br><span class="line">        <span class="variable language_">self</span>.name = name</span><br><span class="line">        <span class="variable language_">self</span>.column_type = column_type</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__str__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;&lt;%s:%s&gt;&#x27;</span> % (<span class="variable language_">self</span>.__class__.__name__, <span class="variable language_">self</span>.name)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">StringField</span>(<span class="title class_ inherited__">Field</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, name</span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__(name, <span class="string">&#x27;varchar(100)&#x27;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">IntegerField</span>(<span class="title class_ inherited__">Field</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, name</span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__(name, <span class="string">&#x27;bigint&#x27;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ModelMetaclass</span>(<span class="title class_ inherited__">type</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__new__</span>(<span class="params">cls, name, bases, attrs</span>):</span><br><span class="line">        <span class="keyword">if</span> name == <span class="string">&#x27;Model&#x27;</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">type</span>.__new__(cls, name, bases, attrs)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;Found model: %s&#x27;</span> % name)</span><br><span class="line">        mappings = <span class="built_in">dict</span>()</span><br><span class="line">        <span class="keyword">for</span> k, v <span class="keyword">in</span> attrs.items():</span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">isinstance</span>(v, Field):</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">&#x27;Found mapping: %s ==&gt; %s&#x27;</span> % (k, v))</span><br><span class="line">                mappings[k] = v</span><br><span class="line">        <span class="keyword">for</span> k <span class="keyword">in</span> mappings.keys():</span><br><span class="line">            attrs.pop(k)</span><br><span class="line">        attrs[<span class="string">&#x27;__mappings__&#x27;</span>] = mappings  <span class="comment"># 保存属性和列的映射关系</span></span><br><span class="line">        attrs[<span class="string">&#x27;__table__&#x27;</span>] = name  <span class="comment"># 假设表名和类名一致</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">type</span>.__new__(cls, name, bases, attrs)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Model</span>(<span class="built_in">dict</span>, metaclass=ModelMetaclass):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, **kw</span>):</span><br><span class="line">        <span class="built_in">super</span>(Model, <span class="variable language_">self</span>).__init__(**kw)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__getattr__</span>(<span class="params">self, key</span>):</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="variable language_">self</span>[key]</span><br><span class="line">        <span class="keyword">except</span> KeyError:</span><br><span class="line">            <span class="keyword">raise</span> AttributeError(<span class="string">r&quot;&#x27;Model&#x27; object has no attribute &#x27;%s&#x27;&quot;</span> % key)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__setattr__</span>(<span class="params">self, key, value</span>):</span><br><span class="line">        <span class="variable language_">self</span>[key] = value</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">save</span>(<span class="params">self</span>):</span><br><span class="line">        fields = []</span><br><span class="line">        params = []</span><br><span class="line">        args = []</span><br><span class="line">        <span class="keyword">for</span> k, v <span class="keyword">in</span> <span class="variable language_">self</span>.__mappings__.items():</span><br><span class="line">            fields.append(v.name)</span><br><span class="line">            params.append(<span class="string">&#x27;?&#x27;</span>)</span><br><span class="line">            args.append(<span class="built_in">getattr</span>(<span class="variable language_">self</span>, k, <span class="literal">None</span>))</span><br><span class="line">        sql = <span class="string">&#x27;insert into %s (%s) values (%s)&#x27;</span> % (<span class="variable language_">self</span>.__table__, <span class="string">&#x27;,&#x27;</span>.join(fields), <span class="string">&#x27;,&#x27;</span>.join(params))</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;SQL: %s&#x27;</span> % sql)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;ARGS: %s&#x27;</span> % <span class="built_in">str</span>(args))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">User</span>(<span class="title class_ inherited__">Model</span>):</span><br><span class="line">    <span class="comment"># 定义类的属性到列的映射：</span></span><br><span class="line">    <span class="built_in">id</span> = IntegerField(<span class="string">&#x27;id&#x27;</span>)</span><br><span class="line">    name = StringField(<span class="string">&#x27;username&#x27;</span>)</span><br><span class="line">    email = StringField(<span class="string">&#x27;email&#x27;</span>)</span><br><span class="line">    password = StringField(<span class="string">&#x27;password&#x27;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建一个实例：</span></span><br><span class="line">u = User(<span class="built_in">id</span>=<span class="number">12345</span>, name=<span class="string">&#x27;Michael&#x27;</span>, email=<span class="string">&#x27;test@orm.org&#x27;</span>, password=<span class="string">&#x27;my-pwd&#x27;</span>)</span><br><span class="line"><span class="comment"># 保存到数据库：</span></span><br><span class="line">u.save()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 输出</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">Found model: User</span></span><br><span class="line"><span class="string">Found mapping: id ==&gt; &lt;IntegerField:id&gt;</span></span><br><span class="line"><span class="string">Found mapping: name ==&gt; &lt;StringField:username&gt;</span></span><br><span class="line"><span class="string">Found mapping: email ==&gt; &lt;StringField:email&gt;</span></span><br><span class="line"><span class="string">Found mapping: password ==&gt; &lt;StringField:password&gt;</span></span><br><span class="line"><span class="string">SQL: insert into User (id,username,email,password) values (?,?,?,?)</span></span><br><span class="line"><span class="string">ARGS: [12345, &#x27;Michael&#x27;, &#x27;test@orm.org&#x27;, &#x27;my-pwd&#x27;]</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>注：代码来自 <a href="https://www.liaoxuefeng.com/wiki/1016959663602400/1017592449371072">https://www.liaoxuefeng.com/wiki/1016959663602400/1017592449371072</a></p>
+<p>这里重载的是<code>type</code>的<code> __new__</code>方法，因此改变的是<strong>用户类在定义时的行为</strong>。这里用户类是一个数据模型，元类编程做的是在用户定义一个数据模型类的时候，把所有是<code>Field</code>类型的属性收集起来，统一放到<code>mapping</code>属性中。这样基类的方法<code>save</code>可以直接通过<code>mapping</code>属性来保存需要保存的<code>Field</code>属性们。</p>
+<h3 id="YAMLObject"><a href="#YAMLObject" class="headerlink" title="YAMLObject"></a>YAMLObject</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">YAMLObjectMetaclass</span>(<span class="title class_ inherited__">type</span>):</span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">cls, name, bases, kwds</span>):</span><br><span class="line">    <span class="built_in">super</span>(YAMLObjectMetaclass, cls).__init__(name, bases, kwds)</span><br><span class="line">    <span class="keyword">if</span> <span class="string">&#x27;yaml_tag&#x27;</span> <span class="keyword">in</span> kwds <span class="keyword">and</span> kwds[<span class="string">&#x27;yaml_tag&#x27;</span>] <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">      cls.yaml_loader.add_constructor(cls.yaml_tag, cls.from_yaml)</span><br><span class="line">  <span class="comment"># 省略其余定义</span></span><br><span class="line">  </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">YAMLObject</span>(metaclass=YAMLObjectMetaclass):</span><br><span class="line">    yaml_loader = Loader</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Monster</span>(yaml.YAMLObject):</span><br><span class="line">  yaml_tag = <span class="string">u&#x27;!Monster&#x27;</span></span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, name, hp, ac, attacks</span>):</span><br><span class="line">    <span class="variable language_">self</span>.name = name</span><br><span class="line">    <span class="variable language_">self</span>.hp = hp</span><br><span class="line">    <span class="variable language_">self</span>.ac = ac</span><br><span class="line">    <span class="variable language_">self</span>.attacks = attacks</span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">__repr__</span>(<span class="params">self</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;%s(name=%r, hp=%r, ac=%r, attacks=%r)&quot;</span> % (</span><br><span class="line">       <span class="variable language_">self</span>.__class__.__name__, <span class="variable language_">self</span>.name, <span class="variable language_">self</span>.hp, <span class="variable language_">self</span>.ac,      </span><br><span class="line">       <span class="variable language_">self</span>.attacks)</span><br><span class="line"></span><br><span class="line">yaml.load(<span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">--- !Monster</span></span><br><span class="line"><span class="string">name: Cave spider</span></span><br><span class="line"><span class="string">hp: [2,6]    # 2d6</span></span><br><span class="line"><span class="string">ac: 16</span></span><br><span class="line"><span class="string">attacks: [BITE, HURT]</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span>)</span><br><span class="line"></span><br><span class="line">Monster(name=<span class="string">&#x27;Cave spider&#x27;</span>, hp=[<span class="number">2</span>, <span class="number">6</span>], ac=<span class="number">16</span>, attacks=[<span class="string">&#x27;BITE&#x27;</span>, <span class="string">&#x27;HURT&#x27;</span>])</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span> yaml.dump(Monster(</span><br><span class="line">    name=<span class="string">&#x27;Cave lizard&#x27;</span>, hp=[<span class="number">3</span>,<span class="number">6</span>], ac=<span class="number">16</span>, attacks=[<span class="string">&#x27;BITE&#x27;</span>,<span class="string">&#x27;HURT&#x27;</span>]))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 输出</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">!Monster</span></span><br><span class="line"><span class="string">ac: 16</span></span><br><span class="line"><span class="string">attacks: [BITE, HURT]</span></span><br><span class="line"><span class="string">hp: [3, 6]</span></span><br><span class="line"><span class="string">name: Cave lizard</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>这里重载的是<code>type</code>的<code> __init__</code>方法，因此改变的是<strong>用户类在定义时的行为</strong>。在定义了用户类<code>Monster</code>时，便通过<code>cls.yaml_loader.add_constructor(cls.yaml_tag, cls.from_yaml)</code>将<code>Monster</code>类注册到系统。</p>
+<h3 id="PyText"><a href="#PyText" class="headerlink" title="PyText"></a>PyText</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">ComponentMeta</span>(<span class="title class_ inherited__">type</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__new__</span>(<span class="params">metacls, typename, bases, namespace</span>):</span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;Config&quot;</span> <span class="keyword">not</span> <span class="keyword">in</span> namespace:</span><br><span class="line">            <span class="comment"># We need to dynamically create a new Config class per</span></span><br><span class="line">            <span class="comment"># instance rather than inheriting a single empty config class</span></span><br><span class="line">            <span class="comment"># because components are registered uniquely by config class.</span></span><br><span class="line">            <span class="comment"># If a parent class specifies a config class, inherit from it.</span></span><br><span class="line">            parent_config = <span class="built_in">next</span>(</span><br><span class="line">                (base.Config <span class="keyword">for</span> base <span class="keyword">in</span> bases <span class="keyword">if</span> <span class="built_in">hasattr</span>(base, <span class="string">&quot;Config&quot;</span>)), <span class="literal">None</span></span><br><span class="line">            )</span><br><span class="line">            <span class="keyword">if</span> parent_config <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line"></span><br><span class="line">                <span class="keyword">class</span> <span class="title class_">Config</span>(<span class="title class_ inherited__">parent_config</span>):</span><br><span class="line">                    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line"></span><br><span class="line">                <span class="keyword">class</span> <span class="title class_">Config</span>(<span class="title class_ inherited__">ConfigBase</span>):</span><br><span class="line">                    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">            namespace[<span class="string">&quot;Config&quot;</span>] = Config</span><br><span class="line"></span><br><span class="line">        component_type = <span class="built_in">next</span>(</span><br><span class="line">            (</span><br><span class="line">                base.__COMPONENT_TYPE__</span><br><span class="line">                <span class="keyword">for</span> base <span class="keyword">in</span> bases</span><br><span class="line">                <span class="keyword">if</span> <span class="built_in">hasattr</span>(base, <span class="string">&quot;__COMPONENT_TYPE__&quot;</span>)</span><br><span class="line">            ),</span><br><span class="line">            namespace.get(<span class="string">&quot;__COMPONENT_TYPE__&quot;</span>),</span><br><span class="line">        )</span><br><span class="line">        new_cls = <span class="built_in">super</span>().__new__(metacls, typename, bases, namespace)</span><br><span class="line"></span><br><span class="line">        new_cls.Config.__COMPONENT_TYPE__ = component_type</span><br><span class="line">        new_cls.Config.__name__ = <span class="string">f&quot;<span class="subst">&#123;typename&#125;</span>.Config&quot;</span></span><br><span class="line">        new_cls.Config.__COMPONENT__ = new_cls</span><br><span class="line">        new_cls.Config.__EXPANSIBLE__ = namespace.get(<span class="string">&quot;__EXPANSIBLE__&quot;</span>)</span><br><span class="line">        <span class="keyword">if</span> component_type:</span><br><span class="line">            Registry.add(component_type, new_cls, new_cls.Config)</span><br><span class="line">        <span class="keyword">return</span> new_cls</span><br></pre></td></tr></table></figure>
+
+<p>注：代码来自 <a href="https://github.com/facebookresearch/pytext/blob/351a060b479cbfe1db46b74f1fc975a5b6523122/pytext/config/component.py#L87">https://github.com/facebookresearch/pytext/blob/351a060b479cbfe1db46b74f1fc975a5b6523122/pytext/config/component.py#L87</a> </p>
+<p>这里重载的是<code>type</code>的<code> __new__</code>方法，因此改变的是<strong>用户类在定义时的行为</strong>。在定义了用户组件类时，便通过<code> Registry.add(component_type, new_cls, new_cls.Config)</code>将该组件类注册到系统。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="https://time.geekbang.org/column/article/101288">18 | metaclass，是潘多拉魔盒还是阿拉丁神灯？</a></li>
+<li><a href="https://www.liaoxuefeng.com/wiki/1016959663602400/1017592449371072">使用元类</a></li>
+<li><a href="https://book.douban.com/subject/26278021/">Fluent Python</a></li>
+<li><a href="https://realpython.com/python-metaclasses/">https://realpython.com/python-metaclasses/</a></li>
+<li><a href="https://github.com/Meteorix/python-design-patterns">Python Design Patterns</a></li>
+<li><a href="https://github.com/facebookresearch/pytext">pytext</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/python/gunicorn/" rel="prev" title="gunicorn学习总结">
+                  <i class="fa fa-angle-left"></i> gunicorn学习总结
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/algrithom/leetcode_python/" rel="next" title="Leetcode算法题攻略之Python">
+                  Leetcode算法题攻略之Python <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="是什么提到**Principal component analysis (PCA)**，大家会先想到“降维”，其准确的定义是： 1PCA is a statistical procedure that uses an orthogonal transformation to convert a set of observations of possibly correlated variables">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PCA（主成分分析）学习总结（原理+代码）">
+<meta property="og:url" content="https://applenob.github.io/machine_learning/PCA/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="是什么提到**Principal component analysis (PCA)**，大家会先想到“降维”，其准确的定义是： 1PCA is a statistical procedure that uses an orthogonal transformation to convert a set of observations of possibly correlated variables">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://applenob.github.io/machine_learning/PCA/exp.png">
+<meta property="article:published_time" content="2016-12-02T06:40:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.078Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="Machine Learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://applenob.github.io/machine_learning/PCA/exp.png">
+
+
+<link rel="canonical" href="https://applenob.github.io/machine_learning/PCA/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/machine_learning/PCA/","path":"machine_learning/PCA/","title":"PCA（主成分分析）学习总结（原理+代码）"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>PCA（主成分分析）学习总结（原理+代码） | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">1.</span> <span class="nav-text">是什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E5%AD%A6%E6%8F%8F%E8%BF%B0"><span class="nav-number">2.</span> <span class="nav-text">数学描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9B%B4%E7%9B%B4%E8%A7%82%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="nav-number">3.</span> <span class="nav-text">更直观的工作原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%92%8CSVD%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="nav-number">3.1.</span> <span class="nav-text">和SVD的关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PCA%E7%AE%97%E6%B3%95"><span class="nav-number">3.2.</span> <span class="nav-text">PCA算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90"><span class="nav-number">4.</span> <span class="nav-text">代码分析</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/machine_learning/PCA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="PCA（主成分分析）学习总结（原理+代码） | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          PCA（主成分分析）学习总结（原理+代码）
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2016-12-01 22:40:00" itemprop="dateCreated datePublished" datetime="2016-12-01T22:40:00-08:00">2016-12-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="是什么"><a href="#是什么" class="headerlink" title="是什么"></a>是什么</h2><p>提到**Principal component analysis (PCA)**，大家会先想到“降维”，其准确的定义是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PCA is a statistical procedure that uses an orthogonal transformation to convert a set of observations of possibly correlated variables into a set of values of linearly uncorrelated variables called principal components.</span><br></pre></td></tr></table></figure>
+
+<p>翻译：</p>
+<p>PCA是一种统计过程，它使用<strong>正交变换</strong>，将一系列可能相关的变量的观测转换到另外一系列的线性无关的变量，这些线性无关的变量称为<strong>主成分</strong>。</p>
+<p>主成分分析经常用于减少数据集的维数，同时保持数据集中的对方差贡献最大的特征。这是通过保留低阶主成分，忽略高阶主成分做到的。</p>
+<h2 id="数学描述"><a href="#数学描述" class="headerlink" title="数学描述"></a>数学描述</h2><p>参看<a href="http://www.deeplearningbook.org/">Goodfellow的《deep learning》</a>。</p>
+<p>假设我们有一系列的m个点${x^{(1)}, x^{(2)}, …, x^{(m)}}$，其中$x^{(i)}∈R^n$。</p>
+<p>回到问题的最初，我们想让数据降维，约束是什么呢？降维以后保留大部分原来的信息。如果将降维看做<strong>编码</strong>，那么约束就是<strong>解码</strong>后的结果尽量和源数据吻合。</p>
+<p>假设对于每个点$x^{(i)}$，都可以找到一个<strong>编码向量</strong>与之对应，记为$c^{(i)}∈R^l,l&lt;n$。</p>
+<p>定义一个<strong>编码函数</strong>：$f(x)&#x3D;c$，一个<strong>解码函数</strong>：$g(c(x))$，约束即$x≈g(c(x))$。</p>
+<p>PCA由我们<strong>对解码函数的选择</strong>来定义：即，<strong>解码函数是一个矩阵乘法（线性变换）</strong>，记为$g(c)&#x3D;Dc$。$D∈R^{n×l}$。<br>为了进一步简化问题，PCA进一步限制D矩阵每对列向量两两正交（orthogonal）。</p>
+<p>那么最优的编码方法：$c^* &#x3D; \underset {c}{argmin}||x-Dc||^2_2 &#x3D;\underset {c}{argmin}(x-Dc)^T(x-Dc)$。</p>
+<p>最终化简为：$c^* &#x3D; \underset {c}{argmin} -2x^TDc+c^Tc$，令$\bigtriangledown_c -2x^TDc+c^Tc &#x3D; 0$，得到$c&#x3D;D^Tx$。</p>
+<p>于是得到PCA的重构函数：$r(x) &#x3D; g(c(x)) &#x3D; D^TDx$，接下来寻找这个$D$。</p>
+<p>$$D^*&#x3D;\underset{D}{argmin} \sqrt {\sum_{i,j}(x^{(i)}_i-r(x^{(i)})_j)^2}$$</p>
+<p>约束是$D^TD&#x3D;1$</p>
+<p>为了简化问题，先考虑$l&#x3D;1$的情况，即只考虑一个向量$d$，问题转换成了：</p>
+<p>$$d^*&#x3D;\underset{d}{argmin}\sum_i||x^{(i)}-dd^Tx^{(i)}||^2_2$$</p>
+<p>约束是$||d||_2 &#x3D; 1$。</p>
+<p>$X$是$x$堆成的矩阵，$d^*&#x3D;\underset{d}{argmin}||X-dd^TX||^2_2$，化简成：$\underset{d}{argmax} Tr(d^TX^TXd)$，约束是$d^Td&#x3D;1$。</p>
+<p>$d$的最优解是协方差矩阵$X^TX$最大的特征值对应的特征向量。</p>
+<h2 id="更直观的工作原理"><a href="#更直观的工作原理" class="headerlink" title="更直观的工作原理"></a>更直观的工作原理</h2><p><a href="http://blog.codinglabs.org/articles/pca-tutorial.html">这篇博客</a>从另一个更直观的角度解释了PCA的原理。我也简单总结（摘抄）一下。</p>
+<p>首先理解两个矩阵相乘的几何意义：将右边矩阵中的每一列列向量变换到左边矩阵中每一行行向量为基所表示的空间中去。</p>
+<p>有一堆数据，我们希望重新投影，并且<strong>希望投影后的投影值尽可能分散</strong>。</p>
+<p>上面的目标用数学语言描述就是：</p>
+<p>将一组$N$维向量降为$K$维（$K$大于0，小于$N$），其目标是选择$K$个单位（模为1）正交基，使得原始数据变换到这组基上后，各字段两两间协方差为0，而字段的方差则尽可能大（在正交的约束下，取最大的$K$个方差）。</p>
+<p>设我们有$m$个$n$维数据记录，将其按列排成$n$乘$m$的矩阵$X$，设$C&#x3D;\frac{1}{m}XX^T$，则$C$是一个对称矩阵，其对角线分别个各个字段的方差，而第$i$行$j$列和$j$行$i$列元素相同，表示$i$和$j$两个字段的协方差。</p>
+<p>优化目前，等价于<strong>将协方差矩阵对角化</strong>：即除对角线外的其它元素化为0，并且在对角线上将元素按大小从上到下排列，这样我们就达到了优化目的。</p>
+<p>设原始数据矩阵$X$对应的协方差矩阵为$C$，而$P$是一组基按行组成的矩阵，设$Y&#x3D;PX$，则$Y$为$X$对$P$做基变换后的数据。设$Y$的协方差矩阵为$D$，推导一下$D$与$C$的关系：</p>
+<p>$$D&#x3D;\frac{1}{m}YY^T&#x3D;\frac{1}{m}(PX)(PX)^T&#x3D;\frac{1}{m}PXX^TP^T&#x3D;P(\frac{1}{m}XX^T)P^T&#x3D;PCP^T$$</p>
+<p>要找的$P$不是别的，是能让原始协方差矩阵$C$对角化的$P$。</p>
+<p>而$C$作为实对称矩阵又有一些很好的性质：</p>
+<ol>
+<li>实对称矩阵不同特征值对应的特征向量必然正交。</li>
+<li>设特征向量$λ$重数为$r$，则必然存在$r$个线性无关的特征向量对应于$λ$，因此可以将这$r$个特征向量单位正交化。</li>
+</ol>
+<p>由上面两条可知，一个n行n列的实对称矩阵一定可以找到n个单位正交特征向量，设这n个特征向量为$e_1,e_2,⋯,e_n$，我们将其按列组成矩阵：</p>
+<p>$E&#x3D;(e_1;e_2;⋯ ;e_n)$</p>
+<p>则对协方差矩阵$C$有如下结论：</p>
+<p>$$E^TCE&#x3D;Λ$$</p>
+<p>因此，$P&#x3D;E^T$，即$P$的一个解。</p>
+<h3 id="和SVD的关系"><a href="#和SVD的关系" class="headerlink" title="和SVD的关系"></a>和SVD的关系</h3><p><strong>奇异值分解（singular value decomposition）</strong>：</p>
+<p>$A&#x3D;UDV^T$，其中$A$是$m×n$矩阵；$U$是$m×m$正交矩阵，U的列向量称为左奇异向量，是$AA^T$的特征向量；$D$是$m×n$对角矩阵，对角线上的元素称为奇异值；$V$是正交$n×n$矩阵，$V$的列向量称为右奇异向量，是$A^TA$的特征向量。</p>
+<p>因此一些算法直接借用SVD分解的结果来获取协方差矩阵的特征向量和特征值。</p>
+<h3 id="PCA算法"><a href="#PCA算法" class="headerlink" title="PCA算法"></a>PCA算法</h3><p>设有$m$条$n$维数据。</p>
+<ol>
+<li>将原始数据按列组成$n$行$m$列矩阵$X$</li>
+<li>将$X$的每一行（代表一个属性字段）进行零均值化，即减去这一行的均值</li>
+<li>求出协方差矩阵$C&#x3D;\frac{1}{m}XX^T$</li>
+<li>求出协方差矩阵的特征值及对应的特征向量</li>
+<li>将特征向量按对应特征值大小从上到下按行排列成矩阵，取前k行组成矩阵$P$</li>
+<li>$Y&#x3D;PX$即为降维到$k$维后的数据</li>
+</ol>
+<h2 id="代码分析"><a href="#代码分析" class="headerlink" title="代码分析"></a>代码分析</h2><p>给一个图像分析的代码做例子，代码来自<a href="https://book.douban.com/subject/25906843/">这里</a>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> matplotlib <span class="keyword">import</span> pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">pca</span>(<span class="params">X</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    主成分分析</span></span><br><span class="line"><span class="string">    输入：矩阵X，存储训练数据，每一行是对应一张图片；</span></span><br><span class="line"><span class="string">    输出：投影矩阵（按照维度的重要性排序）/方差/均值。</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="comment"># 获取维度</span></span><br><span class="line">    num_data, dim = X.shape</span><br><span class="line">    <span class="comment"># 数据中心化</span></span><br><span class="line">    mean_X = X.mean(axis=<span class="number">0</span>)</span><br><span class="line">    X = X - mean_X</span><br><span class="line">    <span class="keyword">if</span> dim &gt; num_data:</span><br><span class="line">        <span class="comment"># PCA-使用紧致技巧</span></span><br><span class="line">        M = np.dot(X, X.T)  <span class="comment"># 协方差矩阵</span></span><br><span class="line">        e, EV = np.linalg.eigh(M)  <span class="comment"># 特征值和特征向量</span></span><br><span class="line">        tmp = np.dot(X.T, EV).T  <span class="comment"># 这就是紧致技巧</span></span><br><span class="line">        V = tmp[::-<span class="number">1</span>]  <span class="comment"># 由于最后的特征向量才是我们需要的，所以需要逆序</span></span><br><span class="line">        S = np.sqrt(e)[::-<span class="number">1</span>]  <span class="comment"># 由于特征值是按照递增顺序排列的，所以需要逆序</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(V.shape[<span class="number">1</span>]):</span><br><span class="line">            V[:, i]/=<span class="number">5</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="comment"># PCA-使用SVD方法</span></span><br><span class="line">        U, S, V = np.linalg.svd(X)</span><br><span class="line">        V = V[:num_data]  <span class="comment"># 仅仅返回前num_data的数据</span></span><br><span class="line">    <span class="comment"># 返回投影矩阵/方差/均值</span></span><br><span class="line">    <span class="keyword">return</span> V, S, mean_X</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line">img_dir = <span class="string">&quot;/home/cer/Data/pcv_data/data/a_thumbs&quot;</span></span><br><span class="line">imlist = [os.path.join(img_dir, one_path) <span class="keyword">for</span> one_path <span class="keyword">in</span> os.listdir(img_dir)]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">im = np.array(Image.<span class="built_in">open</span>(imlist[<span class="number">0</span>])) <span class="comment"># 打开一幅图像，获取其大小</span></span><br><span class="line">m,n = im.shape[<span class="number">0</span>:<span class="number">2</span>] <span class="comment"># 获取图像的大小</span></span><br><span class="line">imnbr = <span class="built_in">len</span>(imlist) <span class="comment"># 获取图像的数目</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建矩阵，保存所有压平后的图像数据</span></span><br><span class="line">immatrix = np.array([np.array(Image.<span class="built_in">open</span>(im)).flatten() <span class="keyword">for</span> im <span class="keyword">in</span> imlist],<span class="string">&#x27;f&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 执行 PCA 操作</span></span><br><span class="line">V,S,immean = pca(immatrix)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示一些图像（均值图像和前 7 个模式）</span></span><br><span class="line">plt.figure()</span><br><span class="line"></span><br><span class="line">plt.gray()</span><br><span class="line">plt.subplot(<span class="number">2</span>,<span class="number">4</span>,<span class="number">1</span>)</span><br><span class="line">plt.imshow(immean.reshape(m,n))</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">7</span>):</span><br><span class="line">    plt.subplot(<span class="number">2</span>,<span class="number">4</span>,i+<span class="number">2</span>)</span><br><span class="line">    plt.imshow(V[i].reshape(m,n))</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/machine_learning/PCA/exp.png"></p>
+<p>上面展示的是平均图像（左上第一幅）和前7个模式（具有最大方差的方向模式，不是降维的结果）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">immatrix.shape</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(2359, 625)</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+              <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/machine_learning/Logistic_Regression/" rel="prev" title="Logistic Regression VS Max Entropy 和 Theano实现">
+                  <i class="fa fa-angle-left"></i> Logistic Regression VS Max Entropy 和 Theano实现
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/machine_learning/SVM/" rel="next" title="如何优雅地手推SVM">
+                  如何优雅地手推SVM <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

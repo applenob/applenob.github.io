@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="这篇博客记录自己学习遗传算法的心得。 引入关于遗传算法，在知乎的问题如何通俗易懂地解释遗传算法？有什么例子？是一个很好的资料，介绍了很多很有趣的例子。 我第一次对遗传算法感兴趣是听了卓老板的一个介绍复杂系统的音频节目，这个节目引用了《复杂》这本书中的关于遗传算法的例子。即一个吃豆人的例子，知乎也有提到。很有意思，也很有启发性，于是想研究研究代码，顺带做个总结。 来自遗传学的启发">
+<meta property="og:type" content="article">
+<meta property="og:title" content="遗传算法（Genetic Algorithm）">
+<meta property="og:url" content="https://applenob.github.io/algrithom/GA/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="这篇博客记录自己学习遗传算法的心得。 引入关于遗传算法，在知乎的问题如何通俗易懂地解释遗传算法？有什么例子？是一个很好的资料，介绍了很多很有趣的例子。 我第一次对遗传算法感兴趣是听了卓老板的一个介绍复杂系统的音频节目，这个节目引用了《复杂》这本书中的关于遗传算法的例子。即一个吃豆人的例子，知乎也有提到。很有意思，也很有启发性，于是想研究研究代码，顺带做个总结。 来自遗传学的启发">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://applenob.github.io/algrithom/GA/roby.png">
+<meta property="article:published_time" content="2017-02-13T03:19:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.028Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="Algorithm">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://applenob.github.io/algrithom/GA/roby.png">
+
+
+<link rel="canonical" href="https://applenob.github.io/algrithom/GA/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/algrithom/GA/","path":"algrithom/GA/","title":"遗传算法（Genetic Algorithm）"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>遗传算法（Genetic Algorithm） | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%95%E5%85%A5"><span class="nav-number">1.</span> <span class="nav-text">引入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%A5%E8%87%AA%E9%81%97%E4%BC%A0%E5%AD%A6%E7%9A%84%E5%90%AF%E5%8F%91"><span class="nav-number">2.</span> <span class="nav-text">来自遗传学的启发</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95%E4%BB%8B%E7%BB%8D"><span class="nav-number">3.</span> <span class="nav-text">遗传算法介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95%E7%9A%84%E5%BA%94%E7%94%A8"><span class="nav-number">4.</span> <span class="nav-text">遗传算法的应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BE%E4%BE%8B"><span class="nav-number">5.</span> <span class="nav-text">举例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BE%8B%E5%AD%901%EF%BC%9A%E5%9E%83%E5%9C%BE%E6%B8%85%E6%89%AB%E6%9C%BA%E5%99%A8%E4%BA%BA"><span class="nav-number">5.1.</span> <span class="nav-text">例子1：垃圾清扫机器人</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AF%8F%E4%B8%AA%E6%A0%BC%E5%AD%90%E5%8F%AA%E6%9C%893%E7%A7%8D%E6%83%85%E5%86%B5%EF%BC%9A-%E7%A9%BA%E6%A0%BC%E5%AD%90-%E6%9C%89%E6%98%93%E6%8B%89%E7%BD%90%E7%9A%84%E6%A0%BC%E5%AD%90-%E5%A2%99%E3%80%82%E5%8A%A8%E4%BD%9C%E5%8F%AF%E4%BB%A5%E6%98%AF%E4%BB%A5%E4%B8%8B7%E7%A7%8D%EF%BC%9A-%E5%BE%80%E5%8C%97%E7%A7%BB%E5%8A%A8-%E5%BE%80%E5%8D%97%E7%A7%BB%E5%8A%A8-%E5%BE%80%E4%B8%9C%E7%A7%BB%E5%8A%A8-%E5%BE%80%E8%A5%BF%E7%A7%BB%E5%8A%A8-%E9%9A%8F%E6%9C%BA%E7%A7%BB%E5%8A%A8-%E4%B8%8D%E5%8A%A8-%E6%94%B6%E9%9B%86%E7%BD%90%E5%AD%90%E3%80%82"><span class="nav-number">6.</span> <span class="nav-text">每个格子只有3种情况：- 空格子- 有易拉罐的格子- 墙。动作可以是以下7种：- 往北移动- 往南移动- 往东移动- 往西移动- 随机移动- 不动- 收集罐子。</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BE%8B%E5%AD%902%EF%BC%9A%E6%B1%82%E8%A7%A3%E5%87%BD%E6%95%B0"><span class="nav-number">6.1.</span> <span class="nav-text">例子2：求解函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BE%8B%E5%AD%903%EF%BC%9A%E7%94%A8n%E4%B8%AA%E4%B8%89%E8%A7%92%E5%BD%A2%E4%BD%9C%E7%94%BB"><span class="nav-number">6.2.</span> <span class="nav-text">例子3：用n个三角形作画</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/algrithom/GA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="遗传算法（Genetic Algorithm） | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          遗传算法（Genetic Algorithm）
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-02-12 19:19:00" itemprop="dateCreated datePublished" datetime="2017-02-12T19:19:00-08:00">2017-02-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%BB%8F%E5%85%B8%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">经典算法</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>这篇博客记录自己学习遗传算法的心得。</p>
+<h2 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h2><p>关于遗传算法，在知乎的问题<a href="https://www.zhihu.com/question/23293449">如何通俗易懂地解释遗传算法？有什么例子？</a>是一个很好的资料，介绍了很多很有趣的例子。</p>
+<p>我第一次对遗传算法感兴趣是听了卓老板的一个介绍复杂系统的音频节目，这个节目引用了<a href="https://book.douban.com/subject/6749832/">《复杂》</a>这本书中的关于遗传算法的例子。即一个吃豆人的例子，知乎也有提到。很有意思，也很有启发性，于是想研究研究代码，顺带做个总结。</p>
+<h2 id="来自遗传学的启发"><a href="#来自遗传学的启发" class="headerlink" title="来自遗传学的启发"></a>来自遗传学的启发</h2><p>看看遗传算法用到了哪些来自遗传学的启发：</p>
+<ol>
+<li>达尔文的“自然选择”：即优胜劣汰，适应环境的个体可以繁衍后代，而不适应环境的个体不能繁衍后代；</li>
+<li>“交叉”：子代的基因一半来自父亲，一半来自母亲；</li>
+<li>“基因突变”：子代的基因在继承父母的基因的基础上会有一定的概率发生突变。</li>
+</ol>
+<h2 id="遗传算法介绍"><a href="#遗传算法介绍" class="headerlink" title="遗传算法介绍"></a>遗传算法介绍</h2><p>遗传算法的输入包括两个部分：</p>
+<p><strong>候选程序群体</strong>和<strong>适应性函数</strong></p>
+<ul>
+<li><strong>候选程序群体</strong> 也就是“基因”，这个概念需要好好理解。它可以表示成位&#x2F;数字或符号组成的字符串。一般来说，它代表“环境状态”–&gt;“反应动作”的映射，也就是代表不同的情况下，它该做什么动作。这个概念还有很多玄机，后面继续谈。</li>
+<li><strong>适应性函数</strong> 也就是“大自然”，可以理解成评价函数，评价某个个体对某个特定环境的适应程度，适应程度高的个体可以繁殖后代。</li>
+</ul>
+<p><strong>GA算法</strong>：</p>
+<ol>
+<li>生成候选方案的初始群体。生成初始群体最简单的办法就是随机生成大量“个体”（个体基因）。</li>
+<li>计算当前群体中各个个体的适应度。</li>
+<li>选择一定数量适应度最高的个体作为下一代的父母。</li>
+<li>将选出的父母进行配对。用父母进行重组产生出后代，伴有一定的随机突变概率，后代加入形成新一代群体。选出的父母不断产生后代，直到新的群体数量达到上限（即与初始群体数量一样）。新的群体成为当前群体。</li>
+<li>转到第2步。</li>
+</ol>
+<h2 id="遗传算法的应用"><a href="#遗传算法的应用" class="headerlink" title="遗传算法的应用"></a>遗传算法的应用</h2><ul>
+<li>通用电气将GA用于飞行器的部分自动化设计；</li>
+<li>洛斯阿拉莫斯国家实验室用GA分析卫星图像；</li>
+<li>约翰迪尔（John Deere）公司将GA用于自动化生产线的调度；</li>
+<li>德州仪器（Texas Instruments）则用GA来设计计算机芯片。</li>
+</ul>
+<h2 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h2><h3 id="例子1：垃圾清扫机器人"><a href="#例子1：垃圾清扫机器人" class="headerlink" title="例子1：垃圾清扫机器人"></a>例子1：垃圾清扫机器人</h3><p>例子采用《复杂》中的吃豆人，也就是易拉罐清扫机器人————罗比。</p>
+<p><img src="/algrithom/GA/roby.png"></p>
+<p>罗比是图中的机器人，它的任务，是打扫10×10方格中随机出现的易拉罐。</p>
+<p>每次清扫工作，罗比可以执行200个动作。罗比只能看见当前的格子和相邻4个格子的情况。</p>
+<h2 id="每个格子只有3种情况：-空格子-有易拉罐的格子-墙。动作可以是以下7种：-往北移动-往南移动-往东移动-往西移动-随机移动-不动-收集罐子。"><a href="#每个格子只有3种情况：-空格子-有易拉罐的格子-墙。动作可以是以下7种：-往北移动-往南移动-往东移动-往西移动-随机移动-不动-收集罐子。" class="headerlink" title="每个格子只有3种情况：- 空格子- 有易拉罐的格子- 墙。动作可以是以下7种：- 往北移动- 往南移动- 往东移动- 往西移动- 随机移动- 不动- 收集罐子。"></a>每个格子只有3种情况：<br>- 空格子<br>- 有易拉罐的格子<br>- 墙。<br><br>动作可以是以下7种：<br>- 往北移动<br>- 往南移动<br>- 往东移动<br>- 往西移动<br>- 随机移动<br>- 不动<br>- 收集罐子。</h2><p>动作对应的奖励和惩罚：</p>
+<ul>
+<li>收集一个罐子，+10分；</li>
+<li>进行收集动作，但格子中没有罐子，-1分；</li>
+<li>撞到墙-5分，回到原来的格子。</li>
+</ul>
+<p>显然，罗比尽可能地多收集罐子，别撞墙，没罐子的时候别去捡，得到的分数就最高。</p>
+<p><strong>直接写规则好吗？</strong></p>
+<p>人工智能早期的“符号学派”，设计一个智能系统通常是基于规则去判断的。</p>
+<p>突然想到知乎上一个很搞的问题：<a href="https://www.zhihu.com/question/50050401">如何看待百度无人车，三千多个场景，一万多个if？</a>。</p>
+<p>这些说白了，这些规则，就是我上文说的“环境状态”–&gt;“反应动作”的映射。</p>
+<p>回到罗比的问题，如果我们的罗比是一个没有<strong>“记忆”</strong>的机器人，也就是说，它只能应用的信息是当前所处格子和其他相邻的四个格子的状态，却不知道它上一步走的时候那5个格子的状态。</p>
+<p>这样问题就会大大简化，场景的个数就变成了3的5次方（5个格子，每个格子可能有3中状态），也就是243种情况。</p>
+<p>没有问题，这样写规则也能解决。但，这样实在是费时费力，这里还只考虑罗比没有记忆呢，如果罗比能记住前面走过的一步，那规则就是$243^2$条了，那已经没法写了，更别说记住前面两步，三步了。</p>
+<p>好，既然这样，让罗比<strong>试试遗传算法</strong>：</p>
+<ol>
+<li>生成初始群体。初始群体有200个随机个体（策略）。每个基因是一个介于0和6之间的数字，代表一次动作（0&#x3D;向北移动，1&#x3D;向南移动，2&#x3D;向东移动，3&#x3D;向西移动，4&#x3D;不动，5&#x3D;捡拾罐子，6&#x3D;随机移动）。在初始群体中，基因都随机设定。程序中用一个伪随机数发生器来进行各种随机选择。重复后面的步骤1000次。</li>
+<li>计算群体中每个个体的适应度。在我的程序中，是通过让罗比执行100次不同的清扫任务来确定策略的适应度。每次将罗比置于位置（0，0），随机撒一些易拉罐（每个格子至多1个易拉罐，格子有易拉罐的概率是50%）。然后让罗比根据策略在每次任务中执行200个动作。罗比的得分就是策略执行各任务的分数。策略的适应度是执行100次任务的平均得分，每次的罐子分布都不一样。</li>
+<li>进化。让当前群体进化，产生出下一代群体。即重复以下步骤，直到新群体有200个个体。</li>
+</ol>
+<p>作者自己编写的规则，平均得分是346，完美的得分是500（一共50个罐子），GA结果是483，相当不错。</p>
+<p>讲到这里，还没有说遗传算法最神奇的一点：那就是，根据遗传算法得到的规则，单个拿出来看，可能人们很难理解。</p>
+<p>这其实很好理解，拿基因来说吧，如果让你设计一个“完美”的人，你可能会想，“我要设计一个大眼睛的基因，我还要设计一个高鼻梁的基因”，但是局部可能都是比较不错的策略，综合在一起的结果，可能没那么好。也许真正看上去完美的人，眼睛不是最大，鼻梁也不是最高，但这个人整体看上去就是很好看。</p>
+<p>难怪美国国家航空航天局（NASA）的遗传算法专家罗恩（Jason Lohn）曾这样说：“遗传算法是探索设计死角的伟大工具。”</p>
+<h3 id="例子2：求解函数"><a href="#例子2：求解函数" class="headerlink" title="例子2：求解函数"></a>例子2：求解函数</h3><p>求解函数$f(x) &#x3D; x + 10×sin(5×x) + 7*cos(4×x)$ 在区间[0,9]的最大值。（来自知乎）</p>
+<p>如何应用遗传算法求解这样的最优化问题呢？</p>
+<p>还是先解决GA算法的两个输入：</p>
+<ul>
+<li><strong>候选程序群体</strong>是什么？<strong>适应性函数</strong>是什么？</li>
+<li><strong>适应性函数</strong>：比较容易想到，本身就是求解最大值，函数本身就可以当做适应性函数。</li>
+<li><strong>候选程序群体</strong>：题目给出了探索的解的空间，在0-9之间比如划分成90000，即精确到4位小数；</li>
+</ul>
+<p>$2^{16}&lt;90000&lt;2^{17}$，需要17位二进制数来表示这些解。换句话说，一个解的编码就是一个17位的二进制串。</p>
+<p>代码实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> math</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">import</span> operator</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">GA</span>():</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, length, count</span>):</span><br><span class="line">        <span class="comment"># 染色体长度</span></span><br><span class="line">        <span class="variable language_">self</span>.length = length</span><br><span class="line">        <span class="comment"># 种群中的染色体数量</span></span><br><span class="line">        <span class="variable language_">self</span>.count = count</span><br><span class="line">        <span class="comment"># 随机生成初始种群</span></span><br><span class="line">        <span class="variable language_">self</span>.population = <span class="variable language_">self</span>.gen_population(length, count)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">evolve</span>(<span class="params">self, retain_rate=<span class="number">0.2</span>, random_select_rate=<span class="number">0.5</span>, mutation_rate=<span class="number">0.01</span></span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        进化</span></span><br><span class="line"><span class="string">        对当前一代种群依次进行选择、交叉并生成新一代种群，然后对新一代种群进行变异</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        parents = <span class="variable language_">self</span>.selection(retain_rate, random_select_rate)</span><br><span class="line">        <span class="variable language_">self</span>.crossover(parents)</span><br><span class="line">        <span class="variable language_">self</span>.mutation(mutation_rate)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">gen_chromosome</span>(<span class="params">self, length</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        随机生成长度为length的染色体，每个基因的取值是0或1</span></span><br><span class="line"><span class="string">        这里用一个bit表示一个基因</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        chromosome = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> xrange(length):</span><br><span class="line">            chromosome |= (<span class="number">1</span> &lt;&lt; i) * random.randint(<span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> chromosome</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">gen_population</span>(<span class="params">self, length, count</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        获取初始种群（一个含有count个长度为length的染色体的列表）</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">return</span> [<span class="variable language_">self</span>.gen_chromosome(length) <span class="keyword">for</span> i <span class="keyword">in</span> xrange(count)]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">fitness</span>(<span class="params">self, chromosome</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        计算适应度，将染色体解码为0~9之间数字，代入函数计算</span></span><br><span class="line"><span class="string">        因为是求最大值，所以数值越大，适应度越高</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        x = <span class="variable language_">self</span>.decode(chromosome)</span><br><span class="line">        <span class="keyword">return</span> x + <span class="number">10</span>*math.sin(<span class="number">5</span>*x) + <span class="number">7</span>*math.cos(<span class="number">4</span>*x)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">selection</span>(<span class="params">self, retain_rate, random_select_rate</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        选择</span></span><br><span class="line"><span class="string">        先对适应度从大到小排序，选出存活的染色体</span></span><br><span class="line"><span class="string">        再进行随机选择，选出适应度虽然小，但是幸存下来的个体</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="comment"># 对适应度从大到小进行排序</span></span><br><span class="line">        graded = [(<span class="variable language_">self</span>.fitness(chromosome), chromosome) <span class="keyword">for</span> chromosome <span class="keyword">in</span> <span class="variable language_">self</span>.population]</span><br><span class="line">        graded = [x[<span class="number">1</span>] <span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">sorted</span>(graded, reverse=<span class="literal">True</span>)]</span><br><span class="line">        <span class="comment"># 选出适应性强的染色体</span></span><br><span class="line">        retain_length = <span class="built_in">int</span>(<span class="built_in">len</span>(graded) * retain_rate)</span><br><span class="line">        parents = graded[:retain_length]</span><br><span class="line">        <span class="comment"># 选出适应性不强，但是幸存的染色体</span></span><br><span class="line">        <span class="keyword">for</span> chromosome <span class="keyword">in</span> graded[retain_length:]:</span><br><span class="line">            <span class="keyword">if</span> random.random() &lt; random_select_rate:</span><br><span class="line">                parents.append(chromosome)</span><br><span class="line">        <span class="keyword">return</span> parents</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">crossover</span>(<span class="params">self, parents</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        染色体的交叉、繁殖，生成新一代的种群</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="comment"># 新出生的孩子，最终会被加入存活下来的父母之中，形成新一代的种群。</span></span><br><span class="line">        children = []</span><br><span class="line">        <span class="comment"># 需要繁殖的孩子的量</span></span><br><span class="line">        target_count = <span class="built_in">len</span>(<span class="variable language_">self</span>.population) - <span class="built_in">len</span>(parents)</span><br><span class="line">        <span class="comment"># 开始根据需要的量进行繁殖</span></span><br><span class="line">        <span class="keyword">while</span> <span class="built_in">len</span>(children) &lt; target_count:</span><br><span class="line">            male = random.randint(<span class="number">0</span>, <span class="built_in">len</span>(parents)-<span class="number">1</span>)</span><br><span class="line">            female = random.randint(<span class="number">0</span>, <span class="built_in">len</span>(parents)-<span class="number">1</span>)</span><br><span class="line">            <span class="keyword">if</span> male != female:</span><br><span class="line">                <span class="comment"># 随机选取交叉点</span></span><br><span class="line">                cross_pos = random.randint(<span class="number">0</span>, <span class="variable language_">self</span>.length)</span><br><span class="line">                <span class="comment"># 生成掩码，方便位操作</span></span><br><span class="line">                mask = <span class="number">0</span></span><br><span class="line">                <span class="keyword">for</span> i <span class="keyword">in</span> xrange(cross_pos):</span><br><span class="line">                    mask |= (<span class="number">1</span> &lt;&lt; i) </span><br><span class="line">                male = parents[male]</span><br><span class="line">                female = parents[female]</span><br><span class="line">                <span class="comment"># 孩子将获得父亲在交叉点前的基因和母亲在交叉点后（包括交叉点）的基因</span></span><br><span class="line">                child = ((male &amp; mask) | (female &amp; ~mask)) &amp; ((<span class="number">1</span> &lt;&lt; <span class="variable language_">self</span>.length) - <span class="number">1</span>)</span><br><span class="line">                children.append(child)</span><br><span class="line">        <span class="comment"># 经过繁殖后，孩子和父母的数量与原始种群数量相等，在这里可以更新种群。</span></span><br><span class="line">        <span class="variable language_">self</span>.population = parents + children</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">mutation</span>(<span class="params">self, rate</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        变异</span></span><br><span class="line"><span class="string">        对种群中的所有个体，随机改变某个个体中的某个基因</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="built_in">len</span>(<span class="variable language_">self</span>.population)):</span><br><span class="line">            <span class="keyword">if</span> random.random() &lt; rate:</span><br><span class="line">                j = random.randint(<span class="number">0</span>, <span class="variable language_">self</span>.length-<span class="number">1</span>)</span><br><span class="line">                <span class="variable language_">self</span>.population[i] ^= <span class="number">1</span> &lt;&lt; j</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">decode</span>(<span class="params">self, chromosome</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        解码染色体，将二进制转化为属于[0, 9]的实数</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">return</span> chromosome * <span class="number">9.0</span> / (<span class="number">2</span>**<span class="variable language_">self</span>.length-<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">result</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        获得当前代的最优值，这里取的是函数取最大值时x的值。</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        graded = [(<span class="variable language_">self</span>.fitness(chromosome), chromosome) <span class="keyword">for</span> chromosome <span class="keyword">in</span> <span class="variable language_">self</span>.population]</span><br><span class="line">        graded = [x[<span class="number">1</span>] <span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">sorted</span>(graded, reverse=<span class="literal">True</span>)]</span><br><span class="line">        <span class="keyword">return</span> ga.decode(graded[<span class="number">0</span>])     </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    <span class="comment"># 染色体长度为17， 种群数量为300</span></span><br><span class="line">    ga = GA(<span class="number">17</span>, <span class="number">300</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 200次进化迭代</span></span><br><span class="line">    <span class="keyword">for</span> x <span class="keyword">in</span> xrange(<span class="number">200</span>):</span><br><span class="line">         ga.evolve()</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(ga.result())</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">7.85672650701</span><br></pre></td></tr></table></figure>
+
+<h3 id="例子3：用n个三角形作画"><a href="#例子3：用n个三角形作画" class="headerlink" title="例子3：用n个三角形作画"></a>例子3：用n个三角形作画</h3><p><a href="http://alteredqualia.com/visualization/evolve/">GA画画</a>，这些同学脑洞开得很大，很有趣～<br>上传一张图片，GA自己学习用三角形组合出原图。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Algorithm/" rel="tag"># Algorithm</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/tensorflow/1_basic/" rel="prev" title="一. Tensorflow基础篇">
+                  <i class="fa fa-angle-left"></i> 一. Tensorflow基础篇
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/algrithom/book_learning_1/" rel="next" title="一. intro">
+                  一. intro <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

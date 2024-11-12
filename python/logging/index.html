@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="基础概念 Logger： 向应用程序代码公开了几种方法(info等)，以便应用程序可以在运行时记录消息。 根据严重性（默认Filter）或自定义Filter确定要处理的日志消息。 将相关的日志消息传递给所有感兴趣的Handler。 建议使用logging.getLogger(name)获取 用Logger.addHandler()和 Logger.removeHandler()增删Handler">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python中的Logging总结">
+<meta property="og:url" content="https://applenob.github.io/python/logging/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="基础概念 Logger： 向应用程序代码公开了几种方法(info等)，以便应用程序可以在运行时记录消息。 根据严重性（默认Filter）或自定义Filter确定要处理的日志消息。 将相关的日志消息传递给所有感兴趣的Handler。 建议使用logging.getLogger(name)获取 用Logger.addHandler()和 Logger.removeHandler()增删Handler">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://applenob.github.io/python/logging/1.png">
+<meta property="article:published_time" content="2019-11-10T18:22:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.088Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://applenob.github.io/python/logging/1.png">
+
+
+<link rel="canonical" href="https://applenob.github.io/python/logging/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/python/logging/","path":"python/logging/","title":"python中的Logging总结"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>python中的Logging总结 | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text">基础概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A5%E5%BF%97%E7%BA%A7%E5%88%AB"><span class="nav-number">1.1.</span> <span class="nav-text">日志级别</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8"><span class="nav-number">2.</span> <span class="nav-text">基础使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#format%E7%BB%86%E8%8A%82"><span class="nav-number">2.1.</span> <span class="nav-text">format细节</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">进阶使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Logger%E5%B1%82%E7%BA%A7"><span class="nav-number">3.1.</span> <span class="nav-text">Logger层级</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A5%BD%E7%94%A8%E7%9A%84Handler"><span class="nav-number">3.2.</span> <span class="nav-text">好用的Handler</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%BE%97%E6%9F%90%E4%B8%AApackage%E9%87%8C%E6%89%80%E6%9C%89%E7%9A%84logger"><span class="nav-number">3.3.</span> <span class="nav-text">获得某个package里所有的logger</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E9%97%AD%E7%AC%AC%E4%B8%89%E6%96%B9package%E7%9A%84logger"><span class="nav-number">3.4.</span> <span class="nav-text">关闭第三方package的logger</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/python/logging/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="python中的Logging总结 | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          python中的Logging总结
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2019-11-10 10:22:00" itemprop="dateCreated datePublished" datetime="2019-11-10T10:22:00-08:00">2019-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="基础概念"><a href="#基础概念" class="headerlink" title="基础概念"></a>基础概念</h2><ul>
+<li><code>Logger</code>：<ul>
+<li>向应用程序代码公开了几种方法(<code>info</code>等)，以便应用程序可以在运行时记录消息。</li>
+<li>根据严重性（默认<code>Filter</code>）或自定义<code>Filter</code>确定要处理的日志消息。</li>
+<li>将相关的日志消息传递给所有感兴趣的<code>Handler</code>。</li>
+<li>建议使用<code>logging.getLogger(name)</code>获取</li>
+<li>用<code>Logger.addHandler()</code>和 <code>Logger.removeHandler()</code>增删<code>Handler</code></li>
+<li>用<code>Logger.addFilter()</code> 和 <code>Logger.removeFilter()</code>增删<code>Filter</code></li>
+</ul>
+</li>
+<li><code>LogRecord</code> ：日志记录器，将日志传到相应的处理器处理。</li>
+<li><code>Handler</code> ：日志处理器, 将<code>Logger</code>生成的<code>LogRecord</code>发送至合适的目的地。<ul>
+<li><code>setLevel() </code>每个<code>Handler</code>中设置的级别确定<code>Handler</code>将发送哪些消息。</li>
+<li><code>setFormatter()</code>选择一个该处理程序使用的<code>Formatter</code>对象。</li>
+<li><code>addFilter()</code>和<code>removeFilter()</code> 分别在处理程序上配置和取消配置<code>Filter</code>对象。</li>
+</ul>
+</li>
+<li><code>Filter</code> ：过滤器, 提供了更好的粒度控制,它可以决定输出哪些日志记录。</li>
+<li><code>Formatter</code>：格式化器, 指明了最终输出中日志记录的布局。</li>
+</ul>
+<p>记录流程：</p>
+<p><img src="/python/logging/1.png" alt="image"></p>
+<h3 id="日志级别"><a href="#日志级别" class="headerlink" title="日志级别"></a>日志级别</h3><table>
+<thead>
+<tr>
+<th>级别</th>
+<th>数值</th>
+<th>何时使用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CRITICAL</td>
+<td>50</td>
+<td>严重的错误，表明程序已不能继续执行</td>
+</tr>
+<tr>
+<td>ERROR</td>
+<td>40</td>
+<td>由于严重的问题，程序的某些功能已经不能正常执行</td>
+</tr>
+<tr>
+<td>WARNING</td>
+<td>30</td>
+<td>表明有已经或即将发生的意外（例如：磁盘空间不足）。程序仍按预期进行</td>
+</tr>
+<tr>
+<td>INFO</td>
+<td>20</td>
+<td>确认程序按预期运行</td>
+</tr>
+<tr>
+<td>DEBUG</td>
+<td>10</td>
+<td>细节信息，仅当诊断问题时适用。</td>
+</tr>
+<tr>
+<td>NOTSET</td>
+<td>0</td>
+<td></td>
+</tr>
+</tbody></table>
+<p><strong>注意</strong>：</p>
+<ul>
+<li><strong>默认级别是WARNING</strong>。</li>
+<li><code>Logger.exception() </code>创建与 <code>Logger.error()</code> 相似的日志信息。 不同之处是， <code>Logger.exception()</code> 同时还记录当前的堆栈追踪。</li>
+</ul>
+<h2 id="基础使用"><a href="#基础使用" class="headerlink" title="基础使用"></a>基础使用</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> logging</span><br><span class="line"></span><br><span class="line">logging.basicConfig(filename=<span class="string">&quot;test.log&quot;</span>, filemode=<span class="string">&quot;w&quot;</span>, <span class="built_in">format</span>=<span class="string">&quot;%(asctime)s %(name)s:%(levelname)s:%(message)s&quot;</span>, datefmt=<span class="string">&quot;%d-%M-%Y %H:%M:%S&quot;</span>, level=logging.DEBUG)</span><br><span class="line">logging.debug(<span class="string">&#x27;This is a debug message&#x27;</span>)</span><br><span class="line">logging.info(<span class="string">&#x27;This is an info message&#x27;</span>)</span><br><span class="line">logging.warning(<span class="string">&#x27;This is a warning message&#x27;</span>)</span><br><span class="line">logging.error(<span class="string">&#x27;This is an error message&#x27;</span>)</span><br><span class="line">logging.critical(<span class="string">&#x27;This is a critical message&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>直接使用<code>logging.xxx()</code>实际上是使用了<code>root</code>的<code>logger</code>。</p>
+<h3 id="format细节"><a href="#format细节" class="headerlink" title="format细节"></a>format细节</h3><p>详见<a href="https://docs.python.org/3/library/logging.html#logrecord-attributes">python官网</a></p>
+<p>典型使用：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[日期 日志级别 源文件 行号 进程号] 日志信息</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[ %(asctime)-15s %(levelname)s %(filename)15s:%(lineno)-4d pid:%(process)-5d]  %(message)s<span class="string">&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="进阶使用"><a href="#进阶使用" class="headerlink" title="进阶使用"></a>进阶使用</h2><h3 id="Logger层级"><a href="#Logger层级" class="headerlink" title="Logger层级"></a>Logger层级</h3><p>在命名记录器时使用的一个好习惯是在每个使用日志记录的模块中使用模块级记录器，命名如下:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">logger = logging.getLogger(__name__)</span><br></pre></td></tr></table></figure>
+
+<p>这意味着记录器名称跟踪包或模块的层次结构，并且直观地从记录器名称显示记录事件的位置。记录器层次结构的根称为根记录器。根记录器的名称在记录的输出中打印为’root’ 。</p>
+<h3 id="好用的Handler"><a href="#好用的Handler" class="headerlink" title="好用的Handler"></a>好用的Handler</h3><p>官方提供了很多有用的<code>Handler</code>，<a href="https://docs.python.org/zh-cn/3/howto/logging.html#useful-handlers">在这里查看</a>。</p>
+<p>如果需要将每天的日志分文件保存，并在日志文件上带有日期信息的话，可以这样：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> logging.handlers <span class="keyword">import</span> TimedRotatingFileHandler</span><br><span class="line">logname = <span class="string">&quot;my_app.log&quot;</span></span><br><span class="line">handler = TimedRotatingFileHandler(logname, when=<span class="string">&quot;midnight&quot;</span>, interval=<span class="number">1</span>)</span><br><span class="line">handler.suffix = <span class="string">&quot;%Y%m%d&quot;</span></span><br><span class="line">logger.addHandler(handler)</span><br></pre></td></tr></table></figure>
+
+<p>分割日志用先往默认的文件(my_app.log)里打，等到分割条件的时候，把之前打的那部分日志转移到对应的分割文件里。</p>
+<h3 id="获得某个package里所有的logger"><a href="#获得某个package里所有的logger" class="headerlink" title="获得某个package里所有的logger"></a>获得某个package里所有的logger</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> logging</span><br><span class="line"></span><br><span class="line">loggers = [logging.getLogger(name) <span class="keyword">for</span> name <span class="keyword">in</span> logging.root.manager.loggerDict]</span><br></pre></td></tr></table></figure>
+
+<h3 id="关闭第三方package的logger"><a href="#关闭第三方package的logger" class="headerlink" title="关闭第三方package的logger"></a>关闭第三方package的logger</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> logging</span><br><span class="line"></span><br><span class="line">logging.getLogger(<span class="string">&quot;urllib3&quot;</span>).setLevel(logging.WARNING)</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p>官方文档：</p>
+<ul>
+<li><a href="https://docs.python.org/zh-cn/3/library/logging.html?highlight=logging#module-logging">模块 logging — Python 的日志记录工具</a></li>
+<li><a href="https://docs.python.org/zh-cn/3/howto/logging-cookbook.html">日志操作手册</a></li>
+</ul>
+<p>不错的博客：</p>
+<ul>
+<li><a href="https://juejin.im/post/5bc2bd3a5188255c94465d31">Python日志库logging总结</a></li>
+</ul>
+<p>默认的root logger：</p>
+<ul>
+<li><a href="https://www.jianshu.com/p/cad8a77762b3">Python root logger 解密</a></li>
+</ul>
+<p>使用gunicorn和flask时：</p>
+<ul>
+<li><a href="https://zhuanlan.zhihu.com/p/36909560">gunicorn部署flask的log处理</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/python/import/" rel="prev" title="python中的Import总结">
+                  <i class="fa fa-angle-left"></i> python中的Import总结
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/python/threading/" rel="next" title="python多线程模块threading">
+                  python多线程模块threading <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="概率无向图模型回顾一下之前讲解的概率无向图模型：https:&#x2F;&#x2F;applenob.github.io&#x2F;machine_learning&#x2F;graph.html 总结一下：  最大团：无向图$G$中任何两个结点都有边连接的结点子集称为团（clique）。若团$C$不能在加入任何一个结点使其称为一个更大的团，则称$C$为图$G$的一个最大团。 概率无向图模型的联合概率分布可以表示成其最大团上的随机变量的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="条件随机场 CRF总结和实现">
+<meta property="og:url" content="https://applenob.github.io/machine_learning/CRF/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="概率无向图模型回顾一下之前讲解的概率无向图模型：https:&#x2F;&#x2F;applenob.github.io&#x2F;machine_learning&#x2F;graph.html 总结一下：  最大团：无向图$G$中任何两个结点都有边连接的结点子集称为团（clique）。若团$C$不能在加入任何一个结点使其称为一个更大的团，则称$C$为图$G$的一个最大团。 概率无向图模型的联合概率分布可以表示成其最大团上的随机变量的">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://applenob.github.io/machine_learning/CRF/linear_crf.png">
+<meta property="article:published_time" content="2017-12-15T17:42:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.078Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="NLP">
+<meta property="article:tag" content="Machine Learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://applenob.github.io/machine_learning/CRF/linear_crf.png">
+
+
+<link rel="canonical" href="https://applenob.github.io/machine_learning/CRF/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/machine_learning/CRF/","path":"machine_learning/CRF/","title":"条件随机场 CRF总结和实现"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>条件随机场 CRF总结和实现 | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E7%8E%87%E6%97%A0%E5%90%91%E5%9B%BE%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">概率无向图模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E9%9A%8F%E6%9C%BA%E5%9C%BA"><span class="nav-number">2.</span> <span class="nav-text">条件随机场</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E6%95%B0%E5%8C%96%E5%BD%A2%E5%BC%8F"><span class="nav-number">2.1.</span> <span class="nav-text">参数化形式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E5%8C%96%E5%BD%A2%E5%BC%8F"><span class="nav-number">2.2.</span> <span class="nav-text">简化形式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9F%A9%E9%98%B5%E5%BD%A2%E5%BC%8F"><span class="nav-number">2.3.</span> <span class="nav-text">矩阵形式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E4%B8%AA%E9%97%AE%E9%A2%98"><span class="nav-number">3.</span> <span class="nav-text">三个问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E7%8E%87%E8%AE%A1%E7%AE%97%E9%97%AE%E9%A2%98"><span class="nav-number">3.1.</span> <span class="nav-text">概率计算问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95"><span class="nav-number">3.2.</span> <span class="nav-text">学习方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%94%B9%E8%BF%9B%E7%9A%84%E8%BF%AD%E4%BB%A3%E5%B0%BA%E5%BA%A6%E6%B3%95"><span class="nav-number">3.2.1.</span> <span class="nav-text">改进的迭代尺度法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#BFGS%E7%AE%97%E6%B3%95"><span class="nav-number">3.2.2.</span> <span class="nav-text">BFGS算法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%84%E6%B5%8B%E7%AE%97%E6%B3%95"><span class="nav-number">3.3.</span> <span class="nav-text">预测算法</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/machine_learning/CRF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="条件随机场 CRF总结和实现 | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          条件随机场 CRF总结和实现
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-12-15 09:42:00" itemprop="dateCreated datePublished" datetime="2017-12-15T09:42:00-08:00">2017-12-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="概率无向图模型"><a href="#概率无向图模型" class="headerlink" title="概率无向图模型"></a>概率无向图模型</h2><p>回顾一下之前讲解的概率无向图模型：<a href="https://applenob.github.io/machine_learning/graph.html">https://applenob.github.io/machine_learning/graph.html</a></p>
+<p>总结一下：</p>
+<ul>
+<li><strong>最大团</strong>：无向图$G$中任何两个结点都有边连接的结点子集称为团（clique）。若团$C$不能在加入任何一个结点使其称为一个更大的团，则称$C$为图$G$的一个最大团。</li>
+<li>概率无向图模型的<strong>联合概率分</strong>布可以表示成其最大团上的随机变量的函数的乘积形式。这也被称为概率无向图模型的<strong>因子分解</strong>。</li>
+<li>$P(Y) &#x3D; \frac{1}{Z}\prod_C\psi_C(Y_C)$，其中，$Z$是规范化因子，$Z &#x3D; \sum_Y\prod_C\psi_C(Y_C)$，$\psi_C(Y_C)$称为<strong>势函数</strong>，要求势函数是严格正的（因为涉及到累乘）。</li>
+</ul>
+<h2 id="条件随机场"><a href="#条件随机场" class="headerlink" title="条件随机场"></a>条件随机场</h2><p>条件随机场（Conditional Random Field， CRF）也是一种无向图模型。它是在给定随机变量$X$的条件下，随机变量$Y$的马尔科夫随机场。</p>
+<p>我们常用的是<strong>线性链条件随机场</strong>，多用于序列标注等问题。形式化定义：设$X&#x3D;(X_1, X_2, …, X_n)$，$Y&#x3D;(Y_1, Y_2, …,Y_n)$均为线性链表示的随机变量序列，若给在定随机变量序列$X$的条件下，随机变量序列$Y$的条件概率分布$P(Y|X)$构成条件随机场，即满足<strong>马尔科夫性</strong>：</p>
+<p>$$P(Y_i|X, Y_1,…,Y_{i-1}, Y_{i+1}, …, Y_n) &#x3D; P(Y_i|X, Y_{i-1}, Y_{i+1})\;\;i&#x3D;1,2, …, n$$</p>
+<p><strong>这个式子是核心，充分理解这个式子和下面的图片</strong></p>
+<p>称$P(Y|X)$是线性链条件随机场。</p>
+<p><img src="/machine_learning/CRF/linear_crf.png"></p>
+<h3 id="参数化形式"><a href="#参数化形式" class="headerlink" title="参数化形式"></a>参数化形式</h3><p>$$P(y|x) &#x3D; \frac{1}{Z(x)}exp(\sum_{i,k}\lambda_kt_k(y_{i-1}, y_i, x, i)+\sum_{i,l}\mu_ls_l(y_i, x, i))$$</p>
+<p>其中，$Z(x) &#x3D; \sum_y exp(\sum_{i,k}\lambda_kt_k(y_{i-1}, y_i, x, i)+\sum_{i,l}\mu_ls_l(y_i, x, i))$，$t_k$是转移(transform)特征函数，依赖于当前和前一个位置，$s_l$是状态(state)特征函数，依赖于当前位置，$\lambda_k$和$\mu_l$是对应的权值。</p>
+<p>从模型的参数化形式可以看出，线性链条件随机场也是对数线性模型。</p>
+<h3 id="简化形式"><a href="#简化形式" class="headerlink" title="简化形式"></a>简化形式</h3><p>所谓简化形式即，将局部特征特征统一成一个全局特征函数。<br>设有$K_1$个转移特征，有$K_2$个状态特征，$K&#x3D;K_1+K_2$。</p>
+<p>$$f_k(y_{i-1}, y_i, x, i) &#x3D; \left\{\begin{matrix}t_k(y_{i-1}, y_i, x, i),\;\;k&#x3D;1,2,…,K_1\\ s_l(y_i, x, i),\;\; k&#x3D;K_1+l,\; l&#x3D;1,2,..,K_2 \end{matrix}\right.$$</p>
+<p>对所有在位置$i$的特征求和：</p>
+<p>$$f_k(y,x) &#x3D; \sum^n_{i&#x3D;1}f_k(y_{i-1}, y_i, x, i), ;; k&#x3D;1,2,…,K$$</p>
+<p>用$w_k$表示特征$f_k(y,x)$的权值，即：</p>
+<p>$$w_k &#x3D; \left\{\begin{matrix}\lambda_k,\;\;k&#x3D;1,2,…,K_1\\ \mu_l,\;\;k&#x3D;K_1+l;l&#x3D;1,2,…,K_2\end{matrix}\right.$$</p>
+<p>于是条件随机场又可以表示成：</p>
+<p>$$P(y|x) &#x3D; \frac{1}{Z(x)}exp\sum^K_{k&#x3D;1}w_kf_k(y,x)\\Z(x)&#x3D;\sum_y exp\sum^K_{k&#x3D;1}w_kf_k(y,x)$$</p>
+<p>如果用$w$表示权值向量，即$w&#x3D;(w_1, …, w_K)^T$，用$F(y,x)$表示全局特征向量，即$F(y,x) &#x3D; (f_1(y,x),f_2(y,x),…,f_K(y,x))^T$，则条件随机场可以携程向量$w$和$F(y,x)$的内积的形式：<br>$$P_w(y|x) &#x3D; \frac{exp(w\cdot F(y,x))}{Z_w(x)}\\Z(x)&#x3D;\sum_yexp(w\cdot F(y,x))$$</p>
+<h3 id="矩阵形式"><a href="#矩阵形式" class="headerlink" title="矩阵形式"></a>矩阵形式</h3><p>引入特殊的起点和终点状态标记$y_0&#x3D;start$，$y_{n+1}&#x3D;stop$。<br>对于观测序列$x$的每一个位置$i&#x3D;1,2,…,n+1$定义$n+1$个$m$阶方阵（$m$是标记$y_i$取值的个数）。</p>
+<ul>
+<li>$M_i(x) &#x3D; [M_i(y_{i-1}, y_i| x)]$</li>
+<li>$M_i(y_{i-1}, y_i| x) &#x3D; exp(W_i(y_{i-1}, y_i| x))$</li>
+<li>$W_i(y_{i-1}, y_i| x) &#x3D; \sum_{k&#x3D;1}^Kw_kf_k(y_i,y_i,x,i)$</li>
+</ul>
+<p>条件随机场的矩阵形式：</p>
+<p>$$P_w(y|x) &#x3D; \frac{1}{Z_w(x)}\prod^{n+1}_{i&#x3D;1}w_kf_k(y_{i-1},y_i,x,i)\\Z_w(x)&#x3D;(M_1(x)M_2(x)…M_{n+1}(x))_{start, stop}$$</p>
+<p>即，简化了配分函数$Z_w(x)$的计算方式。</p>
+<h2 id="三个问题"><a href="#三个问题" class="headerlink" title="三个问题"></a>三个问题</h2><p>类似于隐马尔科夫模型（HMM），CRF也有典型的三个问题。对比二者在这三个问题的解决方法的不同，可以更深入理解这两个模型。</p>
+<ul>
+<li>1.<strong>概率计算问题</strong>：给定条件随机场$P(Y|X)$，输入序列$x$和输出序列$y$，计算条件概率$P(Y_i&#x3D;y_i|x)$和$P(Y_{i-1}&#x3D;y_{i-1}, Y_i&#x3D;y_i|x)$和相应的数学期望。</li>
+<li>2.<strong>学习问题</strong>：给定训练数据集，估计条件随机场模型参数，即用<strong>极大似然法</strong>的方法估计参数。</li>
+<li>3.<strong>预测问题</strong>：给定条件随机场$P(Y|X)$和输入序列（观测序列）$x$，求条件概率最大的输出序列（标记序列）$y^*$。</li>
+</ul>
+<h3 id="概率计算问题"><a href="#概率计算问题" class="headerlink" title="概率计算问题"></a>概率计算问题</h3><p>给定条件随机场$P(Y|X)$，输入序列$x$和输出序列$y$，计算条件概率$P(Y_i&#x3D;y_i|x)$和$P(Y_{i-1}&#x3D;y_{i-1},Y_i&#x3D;y_i|x)$。</p>
+<p>在这里我们可以明显看出，条件随机场直接计算<strong>条件概率</strong>，因此是判别模型；而HMM先由上一个状态<strong>生成</strong>下一个状态，再由下一个状态生成下一个输出，因此HMM是生成模型。</p>
+<p>类似于HMM，引入<strong>前向-后向向量</strong>：</p>
+<p>对每个下标$i&#x3D;0,1,…,n+1$，定义前向向量：$\alpha_i(x)$：</p>
+<p>$$\alpha_0(y|x) &#x3D; \left\{\begin{matrix} 1, \;\;y&#x3D;start\\ 0, \;\;否则\end{matrix}\right.$$</p>
+<p>递推公式：</p>
+<p>$$\alpha_i^T(y_i|x) &#x3D; \alpha_{i-1}^T(y_{i-1}|x)M_i(y_{i-1},y_i|x), \;\;i&#x3D;1,2,…,n+1$$</p>
+<p>简单地表示：</p>
+<p>$$\alpha_i^T(x) &#x3D; \alpha_{i-1}^T(x)M_i(x)$$</p>
+<p>第$i$个前向向量表示在位置$i$的标记是$y_i$，并且到位置$i$的前部分标记序列的非规范化概率。$y_i$的取值有$m$个，所以$\alpha_i(x)$是$m$维列向量。</p>
+<p>类似地，对于每个下标$i&#x3D;0,1,…,n+1$，定义前后向向量$\beta_i(x)$：</p>
+<p>$$\beta_{n+1}(y_{n+1}|x) &#x3D; \left\{\begin{matrix} 1, \;\;y_{n+1}&#x3D;stop\ 0, \;\;否则\end{matrix}\right.$$</p>
+<p>递推公式：</p>
+<p>$$\beta_i(y_i|x) &#x3D; M_{i+1}(y_i,y_{i+1}|x)\beta_{i+1}(y_{i+1}|x),<br>\;\;i&#x3D;1,2,…,n+1$$</p>
+<p>简单地表示：</p>
+<p>$$\beta_i(x) &#x3D; M_{i+1}(x)\beta_{i+1}(x)$$</p>
+<p>第$i$个后向向量表示在位置$i$的标记是$y_i$，并且从位置$i+1$到$n$的后部分标记序列的非规范化概率。</p>
+<p>用前向-后向向量表示配分函数：$Z(x)&#x3D;\alpha_n^T(x)\cdot 1 &#x3D; 1^T\cdot\beta_1(x)$</p>
+<p><strong>概率计算</strong>：</p>
+<p>不同于HMM的概率计算，使用前向概率<strong>或者</strong>后向概率即可，这里计算需要<strong>同时</strong>使用前向向量和后向向量。</p>
+<p>$$P(Y_i&#x3D;y_i|x) &#x3D; \frac{\alpha_i^T(y_i|x)\beta_i(y_i|x)}{Z(x)}$$</p>
+<p>$$P(Y_{i-1}&#x3D;y_{i-1}, Y_i&#x3D;y_i|x) &#x3D; \frac{\alpha_{i-1}^T(y_{i-1}|x)M_i(y_{i-1}, y_i|x)\beta_i(y_i|x)}{Z(x)}$$</p>
+<p><strong>期望值计算</strong>：</p>
+<p>特征函数$f_k$关于条件分布$P(Y|X)$的期望：</p>
+<p>$$E_{P(Y|X)}[f_k] &#x3D; \sum_yP(y|x)f_k(y, x)\\ &#x3D; \sum_{i&#x3D;1}^{n+1}\sum_{y_{i-1}, y_i}f_k(y_{i-1}, y_i, x, i)\frac{\alpha_{i-1}^T(y_{i-1}|x)M_i(y_{i-1}, y_i|x)\beta_i(y_i|x)}{Z(x)}\\k&#x3D;1,2,..,K$$</p>
+<p>特征函数$f_k$关于联合分布$P(X, Y)$的期望：</p>
+<p>$$E_{P(X,Y)}[f_k] &#x3D; \sum_{x,y}P(x,y)\sum_{i&#x3D;1}^{n+1}f_k(y_{i-1}, y_i, x, i)$$</p>
+<p>$$&#x3D;\sum_x\tilde P(x)\sum_yP(y|x)\sum^{n+1}_{i&#x3D;1}f_k(y_{i-1}, y, x, i)$$</p>
+<p>$$&#x3D;\sum_x\tilde P(x)\sum_{i&#x3D;1}^{n+1}\sum_{y_{i-1}y_i}\frac{\alpha_{i-1}^T(y_{i-1}|x)M_i(y_{i-1}, y_i|x)\beta_i(y_i|x)}{Z(x)}$$</p>
+<p>$$k&#x3D;1,2,..,K$$</p>
+<p>核心代码：</p>
+<p>前向后向和M矩阵都用保存其<strong>log值</strong>（因为它们本身的值可能很小，计算乘法可能下溢）。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">关键变量的尺寸，Y是标注空间的个数，K是特征函数的个数。</span></span><br><span class="line"><span class="string">all_features:	len(x_vec) + 1, Y, Y, K</span></span><br><span class="line"><span class="string">log_M_s:</span></span><br><span class="line"><span class="string">len(x_vec) + 1, Y, Y</span></span><br><span class="line"><span class="string">log_alphas:		len(x_vec) + 1, Y</span></span><br><span class="line"><span class="string">log_betas:		len(x_vec) + 1,</span></span><br><span class="line"><span class="string">Y</span></span><br><span class="line"><span class="string">log_probs:		len(x_vec) + 1, Y, Y</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>$M$：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">log_M_s = np.dot(all_features, w)</span><br></pre></td></tr></table></figure>
+<p>前向向量初始化：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">alpha = alphas[<span class="number">0</span>]</span><br><span class="line">alpha[start] = <span class="number">0</span>  <span class="comment"># log1 = 0</span></span><br></pre></td></tr></table></figure>
+
+<p>前向向量的递推公式：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alphas[t] = log_dot_vm(alpha, log_M_s[t - <span class="number">1</span>])</span><br></pre></td></tr></table></figure>
+
+<p>后向向量的初始化：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">beta = betas[-<span class="number">1</span>]</span><br><span class="line">beta[end] = <span class="number">0</span>  <span class="comment"># log1 = 0</span></span><br></pre></td></tr></table></figure>
+<p>后向向量的递推公式：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">betas[t] = log_dot_mv(log_M_s[t], beta)</span><br></pre></td></tr></table></figure>
+
+<p>其中：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">log_dot_vm</span>(<span class="params">loga, logM</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;通过log向量和log矩阵，计算log(向量^T 点乘 矩阵)&quot;&quot;&quot;</span></span><br><span class="line"><span class="keyword">return</span> special.logsumexp(np.expand_dims(loga, axis=<span class="number">1</span>) + logM, axis=<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span></span><br><span class="line"><span class="title function_">log_dot_mv</span>(<span class="params">logM, logb</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;通过log向量和log矩阵，计算log(矩阵 点乘 向量)&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">special.logsumexp(logM + np.expand_dims(logb, axis=<span class="number">0</span>), axis=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+<p>$Z$：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">log_Z = special.logsumexp(last)</span><br></pre></td></tr></table></figure>
+<p>注：<code>special.logsumexp</code>函数等价于<code>np.log(np.sum(np.exp(a), axis))</code></p>
+<p>计算$P(Y_{i-1}&#x3D;y_{i-1}, Y_i&#x3D;y_i|x) &#x3D; \frac{\alpha_{i-1}^T(y_{i-1}|x)M_i(y_{i-1}, y_i|x)\beta_i(y_i|x)}{Z(x)}$：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">log_alphas1 = np.expand_dims(log_alphas, axis=<span class="number">2</span>)</span><br><span class="line">log_betas1 = np.expand_dims(log_betas, axis=<span class="number">1</span>)</span><br><span class="line">log_probs = log_alphas1 + log_M + log_betas1 - log_Z</span><br></pre></td></tr></table></figure>
+<p>计算特征函数$f_k$关于条件分布$P(Y|X)$的期望：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exp_features = np.<span class="built_in">sum</span>(np.exp(log_probs) * all_features, axis=(<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>))</span><br></pre></td></tr></table></figure>
+
+<p>特征函数$f_k$关于联合分布$P(X, Y)$的期望：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># y_vec = [START] + y_vec + [END]</span></span><br><span class="line">yp_vec_ids = y_vec[:-<span class="number">1</span>]</span><br><span class="line">y_vec_ids = y_vec[<span class="number">1</span>:]</span><br><span class="line">emp_features = np.<span class="built_in">sum</span>(all_features[<span class="built_in">range</span>(length), yp_vec_ids, y_vec_ids], axis=<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="学习方法"><a href="#学习方法" class="headerlink" title="学习方法"></a>学习方法</h3><p>给定训练数据集，估计条件随机场模型参数，即用<strong>极大似然法</strong>的方法估计参数。</p>
+<p>这里学习的参数是$w$，应该对比最大熵的学习算法，HMM的有监督学习的参数估计很简单，参数估计的是三元组概率矩阵。</p>
+<h4 id="改进的迭代尺度法"><a href="#改进的迭代尺度法" class="headerlink" title="改进的迭代尺度法"></a>改进的迭代尺度法</h4><p>$$L(w) &#x3D; L_{\tilde P}(P_w)$$</p>
+<p>$$ &#x3D; log\prod_{x,y}P_w(y|x)^{\tilde P(x,y)}$$</p>
+<p>$$ &#x3D; \sum_{x,y}\tilde P(x,y)logP_w(y|x)$$</p>
+<p>$$ &#x3D; \sum_{x,y}[\tilde P(x,y)\sum_{k&#x3D;1}^Kw_kf_k(x,y)-\tilde P(x,y)logZ_w(x)]$$</p>
+<p>$$ &#x3D; \sum_{j&#x3D;1}^N\sum_{k&#x3D;1}^Kw_kf_k(y_j,x_j)-\sum_{j&#x3D;1}^NlogZ_w(x_j)$$</p>
+<p>改进的迭代尺度法引入参数向量的增量向量：$\delta&#x3D;(\delta_1, …, \delta_K)^T$。</p>
+<p>类似于最大熵的迭代尺度法，引入两个方程：</p>
+<ul>
+<li><strong>关于转移特征的方程</strong>：<ul>
+<li>$\sum_{x,y}\tilde P(x,y) \sum_{i&#x3D;1}^{n+1}t_k(y_{i-1},y_i,x,i)$</li>
+<li>$&#x3D;\sum_{x,y}\tilde P(x)P(y|x)\sum_{i&#x3D;1}^{n+1}t_k(y_{i-1},y_i,x,i)exp(\delta_kT(x,y))$</li>
+<li>$k&#x3D;1,2,…,K_1$</li>
+</ul>
+</li>
+<li><strong>关于状态特征的方程</strong>：<ul>
+<li>$\sum_{x,y}\tilde P(x,y) \sum_{i&#x3D;1}^{n+1}s_l(y_{i-1},y_i,x,i)$</li>
+<li>$&#x3D;\sum_{x,y}\tilde P(x)P(y|x)\sum_{i&#x3D;1}^{n+1}s_l(y_{i-1},y_i,x,i)exp(\delta_{K_1+l}T(x,y))$</li>
+<li>$l&#x3D;1,2,…,K_2$</li>
+</ul>
+</li>
+<li>其中：$T(x,y) &#x3D; \sum_kf_k(y,x) &#x3D; \sum_{k&#x3D;1}^K\sum_{i&#x3D;1}^{n+1}f_k(y_{i-1}, y_i, x, i)$是某数据$(x,y)$出现的所有特征数的总和。</li>
+</ul>
+<p>具体算法流程：</p>
+<ul>
+<li>输入：特征函数：$t_1,…,t_{K_1}$，$s_1, …, s_{K_2}$；经验分布$\tilde P(x,y)$。</li>
+<li>输出：参数估计值$\hat w$；模型$P_{\hat w}$。</li>
+<li>1.对于所有的$k \in {1,2,…,K}$，取初始值$w_k&#x3D;0$</li>
+<li>2.对于每一$k \in {1,2,…,K}$：<ul>
+<li>a.当$k &#x3D; 1,2,…,K_1$时，令$\delta_k$是关于转移特征的方程的解；当$k &#x3D; K_1+l;l&#x3D;1,…,K_2$时，令$\delta_k$是关于状态特征的方程的解。</li>
+<li>b.更新$w_k$：$w_k\leftarrow w_k+\delta_k$</li>
+</ul>
+</li>
+</ul>
+<h4 id="BFGS算法"><a href="#BFGS算法" class="headerlink" title="BFGS算法"></a>BFGS算法</h4><p>梯度函数：$g(w) &#x3D; \sum_{x,y}\tilde P(x)P_w(y|x)f(x,y) - E_{\tilde P}(f)$</p>
+<p>具体算法流程：</p>
+<ul>
+<li>输入：特征函数$f_1,…,f_n$；经验分布$\tilde P(x,y)$。</li>
+<li>输出：参数估计值$\hat w$；模型$P_{\hat w}$。</li>
+<li>1.选定初始点$w^{(0)}$，取$B_0$是正定对称矩阵，置$k&#x3D;0$。</li>
+<li>2.计算$g_k&#x3D;g(w^{(k)})$，若$g_k&#x3D;0$，则停止计算，否则转步骤3。</li>
+<li>3.由$B_kp_k&#x3D;-g_k$，求出$p_k$</li>
+<li>4.一维搜索：求$\lambda_k$使得：$f(w^{(k)}+\lambda_kp_k) &#x3D; min_{\lambda\geq 0}f(w^{(k)}+\lambda p_k)$</li>
+<li>5.置$g_{k+1} &#x3D; g(w^{(k+1)})$，若$g_k&#x3D;0$，则停止计算；否则，求$B_{k+1}$：$B_{k+1}&#x3D;B_k+\frac{y_kt_k^T}{y_k^T\delta_k}-\frac{B_k\delta_k\delta_k^TB_k}{\delta_k^tB_k\delta_k}$，其中，$y_k &#x3D; g_{k+1}-g_k$，$\delta_k &#x3D; w^{(k+1)-w^{(k)}}$</li>
+<li>7.置$k&#x3D;k+1$，转到步骤3。</li>
+</ul>
+<p>关键代码：</p>
+<p>似然函数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">likelihood += np.<span class="built_in">sum</span>(log_M_s[<span class="built_in">range</span>(length), yp_vec_ids, y_vec_ids]) - log_Z</span><br></pre></td></tr></table></figure>
+
+<p>训练，直接使用scipy中的<code>optimize.fmin_l_bfgs_b</code>去优化似然函数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">train</span>(<span class="params">self, x_vecs, y_vecs, debug=<span class="literal">False</span></span>):</span><br><span class="line">    vectorised_x_vecs, vectorised_y_vecs = <span class="variable language_">self</span>.create_vector_list(x_vecs, y_vecs)</span><br><span class="line">    l = <span class="keyword">lambda</span> w: <span class="variable language_">self</span>.neg_likelihood_and_deriv(vectorised_x_vecs, vectorised_y_vecs, w)</span><br><span class="line">    val = optimize.fmin_l_bfgs_b(l, <span class="variable language_">self</span>.w)</span><br><span class="line">    <span class="keyword">if</span> debug:</span><br><span class="line">        <span class="built_in">print</span>(val)</span><br><span class="line">    <span class="variable language_">self</span>.w, _, _ = val</span><br><span class="line">    <span class="keyword">return</span> <span class="variable language_">self</span>.w</span><br></pre></td></tr></table></figure>
+
+<p><code>optimize.fmin_l_bfgs_b</code>的第一个参数是被优化的目标函数，这个函数需要返回函数值和梯度值，梯度值的计算：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">derivative += emp_features - exp_features</span><br></pre></td></tr></table></figure>
+
+<p>即特征关于模型的训练数据的期望和关于模型的期望的差。</p>
+<h3 id="预测算法"><a href="#预测算法" class="headerlink" title="预测算法"></a>预测算法</h3><p>给定条件随机场$P(Y|X)$和输入序列（观测序列）$x$，求条件概率最大的输出序列（标记序列）$y^*$，即，对观测序列进行标注。<br>类似于HMM，CRF也是采用<strong>维特比算法</strong>进行预测。</p>
+<p>$$y^* &#x3D; max_y(w\cdot F(y,x))$$</p>
+<p>$$w&#x3D;(w_1,…,w_K)^T$$</p>
+<p>$$F(y,x)&#x3D;(f_1(y,x), …, f_K(y,x))^T$$</p>
+<p>$$f_k(y,x) &#x3D;\sum_{i&#x3D;1}^nf_k(y_{i-1}, y_i, x, i), k&#x3D;1,2,…,K$$</p>
+<p>注意，这里只用计算非规范化概率，即不用计算配分函数$Z$，可以大大提高效率。</p>
+<p>具体算法流程：</p>
+<ul>
+<li>输入：模型特征向量$F(y,x)$和权值向量$w$，观测序列$x&#x3D;(x_1,…,x_n)$；</li>
+<li>输出：最优路径$y^*&#x3D;(y_1^*, y_2^*, …, y_n^*)$</li>
+<li>1.初始化非规范化概率：$\delta_1(j) &#x3D; w\cdot F_1(y_0&#x3D;start, y_1&#x3D;j, x), \;\;\;j&#x3D;1,…,m$</li>
+<li>2.递推：对$i&#x3D;1,2,…,n$：<ul>
+<li>$\delta_i(l) &#x3D; max_{1\leq j \leq m}{\delta_{i-1}(j) + w\cdot F_i(y_{i-1}&#x3D;j,y_i&#x3D;l, x);;;l&#x3D;1,2,…,m}$</li>
+<li>对应的路径：$\Psi_i(l) &#x3D; argmax_{1\leq j \leq m}{\delta_{i-1}(j) + w\cdot F_i(y_{i-1}&#x3D;j,y_i&#x3D;l, x)\;\;\;l&#x3D;1,2,…,m}$</li>
+</ul>
+</li>
+<li>3.终止：<ul>
+<li>$max_y(w\cdot F(y,x)) &#x3D; max_{1\leq j \leq m}\delta_n(j)$</li>
+<li>$y^*_n &#x3D; argmax_{1\leq j \leq m}\delta_n(j)$</li>
+</ul>
+</li>
+<li>4.返回路径：$y_i^* &#x3D; \Psi_{i+1}(y_{i+1}^*), \;\;i&#x3D;n-1,n-2,…,1$</li>
+</ul>
+<p>核心代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">predict</span>(<span class="params">self, x_vec, debug=<span class="literal">False</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;给定x，预测y。使用Viterbi算法&quot;&quot;&quot;</span></span><br><span class="line">    <span class="comment"># all_features, len(x_vec) + 1, Y, Y, K</span></span><br><span class="line">    all_features = <span class="variable language_">self</span>.get_all_features(x_vec)</span><br><span class="line">    <span class="comment"># log_potential: len(x_vec) + 1, Y, Y  保存各个下标的非规范化概率</span></span><br><span class="line">    log_potential = np.dot(all_features, <span class="variable language_">self</span>.w)</span><br><span class="line">    T = <span class="built_in">len</span>(x_vec)</span><br><span class="line">    Y = <span class="built_in">len</span>(<span class="variable language_">self</span>.labels)</span><br><span class="line">    <span class="comment"># Psi保存每个时刻最优情况的下标</span></span><br><span class="line">    Psi = np.ones((T, Y), dtype=np.int32) * -<span class="number">1</span></span><br><span class="line">    <span class="comment"># 初始化</span></span><br><span class="line">    delta = log_potential[<span class="number">0</span>, <span class="number">0</span>]</span><br><span class="line">    <span class="comment"># 递推</span></span><br><span class="line">    <span class="keyword">for</span> t <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, T):</span><br><span class="line">        next_delta = np.zeros(Y)</span><br><span class="line">        <span class="keyword">for</span> y <span class="keyword">in</span> <span class="built_in">range</span>(Y):</span><br><span class="line">            w = delta + log_potential[t, :, y]</span><br><span class="line">            Psi[t, y] = psi = w.argmax()</span><br><span class="line">            next_delta[y] = w[psi]</span><br><span class="line">        delta = next_delta</span><br><span class="line">    <span class="comment"># 回溯找到最优路径</span></span><br><span class="line">    y = delta.argmax()</span><br><span class="line">    trace = []</span><br><span class="line">    <span class="keyword">for</span> t <span class="keyword">in</span> <span class="built_in">reversed</span>(<span class="built_in">range</span>(T)):</span><br><span class="line">        trace.append(y)</span><br><span class="line">        y = Psi[t, y]</span><br><span class="line">    trace.reverse()</span><br><span class="line">    <span class="keyword">return</span> [<span class="variable language_">self</span>.labels[i] <span class="keyword">for</span> i <span class="keyword">in</span> trace]</span><br></pre></td></tr></table></figure>
+
+<p>完整代码地址：<a href="https://github.com/applenob/simple_crf">https://github.com/applenob/simple_crf</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+              <a href="/tags/NLP/" rel="tag"># NLP</a>
+              <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/machine_learning/max_entropy/" rel="prev" title="Max Entropy学习总结">
+                  <i class="fa fa-angle-left"></i> Max Entropy学习总结
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/nlp/tensorflow_dynamic_seq2seq/" rel="next" title="Tensorflow动态seq2seq使用总结（r1.3）">
+                  Tensorflow动态seq2seq使用总结（r1.3） <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

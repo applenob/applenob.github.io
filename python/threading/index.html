@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="简介threading是python是基于线程的并行模块，它基于更底层的_thread模块构建。 ThreadThread类表示在单独的线程中运行的活动。常用的方式有两种：  传入一个callable的对象给参数target。 写一个继承Thread的子类，重写run方法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python多线程模块threading">
+<meta property="og:url" content="https://applenob.github.io/python/threading/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="简介threading是python是基于线程的并行模块，它基于更底层的_thread模块构建。 ThreadThread类表示在单独的线程中运行的活动。常用的方式有两种：  传入一个callable的对象给参数target。 写一个继承Thread的子类，重写run方法。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-11-17T07:35:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.098Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://applenob.github.io/python/threading/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/python/threading/","path":"python/threading/","title":"python多线程模块threading"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>python多线程模块threading | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Thread"><span class="nav-number">2.</span> <span class="nav-text">Thread</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5"><span class="nav-number">2.1.</span> <span class="nav-text">线程同步</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%88%E6%8A%A4%E7%BA%BF%E7%A8%8B"><span class="nav-number">2.2.</span> <span class="nav-text">守护线程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E6%9C%AC%E5%9C%B0%E6%95%B0%E6%8D%AE"><span class="nav-number">3.</span> <span class="nav-text">线程本地数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lock-%E9%94%81"><span class="nav-number">4.</span> <span class="nav-text">Lock 锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RLock-%E9%80%92%E5%BD%92%E9%94%81"><span class="nav-number">5.</span> <span class="nav-text">RLock 递归锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Condition-%E6%9D%A1%E4%BB%B6%E5%AF%B9%E8%B1%A1"><span class="nav-number">6.</span> <span class="nav-text">Condition 条件对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Semaphore-%E4%BF%A1%E5%8F%B7%E9%87%8F"><span class="nav-number">7.</span> <span class="nav-text">Semaphore 信号量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Event-%E4%BA%8B%E4%BB%B6"><span class="nav-number">8.</span> <span class="nav-text">Event 事件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Timer-%E5%AE%9A%E6%97%B6%E5%99%A8"><span class="nav-number">9.</span> <span class="nav-text">Timer 定时器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Barrier-%E6%A0%85%E6%A0%8F"><span class="nav-number">10.</span> <span class="nav-text">Barrier 栅栏</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8with%E8%AF%AD%E5%8F%A5%E4%B8%AD%E4%BD%BF%E7%94%A8%E9%94%81%E3%80%81%E6%9D%A1%E4%BB%B6%E5%92%8C%E4%BF%A1%E5%8F%B7%E9%87%8F"><span class="nav-number">11.</span> <span class="nav-text">在with语句中使用锁、条件和信号量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#threading%E7%89%B9%E6%80%A7"><span class="nav-number">12.</span> <span class="nav-text">threading特性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E6%B4%BB"><span class="nav-number">12.1.</span> <span class="nav-text">存活</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GIL"><span class="nav-number">12.2.</span> <span class="nav-text">GIL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%89%E7%94%A8%E6%97%B6%E6%9C%BA"><span class="nav-number">12.3.</span> <span class="nav-text">选用时机</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">13.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/python/threading/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="python多线程模块threading | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          python多线程模块threading
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2019-11-16 23:35:00" itemprop="dateCreated datePublished" datetime="2019-11-16T23:35:00-08:00">2019-11-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p><code>threading</code>是python是基于线程的并行模块，它基于更底层的<code>_thread</code>模块构建。</p>
+<h2 id="Thread"><a href="#Thread" class="headerlink" title="Thread"></a>Thread</h2><p><code>Thread</code>类表示在单独的线程中运行的活动。常用的方式有两种：</p>
+<ul>
+<li>传入一个<code>callable</code>的对象给参数<code>target</code>。</li>
+<li>写一个继承<code>Thread</code>的子类，重写<code>run</code>方法。</li>
+</ul>
+<h3 id="线程同步"><a href="#线程同步" class="headerlink" title="线程同步"></a>线程同步</h3><p>其他线程可以调用一个线程的<code>join()</code> 方法。这会阻塞调用该方法的线程，直到被调用<code>join()</code>方法的线程终结。</p>
+<h3 id="守护线程"><a href="#守护线程" class="headerlink" title="守护线程"></a>守护线程</h3><p><strong>定义</strong>：设置为<code>daemon</code>的线程会<strong>随着主线程的退出而结束</strong>，而<code>非daemon</code>线程会<strong>阻塞主线程的退出</strong>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">threading.Thread(target=func, daemon=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+
+<p>详见<a href="https://laike9m.com/blog/daemon-is-not-daemon-but-what-is-it,97/">Daemon is not daemon, but what is it?</a></p>
+<h2 id="线程本地数据"><a href="#线程本地数据" class="headerlink" title="线程本地数据"></a>线程本地数据</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mydata = threading.local()</span><br><span class="line">mydata.x = <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Lock-锁"><a href="#Lock-锁" class="headerlink" title="Lock 锁"></a>Lock 锁</h2><p>原始锁处于”<strong>锁定</strong>“或者”<strong>非锁定</strong>“两种状态之一。它被创建时为非锁定状态。它有两个基本方法， </p>
+<ul>
+<li><code>acquire()</code>:<ul>
+<li>当状态为非锁定时: <code>acquire()</code>将状态改为锁定 并立即返回。</li>
+<li>当状态是锁定时，<code>acquire()</code> 将阻塞至其他线程调用<code>release()</code>将其改为非锁定状态，然后 <code>acquire()</code> 调用重置其为锁定状态并返回。</li>
+</ul>
+</li>
+<li><code>release()</code>: 只在锁定状态下调用； 它将状态改为非锁定并立即返回。如果尝试释放一个非锁定的锁，则会引发<code>RuntimeError</code>异常。</li>
+</ul>
+<p>简单示例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dataLock = threading.Lock()</span><br><span class="line"><span class="keyword">with</span> dataLock:</span><br><span class="line">    operate_your_data()</span><br></pre></td></tr></table></figure>
+
+<h2 id="RLock-递归锁"><a href="#RLock-递归锁" class="headerlink" title="RLock 递归锁"></a>RLock 递归锁</h2><p>重入锁是一个可以被<strong>同一个线程多次获取</strong>的同步基元组件。附加了 “<strong>所属线程</strong>“ 和 “<strong>递归等级</strong>“ 的概念。</p>
+<h2 id="Condition-条件对象"><a href="#Condition-条件对象" class="headerlink" title="Condition 条件对象"></a>Condition 条件对象</h2><ul>
+<li><code>acquire()</code>：请求底层锁。</li>
+<li><code>release()</code>：释放底层锁。</li>
+<li><code>wait(timeout=None)</code>：等待直到被通知或发生超时。如果线程在调用此方法时没有获得锁，将会引发<code>RuntimeError</code>异常。</li>
+<li><code>wait_for(predicate, timeout=None)</code>：等待，直到条件计算为真。</li>
+<li><code>notify()</code>：默认唤醒一个等待这个条件的线程。</li>
+<li><code>notify_all()</code>：唤醒所有正在等待这个条件的线程。</li>
+</ul>
+<h2 id="Semaphore-信号量"><a href="#Semaphore-信号量" class="headerlink" title="Semaphore 信号量"></a>Semaphore 信号量</h2><p>一个信号量管理一个内部计数器。</p>
+<ul>
+<li><code>acquire()</code>：获取一个信号量，计数器-1。发现计数器为零时，将会阻塞，直到其它线程调用<code>release()</code> 方法。</li>
+<li><code>release()</code>：释放一个信号量，计数器+1。</li>
+</ul>
+<p><code>BoundedSemaphore(value=1)</code>：有界信号量通过检查以确保它当前的值不会超过初始值。</p>
+<h2 id="Event-事件"><a href="#Event-事件" class="headerlink" title="Event 事件"></a>Event 事件</h2><p>常用于<strong>线程间通信</strong>：一个线程发出事件信号，而其他线程等待该信号。一个事件对象管理一个<strong>内部标志</strong>。</p>
+<ul>
+<li><code>is_set()</code>：内部标志是否为<code>True</code></li>
+<li><code>set()</code>：将内部标志设为<code>True</code></li>
+<li><code>clear()</code>：将内部标志设为<code>False</code></li>
+<li><code>wait(timeout=None)</code>：阻塞线程知道内部标志为<code>True</code></li>
+</ul>
+<p>用<code>event</code>实现一个生产线程和消费线程的通信：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> threading</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">product_event = threading.Event()</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;product_event state: <span class="subst">&#123;product_event.is_set()&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">produce</span>():</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;start produce ...&quot;</span>)</span><br><span class="line">    time.sleep(<span class="number">5</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;product produced.&quot;</span>)</span><br><span class="line">    product_event.<span class="built_in">set</span>()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;product_event state: <span class="subst">&#123;product_event.is_set()&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">consume</span>():</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;consumer start wait ...&quot;</span>)</span><br><span class="line">    product_event.wait(timeout=<span class="number">10</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;product_event state: <span class="subst">&#123;product_event.is_set()&#125;</span>&quot;</span>)</span><br><span class="line">    product_event.clear()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;product consumed.&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;product_event state: <span class="subst">&#123;product_event.is_set()&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">t_pro = threading.Thread(name=<span class="string">&quot;producer&quot;</span>, target=produce)</span><br><span class="line">t_con = threading.Thread(name=<span class="string">&quot;consumer&quot;</span>, target=consume)</span><br><span class="line"></span><br><span class="line">t_pro.start()</span><br><span class="line">t_con.start()</span><br></pre></td></tr></table></figure>
+
+<h2 id="Timer-定时器"><a href="#Timer-定时器" class="headerlink" title="Timer 定时器"></a>Timer 定时器</h2><p>表示一个操作应该在<strong>等待一定的时间之后运行</strong>，是<code>Thread</code>的子类。</p>
+<ul>
+<li><code>cancel()</code>：停止计时器并取消执行；仅在等待状态时有效，</li>
+</ul>
+<p>简单的示例，五秒后自动拍照：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">WAIT_TIME = <span class="number">5</span></span><br><span class="line">t = threading.Timer(WAIT_TIME, take_picture, ())</span><br><span class="line">t.start()</span><br></pre></td></tr></table></figure>
+
+<h2 id="Barrier-栅栏"><a href="#Barrier-栅栏" class="headerlink" title="Barrier 栅栏"></a>Barrier 栅栏</h2><p>栅栏类提供一个简单的<strong>同</strong>步原语，用于应对固定数量的线程需要彼此相互等待的情况。线程调用<code>wait()</code>方法后将阻塞，直到<strong>所有线程</strong>都调用了<code>wait()</code>方法。此时所有线程将被<strong>同时释放</strong>。</p>
+<p>形象理解：像全班组织出去春游，大家都要到指定地点（栅栏）进行等待，等人到齐，一起出发。</p>
+<ul>
+<li><code>wait(timeout=None)</code>：冲出栅栏。当栅栏中所有线程都已经调用了这个函数，它们将同时被释放。</li>
+<li><code>reset()</code>：重置栅栏为默认的初始态。</li>
+<li><code>abort()</code>：将栅栏置为破损态。会导致所有的<code>active</code>或者<code>future</code>等待失败，并收到<code>BrokenBarrierError</code>。</li>
+<li><code>parties</code>：冲出栅栏所需要的线程数量。</li>
+<li><code>n_waiting</code>：当前时刻正在栅栏中阻塞的线程数量。</li>
+<li><code>broken</code>：表示栅栏是否为破损态。</li>
+</ul>
+<h2 id="在with语句中使用锁、条件和信号量"><a href="#在with语句中使用锁、条件和信号量" class="headerlink" title="在with语句中使用锁、条件和信号量"></a>在<code>with</code>语句中使用锁、条件和信号量</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> some_lock:</span><br><span class="line">    <span class="comment"># do something...</span></span><br></pre></td></tr></table></figure>
+
+<p>相当于：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">some_lock.acquire()</span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    <span class="comment"># do something...</span></span><br><span class="line"><span class="keyword">finally</span>:</span><br><span class="line">    some_lock.release()</span><br></pre></td></tr></table></figure>
+
+<p><code>Lock</code>、<code>RLock</code>、<code>Condition</code>、<code>Semaphore</code>和<code>BoundedSemaphore</code>都服从服从 <strong>上下文管理协议</strong>。</p>
+<h2 id="threading特性"><a href="#threading特性" class="headerlink" title="threading特性"></a>threading特性</h2><h3 id="存活"><a href="#存活" class="headerlink" title="存活"></a>存活</h3><ul>
+<li>一个程序如果有一个子线程启动了，如果这个线程不是<code>daemon</code>，那么即便没有<code>join()</code>同步，也会等子线程运行完毕再退出；反之如果是<code>daemon</code>，那么只要主线程退出，子线程也会退出。</li>
+<li>子线程挂了不影响master线程，master线程可以通过<code>t.is_alive()</code>来判断该线程是否存活。</li>
+</ul>
+<h3 id="GIL"><a href="#GIL" class="headerlink" title="GIL"></a>GIL</h3><p>GIL全称是Global Interpreter Lock，即<strong>全局解释器锁</strong>。由于官方的cpython解释器不是完全线程安全的，因此为了支持多线程编程，便有了GIL。有了GIL，<strong>在同一时刻，一个解释器进程下只能有一个线程在运行</strong>。因此<code>threading</code>模块不能使你利用多核CPU，如果你想利用多核CPU，可以使用<code>multiprocessing</code>模块。</p>
+<h3 id="选用时机"><a href="#选用时机" class="headerlink" title="选用时机"></a>选用时机</h3><ul>
+<li>IO密集型任务：虽然因为GIL，python中的多线程不是真正并行的多线程，但是如果是IO密集型的操作，使用多线程还是会提速不少。原因是一个线程在IO时被阻塞，会被切换到另一个线程。</li>
+<li>单个进程内的并发任务：如果你需要在单个进程内继续使用并发的特性，可以考虑使用<code>threading</code></li>
+</ul>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="https://docs.python.org/zh-cn/3/library/threading.html">python文档</a></li>
+<li><a href="https://realpython.com/intro-to-python-threading/">An Intro to Threading in Python</a></li>
+<li><a href="https://laike9m.com/blog/daemon-is-not-daemon-but-what-is-it,97/">Daemon is not daemon, but what is it?</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/python/logging/" rel="prev" title="python中的Logging总结">
+                  <i class="fa fa-angle-left"></i> python中的Logging总结
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/python/gunicorn/" rel="next" title="gunicorn学习总结">
+                  gunicorn学习总结 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

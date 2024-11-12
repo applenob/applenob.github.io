@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Back Propagation （BP）the code is from here.Here is hisblog. 1. The four fundamental equations behind backpropagation definition:$$δ^l_j&#x3D;\frac{∂C}{∂a^l_j}$$ &#x3D;&#x3D;&gt;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="神经网络基础（BP算法推导和基本的神经网络的实现）">
+<meta property="og:url" content="https://applenob.github.io/deep_learning/nn_bp/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="Back Propagation （BP）the code is from here.Here is hisblog. 1. The four fundamental equations behind backpropagation definition:$$δ^l_j&#x3D;\frac{∂C}{∂a^l_j}$$ &#x3D;&#x3D;&gt;">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2016-11-19T03:00:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.028Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="Deep Learning">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://applenob.github.io/deep_learning/nn_bp/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/deep_learning/nn_bp/","path":"deep_learning/nn_bp/","title":"神经网络基础（BP算法推导和基本的神经网络的实现）"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>神经网络基础（BP算法推导和基本的神经网络的实现） | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Back-Propagation-%EF%BC%88BP%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">Back Propagation （BP）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-The-four-fundamental-equations-behind-backpropagation-definition"><span class="nav-number">2.</span> <span class="nav-text">1. The four fundamental equations behind backpropagation definition:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Basic-Implementation"><span class="nav-number">3.</span> <span class="nav-text">2. Basic Implementation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-Other-details-I-want-to-mention-%E2%80%A6"><span class="nav-number">4.</span> <span class="nav-text">3. Other details I want to mention …</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning/nn_bp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="神经网络基础（BP算法推导和基本的神经网络的实现） | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          神经网络基础（BP算法推导和基本的神经网络的实现）
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2016-11-18 19:00:00" itemprop="dateCreated datePublished" datetime="2016-11-18T19:00:00-08:00">2016-11-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="Back-Propagation-（BP）"><a href="#Back-Propagation-（BP）" class="headerlink" title="Back Propagation （BP）"></a>Back Propagation （BP）</h2><p>the code is from <a href="https://github.com/mnielsen/neural-networks-and-deep-learning">here</a>.<br>Here is his<br><a href="http://neuralnetworksanddeeplearning.com/">blog</a>.</p>
+<h2 id="1-The-four-fundamental-equations-behind-backpropagation-definition"><a href="#1-The-four-fundamental-equations-behind-backpropagation-definition" class="headerlink" title="1. The four fundamental equations behind backpropagation definition:"></a>1. The four fundamental equations behind backpropagation definition:</h2><p>$$δ^l_j&#x3D;\frac{∂C}{∂a^l_j}$$</p>
+<p>&#x3D;&#x3D;&gt;</p>
+<p>An equation for the error in the output layer:</p>
+<p>$$δ^L_j&#x3D;\frac{∂C}{∂a^L_j}σ′(z^L_j)$$</p>
+<p>(BP1):</p>
+<ul>
+<li>L means the last layer(l)</li>
+<li>you can understand this simply by the chain rule.</li>
+</ul>
+<p>&#x3D;&#x3D;&gt;</p>
+<p>$$δ^L&#x3D;∇_aC⊙σ′(z^L)$$</p>
+<p>(BP1a)</p>
+<ul>
+<li>matrix-based form</li>
+</ul>
+<p>An equation for the error δl in terms of the error in the next layer:</p>
+<p>$$δ^l&#x3D;((w^{l+1})^Tδ^{l+1})⊙σ′(z^l)$$</p>
+<p>(BP2)</p>
+<ul>
+<li>this is bp !!</li>
+</ul>
+<p>$$\frac{∂C}{∂b^l_j}&#x3D;δ^l_j$$ </p>
+<p>(BP3)</p>
+<p>$$\frac{∂C}{∂w^l_{jk}}&#x3D;a^{l-1}_kδ^l_j$$ </p>
+<p>(BP4)</p>
+<p>BP3 and BP4 is what we want, BP1 is the start of BP2.</p>
+<p>That’s all for bp.</p>
+<h2 id="2-Basic-Implementation"><a href="#2-Basic-Implementation" class="headerlink" title="2. Basic Implementation"></a>2. Basic Implementation</h2><p>cost function: </p>
+<p>$$ C(w,b)≡1&#x2F;2n∑_x ||y(x)−a||^2 $$</p>
+<ul>
+<li>w: collection of all weights in network</li>
+<li>b: all the biases</li>
+<li>quadratic cost function</li>
+</ul>
+<p>$$w_k→w′_k&#x3D;w_k−η\frac{∂C}{∂w_k}$$<br>$$b_k→b′_k&#x3D;b_k−η\frac{∂C}{∂b_k}$$</p>
+<p>gradient<br>descent algorithm</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">sigmoid</span>(<span class="params">z</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;The sigmoid function.&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">1.0</span>/(<span class="number">1.0</span>+np.exp(-z))</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">sigmoid_prime</span>(<span class="params">z</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Derivative of the sigmoid function.&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> sigmoid(z)*(<span class="number">1</span>-sigmoid(z))</span><br></pre></td></tr></table></figure>
+
+<p>use sigmoid function</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">A module to implement the stochastic gradient descent learning</span></span><br><span class="line"><span class="string">algorithm for a feedforward neural network.  Gradients are calculated</span></span><br><span class="line"><span class="string">using backpropagation.  Note that I have focused on making the code</span></span><br><span class="line"><span class="string">simple, easily readable, and easily modifiable.  It is not optimized,</span></span><br><span class="line"><span class="string">and omits many desirable features.</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#### Libraries</span></span><br><span class="line"><span class="comment"># Standard library</span></span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line"><span class="comment"># Third-party libraries</span></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Network</span>(<span class="title class_ inherited__">object</span>):</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, sizes</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;if we want to create a Network object with 2 neurons in</span></span><br><span class="line"><span class="string">        the first layer, 3 neurons in the second layer,</span></span><br><span class="line"><span class="string">        and 1 neuron in the final layer: </span></span><br><span class="line"><span class="string">        net = Network([2, 3, 1])&quot;&quot;&quot;</span></span><br><span class="line">        <span class="variable language_">self</span>.num_layers = <span class="built_in">len</span>(sizes)</span><br><span class="line">        <span class="variable language_">self</span>.sizes = sizes</span><br><span class="line">        <span class="comment"># init all w and b for every layer</span></span><br><span class="line">        <span class="variable language_">self</span>.biases = [np.random.randn(y, <span class="number">1</span>) <span class="keyword">for</span> y <span class="keyword">in</span> sizes[<span class="number">1</span>:]]</span><br><span class="line">        <span class="variable language_">self</span>.weights = [np.random.randn(y, x) </span><br><span class="line">                        <span class="keyword">for</span> x, y <span class="keyword">in</span> <span class="built_in">zip</span>(sizes[:-<span class="number">1</span>], sizes[<span class="number">1</span>:])]</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">feedforward</span>(<span class="params">self, a</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Return the output of the network if &quot;a&quot; is input.&quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">for</span> b, w <span class="keyword">in</span> <span class="built_in">zip</span>(<span class="variable language_">self</span>.biases, <span class="variable language_">self</span>.weights):</span><br><span class="line">            a = sigmoid(np.dot(w, a)+b)</span><br><span class="line">        <span class="keyword">return</span> a</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">SGD</span>(<span class="params">self, training_data, epochs, mini_batch_size, eta,</span></span><br><span class="line"><span class="params">            test_data=<span class="literal">None</span></span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Train the neural network using mini-batch stochastic</span></span><br><span class="line"><span class="string">        gradient descent.  The &quot;training_data&quot; is a list of tuples</span></span><br><span class="line"><span class="string">        &quot;(x, y)&quot; representing the training inputs and the desired</span></span><br><span class="line"><span class="string">        outputs.  The other non-optional parameters are</span></span><br><span class="line"><span class="string">        self-explanatory.  If &quot;test_data&quot; is provided then the</span></span><br><span class="line"><span class="string">        network will be evaluated against the test data after each</span></span><br><span class="line"><span class="string">        epoch, and partial progress printed out.  This is useful for</span></span><br><span class="line"><span class="string">        tracking progress, but slows things down substantially.&quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">if</span> test_data: n_test = <span class="built_in">len</span>(test_data)</span><br><span class="line">        n = <span class="built_in">len</span>(training_data)</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> xrange(epochs):</span><br><span class="line">            random.shuffle(training_data)</span><br><span class="line">            mini_batches = [</span><br><span class="line">                training_data[k:k+mini_batch_size]</span><br><span class="line">                <span class="keyword">for</span> k <span class="keyword">in</span> xrange(<span class="number">0</span>, n, mini_batch_size)]</span><br><span class="line">            <span class="keyword">for</span> mini_batch <span class="keyword">in</span> mini_batches:</span><br><span class="line">                <span class="variable language_">self</span>.update_mini_batch(mini_batch, eta)</span><br><span class="line">            <span class="keyword">if</span> test_data:</span><br><span class="line">                <span class="built_in">print</span> <span class="string">&quot;Epoch &#123;0&#125;: &#123;1&#125; / &#123;2&#125;&quot;</span>.<span class="built_in">format</span>(</span><br><span class="line">                    j, <span class="variable language_">self</span>.evaluate(test_data), n_test)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="built_in">print</span> <span class="string">&quot;Epoch &#123;0&#125; complete&quot;</span>.<span class="built_in">format</span>(j)</span><br><span class="line">                </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">update_mini_batch</span>(<span class="params">self, mini_batch, eta</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Update the network&#x27;s weights and biases by applying</span></span><br><span class="line"><span class="string">        gradient descent using backpropagation to a single mini batch.</span></span><br><span class="line"><span class="string">        The &quot;mini_batch&quot; is a list of tuples &quot;(x, y)&quot;, and &quot;eta&quot;</span></span><br><span class="line"><span class="string">        is the learning rate.&quot;&quot;&quot;</span></span><br><span class="line">        <span class="comment"># nabla denotes  ∇</span></span><br><span class="line">        nabla_b = [np.zeros(b.shape) <span class="keyword">for</span> b <span class="keyword">in</span> <span class="variable language_">self</span>.biases]</span><br><span class="line">        nabla_w = [np.zeros(w.shape) <span class="keyword">for</span> w <span class="keyword">in</span> <span class="variable language_">self</span>.weights]</span><br><span class="line">        <span class="keyword">for</span> x, y <span class="keyword">in</span> mini_batch:</span><br><span class="line">            <span class="comment">#the gradient for the cost function C_x</span></span><br><span class="line">            delta_nabla_b, delta_nabla_w = <span class="variable language_">self</span>.backprop(x, y)</span><br><span class="line">            nabla_b = [nb+dnb <span class="keyword">for</span> nb, dnb <span class="keyword">in</span> <span class="built_in">zip</span>(nabla_b, delta_nabla_b)]</span><br><span class="line">            nabla_w = [nw+dnw <span class="keyword">for</span> nw, dnw <span class="keyword">in</span> <span class="built_in">zip</span>(nabla_w, delta_nabla_w)]</span><br><span class="line">        <span class="variable language_">self</span>.weights = [w-(eta/<span class="built_in">len</span>(mini_batch))*nw </span><br><span class="line">                        <span class="keyword">for</span> w, nw <span class="keyword">in</span> <span class="built_in">zip</span>(<span class="variable language_">self</span>.weights, nabla_w)]</span><br><span class="line">        <span class="variable language_">self</span>.biases = [b-(eta/<span class="built_in">len</span>(mini_batch))*nb </span><br><span class="line">                       <span class="keyword">for</span> b, nb <span class="keyword">in</span> <span class="built_in">zip</span>(<span class="variable language_">self</span>.biases, nabla_b)]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">backprop</span>(<span class="params">self, x, y</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Return a tuple ``(nabla_b, nabla_w)`` representing the</span></span><br><span class="line"><span class="string">        gradient for the cost function C_x.  ``nabla_b`` and</span></span><br><span class="line"><span class="string">        ``nabla_w`` are layer-by-layer lists of numpy arrays, similar</span></span><br><span class="line"><span class="string">        to ``self.biases`` and ``self.weights``.&quot;&quot;&quot;</span></span><br><span class="line">        nabla_b = [np.zeros(b.shape) <span class="keyword">for</span> b <span class="keyword">in</span> <span class="variable language_">self</span>.biases]</span><br><span class="line">        nabla_w = [np.zeros(w.shape) <span class="keyword">for</span> w <span class="keyword">in</span> <span class="variable language_">self</span>.weights]</span><br><span class="line">        <span class="comment"># feedforward</span></span><br><span class="line">        activation = x</span><br><span class="line">        activations = [x] <span class="comment"># list to store all the activations, layer by layer</span></span><br><span class="line">        zs = [] <span class="comment"># list to store all the z vectors, layer by layer</span></span><br><span class="line">        <span class="keyword">for</span> b, w <span class="keyword">in</span> <span class="built_in">zip</span>(<span class="variable language_">self</span>.biases, <span class="variable language_">self</span>.weights):</span><br><span class="line">            z = np.dot(w, activation)+b</span><br><span class="line">            zs.append(z)</span><br><span class="line">            activation = sigmoid(z)</span><br><span class="line">            activations.append(activation)</span><br><span class="line">        <span class="comment"># backward pass</span></span><br><span class="line">        delta = <span class="variable language_">self</span>.cost_derivative(activations[-<span class="number">1</span>], y) * \</span><br><span class="line">            sigmoid_prime(zs[-<span class="number">1</span>])</span><br><span class="line">        nabla_b[-<span class="number">1</span>] = delta</span><br><span class="line">        nabla_w[-<span class="number">1</span>] = np.dot(delta, activations[-<span class="number">2</span>].transpose())</span><br><span class="line">        <span class="comment"># Note that the variable l in the loop below is used a little</span></span><br><span class="line">        <span class="comment"># differently to the notation in Chapter 2 of the book.  Here,</span></span><br><span class="line">        <span class="comment"># l = 1 means the last layer of neurons, l = 2 is the</span></span><br><span class="line">        <span class="comment"># second-last layer, and so on.  It&#x27;s a renumbering of the</span></span><br><span class="line">        <span class="comment"># scheme in the book, used here to take advantage of the fact</span></span><br><span class="line">        <span class="comment"># that Python can use negative indices in lists.</span></span><br><span class="line">        <span class="keyword">for</span> l <span class="keyword">in</span> xrange(<span class="number">2</span>, <span class="variable language_">self</span>.num_layers):</span><br><span class="line">            z = zs[-l]</span><br><span class="line">            sp = sigmoid_prime(z)</span><br><span class="line">            delta = np.dot(<span class="variable language_">self</span>.weights[-l+<span class="number">1</span>].transpose(), delta) * sp</span><br><span class="line">            nabla_b[-l] = delta</span><br><span class="line">            nabla_w[-l] = np.dot(delta, activations[-l-<span class="number">1</span>].transpose())</span><br><span class="line">        <span class="keyword">return</span> (nabla_b, nabla_w)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">evaluate</span>(<span class="params">self, test_data</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Return the number of test inputs for which the neural</span></span><br><span class="line"><span class="string">        network outputs the correct result. Note that the neural</span></span><br><span class="line"><span class="string">        network&#x27;s output is assumed to be the index of whichever</span></span><br><span class="line"><span class="string">        neuron in the final layer has the highest activation.&quot;&quot;&quot;</span></span><br><span class="line">        test_results = [(np.argmax(<span class="variable language_">self</span>.feedforward(x)), y)</span><br><span class="line">                        <span class="keyword">for</span> (x, y) <span class="keyword">in</span> test_data]</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">sum</span>(<span class="built_in">int</span>(x == y) <span class="keyword">for</span> (x, y) <span class="keyword">in</span> test_results)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">cost_derivative</span>(<span class="params">self, output_activations, y</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Return the vector of partial derivatives \partial C_x /</span></span><br><span class="line"><span class="string">        \partial a for the output activations.&quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">return</span> (output_activations-y)</span><br></pre></td></tr></table></figure>
+
+<p>test with mnist dataset</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> mnist_loader</span><br><span class="line">training_data, validation_data, test_data = \</span><br><span class="line">mnist_loader.load_data_wrapper()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net = Network([<span class="number">784</span>, <span class="number">30</span>, <span class="number">10</span>])</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net.SGD(training_data, <span class="number">30</span>, <span class="number">10</span>, <span class="number">3.0</span>, test_data=test_data)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><figcaption><span>0: 8945 / 10000</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">Epoch 1: 9171 / 10000</span><br><span class="line">Epoch 2: 9251 / 10000</span><br><span class="line">Epoch 3: 9307 / 10000</span><br><span class="line">Epoch 4: 9332 / 10000</span><br><span class="line">Epoch 5: 9397 / 10000</span><br><span class="line">Epoch 6: 9401 / 10000</span><br><span class="line">Epoch 7: 9415 / 10000</span><br><span class="line">Epoch 8: 9425 / 10000</span><br><span class="line">Epoch 9: 9419 / 10000</span><br><span class="line">Epoch 10: 9469 / 10000</span><br><span class="line">Epoch 11: 9442 / 10000</span><br><span class="line">Epoch 12: 9462 / 10000</span><br><span class="line">Epoch 13: 9458 / 10000</span><br><span class="line">Epoch 14: 9461 / 10000</span><br><span class="line">Epoch 15: 9498 / 10000</span><br><span class="line">Epoch 16: 9481 / 10000</span><br><span class="line">Epoch 17: 9488 / 10000</span><br><span class="line">Epoch 18: 9507 / 10000</span><br><span class="line">Epoch 19: 9483 / 10000</span><br><span class="line">Epoch 20: 9473 / 10000</span><br><span class="line">Epoch 21: 9484 / 10000</span><br><span class="line">Epoch 22: 9507 / 10000</span><br><span class="line">Epoch 23: 9488 / 10000</span><br><span class="line">Epoch 24: 9484 / 10000</span><br><span class="line">Epoch 25: 9473 / 10000</span><br><span class="line">Epoch 26: 9503 / 10000</span><br><span class="line">Epoch 27: 9507 / 10000</span><br><span class="line">Epoch 28: 9488 / 10000</span><br><span class="line">Epoch 29: 9503 / 10000</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-Other-details-I-want-to-mention-…"><a href="#3-Other-details-I-want-to-mention-…" class="headerlink" title="3. Other details I want to mention …"></a>3. Other details I want to mention …</h2><p>Matrix element W[j,k] means the weight of kth neural to jth neural of the next layer.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/python/paper_manager/" rel="prev" title="用python编写一个本地论文管理器">
+                  <i class="fa fa-angle-left"></i> 用python编写一个本地论文管理器
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/machine_learning/MCMC/" rel="next" title="机器学习中的Monte Carlo（笔记和python实现）">
+                  机器学习中的Monte Carlo（笔记和python实现） <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

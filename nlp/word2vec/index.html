@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="1Word2Vec学习笔记，附带Tensorflow的CBOW实现。  神经概率语言模型  词向量：$v(w) \in R^m$ $m$是词向量的维度，通常是$10^1\sim 10^2$的量级。 神经网络参数：$W \in R^{n_h×(n-1)m}$，$p \in R^{n_h}$，$U\in R^{n_h×N}$，$q \in R^N$ $n$：上下文词数，通常不超过5。 $n_h$：隐层">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Word2Vec学习总结">
+<meta property="og:url" content="https://applenob.github.io/nlp/word2vec/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="1Word2Vec学习笔记，附带Tensorflow的CBOW实现。  神经概率语言模型  词向量：$v(w) \in R^m$ $m$是词向量的维度，通常是$10^1\sim 10^2$的量级。 神经网络参数：$W \in R^{n_h×(n-1)m}$，$p \in R^{n_h}$，$U\in R^{n_h×N}$，$q \in R^N$ $n$：上下文词数，通常不超过5。 $n_h$：隐层">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://applenob.github.io/nlp/word2vec/neu_lan_model.png">
+<meta property="og:image" content="https://applenob.github.io/nlp/word2vec/cbow.png">
+<meta property="og:image" content="https://applenob.github.io/nlp/word2vec/skip_gram.png">
+<meta property="og:image" content="https://applenob.github.io/nlp/word2vec/func1.png">
+<meta property="og:image" content="https://applenob.github.io/nlp/word2vec/func2.png">
+<meta property="og:image" content="https://applenob.github.io/nlp/word2vec/tsne.png">
+<meta property="article:published_time" content="2017-01-01T06:00:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.088Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="Deep Learning">
+<meta property="article:tag" content="NLP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://applenob.github.io/nlp/word2vec/neu_lan_model.png">
+
+
+<link rel="canonical" href="https://applenob.github.io/nlp/word2vec/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/nlp/word2vec/","path":"nlp/word2vec/","title":"Word2Vec学习总结"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Word2Vec学习总结 | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A5%9E%E7%BB%8F%E6%A6%82%E7%8E%87%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">神经概率语言模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CBOW"><span class="nav-number">2.</span> <span class="nav-text">CBOW</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Skip-Gram"><span class="nav-number">3.</span> <span class="nav-text">Skip-Gram</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E7%B1%BB%E5%88%AB%E8%BF%87%E5%A4%9A%E7%9A%84%E9%97%AE%E9%A2%98%EF%BC%9F"><span class="nav-number">4.</span> <span class="nav-text">如何解决类别过多的问题？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hierachical-Softmax%E7%9A%84%E6%A2%AF%E5%BA%A6%E8%AE%A1%E7%AE%97%EF%BC%88CBOW%EF%BC%89"><span class="nav-number">5.</span> <span class="nav-text">Hierachical Softmax的梯度计算（CBOW）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E8%B4%9F%E9%87%87%E6%A0%B7%E7%9A%84%E6%A8%A1%E5%9E%8B%EF%BC%88CBOW%EF%BC%89"><span class="nav-number">6.</span> <span class="nav-text">基于负采样的模型（CBOW）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Tensorflow%E5%AE%9E%E7%8E%B0"><span class="nav-number">7.</span> <span class="nav-text">Tensorflow实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CBOW-%E5%AE%9E%E7%8E%B0"><span class="nav-number">8.</span> <span class="nav-text">CBOW 实现</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/nlp/word2vec/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Word2Vec学习总结 | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Word2Vec学习总结
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2016-12-31 22:00:00" itemprop="dateCreated datePublished" datetime="2016-12-31T22:00:00-08:00">2016-12-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NLP/" itemprop="url" rel="index"><span itemprop="name">NLP</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Word2Vec学习笔记，附带Tensorflow的CBOW实现。</span><br></pre></td></tr></table></figure>
+
+<h2 id="神经概率语言模型"><a href="#神经概率语言模型" class="headerlink" title="神经概率语言模型"></a>神经概率语言模型</h2><p><img src="/nlp/word2vec/neu_lan_model.png"></p>
+<ul>
+<li>词向量：$v(w) \in R^m$</li>
+<li>$m$是词向量的维度，通常是$10^1\sim 10^2$的量级。</li>
+<li>神经网络参数：$W \in R^{n_h×(n-1)m}$，$p \in R^{n_h}$，$U\in R^{n_h×N}$，$q \in R^N$</li>
+<li>$n$：上下文词数，通常不超过5。</li>
+<li>$n_h$：隐层的维度，用户指定，通常是$10^2$的量级。</li>
+<li>$N$：语料的大小，通常是$10^4\sim 10^5$的量级。</li>
+<li>通过神经网络的反向传播，更新$v(w)$，最终获得w2v。</li>
+<li>$x_w$是各词向量之和。</li>
+</ul>
+<h2 id="CBOW"><a href="#CBOW" class="headerlink" title="CBOW"></a>CBOW</h2><p><img src="/nlp/word2vec/cbow.png"></p>
+<h2 id="Skip-Gram"><a href="#Skip-Gram" class="headerlink" title="Skip-Gram"></a>Skip-Gram</h2><p><img src="/nlp/word2vec/skip_gram.png"></p>
+<h2 id="如何解决类别过多的问题？"><a href="#如何解决类别过多的问题？" class="headerlink" title="如何解决类别过多的问题？"></a>如何解决类别过多的问题？</h2><p>Corpus的数量是$N$，那么分类的类别即$N$。直接拿去做这么多个类的分类：输出层的参数$U\in R^{n_h×N}$，太大。解决的思路有两个：</p>
+<ul>
+<li>1.将一次的多分类转换为多次的二分类：<strong>Hierachical<br>Softmax</strong>。这样，针对每一个分类器有一个参数向量，参数量是：$log_2N×m$。</li>
+<li>2.每个词向量对应一个参数向量，参数量稍有下降，是：$N×m$，但每次训练只更新其中的一部分，而不是全部：<strong>负采样</strong>。</li>
+</ul>
+<h2 id="Hierachical-Softmax的梯度计算（CBOW）"><a href="#Hierachical-Softmax的梯度计算（CBOW）" class="headerlink" title="Hierachical Softmax的梯度计算（CBOW）"></a>Hierachical Softmax的梯度计算（CBOW）</h2><ul>
+<li>$p^w$：从根结点出发到达$w$对应叶子结点的<strong>路径</strong>。</li>
+<li>$l^w$：路径$p^w$中包含结点的<strong>个数</strong>。<br>-$p_1^w,p_2^w,…,p_{l^w}^w$：路径$p^w$中的$l^w$个结点，其中，$p^w_1$表示根结点，$p_{l^w}^w$表示词$w$对应的<strong>结点</strong>。</li>
+<li>$d_2^w,…,d_{l^w}^w \in {0,1}$：词$w$的Huffman编码，由$l^w-1$位编码组成（根结点不编码），$d_j^w$表示路径$p^w$中第$j$个结点对应的<strong>编码</strong>。</li>
+<li>$\theta_1^w,\theta_2^w,…,\theta_{l^w-1}^w \in R^m$：路径$p^w$中<strong>非叶子结点</strong>对应的向量，$\theta_j^w$表示路径中$p^w$中第$j$个非叶子结点对应的<strong>向量</strong>。</li>
+</ul>
+<p>对于词典$D$中的任意词$w$，Huffman树中必存在一条从根节点到词$w$对应结点的唯一的路径$p^w$。路径$p^w$上存在$l^w-1$个分支，每个分支即一次二次分类，每次分类产生一个概率，将所有这些概率乘起来，就是所需的$p(w|Context(w))$。</p>
+<p>$$p(w|Context(w)) &#x3D; \prod_{j&#x3D;2}^{l^w}p(d_j^w|x_w,\theta^w_{j-1})$$</p>
+<p>其中：</p>
+<p><img src="/nlp/word2vec/func1.png"></p>
+<h2 id="基于负采样的模型（CBOW）"><a href="#基于负采样的模型（CBOW）" class="headerlink" title="基于负采样的模型（CBOW）"></a>基于负采样的模型（CBOW）</h2><p><strong>目的</strong>：提高训练速度，改善所得词向量的质量。</p>
+<p>不使用Huffman树，使用随机负采样。</p>
+<p>什么是<strong>负样本</strong>：对于给定的$Context(w)$，词$w$是一个正样本，其他词是负样本。</p>
+<p>负样本子集：$NEG(w)$。</p>
+<p>给定正样本：$(Context(w),w)$，希望最大化：$g(w) &#x3D; \underset{u \in {w} \cup NEG(w)}{\prod}p(u|Context(w))$</p>
+<p>其中：</p>
+<p><img src="/nlp/word2vec/func2.png"></p>
+<p>$L^w(\tilde w)$代表词$\tilde w$是否就是词$w$。</p>
+<p>$\theta^u \in R^m$表示词$u$对应的辅助参数向量。</p>
+<h2 id="Tensorflow实现"><a href="#Tensorflow实现" class="headerlink" title="Tensorflow实现"></a>Tensorflow实现</h2><p>下面的代码实现的是全类别的softmax的方法，没有使用负采样或者hierachical softmax。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># These are all the modules we&#x27;ll be using later. Make sure you can import them</span></span><br><span class="line"><span class="comment"># before proceeding further.</span></span><br><span class="line">%matplotlib inline</span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> print_function</span><br><span class="line"><span class="keyword">import</span> collections</span><br><span class="line"><span class="keyword">import</span> math</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">import</span> zipfile</span><br><span class="line"><span class="keyword">from</span> matplotlib <span class="keyword">import</span> pylab</span><br><span class="line"><span class="keyword">from</span> six.moves <span class="keyword">import</span> <span class="built_in">range</span></span><br><span class="line"><span class="keyword">from</span> six.moves.urllib.request <span class="keyword">import</span> urlretrieve</span><br><span class="line"><span class="keyword">from</span> sklearn.manifold <span class="keyword">import</span> TSNE</span><br><span class="line"></span><br><span class="line">filename = <span class="string">&quot;data/text8.zip&quot;</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">read_data</span>(<span class="params">filename</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Extract the first file enclosed in a zip file as a list of words&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">with</span> zipfile.ZipFile(filename) <span class="keyword">as</span> f:</span><br><span class="line">        data = tf.compat.as_str(f.read(f.namelist()[<span class="number">0</span>])).split()</span><br><span class="line">    <span class="keyword">return</span> data</span><br><span class="line">  </span><br><span class="line">words = read_data(filename)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Data size %d&#x27;</span> % <span class="built_in">len</span>(words))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Data size 17005207</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(words[:<span class="number">50</span>])</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[&#x27;anarchism&#x27;, &#x27;originated&#x27;, &#x27;as&#x27;, &#x27;a&#x27;, &#x27;term&#x27;, &#x27;of&#x27;, &#x27;abuse&#x27;, &#x27;first&#x27;, &#x27;used&#x27;, &#x27;against&#x27;, &#x27;early&#x27;, &#x27;working&#x27;, &#x27;class&#x27;, &#x27;radicals&#x27;, &#x27;including&#x27;, &#x27;the&#x27;, &#x27;diggers&#x27;, &#x27;of&#x27;, &#x27;the&#x27;, &#x27;english&#x27;, &#x27;revolution&#x27;, &#x27;and&#x27;, &#x27;the&#x27;, &#x27;sans&#x27;, &#x27;culottes&#x27;, &#x27;of&#x27;, &#x27;the&#x27;, &#x27;french&#x27;, &#x27;revolution&#x27;, &#x27;whilst&#x27;, &#x27;the&#x27;, &#x27;term&#x27;, &#x27;is&#x27;, &#x27;still&#x27;, &#x27;used&#x27;, &#x27;in&#x27;, &#x27;a&#x27;, &#x27;pejorative&#x27;, &#x27;way&#x27;, &#x27;to&#x27;, &#x27;describe&#x27;, &#x27;any&#x27;, &#x27;act&#x27;, &#x27;that&#x27;, &#x27;used&#x27;, &#x27;violent&#x27;, &#x27;means&#x27;, &#x27;to&#x27;, &#x27;destroy&#x27;, &#x27;the&#x27;]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">vocabulary_size = <span class="number">50000</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">build_dataset</span>(<span class="params">words</span>):</span><br><span class="line">    count = [[<span class="string">&#x27;UNK&#x27;</span>, -<span class="number">1</span>]]</span><br><span class="line">    count.extend(collections.Counter(words).most_common(vocabulary_size - <span class="number">1</span>))</span><br><span class="line">    dictionary = <span class="built_in">dict</span>()</span><br><span class="line">    <span class="keyword">for</span> word, _ <span class="keyword">in</span> count:</span><br><span class="line">        dictionary[word] = <span class="built_in">len</span>(dictionary)</span><br><span class="line">    data = <span class="built_in">list</span>()</span><br><span class="line">    unk_count = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> word <span class="keyword">in</span> words:</span><br><span class="line">        <span class="keyword">if</span> word <span class="keyword">in</span> dictionary:</span><br><span class="line">            index = dictionary[word]</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            index = <span class="number">0</span>  <span class="comment"># dictionary[&#x27;UNK&#x27;]</span></span><br><span class="line">            unk_count = unk_count + <span class="number">1</span></span><br><span class="line">        data.append(index)</span><br><span class="line">    count[<span class="number">0</span>][<span class="number">1</span>] = unk_count</span><br><span class="line">    reverse_dictionary = <span class="built_in">dict</span>(<span class="built_in">zip</span>(dictionary.values(), dictionary.keys())) </span><br><span class="line">    <span class="keyword">return</span> data, count, dictionary, reverse_dictionary</span><br><span class="line"></span><br><span class="line">data, count, dictionary, reverse_dictionary = build_dataset(words)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Most common words (+UNK)&#x27;</span>, count[:<span class="number">5</span>])</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Sample data&#x27;</span>, data[:<span class="number">10</span>])</span><br><span class="line"><span class="keyword">del</span> words  <span class="comment"># Hint to reduce memory.</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Most common words (+UNK) [[&#x27;UNK&#x27;, 418391], (&#x27;the&#x27;, 1061396), (&#x27;of&#x27;, 593677), (&#x27;and&#x27;, 416629), (&#x27;one&#x27;, 411764)]</span><br><span class="line">Sample data [5239, 3084, 12, 6, 195, 2, 3137, 46, 59, 156]</span><br></pre></td></tr></table></figure>
+
+<h2 id="CBOW-实现"><a href="#CBOW-实现" class="headerlink" title="CBOW 实现"></a>CBOW 实现</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">data_index = <span class="number">0</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">generate_batch</span>(<span class="params">batch_size, bag_window</span>):</span><br><span class="line">    <span class="keyword">global</span> data_index</span><br><span class="line">    span = <span class="number">2</span> * bag_window + <span class="number">1</span> <span class="comment"># [ bag_window target bag_window ]</span></span><br><span class="line">    batch = np.ndarray(shape=(batch_size, span - <span class="number">1</span>), dtype=np.int32)</span><br><span class="line">    labels = np.ndarray(shape=(batch_size, <span class="number">1</span>), dtype=np.int32)</span><br><span class="line">    buffer = collections.deque(maxlen=span)</span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(span):</span><br><span class="line">        buffer.append(data[data_index])</span><br><span class="line">        data_index = (data_index + <span class="number">1</span>) % <span class="built_in">len</span>(data)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(batch_size):</span><br><span class="line">        <span class="comment"># just for testing</span></span><br><span class="line">        buffer_list = <span class="built_in">list</span>(buffer)</span><br><span class="line">        labels[i, <span class="number">0</span>] = buffer_list.pop(bag_window)</span><br><span class="line">        batch[i] = buffer_list</span><br><span class="line">        <span class="comment"># iterate to the next buffer</span></span><br><span class="line">        buffer.append(data[data_index])</span><br><span class="line">        data_index = (data_index + <span class="number">1</span>) % <span class="built_in">len</span>(data)</span><br><span class="line">    <span class="keyword">return</span> batch, labels</span><br><span class="line"> </span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;data:&#x27;</span>, [reverse_dictionary[di] <span class="keyword">for</span> di <span class="keyword">in</span> data[:<span class="number">16</span>]])</span><br><span class="line"> </span><br><span class="line"><span class="keyword">for</span> bag_window <span class="keyword">in</span> [<span class="number">1</span>, <span class="number">2</span>]:</span><br><span class="line">    data_index = <span class="number">0</span></span><br><span class="line">    batch, labels = generate_batch(batch_size=<span class="number">4</span>, bag_window=bag_window)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;\nwith bag_window = %d:&#x27;</span> % (bag_window))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;    batch:&#x27;</span>, [[reverse_dictionary[w] <span class="keyword">for</span> w <span class="keyword">in</span> bi] <span class="keyword">for</span> bi <span class="keyword">in</span> batch])</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;    labels:&#x27;</span>, [reverse_dictionary[li] <span class="keyword">for</span> li <span class="keyword">in</span> labels.reshape(<span class="number">4</span>)])</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">data: [&#x27;anarchism&#x27;, &#x27;originated&#x27;, &#x27;as&#x27;, &#x27;a&#x27;, &#x27;term&#x27;, &#x27;of&#x27;, &#x27;abuse&#x27;, &#x27;first&#x27;, &#x27;used&#x27;, &#x27;against&#x27;, &#x27;early&#x27;, &#x27;working&#x27;, &#x27;class&#x27;, &#x27;radicals&#x27;, &#x27;including&#x27;, &#x27;the&#x27;]</span><br><span class="line"></span><br><span class="line">with bag_window = 1:</span><br><span class="line">    batch: [[&#x27;anarchism&#x27;, &#x27;as&#x27;], [&#x27;originated&#x27;, &#x27;a&#x27;], [&#x27;as&#x27;, &#x27;term&#x27;], [&#x27;a&#x27;, &#x27;of&#x27;]]</span><br><span class="line">    labels: [&#x27;originated&#x27;, &#x27;as&#x27;, &#x27;a&#x27;, &#x27;term&#x27;]</span><br><span class="line"></span><br><span class="line">with bag_window = 2:</span><br><span class="line">    batch: [[&#x27;anarchism&#x27;, &#x27;originated&#x27;, &#x27;a&#x27;, &#x27;term&#x27;], [&#x27;originated&#x27;, &#x27;as&#x27;, &#x27;term&#x27;, &#x27;of&#x27;], [&#x27;as&#x27;, &#x27;a&#x27;, &#x27;of&#x27;, &#x27;abuse&#x27;], [&#x27;a&#x27;, &#x27;term&#x27;, &#x27;abuse&#x27;, &#x27;first&#x27;]]</span><br><span class="line">    labels: [&#x27;as&#x27;, &#x27;a&#x27;, &#x27;term&#x27;, &#x27;of&#x27;]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">batch_size = <span class="number">128</span></span><br><span class="line">embedding_size = <span class="number">128</span>  <span class="comment"># Dimension of the embedding vector.</span></span><br><span class="line">bag_window = <span class="number">2</span>  <span class="comment"># How many words to consider left and right.</span></span><br><span class="line"><span class="comment"># We pick a random validation set to sample nearest neighbors. here we limit the</span></span><br><span class="line"><span class="comment"># validation samples to the words that have a low numeric ID, which by</span></span><br><span class="line"><span class="comment"># construction are also the most frequent.</span></span><br><span class="line">valid_size = <span class="number">16</span>  <span class="comment"># Random set of words to evaluate similarity on.</span></span><br><span class="line">valid_window = <span class="number">100</span>  <span class="comment"># Only pick dev samples in the head of the distribution.</span></span><br><span class="line">valid_examples = np.array(random.sample(<span class="built_in">range</span>(valid_window), valid_size))</span><br><span class="line">num_sampled = <span class="number">64</span>  <span class="comment"># Number of negative examples to sample.</span></span><br><span class="line"> </span><br><span class="line">graph = tf.Graph()</span><br><span class="line"> </span><br><span class="line"><span class="keyword">with</span> graph.as_default():</span><br><span class="line">    <span class="comment"># Input data.</span></span><br><span class="line">    train_dataset = tf.placeholder(tf.int32, shape=[batch_size, bag_window * <span class="number">2</span>])</span><br><span class="line">    train_labels = tf.placeholder(tf.int32, shape=[batch_size, <span class="number">1</span>])</span><br><span class="line">    valid_dataset = tf.constant(valid_examples, dtype=tf.int32)</span><br><span class="line"> </span><br><span class="line">    <span class="comment"># Variables.</span></span><br><span class="line">    embeddings = tf.Variable(</span><br><span class="line">        tf.random_uniform([vocabulary_size, embedding_size], -<span class="number">1.0</span>, <span class="number">1.0</span>))</span><br><span class="line">    softmax_weights = tf.Variable(</span><br><span class="line">        tf.truncated_normal([vocabulary_size, embedding_size],</span><br><span class="line">                            stddev=<span class="number">1.0</span> / math.sqrt(embedding_size)))</span><br><span class="line">    softmax_biases = tf.Variable(tf.zeros([vocabulary_size]))</span><br><span class="line"> </span><br><span class="line">    <span class="comment"># Model.</span></span><br><span class="line">    <span class="comment"># Look up embeddings for inputs.</span></span><br><span class="line">    embeds = tf.nn.embedding_lookup(embeddings, train_dataset)</span><br><span class="line">    <span class="comment"># Compute the softmax loss, using a sample of the negative labels each time.</span></span><br><span class="line">    loss = tf.reduce_mean(</span><br><span class="line">        tf.nn.sampled_softmax_loss(softmax_weights, softmax_biases, train_labels, </span><br><span class="line">                                   tf.reduce_sum(embeds, <span class="number">1</span>),</span><br><span class="line">                                num_sampled, vocabulary_size))</span><br><span class="line"> </span><br><span class="line">    <span class="comment"># Optimizer.</span></span><br><span class="line">    optimizer = tf.train.AdagradOptimizer(<span class="number">1.0</span>).minimize(loss)</span><br><span class="line"> </span><br><span class="line">    <span class="comment"># Compute the similarity between minibatch examples and all embeddings.</span></span><br><span class="line">    <span class="comment"># We use the cosine distance:</span></span><br><span class="line">    norm = tf.sqrt(tf.reduce_sum(tf.square(embeddings), <span class="number">1</span>, keep_dims=<span class="literal">True</span>))</span><br><span class="line">    normalized_embeddings = embeddings / norm</span><br><span class="line">    valid_embeddings = tf.nn.embedding_lookup(</span><br><span class="line">        normalized_embeddings, valid_dataset)</span><br><span class="line">    similarity = tf.matmul(valid_embeddings, tf.transpose(normalized_embeddings))</span><br><span class="line">num_steps = <span class="number">100001</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> tf.Session(graph=graph) <span class="keyword">as</span> session:</span><br><span class="line">    tf.initialize_all_variables().run()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;Initialized&#x27;</span>)</span><br><span class="line">    average_loss = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> step <span class="keyword">in</span> <span class="built_in">range</span>(num_steps):</span><br><span class="line">        batch_data, batch_labels = generate_batch(</span><br><span class="line">            batch_size, bag_window)</span><br><span class="line">        feed_dict = &#123;train_dataset: batch_data, train_labels: batch_labels&#125;</span><br><span class="line">        _, l = session.run([optimizer, loss], feed_dict=feed_dict)</span><br><span class="line">        average_loss += l</span><br><span class="line">        <span class="keyword">if</span> step % <span class="number">2000</span> == <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">if</span> step &gt; <span class="number">0</span>:</span><br><span class="line">                average_loss = average_loss / <span class="number">2000</span></span><br><span class="line">            <span class="comment"># The average loss is an estimate of the loss over the last 2000 batches.</span></span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&#x27;Average loss at step %d: %f&#x27;</span> % (step, average_loss))</span><br><span class="line">            average_loss = <span class="number">0</span></span><br><span class="line">        <span class="comment"># note that this is expensive (~20% slowdown if computed every 500 steps)</span></span><br><span class="line">        <span class="keyword">if</span> step % <span class="number">10000</span> == <span class="number">0</span>:</span><br><span class="line">            sim = similarity.<span class="built_in">eval</span>()</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(valid_size):</span><br><span class="line">                valid_word = reverse_dictionary[valid_examples[i]]</span><br><span class="line">                top_k = <span class="number">8</span>  <span class="comment"># number of nearest neighbors</span></span><br><span class="line">                nearest = (-sim[i, :]).argsort()[<span class="number">1</span>:top_k + <span class="number">1</span>]</span><br><span class="line">                log = <span class="string">&#x27;Nearest to %s:&#x27;</span> % valid_word</span><br><span class="line">                <span class="keyword">for</span> k <span class="keyword">in</span> <span class="built_in">range</span>(top_k):</span><br><span class="line">                    close_word = reverse_dictionary[nearest[k]]</span><br><span class="line">                    log = <span class="string">&#x27;%s %s,&#x27;</span> % (log, close_word)</span><br><span class="line">                <span class="built_in">print</span>(log)</span><br><span class="line">    final_embeddings = normalized_embeddings.<span class="built_in">eval</span>()</span><br><span class="line">num_points = <span class="number">400</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算tsne，可视化词向量在二维空间上的分布</span></span><br><span class="line">tsne = TSNE(perplexity=<span class="number">30</span>, n_components=<span class="number">2</span>, init=<span class="string">&#x27;pca&#x27;</span>, n_iter=<span class="number">5000</span>)</span><br><span class="line">two_d_embeddings = tsne.fit_transform(final_embeddings[<span class="number">1</span>:num_points + <span class="number">1</span>, :])</span><br><span class="line"> </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">plot</span>(<span class="params">embeddings, labels</span>):</span><br><span class="line">    <span class="keyword">assert</span> embeddings.shape[<span class="number">0</span>] &gt;= <span class="built_in">len</span>(labels), <span class="string">&#x27;More labels than embeddings&#x27;</span></span><br><span class="line">    pylab.figure(figsize=(<span class="number">15</span>, <span class="number">15</span>))  <span class="comment"># in inches</span></span><br><span class="line">    <span class="keyword">for</span> i, label <span class="keyword">in</span> <span class="built_in">enumerate</span>(labels):</span><br><span class="line">        x, y = embeddings[i, :]</span><br><span class="line">        pylab.scatter(x, y)</span><br><span class="line">        pylab.annotate(label, xy=(x, y), xytext=(<span class="number">5</span>, <span class="number">2</span>), textcoords=<span class="string">&#x27;offset points&#x27;</span>,</span><br><span class="line">                       ha=<span class="string">&#x27;right&#x27;</span>, va=<span class="string">&#x27;bottom&#x27;</span>)</span><br><span class="line">    pylab.show()</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">words = [reverse_dictionary[i] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, num_points + <span class="number">1</span>)]</span><br><span class="line">plot(two_d_embeddings, words)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br></pre></td><td class="code"><pre><span class="line">WARNING:tensorflow:From &lt;ipython-input-13-a25f3f405467&gt;:2: initialize_all_variables (from tensorflow.python.ops.variables) is deprecated and will be removed after 2017-03-02.</span><br><span class="line">Instructions for updating:</span><br><span class="line">Use `tf.global_variables_initializer` instead.</span><br><span class="line">Initialized</span><br><span class="line">Average loss at step 0: 8.374084</span><br><span class="line">Nearest to first: mistletoe, ladyland, fathered, xml, exploitable, scare, fabian, mages,</span><br><span class="line">Nearest to nine: going, transferred, copacabana, lilian, dhamma, continuity, ivy, churchill,</span><br><span class="line">Nearest to all: patanjali, alternates, benign, exponentially, amazons, fullback, analyzed, marlon,</span><br><span class="line">Nearest to most: api, treating, rehab, objectors, disastrously, chamada, fugitives, subhas,</span><br><span class="line">Nearest to or: chiapas, travels, dazzling, shag, geopolitical, below, less, granted,</span><br><span class="line">Nearest to that: mozambican, tome, buddhism, concentrations, unison, allied, sotho, wu,</span><br><span class="line">Nearest to use: gaff, marmalade, harford, ujjain, taxonomists, ballroom, rarity, persisted,</span><br><span class="line">Nearest to into: konkan, indefatigable, ams, caret, irreverent, allman, alcal, rivalry,</span><br><span class="line">Nearest to system: pressurized, pedestal, affect, powered, preferably, gcd, morning, skyview,</span><br><span class="line">Nearest to were: campaigner, unusable, copyrights, wells, waterhouse, janata, touch, engraving,</span><br><span class="line">Nearest to with: ranges, crystallographic, gy, condensate, rojas, bijective, maria, university,</span><br><span class="line">Nearest to th: polycarbonate, irene, nik, shellfish, basenjis, measurements, reclassification, mens,</span><br><span class="line">Nearest to zero: thessaly, blows, contingents, moulton, hurdler, flip, hbf, minotaurs,</span><br><span class="line">Nearest to other: purchased, concluding, sicily, midwest, paranoid, hurt, ssc, cobra,</span><br><span class="line">Nearest to world: deoxyribonucleic, rectum, stricken, oven, mt, diverged, pluralistic, perceptive,</span><br><span class="line">Nearest to during: connelly, thirsty, nationalized, protector, lick, lockport, judgements, russcol,</span><br><span class="line">Average loss at step 2000: 4.572921</span><br><span class="line">Average loss at step 4000: 3.943233</span><br><span class="line">Average loss at step 6000: 3.713809</span><br><span class="line">Average loss at step 8000: 3.530180</span><br><span class="line">Average loss at step 10000: 3.475878</span><br><span class="line">Nearest to first: second, civilization, salsa, divisor, essay, braves, mikvah, tiered,</span><br><span class="line">Nearest to nine: six, eight, seven, zero, five, four, two, three,</span><br><span class="line">Nearest to all: many, some, these, tito, several, steadfast, other, stockton,</span><br><span class="line">Nearest to most: more, tendency, waff, many, very, clerk, enhanced, juvenile,</span><br><span class="line">Nearest to or: than, and, ewald, cmi, aedile, gangster, pipe, suns,</span><br><span class="line">Nearest to that: which, what, marlins, gunto, who, redirected, competitors, syrups,</span><br><span class="line">Nearest to use: taxonomists, specialisation, marmalade, flaherty, reason, salvador, trojans, precarious,</span><br><span class="line">Nearest to into: caret, ecumenism, ams, macrocosm, thales, indefatigable, konkan, disobey,</span><br><span class="line">Nearest to system: assumes, affect, compilation, handicrafts, slugs, electro, apostles, promise,</span><br><span class="line">Nearest to were: are, was, being, sketch, encloses, yorkers, kekul, cadbury,</span><br><span class="line">Nearest to with: rheingold, grossed, satanic, temp, mond, fairly, cavers, rickenbacker,</span><br><span class="line">Nearest to th: nd, st, nine, globally, patrilineal, transhumanism, companionship, vortex,</span><br><span class="line">Nearest to zero: five, nine, seven, eight, four, three, six, two,</span><br><span class="line">Nearest to other: many, these, various, duquette, several, arlene, all, some,</span><br><span class="line">Nearest to world: holliday, postwar, arnauld, catechism, inventive, caribs, recipient, cultivate,</span><br><span class="line">Nearest to during: nas, hohenstaufen, before, cautiously, acknowledging, in, cadet, since,</span><br><span class="line">Average loss at step 12000: 3.493503</span><br><span class="line">Average loss at step 14000: 3.446680</span><br><span class="line">Average loss at step 16000: 3.443846</span><br><span class="line">Average loss at step 18000: 3.397030</span><br><span class="line">Average loss at step 20000: 3.218047</span><br><span class="line">Nearest to first: second, last, chaplin, buoyancy, civilization, next, most, title,</span><br><span class="line">Nearest to nine: eight, seven, zero, five, two, three, six, th,</span><br><span class="line">Nearest to all: many, several, various, some, lehi, chia, cal, these,</span><br><span class="line">Nearest to most: more, many, tendency, very, waff, fund, some, clerk,</span><br><span class="line">Nearest to or: and, than, pagos, shapeshifting, wtoo, grigory, slew, rss,</span><br><span class="line">Nearest to that: which, what, where, this, when, grant, bounding, agnes,</span><br><span class="line">Nearest to use: form, trojans, reason, falsified, because, specialisation, fortify, price,</span><br><span class="line">Nearest to into: through, resupply, ams, within, from, in, thales, ecumenism,</span><br><span class="line">Nearest to system: systems, electro, sector, orbison, violate, baptised, foonly, affect,</span><br><span class="line">Nearest to were: are, was, is, have, include, pederastic, cuar, overcrowded,</span><br><span class="line">Nearest to with: using, between, and, sampras, soddy, gracie, semper, generically,</span><br><span class="line">Nearest to th: st, twentieth, nd, globally, nine, renminbi, worsened, alexandrian,</span><br><span class="line">Nearest to zero: five, eight, seven, six, nine, four, three, two,</span><br><span class="line">Nearest to other: various, different, these, both, colonisation, titration, many, tankers,</span><br><span class="line">Nearest to world: amylase, metaphor, mandibles, recipient, policeman, prisoner, postwar, spans,</span><br><span class="line">Nearest to during: before, since, throughout, in, until, after, through, laminated,</span><br><span class="line">Average loss at step 22000: 3.358755</span><br><span class="line">Average loss at step 24000: 3.296899</span><br><span class="line">Average loss at step 26000: 3.254450</span><br><span class="line">Average loss at step 28000: 3.287042</span><br><span class="line">Average loss at step 30000: 3.228198</span><br><span class="line">Nearest to first: second, last, third, next, same, largest, autonomously, best,</span><br><span class="line">Nearest to nine: eight, seven, six, zero, five, four, three, two,</span><br><span class="line">Nearest to all: any, many, every, some, both, various, several, each,</span><br><span class="line">Nearest to most: many, some, more, less, incredible, tendency, waff, huffman,</span><br><span class="line">Nearest to or: and, than, linguistics, gangster, worldstatesmen, but, like, napoli,</span><br><span class="line">Nearest to that: which, this, what, where, when, however, because, syrups,</span><br><span class="line">Nearest to use: sense, trojans, development, begin, cav, stampede, safety, price,</span><br><span class="line">Nearest to into: through, within, in, thales, resupply, down, throughout, concocted,</span><br><span class="line">Nearest to system: systems, electro, affect, violate, foonly, companies, era, rolfe,</span><br><span class="line">Nearest to were: are, was, include, heero, is, have, firmness, being,</span><br><span class="line">Nearest to with: between, nonnegative, soddy, timer, fingerprinting, satanic, including, letterboxed,</span><br><span class="line">Nearest to th: twentieth, nd, st, nine, globally, next, renminbi, propagated,</span><br><span class="line">Nearest to zero: five, nine, eight, six, seven, four, three, two,</span><br><span class="line">Nearest to other: various, these, different, vespers, heterochromatin, sabina, dolphins, fingertips,</span><br><span class="line">Nearest to world: catechism, decade, u, civil, mandibles, misanthropy, lrv, alcoholism,</span><br><span class="line">Nearest to during: after, before, throughout, until, since, in, cordwainer, cambrian,</span><br><span class="line">Average loss at step 32000: 3.013517</span><br><span class="line">Average loss at step 34000: 3.205457</span><br><span class="line">Average loss at step 36000: 3.187721</span><br><span class="line">Average loss at step 38000: 3.158000</span><br><span class="line">Average loss at step 40000: 3.159957</span><br><span class="line">Nearest to first: second, last, same, best, third, next, fourth, original,</span><br><span class="line">Nearest to nine: eight, seven, six, five, four, zero, two, th,</span><br><span class="line">Nearest to all: every, many, any, several, some, various, fluke, certain,</span><br><span class="line">Nearest to most: less, more, some, highest, authorize, many, refracting, waff,</span><br><span class="line">Nearest to or: and, than, filioque, adour, directs, lamar, occult, decried,</span><br><span class="line">Nearest to that: which, although, however, monatomic, evangelica, attrition, this, repudiate,</span><br><span class="line">Nearest to use: sense, trojans, addition, production, achieve, begin, influx, falsified,</span><br><span class="line">Nearest to into: through, within, throughout, in, down, heather, from, across,</span><br><span class="line">Nearest to system: systems, foonly, program, affect, process, materiel, monitor, method,</span><br><span class="line">Nearest to were: are, was, is, being, include, have, had, became,</span><br><span class="line">Nearest to with: between, within, satanic, soddy, meals, without, utilizes, adage,</span><br><span class="line">Nearest to th: st, nd, twentieth, globally, nine, worsened, propagated, fourth,</span><br><span class="line">Nearest to zero: eight, five, four, six, seven, three, million, two,</span><br><span class="line">Nearest to other: various, some, vespers, copyrighted, these, those, tether, different,</span><br><span class="line">Nearest to world: u, experience, catechism, postwar, relieve, lydian, misanthropy, goodyear,</span><br><span class="line">Nearest to during: after, in, since, before, throughout, within, despite, until,</span><br><span class="line">Average loss at step 42000: 3.208765</span><br><span class="line">Average loss at step 44000: 3.141568</span><br><span class="line">Average loss at step 46000: 3.142206</span><br><span class="line">Average loss at step 48000: 3.058366</span><br><span class="line">Average loss at step 50000: 3.058806</span><br><span class="line">Nearest to first: last, second, next, same, third, original, best, largest,</span><br><span class="line">Nearest to nine: eight, seven, six, five, zero, four, th, august,</span><br><span class="line">Nearest to all: several, many, some, various, multiple, these, certain, any,</span><br><span class="line">Nearest to most: especially, many, more, particularly, less, refracting, discoveries, johansson,</span><br><span class="line">Nearest to or: and, gangster, ewald, than, remedial, uses, yahoo, sherpa,</span><br><span class="line">Nearest to that: which, although, what, because, monatomic, bounding, actually, syrups,</span><br><span class="line">Nearest to use: addition, used, influx, cybernetic, admission, treatment, development, noriega,</span><br><span class="line">Nearest to into: through, from, within, around, across, in, throughout, out,</span><br><span class="line">Nearest to system: systems, program, process, foonly, violate, apostles, electro, region,</span><br><span class="line">Nearest to were: are, was, being, is, have, had, include, be,</span><br><span class="line">Nearest to with: soddy, between, using, utilizes, erase, hypoxic, primes, satanic,</span><br><span class="line">Nearest to th: nd, st, twentieth, nineteenth, worsened, nine, globally, third,</span><br><span class="line">Nearest to zero: eight, five, seven, four, six, two, nine, three,</span><br><span class="line">Nearest to other: others, older, various, queueing, smaller, different, vespers, these,</span><br><span class="line">Nearest to world: catechism, plural, label, country, policeman, romanians, abdication, postwar,</span><br><span class="line">Nearest to during: throughout, until, within, in, after, since, through, following,</span><br><span class="line">Average loss at step 52000: 3.099547</span><br><span class="line">Average loss at step 54000: 3.092599</span><br><span class="line">Average loss at step 56000: 2.922255</span><br><span class="line">Average loss at step 58000: 3.034626</span><br><span class="line">Average loss at step 60000: 3.047308</span><br><span class="line">Nearest to first: last, second, next, third, same, earliest, original, latter,</span><br><span class="line">Nearest to nine: eight, seven, six, five, four, zero, two, november,</span><br><span class="line">Nearest to all: several, many, certain, various, some, every, those, both,</span><br><span class="line">Nearest to most: more, especially, some, highest, particularly, greatest, waff, best,</span><br><span class="line">Nearest to or: and, than, ventricle, yahoo, herders, canonised, repackaged, including,</span><br><span class="line">Nearest to that: which, what, however, bao, where, when, burgh, because,</span><br><span class="line">Nearest to use: cybernetic, addition, achieve, sense, tinctures, falsified, because, influx,</span><br><span class="line">Nearest to into: through, within, throughout, across, around, greaves, from, towards,</span><br><span class="line">Nearest to system: systems, brussel, process, program, apostles, position, adonai, informal,</span><br><span class="line">Nearest to were: are, was, is, include, several, remained, being, pederastic,</span><br><span class="line">Nearest to with: between, nonnegative, including, without, soddy, against, poorest, indie,</span><br><span class="line">Nearest to th: twentieth, nd, st, third, globally, nineteenth, worsened, nine,</span><br><span class="line">Nearest to zero: five, eight, six, seven, three, four, nine, million,</span><br><span class="line">Nearest to other: various, others, queueing, older, those, different, several, these,</span><br><span class="line">Nearest to world: catechism, country, condemned, label, romanians, orchids, ran, ruling,</span><br><span class="line">Nearest to during: before, after, throughout, until, despite, since, over, in,</span><br><span class="line">Average loss at step 62000: 3.018039</span><br><span class="line">Average loss at step 64000: 2.928474</span><br><span class="line">Average loss at step 66000: 2.937294</span><br><span class="line">Average loss at step 68000: 2.963855</span><br><span class="line">Average loss at step 70000: 3.007470</span><br><span class="line">Nearest to first: last, next, second, best, earliest, same, third, fourth,</span><br><span class="line">Nearest to nine: eight, th, six, zero, september, july, december, million,</span><br><span class="line">Nearest to all: many, several, some, certain, various, both, every, phylum,</span><br><span class="line">Nearest to most: more, especially, greatest, extremely, highest, many, less, huffman,</span><br><span class="line">Nearest to or: and, than, ventricle, jewellery, gigahertz, sherpa, including, towards,</span><br><span class="line">Nearest to that: which, where, bounding, monatomic, what, because, repudiate, although,</span><br><span class="line">Nearest to use: practice, because, addition, trojans, outspoken, treatment, play, implementation,</span><br><span class="line">Nearest to into: through, towards, across, within, toward, kearney, in, forward,</span><br><span class="line">Nearest to system: systems, spearheaded, severed, decapitate, foonly, jumbo, pegbox, jermaine,</span><br><span class="line">Nearest to were: are, was, is, been, newly, many, exist, potter,</span><br><span class="line">Nearest to with: between, without, soddy, letterboxed, including, ehr, utilizes, satanic,</span><br><span class="line">Nearest to th: nine, st, twentieth, nd, nineteenth, third, globally, worsened,</span><br><span class="line">Nearest to zero: five, two, six, three, eight, seven, nine, million,</span><br><span class="line">Nearest to other: various, older, mouthpieces, those, these, smaller, fewer, pikemen,</span><br><span class="line">Nearest to world: catechism, orchids, plural, roller, kowloon, domesticated, u, prisoner,</span><br><span class="line">Nearest to during: throughout, in, until, before, after, since, at, despite,</span><br><span class="line">Average loss at step 72000: 2.943993</span><br><span class="line">Average loss at step 74000: 2.870428</span><br><span class="line">Average loss at step 76000: 3.000972</span><br><span class="line">Average loss at step 78000: 3.000503</span><br><span class="line">Average loss at step 80000: 2.843173</span><br><span class="line">Nearest to first: last, next, earliest, same, second, best, original, greatest,</span><br><span class="line">Nearest to nine: eight, six, seven, zero, five, three, september, th,</span><br><span class="line">Nearest to all: many, any, every, several, various, some, none, both,</span><br><span class="line">Nearest to most: more, many, less, some, rossellini, highest, greatest, particularly,</span><br><span class="line">Nearest to or: and, but, though, herders, modifiers, than, wtoo, rss,</span><br><span class="line">Nearest to that: which, this, bounding, although, where, why, because, opacity,</span><br><span class="line">Nearest to use: cybernetic, practice, baptize, treatment, addition, trojans, favor, sense,</span><br><span class="line">Nearest to into: through, across, within, from, out, around, forward, kearney,</span><br><span class="line">Nearest to system: systems, spearheaded, foonly, severed, process, monitor, achievement, version,</span><br><span class="line">Nearest to were: are, was, is, various, be, had, pederastic, newly,</span><br><span class="line">Nearest to with: between, husbandry, dalai, without, letterboxed, mansfield, using, against,</span><br><span class="line">Nearest to th: twentieth, st, nd, nineteenth, third, nine, rd, globally,</span><br><span class="line">Nearest to zero: six, seven, eight, five, nine, four, million, three,</span><br><span class="line">Nearest to other: various, these, both, others, vespers, individual, different, older,</span><br><span class="line">Nearest to world: catechism, orchids, king, domesticated, ries, arnauld, country, kowloon,</span><br><span class="line">Nearest to during: throughout, before, after, since, until, in, through, despite,</span><br><span class="line">Average loss at step 82000: 2.942490</span><br><span class="line">Average loss at step 84000: 2.895405</span><br><span class="line">Average loss at step 86000: 2.918082</span><br><span class="line">Average loss at step 88000: 2.947470</span><br><span class="line">Average loss at step 90000: 2.828935</span><br><span class="line">Nearest to first: last, next, earliest, same, best, second, original, oldest,</span><br><span class="line">Nearest to nine: eight, seven, six, zero, five, th, four, late,</span><br><span class="line">Nearest to all: various, some, every, many, none, several, unattested, any,</span><br><span class="line">Nearest to most: especially, many, some, more, less, particularly, highest, best,</span><br><span class="line">Nearest to or: and, than, while, ewald, without, moraine, tala, aka,</span><br><span class="line">Nearest to that: which, where, bounding, what, this, although, who, actually,</span><br><span class="line">Nearest to use: clover, outspoken, amount, because, implementation, cybernetic, standard, share,</span><br><span class="line">Nearest to into: through, within, across, beyond, out, from, forward, throughout,</span><br><span class="line">Nearest to system: systems, brussel, spearheaded, sector, process, pls, violate, apostles,</span><br><span class="line">Nearest to were: are, was, is, newly, rabid, had, be, include,</span><br><span class="line">Nearest to with: between, without, hypoxic, letterboxed, fingerprinting, involving, when, featuring,</span><br><span class="line">Nearest to th: nd, twentieth, st, nine, next, fourth, nineteenth, third,</span><br><span class="line">Nearest to zero: five, eight, six, four, nine, three, seven, two,</span><br><span class="line">Nearest to other: others, fewer, various, older, different, these, monstrous, soaring,</span><br><span class="line">Nearest to world: catechism, orchids, nordic, domesticated, country, puritan, arnauld, plural,</span><br><span class="line">Nearest to during: throughout, after, in, before, since, at, until, over,</span><br><span class="line">Average loss at step 92000: 2.886946</span><br><span class="line">Average loss at step 94000: 2.881201</span><br><span class="line">Average loss at step 96000: 2.710057</span><br><span class="line">Average loss at step 98000: 2.458667</span><br><span class="line">Average loss at step 100000: 2.709969</span><br><span class="line">Nearest to first: last, next, second, earliest, best, third, greatest, same,</span><br><span class="line">Nearest to nine: eight, seven, five, six, four, zero, three, th,</span><br><span class="line">Nearest to all: every, many, various, several, some, any, always, both,</span><br><span class="line">Nearest to most: particularly, more, especially, some, less, many, highly, increasingly,</span><br><span class="line">Nearest to or: and, than, but, ewald, while, rss, canonised, whereas,</span><br><span class="line">Nearest to that: which, where, although, when, whom, opacity, bounding, monatomic,</span><br><span class="line">Nearest to use: version, usage, clover, practice, influx, treatment, consisted, amount,</span><br><span class="line">Nearest to into: through, across, down, within, beyond, out, towards, from,</span><br><span class="line">Nearest to system: systems, brussel, process, corporation, era, bachelor, concept, spearheaded,</span><br><span class="line">Nearest to were: are, was, include, is, exist, had, have, contain,</span><br><span class="line">Nearest to with: between, through, without, among, amongst, hypoxic, celtics, involving,</span><br><span class="line">Nearest to th: twentieth, nd, nineteenth, fourth, rd, st, tenth, seventh,</span><br><span class="line">Nearest to zero: five, eight, four, seven, six, three, two, nine,</span><br><span class="line">Nearest to other: fewer, others, both, older, these, various, smaller, monstrous,</span><br><span class="line">Nearest to world: catechism, orchids, u, domesticated, falklands, ephesus, cartographer, nordic,</span><br><span class="line">Nearest to during: throughout, despite, in, until, since, at, after, within,</span><br></pre></td></tr></table></figure>
+
+<p><img src="/nlp/word2vec/tsne.png"></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
+              <a href="/tags/NLP/" rel="tag"># NLP</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/machine_learning/Tree_Ensemble/" rel="prev" title="决策树模型的各种Ensemble">
+                  <i class="fa fa-angle-left"></i> 决策树模型的各种Ensemble
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/nlp/cnn_sc/" rel="next" title="CNN Sentence Classification (with Theano code)">
+                  CNN Sentence Classification (with Theano code) <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

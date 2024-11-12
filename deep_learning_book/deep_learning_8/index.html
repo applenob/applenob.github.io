@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="8. Optimization for Training Deep Models机器学习和纯优化问题的区别：机器学习关注某些性能度量P，定义于测试集上并且可能是不可解的，只能间接地优化P。因此通过降低代价函数J(θ)来提高P。 这一点与纯优化不同，纯优化最小化目标J本身。 批量（batch）梯度算法：使用整个训练集的优化算法被称为批量（batch）或确定性（deterministic）梯度算法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第八章：Optimization for Training Deep Models">
+<meta property="og:url" content="https://applenob.github.io/deep_learning_book/deep_learning_8/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="8. Optimization for Training Deep Models机器学习和纯优化问题的区别：机器学习关注某些性能度量P，定义于测试集上并且可能是不可解的，只能间接地优化P。因此通过降低代价函数J(θ)来提高P。 这一点与纯优化不同，纯优化最小化目标J本身。 批量（batch）梯度算法：使用整个训练集的优化算法被称为批量（batch）或确定性（deterministic）梯度算法。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2017-05-09T15:00:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.028Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="笔记">
+<meta property="article:tag" content="Deep Learning">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://applenob.github.io/deep_learning_book/deep_learning_8/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/deep_learning_book/deep_learning_8/","path":"deep_learning_book/deep_learning_8/","title":"第八章：Optimization for Training Deep Models"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>第八章：Optimization for Training Deep Models | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#8-Optimization-for-Training-Deep-Models"><span class="nav-number">1.</span> <span class="nav-text">8. Optimization for Training Deep Models</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning_book/deep_learning_8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="第八章：Optimization for Training Deep Models | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第八章：Optimization for Training Deep Models
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-05-09 08:00:00" itemprop="dateCreated datePublished" datetime="2017-05-09T08:00:00-07:00">2017-05-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E3%80%8ADeep-Learning%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">《Deep Learning》读书笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="8-Optimization-for-Training-Deep-Models"><a href="#8-Optimization-for-Training-Deep-Models" class="headerlink" title="8. Optimization for Training Deep Models"></a>8. Optimization for Training Deep Models</h1><p><strong>机器学习和纯优化问题的区别</strong>：机器学习关注某些性能度量P，定义于测试集上并且可能是不可解的，只能间接地优化P。因此通过降低代价函数J(θ)来提高P。</p>
+<p>这一点与纯优化不同，纯优化最小化目标J本身。</p>
+<p><strong>批量（batch）梯度算法</strong>：使用整个训练集的优化算法被称为批量（batch）或确定性（deterministic）梯度算法。</p>
+<p><strong>在线（online）算法</strong>：每次只使用单个样本的优化算法有时被称为随机（stochastic）或者在线（online）算法。</p>
+<p><strong>mini batch</strong>：介于以上两者之间，使用一个以上，而又不是全部的训练样本。影响mini batch size的因素：1.更大的批量会计算更精确的梯度估计，但是回报却是小于线性的。2.极小批量通常难以充分利用多核架构。</p>
+<p>这促使我们使用一些绝对最小批量，低于这个值的小批量处理不会减少计算时间。3.在某些硬件上使用特定大小的数组时，运行时间会更少。</p>
+<p>尤其是在使用GPU时，通常使用2的幂数作为批量大小可以获得更少的运行时间。</p>
+<p><strong>局部极小值（local minima）的问题</strong>：如果一个足够大的训练集可以唯一确定一组模型参数，那么该模型被称为可辨认的（identifiable）；而神经网络模型是不可辨认的（最直观的原因就是权重空间对称性，weight space symmetry），这意味着神经网络代价函数具有非常多的局部极小值。 对于足够大的神经网络而言，大部分局部极小值都具有很小的代价函数，我们能不能找到真正的全局最小点并不重要，而是需要在参数空间中找到一个代价很小（但不是最小）的点。</p>
+<p><strong>鞍点（Saddle）的问题</strong>：对于很多高维非凸函数而言，局部极小值事实上远少于另一类梯度为零的点：鞍点。在鞍点处，Hessian矩阵同时具有正负特征值。鞍点激增对训练算法的影响：对于只使用梯度信息的一阶优化算法而言，目前情况还不清楚。<br>鞍点附近的梯度通常会非常小。 另一方面，实验中梯度下降似乎可以在许多情况下逃离鞍点。对于牛顿法而言，鞍点显然是一个问题。</p>
+<p>梯度下降旨在朝”下坡”移动，而非明确寻求临界点。 而牛顿法的目标是寻求梯度为零的点。</p>
+<p>高维空间中鞍点的激增或许解释了在神经网络训练中为什么二阶方法无法成功取代梯度下降。 </p>
+<p><strong>悬崖（cliffs）和梯度爆炸（exploding gradients）</strong>：</p>
+<p>多层神经网络通常存在像悬崖一样的斜率较大区域，这是由于几个较大的权重相乘导致的，在RNN中比较常见。</p>
+<p>遇到斜率极大的悬崖结构时，梯度更新会很大程度地改变参数值，通常会完全跳过这类悬崖结构。</p>
+<p>启发式梯度截断会干涉来减小步长，从而使其不太可能走出梯度近似为最陡下降方向的悬崖区域。</p>
+<p><a href="https://raw.githubusercontent.com/applenob/reading_note/master/res/cliff.png">https://raw.githubusercontent.com/applenob/reading_note/master/res/cliff.png</a></p>
+<p><strong>各种优化算法</strong>：</p>
+<p><strong>随机梯度下降（Stochastic Gradient Descent）算法</strong>：计算mini-batch中m个样本对应的梯度，取其平均值来更新参数。关键的超参是学习率ϵ。</p>
+<p><a href="https://raw.githubusercontent.com/applenob/reading_note/master/res/8-1.png">https://raw.githubusercontent.com/applenob/reading_note/master/res/8-1.png</a></p>
+<p><strong>动量（Momentum）算法</strong>：动量方法旨在加速学习，特别是处理高曲率、小但一致的梯度，或是带噪声的梯度。</p>
+<p>动量算法使用变量v（velocity，速度）<strong>积累之前梯度指数级衰减的移动平均</strong>，并且继续沿该方向移动。动量&#x3D;mv，当m&#x3D;1时动量即v。如果动量算法总是观测到梯度g，那么它会在方向−g上不停加速，直到达到最终速度，其中步长大小为$\frac{ϵ‖g‖}{1−α}$。因此将动量的超参数视为$\frac{1}{1−α}$有助于理解。</p>
+<p>例如，α&#x3D;0.9对应着最大速度10倍于梯度下降算法。</p>
+<p><a href="https://raw.githubusercontent.com/applenob/reading_note/master/res/8-2.png">https://raw.githubusercontent.com/applenob/reading_note/master/res/8-2.png</a></p>
+<p><strong>Nesterov 动量算法</strong>：Nesterov 动量算法和普通的动量算法的区别在于梯度计算的位置。</p>
+<p><a href="https://raw.githubusercontent.com/applenob/reading_note/master/res/8-3.png">https://raw.githubusercontent.com/applenob/reading_note/master/res/8-3.png</a></p>
+<p><strong>参数初始化策略</strong>：现代的初始化策略是简单的、启发式的。也许完全确知的唯一特性是初始参数需要在不同单元间”破坏对称性”。更大的初始权重具有更强的破坏对称性的作用，有助于避免冗余的单元。有些启发式方法可用于选择权重的初始大小。</p>
+<p>一种初始化m个输入和n输出的全连接层的权重的启发式方法是从分布$U(−\frac{1}{\sqrt{m}},\frac{1}{\sqrt{m}})$中采样权重，另一种使用标准初始化,$W_{i,j}\sim<br>U(−\frac{6}{\sqrt{m+n}},\frac{6}{\sqrt{m+n}})$</p>
+<p><strong>自适应学习率的优化算法</strong>：</p>
+<p><strong>AdaGrad</strong>：反比于其所有梯度历史平方值总和的平方根来缩放每个参数。</p>
+<p>累积参数梯度越大学习率下降越快。AdaGrad在某些深度学习模型上效果不错，但不是全部。</p>
+<p><a href="https://raw.githubusercontent.com/applenob/reading_note/master/res/8-4.png">https://raw.githubusercontent.com/applenob/reading_note/master/res/8-4.png</a></p>
+<p><strong>RMSProp</strong>：修改AdaGrad以在非凸设定下效果更好，改变梯度积累为指数加权的移动平均。RMSProp使用指数衰减平均以丢弃遥远过去的历史，使其能够在找到凸碗状结构后快速收敛，<br>它就像一个初始化于该碗状结构的AdaGrad算法实例。</p>
+<p><a href="https://raw.githubusercontent.com/applenob/reading_note/master/res/8-5.png">https://raw.githubusercontent.com/applenob/reading_note/master/res/8-5.png</a></p>
+<p><a href="https://raw.githubusercontent.com/applenob/reading_note/master/res/8-6.png">https://raw.githubusercontent.com/applenob/reading_note/master/res/8-6.png</a></p>
+<p><strong>Adam</strong>：“Adam”这个名字派生自”adaptive moments”。它结合了RMSProp和动量算法。</p>
+<p><a href="https://raw.githubusercontent.com/applenob/reading_note/master/res/8-7.png">https://raw.githubusercontent.com/applenob/reading_note/master/res/8-7.png</a></p>
+<p><strong>二阶近似方法</strong>：</p>
+<p><strong>牛顿法（Newton’s Method）</strong>：牛顿法的主要制约在于计算量巨大，每一次更新参数的迭代都需要计算$H^{-1}$，假如有k个参数，那么复杂度就是$O(k^3)$。</p>
+<p><a href="https://raw.githubusercontent.com/applenob/reading_note/master/res/8-8.png">https://raw.githubusercontent.com/applenob/reading_note/master/res/8-8.png</a></p>
+<p><strong>共轭法（Conjugate Gradients）</strong>：共轭梯度是一种通过迭代下降的共轭方向以有效避免Hessian矩阵求逆计算的方法。在共轭梯度法中，我们寻求一个和先前线性搜索方向共轭的搜索方向。</p>
+<p>在训练迭代t时，下一步的搜索方向$d_t$的形式如下：$d_t&#x3D;∇<em>θJ(θ)+β_td</em>{t−1}$，其中，系数$βt$的大小控制我们应沿方向$d_{t−1}$加回多少到当前搜索方向上。所谓共轭，即两个方向$dt$和$d_{t−1}$，满足二次方程$d^⊤<em>tHd</em>{t−1}&#x3D;0$。</p>
+<p>对于二次曲面而言，共轭方向确保梯度沿着前一方向大小不变。</p>
+<p><a href="https://raw.githubusercontent.com/applenob/reading_note/master/res/8-9.png">https://raw.githubusercontent.com/applenob/reading_note/master/res/8-9.png</a></p>
+<p><strong>BFGS（Broyden-Fletcher-Goldfarb-Shanno）算法</strong>：BFGS等拟牛顿法所采用的方法是使用矩阵$M_t$近似逆，迭代地低秩更新精度以更好地近似$H^{−1}$。$ρ_t&#x3D;M_tg_t$，更新步骤：$θ_{t+1}&#x3D;θ_t+ϵ^*ρ_t$。</p>
+<p><strong>批标准化（BatchNormalization）</strong>：它并不是一个优化算法，而是一个自适应的重参数化的方法，试图解决训练非常深的模型的困难。批标准化提出了一种几乎可以重参数化所有深度网络的优雅方法。</p>
+<p>重参数化显著减少了多层之间协调更新的问题。</p>
+<p>批标准化可应用于网络的任何输入层或隐藏层。$H’&#x3D;\frac{H−μ}{σ}$，其中，$μ&#x3D;\frac{1}{m}\sum_iH_{i,:}$， $σ&#x3D;\sqrt{δ+\frac{1}{m}∑_i(H−μ)^2_i}$</p>
+<p><strong>坐标下降（CoordinateDescent）</strong>：如果我们相对于某个单一变量$x_i$最小化f(x)，然后相对于另一个变量$x_j$等等，反复循环所有的变量，我们会保证到达（局部）极小值。<br>这种做法被称为坐标下降，因为我们一次优化一个坐标。 当一个变量的值很大程度地影响另一个变量的最优值时，坐标下降不是一个很好的方法。</p>
+<p><strong>Polyak平均</strong>：Polyak平均会平均优化算法在参数空间访问轨迹中的几个点。当应用Polyak平均于非凸问题时，通常会使用指数衰减计算平均值：<br>$θ^{(t)}&#x3D;αθ^{(t−1)}+(1−α)θ^{(t)}$</p>
+<p><strong>监督预训练（Supervised Pretraning）</strong>：有时，如果模型太复杂难以优化，或是如果任务非常困难，直接训练模型来解决特定任务的挑战可能太大。</p>
+<p>因此可以训练一个较简单的模型来求解问题，然后使模型更复杂会更有效。 训练模型来求解一个简化的问题，然后转移到最后的问题，有时也会更有效些。</p>
+<p>这些在直接训练目标模型求解目标问题之前，训练简单模型求解简化问题的方法统称为预训练。</p>
+<p><strong>设计有助于优化的模型</strong>：改进优化的最好方法并不总是改进优化算法。<br>相反，深度模型中优化的许多改进来自于设计易于优化的模型。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"># 笔记</a>
+              <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/deep_learning_book/deep_learning_7/" rel="prev" title="第七章：Regularization for Deep Learning">
+                  <i class="fa fa-angle-left"></i> 第七章：Regularization for Deep Learning
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/deep_learning_book/deep_learning_9/" rel="next" title="第九章：Convolutional Networks">
+                  第九章：Convolutional Networks <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

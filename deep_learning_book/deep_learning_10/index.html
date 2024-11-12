@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="10. Sequence Modeling: Recurrent and Recursive Nets循环神经网络（Recurrent Neural Network，RNN） 是一类用于处理序列数据的神经网络。-RNN在不同的时间点上共享参数，使得模型能够扩展到不同长度的样本并进行泛化。 如果我们在每个时间点都有一个单独的参数，我们不但不能泛化到训练时没有见过序列长度，也不能在时间上共享不同序列长">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第十章：Sequence Modeling：Recurrent and Recursive Nets">
+<meta property="og:url" content="https://applenob.github.io/deep_learning_book/deep_learning_10/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="10. Sequence Modeling: Recurrent and Recursive Nets循环神经网络（Recurrent Neural Network，RNN） 是一类用于处理序列数据的神经网络。-RNN在不同的时间点上共享参数，使得模型能够扩展到不同长度的样本并进行泛化。 如果我们在每个时间点都有一个单独的参数，我们不但不能泛化到训练时没有见过序列长度，也不能在时间上共享不同序列长">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2017-05-09T17:00:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.028Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="笔记">
+<meta property="article:tag" content="Deep Learning">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://applenob.github.io/deep_learning_book/deep_learning_10/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/deep_learning_book/deep_learning_10/","path":"deep_learning_book/deep_learning_10/","title":"第十章：Sequence Modeling：Recurrent and Recursive Nets"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>第十章：Sequence Modeling：Recurrent and Recursive Nets | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#10-Sequence-Modeling-Recurrent-and-Recursive-Nets"><span class="nav-number">1.</span> <span class="nav-text">10. Sequence Modeling: Recurrent and Recursive Nets</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BE%AA%E7%8E%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%EF%BC%88Recurrent-Neural-Network%EF%BC%8CRNN%EF%BC%89"><span class="nav-number">1.1.</span> <span class="nav-text">循环神经网络（Recurrent Neural Network，RNN）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Teacher-Forcing"><span class="nav-number">1.1.1.</span> <span class="nav-text">Teacher Forcing</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A1%AE%E5%AE%9A%E5%BA%8F%E5%88%97%E7%9A%84%E9%95%BF%E5%BA%A6%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="nav-number">1.1.2.</span> <span class="nav-text">确定序列的长度的方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LSTM"><span class="nav-number">1.1.3.</span> <span class="nav-text">LSTM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LSTM-vs-RNN-and-GRU"><span class="nav-number">1.1.4.</span> <span class="nav-text">LSTM vs. RNN and GRU</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GRUs"><span class="nav-number">1.1.5.</span> <span class="nav-text">GRUs</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning_book/deep_learning_10/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="第十章：Sequence Modeling：Recurrent and Recursive Nets | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第十章：Sequence Modeling：Recurrent and Recursive Nets
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-05-09 10:00:00" itemprop="dateCreated datePublished" datetime="2017-05-09T10:00:00-07:00">2017-05-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E3%80%8ADeep-Learning%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">《Deep Learning》读书笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="10-Sequence-Modeling-Recurrent-and-Recursive-Nets"><a href="#10-Sequence-Modeling-Recurrent-and-Recursive-Nets" class="headerlink" title="10. Sequence Modeling: Recurrent and Recursive Nets"></a>10. Sequence Modeling: Recurrent and Recursive Nets</h1><h2 id="循环神经网络（Recurrent-Neural-Network，RNN）"><a href="#循环神经网络（Recurrent-Neural-Network，RNN）" class="headerlink" title="循环神经网络（Recurrent Neural Network，RNN）"></a>循环神经网络（Recurrent Neural Network，RNN）</h2><ul>
+<li>是一类用于处理<strong>序列数据</strong>的神经网络。<br>-RNN在不同的时间点上<strong>共享参数</strong>，使得模型能够扩展到<strong>不同长度</strong>的样本并进行泛化。</li>
+<li>如果我们在每个时间点都有一个单独的参数，我们不但不能泛化到训练时没有见过序列长度，也不能在时间上共享不同序列长度和不同位置的统计强度。</li>
+<li>$h^{(t)} &#x3D; f (h^{(t−1)}, x^{(t)} ; θ)$</li>
+</ul>
+<p><strong>展开过程的两个主要优点</strong>：</p>
+<ul>
+<li>无论序列的长度，学成的模型始终具有相同的输入大小。</li>
+<li>可以在每个时间节点使用相同的转移函数$f$。</li>
+</ul>
+<p><strong>重要的几种设计模式</strong>：</p>
+<ul>
+<li>1.每个时间步都有输出，并且隐藏单元之间有循环连接的循环网络；</li>
+<li>2.每个时间步都产生一个输出，只有当前时刻的输出到下个时刻的隐藏单元之间有循环连接的循环网络；</li>
+<li>3.隐藏单元之间存在循环连接，但读取整个序列后产生单个输出的循环网络。</li>
+</ul>
+<p><strong>典型的RNN</strong>：</p>
+<ul>
+<li><a href="https://raw.githubusercontent.com/applenob/reading_note/master/res/rnn.png">https://raw.githubusercontent.com/applenob/reading_note/master/res/rnn.png</a></li>
+<li>$a^{(t)}&#x3D;b+Wh^{(t−1)}+Ux^{(t)}$</li>
+<li>$h^{(t)}&#x3D;tanh(a^{(t)})$</li>
+<li>$o^{(t)}&#x3D;c+Vh^{(t)}$</li>
+<li>$y^{(t)}&#x3D;softmax(o^{(t)})$</li>
+<li>$\theta &#x3D; {W,U,V,b,c}$，其中，$b,c$是偏置参数向量。</li>
+<li>$L^{(t)}$是给定$x^{(1)}, x^{(2)}, …,<br>x^{(t)}$后$y^{(t)}$的<strong>负似然对数</strong>。</li>
+<li>$L({x^{(1)}, x^{(2)}, …, x^{(t)}},{y^{(1)}, y^{(2)}, …, y^{(t)}})\&#x3D;\sum_t L^{(t)}\&#x3D;-\sum_tlogp_{model}(y^{(t)}|x^{(1)}, x^{(2)}, …, x^{(t)})$</li>
+<li>应用于展开图的反向传播算法被称为<strong>通过时间反向传播（back-propagation through time, BPTT）</strong>。</li>
+</ul>
+<h3 id="Teacher-Forcing"><a href="#Teacher-Forcing" class="headerlink" title="Teacher Forcing"></a>Teacher Forcing</h3><ul>
+<li>每一步的输入包含上一步的输出意味着模型不能并行训练。 </li>
+<li>使用Teacher Forcing训练模型时，使用最大似然准则，而在时刻$t+1$接收真实值$y^{(t)}$作为输入: 条件最大似然准则是：$logp(y^{(1)},y^{(2)}∣x^{(1)},x^{(2)})&#x3D;logp(y^{(2)}∣y^{(1)},x^{(1)},x^{(2)})+logp(y^{(1)}∣x^{(1)},x^{(2)})$</li>
+<li><a href="https://raw.githubusercontent.com/applenob/reading_note/master/res/teacher-forcing.png">https://raw.githubusercontent.com/applenob/reading_note/master/res/teacher-forcing.png</a></li>
+</ul>
+<h3 id="确定序列的长度的方式"><a href="#确定序列的长度的方式" class="headerlink" title="确定序列的长度的方式"></a>确定序列的长度的方式</h3><ul>
+<li>1.对于文本类的数据，添加一个对应于序列末端的特殊符号<code>EOS</code>；</li>
+<li>2.引入一个额外的Bernoulli输出，表示在每个时间步决定继续生成或停止生成，这个方法最<strong>通用</strong>D；</li>
+<li>3.将一个额外的输出添加到模型并预测长度$\tau$本身：$P(x^{(1)},…,x^{(τ)})&#x3D;P(τ)P(x^{(1)},…,x^{(τ)}∣τ)$。<br><strong>双向RNN（Bidirectional RNNs）</strong>：</li>
+<li>在许多应用中，我们要输出的$y^{(t)}$的预测可能依赖于整个输入序列，于是有了双向RNN。</li>
+<li><a href="https://raw.githubusercontent.com/applenob/reading_note/master/res/bi-rnn.png">https://raw.githubusercontent.com/applenob/reading_note/master/res/bi-rnn.png</a></li>
+</ul>
+<p><strong>编码-解码架构（Encoder-Decoder）</strong>：<br>-在一些应用中，我们需要将输入序列映射到不一定等长的输出序列，于是有了Encoder-Decoder。</p>
+<ul>
+<li>（1）编码器处理输入序列，编码器输出上下文$C$（通常是最终隐藏状态的简单函数）。</li>
+<li>(2）解码器则以固定长度的向量为条件产生输出序列$Y&#x3D;(y^{(1)},\dots, y^{(n_y)})$。</li>
+<li><a href="https://raw.githubusercontent.com/applenob/reading_note/master/res/en-de.png">https://raw.githubusercontent.com/applenob/reading_note/master/res/en-de.png</a></li>
+</ul>
+<p><strong>递归神经网络（Recursive Neural Network）</strong>：</p>
+<ul>
+<li>它被构造为深的<strong>树状结构</strong>而不是RNN的链状结构，递归网络已成功地应用于输入是数据结构的神经网络，如自然语言处理和计算机视觉深度。 </li>
+<li>它的一大优势是对于具有相同长度$\tau$的序列，深度（通过非线性操作的组合数量来衡量）可以急剧地从$\tau$减小为$O(\log \tau)$，这可能有助于解决长期依赖。</li>
+<li><a href="https://raw.githubusercontent.com/applenob/reading_note/master/res/recursive-nn.png">https://raw.githubusercontent.com/applenob/reading_note/master/res/recursive-nn.png</a></li>
+</ul>
+<p><strong>长期依赖的挑战（Long-Term Dependencies）</strong>：问题描述：经过许多阶段传播后的梯度<strong>倾向于消失（大部分情况）</strong>或<strong>爆炸（很少，但对优化过程影响很大）</strong>。</p>
+<p><strong>解决方法</strong>：</p>
+<p><strong>1.回声状态网络（Echo State Networks）</strong>：</p>
+<ul>
+<li>从$h^{(t-1)}$到$h^{(t)}$的循环权重映射以及从$x^{(t)}$到$h^{(t)}$的输入权重映射是循环网络中最难学习的参数。 </li>
+<li>避免这种困难的方法是设定循环隐藏单元，使其能很好地捕捉过去输入历史，并且<strong>只学习输出权重</strong>。</li>
+</ul>
+<p><strong>2.多时间尺度的策略</strong>：</p>
+<ul>
+<li>设计工作在多个时间尺度的模型，使模型的某些部分在细粒度时间尺度上操作并能处理小细节，而其他部分在粗时间尺度上操作并能把遥远过去的信息更有效地传递过来。</li>
+<li>1.时间维度的跳跃连接（skip connection）：增加从遥远过去的变量到目前变量的直接连接是得到粗时间尺度的一种方法。</li>
+<li>2.渗漏单元（Leaky Units）：我们对某些$v$值应用更新$\mu^{(t)} \gets \alpha \mu^{(t-1)} + (1-\alpha)v^{(t)}$累积一个滑动平均值$\mu^{(t)}$，其中$\alpha$是一个从$ \mu^{(t-1)}$到$ \mu^{(t)}$线性自连接的例子。<br>当$\alpha$接近1时，滑动平均值能记住过去很长一段时间的信息，而当$\alpha$接近0，关于过去的信息被迅速丢弃。<br>线性自连接的隐藏单元可以模拟滑动平均的行为。 这种隐藏单元称为渗漏单元。3.删除连接：主动删除长度为一的连接并用更长的连接替换它们。</li>
+</ul>
+<p><strong>3.门控RNN</strong>：实际应用中<strong>最有效</strong>的序列模型，主要有LSTM和GRU。</p>
+<h3 id="LSTM"><a href="#LSTM" class="headerlink" title="LSTM"></a>LSTM</h3><ul>
+<li>long short-term memory</li>
+<li>关键思想：**自循环的权重视上下文而定，而不是固定的（普通的RNN是固定的W）。 **</li>
+<li>所谓的自循环的权重，<strong>由遗忘门控制。</strong></li>
+<li><a href="https://raw.githubusercontent.com/applenob/reading_note/master/res/lstm.png">https://raw.githubusercontent.com/applenob/reading_note/master/res/lstm.png</a></li>
+<li>遗忘门：$f^{(t)}_i&#x3D;σ(b^f_i+\sum_jU^f_{i,j}x^{(t)}_j+\sum_jW^f_{i,j}h^{(t−1)}_j)$</li>
+<li>输入门：$i^{(t)}_i&#x3D;σ(b_i+∑_jU_{i,j}x^{(t)}_j+∑_jW_{i,j}h^{(t−1)}_j)$</li>
+<li>外部输入门（备选状态）：$g^{(t)}_i&#x3D;σ(b^g_i+∑_jU^g_{i,j}x^{(t)}_j+∑_jW^g_{i,j}h^{(t−1)}_j)$</li>
+<li>内部状态：$s^{(t)}_i&#x3D;f^{(t)}_is^{(t−1)}_i+g^{(t)}_ii^{(t)}_i$</li>
+<li>输出门：$h^{(t)}_i&#x3D;tanh(s^{(t)}_i)q^{(t)}$，$q^{(t)}_i&#x3D;σ(b^o_i+∑_jU^o_{i,j}x^{(t)}_j+∑_jW^o_{i,j}h^{(t−1)}_j)$。</li>
+</ul>
+<h3 id="LSTM-vs-RNN-and-GRU"><a href="#LSTM-vs-RNN-and-GRU" class="headerlink" title="LSTM vs. RNN and GRU"></a>LSTM vs. RNN and GRU</h3><ul>
+<li>LSTM的自循环的权重视上下文而定，而不是固定的；而普通的RNN是固定的W。</li>
+<li>内部状态：<ul>
+<li>RNN：$h^{(t)}&#x3D;\sigma(b+Wh^{(t−1)}+Ux^{(t)})$</li>
+<li>LSTM：$s^{(t)}_i&#x3D;f^{(t)}_is^{(t−1)}_i+g^{(t)}_ii^{(t)}_i$，$g^{(t)}_i$又称为“备选状态”。</li>
+<li>GRU：$h^{(t)}_i&#x3D;u^{(t−1)}_ih^{(t−1)}_i+(1−u^{(t−1)}_i)\tilde h_t$</li>
+<li>传统的RNN使用<strong>“覆写”</strong>的方式计算状态：$S_t&#x3D;f(S_{t-1},x_t)$，根据求导的链式法则，这种形式直接导致梯度别表示成连积的形式，容易导致梯度消失或者梯度爆炸。</li>
+</ul>
+</li>
+<li>现代的RNN（包括但不限于LSTM单元），使用<strong>“累加”</strong>的方式计算状态：$S_t &#x3D; \sum_{\tau&#x3D;1}^t\Delta S_{\tau}$，这种累加形式导致导数也是累加的形式，因此避免了梯度的消失。</li>
+</ul>
+<h3 id="GRUs"><a href="#GRUs" class="headerlink" title="GRUs"></a>GRUs</h3><ul>
+<li>与LSTM的主要区别是：单个门控单元同时控制遗忘因子和更新状态单元的决定。</li>
+<li>备选状态：$\tilde h_t &#x3D;σ(b_i+∑_jU_{i,j}x^{(t)}_j+∑_jW_{i,j}r^{(t−1)}_jh^{(t−1)}_j)$</li>
+<li>$h^{(t)}_i&#x3D;u^{(t−1)}_ih^{(t−1)}_i+(1−u^{(t−1)}_i)\tilde h_t$</li>
+<li>更新门：$u^{(t)}_i&#x3D;σ(b^u_i+∑_jU^u_{i,j}x^{(t)}_j+∑_jW^u_{i,j}h^{(t)}_j)$</li>
+<li>复位门：$r^{(t)}_i&#x3D;σ(b^r_i+∑_jU^r_{i,j}x^{(t)}_j+∑_jW^r_{i,j}h^{(t)}_j)$</li>
+</ul>
+<p><strong>截断梯度（Clipping Gradients）</strong>：</p>
+<ul>
+<li>强非线性函数（如由许多时间步计算的循环网络）往往倾向于非常大或非常小幅度的梯度。<br>-目标函数（作为参数的函数）存在一个伴随”悬崖”的”地形”：宽且相当平坦区域被目标函数变化快的小区域隔开，形成了一种悬崖。 </li>
+<li>我们通常使用衰减速度足够慢的学习率，使连续的步骤具有大致相同的学习率。</li>
+</ul>
+<p><strong>截断梯度是一个简单的解决方案</strong>：在参数更新之前截断梯度$g$的范数$||g||$：$if;||g||&gt;v:;;<br>g←\frac{gv}{||g||}$，其中$v$是参数梯度的阈值，是一个标量。 </p>
+<ul>
+<li>可以解决梯度爆炸问题。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"># 笔记</a>
+              <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/deep_learning_book/deep_learning_9/" rel="prev" title="第九章：Convolutional Networks">
+                  <i class="fa fa-angle-left"></i> 第九章：Convolutional Networks
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/deep_learning_book/deep_learning_11/" rel="next" title="第十一章：Practical Methodology">
+                  第十一章：Practical Methodology <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

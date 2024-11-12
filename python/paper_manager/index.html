@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="1. 介绍和引入最近初学NLP相关的深度学习，下了很多论文，数量一多，发现论文管理是个问题。 首先论文数目一多，必须要按类别放到子文件夹下。但是某一篇论文，往往有多个主题。比如说某论文使用word2vec给短文本分类，那这篇论文既可以放在word2vec的目录下，也可以放在短文本的目录下，也可以放在分类的目录下。当你有天想去看了，往往又忘了是放在哪个子目录下了。再比如说，你下载了一些论文，下载的时">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用python编写一个本地论文管理器">
+<meta property="og:url" content="https://applenob.github.io/python/paper_manager/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="1. 介绍和引入最近初学NLP相关的深度学习，下了很多论文，数量一多，发现论文管理是个问题。 首先论文数目一多，必须要按类别放到子文件夹下。但是某一篇论文，往往有多个主题。比如说某论文使用word2vec给短文本分类，那这篇论文既可以放在word2vec的目录下，也可以放在短文本的目录下，也可以放在分类的目录下。当你有天想去看了，往往又忘了是放在哪个子目录下了。再比如说，你下载了一些论文，下载的时">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://applenob.github.io/python/paper_manager/info.png">
+<meta property="og:image" content="https://applenob.github.io/python/paper_manager/welcome.png">
+<meta property="og:image" content="https://applenob.github.io/python/paper_manager/all.png">
+<meta property="og:image" content="https://applenob.github.io/python/paper_manager/tags.png">
+<meta property="og:image" content="https://applenob.github.io/python/paper_manager/sbt.png">
+<meta property="og:image" content="https://applenob.github.io/python/paper_manager/sbn.png">
+<meta property="og:image" content="https://applenob.github.io/python/paper_manager/path.png">
+<meta property="og:image" content="https://applenob.github.io/python/paper_manager/edit.png">
+<meta property="og:image" content="https://applenob.github.io/python/paper_manager/read.png">
+<meta property="og:image" content="https://applenob.github.io/python/paper_manager/rec.png">
+<meta property="og:image" content="https://applenob.github.io/python/paper_manager/help.png">
+<meta property="og:image" content="https://applenob.github.io/python/paper_manager/quit.png">
+<meta property="article:published_time" content="2016-11-18T04:00:20.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.098Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://applenob.github.io/python/paper_manager/info.png">
+
+
+<link rel="canonical" href="https://applenob.github.io/python/paper_manager/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/python/paper_manager/","path":"python/paper_manager/","title":"用python编写一个本地论文管理器"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>用python编写一个本地论文管理器 | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E4%BB%8B%E7%BB%8D%E5%92%8C%E5%BC%95%E5%85%A5"><span class="nav-number">1.</span> <span class="nav-text">1. 介绍和引入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">2.实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%AE%89%E8%A3%85"><span class="nav-number">3.</span> <span class="nav-text">3.安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E4%BD%BF%E7%94%A8"><span class="nav-number">4.</span> <span class="nav-text">4.使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E6%BC%94%E7%A4%BA%EF%BC%9A"><span class="nav-number">5.</span> <span class="nav-text">5.演示：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#a-%E5%BD%95%E5%85%A5%E7%9B%AE%E5%BD%95"><span class="nav-number">5.1.</span> <span class="nav-text">a.录入目录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#b-%E8%BE%93%E5%85%A5%E6%96%B0paper%E7%9A%84%E6%95%B0%E6%8D%AE"><span class="nav-number">5.2.</span> <span class="nav-text">b.输入新paper的数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#c-%E6%98%BE%E7%A4%BA%E6%89%80%E6%9C%89%E8%AE%BA%E6%96%87%E4%BF%A1%E6%81%AF"><span class="nav-number">5.3.</span> <span class="nav-text">c.显示所有论文信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#d-%E6%98%BE%E7%A4%BA%E5%BD%95%E5%85%A5%E7%9A%84%E6%89%80%E6%9C%89tag"><span class="nav-number">5.4.</span> <span class="nav-text">d.显示录入的所有tag</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#e-%E6%8C%89%E7%85%A7tag%E6%90%9C%E7%B4%A2paper"><span class="nav-number">5.5.</span> <span class="nav-text">e.按照tag搜索paper</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#f-%E6%8C%89%E7%85%A7id%E5%8F%B7%E8%8E%B7%E5%8F%96%E8%AE%BA%E6%96%87"><span class="nav-number">5.6.</span> <span class="nav-text">f.按照id号获取论文</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#g-%E6%8C%89%E7%85%A7id%E5%8F%B7%E8%8E%B7%E5%8F%96%E8%AE%BA%E6%96%87%E8%B7%AF%E5%BE%84"><span class="nav-number">5.7.</span> <span class="nav-text">g.按照id号获取论文路径</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#h-%E4%BF%AE%E6%94%B9%E7%89%B9%E5%AE%9Apaper%E7%9A%84info"><span class="nav-number">5.8.</span> <span class="nav-text">h.修改特定paper的info</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#i-%E8%8E%B7%E5%8F%96%E6%8E%A8%E8%8D%90"><span class="nav-number">5.9.</span> <span class="nav-text">i.获取推荐</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#j-%E6%89%93%E5%BC%80%E8%AE%BA%E6%96%87"><span class="nav-number">5.10.</span> <span class="nav-text">j.打开论文</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#k-%E8%8E%B7%E5%8F%96%E5%B8%AE%E5%8A%A9"><span class="nav-number">5.11.</span> <span class="nav-text">k.获取帮助</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#l-%E9%80%80%E5%87%BA"><span class="nav-number">5.12.</span> <span class="nav-text">l.退出</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E6%9C%80%E5%90%8E"><span class="nav-number">6.</span> <span class="nav-text">6.最后</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/python/paper_manager/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="用python编写一个本地论文管理器 | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          用python编写一个本地论文管理器
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2016-11-17 20:00:20" itemprop="dateCreated datePublished" datetime="2016-11-17T20:00:20-08:00">2016-11-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/CS%E5%B0%8F%E9%A1%B9%E7%9B%AE/" itemprop="url" rel="index"><span itemprop="name">CS小项目</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="1-介绍和引入"><a href="#1-介绍和引入" class="headerlink" title="1. 介绍和引入"></a>1. 介绍和引入</h2><p>最近初学NLP相关的深度学习，下了很多论文，数量一多，发现论文管理是个问题。</p>
+<p>首先论文数目一多，必须要按类别放到子文件夹下。但是某一篇论文，往往有多个主题。比如说某论文使用word2vec给短文本分类，那这篇论文既可以放在word2vec的目录下，也可以放在短文本的目录下，也可以放在分类的目录下。当你有天想去看了，往往又忘了是放在哪个子目录下了。再比如说，你下载了一些论文，下载的时候你知道这些论文的重要性（引用次数或者对项目的重要性）和紧急性（比如你三天之内都要看完）。但是当你把它放在某个子目录以后，当你有时间去看的时候，你忘了你当时最想看的那篇论文是什么了。</p>
+<p>为此，我决定开发一个小工具来帮助我管理我的paper。我的思路是这样的：给每篇论文打上tag，标上重要程度和紧急程度。这样当我没有特定目的的时候，我就可以根据重要程度和紧急程度看小工具推荐的paper；当我想看某方面的paper时，我只需要查询下tag就可以找到相关主题的paper。</p>
+<p>OK，有了思路，就可以着手实现了。</p>
+<h2 id="2-实现"><a href="#2-实现" class="headerlink" title="2.实现"></a>2.实现</h2><p>实现这里不想讲太多，主要是设计程序的思路，源代码在文末给出，都有注释。</p>
+<p>首先是图形化界面和命令行的选择，最终选择了命令行，开发速度更快，使用起来更直接。命令行的实现使用python自带的cmd模块实现。为了美化命令行的输出，参考使用了<a href="http://blog.csdn.net/qianghaohao/article/details/52117082">这里</a>的终端输出彩色化和第三方的<a href="https://pypi.python.org/pypi/terminaltables">terminaltables</a>。</p>
+<p>数据存储选择sqlite，因为有数据的查询&#x2F;插入&#x2F;删除&#x2F;更新操作，用数据库比文件要方便很多；而且sqlite是python自己支持的，不用再安装其他软件，属于轻量级的文件数据库，最适合这个任务。</p>
+<h2 id="3-安装"><a href="#3-安装" class="headerlink" title="3.安装"></a>3.安装</h2><p>下载<a href="https://github.com/applenob/paper_manager">github</a>上的源码以后，使用python2.7，只需要：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install terminaltables</span><br></pre></td></tr></table></figure>
+
+<p>然后就可以输入：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python Manager.py</span><br></pre></td></tr></table></figure>
+<p>启动程序。</p>
+<h2 id="4-使用"><a href="#4-使用" class="headerlink" title="4.使用"></a>4.使用</h2><p>基本的命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">^---^ ^---^ ^---^ ^---^ ^---^</span><br><span class="line">rec    recommend the papers according to urgency and importance</span><br><span class="line">all    show all the papers info</span><br><span class="line">tags   show all tags</span><br><span class="line">sbt    search by tags, like (sbt tag1 tg2)</span><br><span class="line">sbn    search by id nums, like (sbn 1 2)</span><br><span class="line">edit    edit one paper info by paper id, like (edit 1)</span><br><span class="line">path    find path by paper id, like (path 1 2)</span><br><span class="line">open    open paper to read by id, like (open 1)</span><br><span class="line">help    help info</span><br><span class="line">quit    exit the manager</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-演示："><a href="#5-演示：" class="headerlink" title="5.演示："></a>5.演示：</h2><h3 id="a-录入目录"><a href="#a-录入目录" class="headerlink" title="a.录入目录"></a>a.录入目录</h3><p>启动程序后，首先按照提示，输入你的paper的根目录。如果输错了，可以把<strong>user_set.pkl</strong>删掉，重新启动程序即可。我这里程序已经保存路径，所以跳过。</p>
+<h3 id="b-输入新paper的数据"><a href="#b-输入新paper的数据" class="headerlink" title="b.输入新paper的数据"></a>b.输入新paper的数据</h3><p>每次启动程序后，程序都会去扫描paper的目录（以及子目录），有扫描到新paper就会提示录入新paper的数据。</p>
+<p><img src="/python/paper_manager/info.png" alt="录入每篇paper的info.png"><br>按照提示录入即可，分别是重要性（importance），紧急性（urgency），都是1-5的整数，还有所有tag（用空格隔开），以及这篇论文是不是读过了。<br>所有扫描到的新论文录入信息以后，就会出现欢迎界面：</p>
+<p><img src="/python/paper_manager/welcome.png" alt="欢迎界面.png"></p>
+<h3 id="c-显示所有论文信息"><a href="#c-显示所有论文信息" class="headerlink" title="c.显示所有论文信息"></a>c.显示所有论文信息</h3><p>输入：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">all</span><br></pre></td></tr></table></figure>
+
+<p><img src="/python/paper_manager/all.png" alt="all"></p>
+<h3 id="d-显示录入的所有tag"><a href="#d-显示录入的所有tag" class="headerlink" title="d.显示录入的所有tag"></a>d.显示录入的所有tag</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tags</span><br></pre></td></tr></table></figure>
+
+<p><img src="/python/paper_manager/tags.png" alt="tags"></p>
+<h3 id="e-按照tag搜索paper"><a href="#e-按照tag搜索paper" class="headerlink" title="e.按照tag搜索paper"></a>e.按照tag搜索paper</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sbt tag1 tag2</span><br></pre></td></tr></table></figure>
+<p>sbt(search by tag)<br><img src="/python/paper_manager/sbt.png" alt="sbt"></p>
+<h3 id="f-按照id号获取论文"><a href="#f-按照id号获取论文" class="headerlink" title="f.按照id号获取论文"></a>f.按照id号获取论文</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sbn num1 num2</span><br></pre></td></tr></table></figure>
+<p><img src="/python/paper_manager/sbn.png" alt="sbn"></p>
+<h3 id="g-按照id号获取论文路径"><a href="#g-按照id号获取论文路径" class="headerlink" title="g.按照id号获取论文路径"></a>g.按照id号获取论文路径</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">path num1 num2</span><br></pre></td></tr></table></figure>
+<p><img src="/python/paper_manager/path.png" alt="path"></p>
+<h3 id="h-修改特定paper的info"><a href="#h-修改特定paper的info" class="headerlink" title="h.修改特定paper的info"></a>h.修改特定paper的info</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">edit num</span><br></pre></td></tr></table></figure>
+
+<p><img src="/python/paper_manager/edit.png" alt="edit"><br>如果看完了某篇论文，想改read从n为y，也可以直接使用edit命令。不修改的字段直接回车，数据不会丢失。<br>如：</p>
+<p><img src="/python/paper_manager/read.png" alt="只修改read"></p>
+<h3 id="i-获取推荐"><a href="#i-获取推荐" class="headerlink" title="i.获取推荐"></a>i.获取推荐</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rec</span><br></pre></td></tr></table></figure>
+
+
+<p><img src="/python/paper_manager/rec.png" alt="rec"></p>
+<p>推荐规则是按照紧急程度降序，相同紧急程度按照重要程度降序，而且是read为n，就是没有标记读过的论文。</p>
+<h3 id="j-打开论文"><a href="#j-打开论文" class="headerlink" title="j.打开论文"></a>j.打开论文</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">open num</span><br></pre></td></tr></table></figure>
+<p>打开指定id的论文（使用系统默认的阅读器）。</p>
+<h3 id="k-获取帮助"><a href="#k-获取帮助" class="headerlink" title="k.获取帮助"></a>k.获取帮助</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">help</span><br></pre></td></tr></table></figure>
+
+<p><img src="/python/paper_manager/help.png" alt="help"></p>
+<h3 id="l-退出"><a href="#l-退出" class="headerlink" title="l.退出"></a>l.退出</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">quit</span><br></pre></td></tr></table></figure>
+
+<p><img src="/python/paper_manager/quit.png" alt="quit"></p>
+<h2 id="6-最后"><a href="#6-最后" class="headerlink" title="6.最后"></a>6.最后</h2><p><a href="https://github.com/applenob/paper_manager">github源代码地址</a>,喜欢留个star ：&gt;</p>
+<p>这个工具只是用来方便自己的日常使用，一共只开发了两天的时间，有什么改进意见尽管提，但是不保证回去改哦～我要滚回去看paper了。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/nlp/naive_bayes/" rel="prev" title="基于朴素贝叶斯的自然语言分类器">
+                  <i class="fa fa-angle-left"></i> 基于朴素贝叶斯的自然语言分类器
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/deep_learning/nn_bp/" rel="next" title="神经网络基础（BP算法推导和基本的神经网络的实现）">
+                  神经网络基础（BP算法推导和基本的神经网络的实现） <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

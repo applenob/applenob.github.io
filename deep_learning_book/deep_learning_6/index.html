@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="6. Deep Feedforward Networks深度前馈网络（Deep Feedforward Networks）：也被称为前馈神经网络（feedforward neural networks），或者多层感知机（multi-layer perceptrons， MLPs）是典型的深度学习模型。前馈网络的目标是去近似一个函数$f^*$。模型之所以称为前馈，是因为信息只向前流动，没有反馈的连接">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第六章：Deep Feedforward Networks">
+<meta property="og:url" content="https://applenob.github.io/deep_learning_book/deep_learning_6/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="6. Deep Feedforward Networks深度前馈网络（Deep Feedforward Networks）：也被称为前馈神经网络（feedforward neural networks），或者多层感知机（multi-layer perceptrons， MLPs）是典型的深度学习模型。前馈网络的目标是去近似一个函数$f^*$。模型之所以称为前馈，是因为信息只向前流动，没有反馈的连接">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2017-05-09T13:00:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.028Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="笔记">
+<meta property="article:tag" content="Deep Learning">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://applenob.github.io/deep_learning_book/deep_learning_6/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/deep_learning_book/deep_learning_6/","path":"deep_learning_book/deep_learning_6/","title":"第六章：Deep Feedforward Networks"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>第六章：Deep Feedforward Networks | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#6-Deep-Feedforward-Networks"><span class="nav-number">1.</span> <span class="nav-text">6. Deep Feedforward Networks</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning_book/deep_learning_6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="第六章：Deep Feedforward Networks | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第六章：Deep Feedforward Networks
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-05-09 06:00:00" itemprop="dateCreated datePublished" datetime="2017-05-09T06:00:00-07:00">2017-05-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E3%80%8ADeep-Learning%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">《Deep Learning》读书笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="6-Deep-Feedforward-Networks"><a href="#6-Deep-Feedforward-Networks" class="headerlink" title="6. Deep Feedforward Networks"></a>6. Deep Feedforward Networks</h1><p><strong>深度前馈网络（Deep Feedforward Networks）</strong>：也被称为前馈神经网络（feedforward neural networks），或者多层感知机（multi-layer perceptrons， MLPs）是典型的深度学习模型。前馈网络的目标是去近似一个函数$f^*$。模型之所以称为前馈，是因为信息只向前流动，没有反馈的连接。</p>
+<p><strong>基于梯度的学习（Gradient Based Learning）</strong>：神经网络模型和线性模型最大的区别在于神经网络的非线性使得损失函数<strong>不再是凸函数</strong>。这意味着神经网络的训练通常使用迭代的、基于梯度的优化，仅仅使得代价函数达到一个非常小的值；而不是像用于训练线性回归模型的线性方程求解器，或者用于训练逻辑回归或SVM的<strong>凸优化算法</strong>那样保证全局收敛。</p>
+<p>凸优化从任何一种初始参数出发都会收敛（理论上如此——在实践中也很鲁棒但可能会遇到数值问题）。</p>
+<p>用于非凸损失函数的随机梯度下降没有这种收敛性保证，并且对参数的初始值很敏感。 对于前馈神经网络，将所有的权重值初始化为小随机数是很重要的。</p>
+<p>偏置可以初始化为零或者小的正值。 </p>
+<p><strong>输出单元</strong></p>
+<p><strong>1.用于高斯输出分布的线性单元（Linear Output Units）</strong>：$\hat y &#x3D; W^Th+b$，通常用来预测条件高斯分布：$p(y|x)&#x3D;N(y;\hat y, I)$</p>
+<p><strong>2.用于Bernoulli输出分布的sigmoid单元（Sigmoid Output Units）</strong>：二分类任务，可以通过这个输出单元解决。$\hat y &#x3D; σ(w^Th+b)$，其中，σ是sigmoid函数。</p>
+<p><strong>3.用于 Multinoulli输出分布的softmax单元（Softmax Output Units）</strong>：$z&#x3D;W^th+b$，而$softmax(z)_i&#x3D;\frac{exp(z_i)}{\sum_jexp(z_j)}$，如果说argmax函数返回的是一个onehot的向量，那么softmax可以理解成soft版的argmax函数。</p>
+<p><strong>隐藏单元：</strong></p>
+<p><strong>1.修正线性单元（Rectified Linear Units，ReLU）</strong>：使用激活函数$g(z)&#x3D;max{0,z}$，有$h&#x3D;g(W^Tx+b)$。通常b的初始值选一个小正值，如0.1。这样relu起初很可能是被激活的。relu的一个缺点是它不能在激活值是0的时候，进行基于梯度的学习。因此又产生了各种变体。</p>
+<p><strong>1.1.maxout单元：整流线性单元的一种扩展</strong>：$g(z)_i&#x3D;\underset<br>{j∈\mathbb{G}(i)}{max}z_j$，其中，$\mathbb{G}(i)$是第i组的输入索引集${(i−1)k+1,…,ik}$。</p>
+<p><strong>2.logistic sigmoid与双曲正切函数（Hyperbolic Tangent）单元</strong>：使用logistic sigmoid：$g(z)&#x3D;σ(z)$；使用双曲正弦函数：$g(z)&#x3D;tanh(z)$，其中, $tanh(z)&#x3D;2σ(2z)-1$。</p>
+<p>但是，在这两个函数的两端都很容易饱和，所以不鼓励用在隐藏单元中，一定要用可以优先选择双曲正弦函数。</p>
+<p><strong>通用近似性质（Universal Approximation Properties）</strong>：一个前馈神经网络如果具有线性输出层和至少一层具有激活函数（例如logistic sigmoid激活函数）的隐藏层，只要给予网络足够数量的隐藏单元，它可以以任意的精度来近似任何从一个有限维空间到另一个有限维空间的Borel可测函数。<br>虽然具有单层的前馈网络足以表示任何函数，但是网络层可能大得不可实现，并且可能无法正确地学习和泛化。<br>在很多情况下，使用更深的模型能够减少表示期望函数所需的单元的数量，并且可以减少泛化误差。</p>
+<p><strong>MLP的深度（Depth）</strong>：具有d个输入、深度为l、每个隐藏层具有n个单元的深度整流网络可以描述的线性区域的数量是:</p>
+<p>$$O(\begin{pmatrix}<br>n\<br>d<br>\end{pmatrix}^{d(l−1)}n^d)$$</p>
+<p>意味着，这是深度l的指数级。</p>
+<p><strong>后向传播算法（Back-Propagation）</strong>：后向传播算法将偏差（cost）在网络中从后往前传播，用来计算关于cost的梯度。后向传播算法本身不是学习算法，而是学习算法，像SGD，使用后向传播算法来计算梯度。对于bp的生动理解，可以参考<a href="https://zhihu.com/question/27239198/answer/89853077">知乎的这个回答</a>，“同样是利用链式法则，BP算法则机智地避开了这种冗余，它对于每一个路径只访问一次就能求顶点对所有下层节点的偏导值”；“BP算法就是主动还款。e把所欠之钱还给c，d。c，d收到钱，乐呵地把钱转发给了a，b，皆大欢喜”。<br><a href="https://raw.githubusercontent.com/applenob/reading_note/master/res/fp.png">https://raw.githubusercontent.com/applenob/reading_note/master/res/fp.png</a><br><a href="https://raw.githubusercontent.com/applenob/reading_note/master/res/bp.png">https://raw.githubusercontent.com/applenob/reading_note/master/res/bp.png</a></p>
+<p><strong>计算图（Computational Graphs）</strong>：节点代表变量（variable）；引入操作（operation）的概念，操作是一个或者多个变量的函数，如果一个变量y是由一个对于变量x的操作得来的，那么就可以画一条有向边，从x指向y。</p>
+<p><strong>微积分中的链式法则（Chain Rule）</strong>：假设y&#x3D;g(x)，z&#x3D;f(g(x))&#x3D;f(y)，那么有$\frac{dz}{dx}&#x3D;\frac{dz}{dy}\frac{dy}{dx}$；进一步，如果$x∈R^m，y∈R^n，g：R^m<br>\rightarrow R^n，f：R^n \rightarrow R$，有$\frac{\partial z}{\partial x_i}&#x3D;\sum_j \frac{\partial z}{\partial y_j}\frac{\partial y_j}{\partial<br>x_i}$，可以写成向量形式：$\triangledown _xz(\frac{\partial y}{\partial x})^T\triangledown_yz$，其中，$\frac{\partial y}{\partial x}$是n×m的g的Jacobian矩阵。</p>
+<p><strong>不同框架的bp实现</strong>：</p>
+<p>1.”<strong>symbol-to-number</strong>“：以计算图和数值作为图的输入，返回一系列<strong>微分的数值</strong>，作为输入的梯度。比如<strong>Torch</strong>，<strong>Caffe</strong>。</p>
+<p>2.”<strong>symbol-to-symbol</strong>“：以计算图作为输入，开辟额外的图，来保存<strong>微分计算的符号表示</strong>。这种方法可以在学习算法中多次使用，并且可以用来计算更高阶的微分。比如<strong>Tensorflow</strong>，<strong>Theano</strong>。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"># 笔记</a>
+              <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/deep_learning_book/deep_learning_5/" rel="prev" title="第五章：Machine Learning Basics">
+                  <i class="fa fa-angle-left"></i> 第五章：Machine Learning Basics
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/deep_learning_book/deep_learning_7/" rel="next" title="第七章：Regularization for Deep Learning">
+                  第七章：Regularization for Deep Learning <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="小爱开放平台技能开发平台：https:&#x2F;&#x2F;xiaoai.mi.com&#x2F;skill&#x2F;create&#x2F;index 音箱 Hello World 自定义技能: https:&#x2F;&#x2F;xiaoai.mi.com&#x2F;documents&#x2F;Home?type&#x3D;&#x2F;api&#x2F;doc&#x2F;render_markdown&#x2F;SkillAccess&#x2F;SkillDocument&#x2F;SkillExample&#x2F;SoundboxHelloWorld">
+<meta property="og:type" content="article">
+<meta property="og:title" content="小爱同学学习总结">
+<meta property="og:url" content="https://applenob.github.io/dialog_sys/xiaoai/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="小爱开放平台技能开发平台：https:&#x2F;&#x2F;xiaoai.mi.com&#x2F;skill&#x2F;create&#x2F;index 音箱 Hello World 自定义技能: https:&#x2F;&#x2F;xiaoai.mi.com&#x2F;documents&#x2F;Home?type&#x3D;&#x2F;api&#x2F;doc&#x2F;render_markdown&#x2F;SkillAccess&#x2F;SkillDocument&#x2F;SkillExample&#x2F;SoundboxHelloWorld">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://applenob.github.io/dialog_sys/xiaoai/xiaoai_intent.png">
+<meta property="og:image" content="https://applenob.github.io/dialog_sys/xiaoai/xiaoai_intent_corpus.jpg">
+<meta property="og:image" content="https://applenob.github.io/dialog_sys/xiaoai/xiaoai_slots.jpg">
+<meta property="og:image" content="https://applenob.github.io/dialog_sys/xiaoai/xiaoai_dict.png">
+<meta property="og:image" content="https://applenob.github.io/dialog_sys/xiaoai/xiaoai_dict_2.png">
+<meta property="og:image" content="https://applenob.github.io/dialog_sys/xiaoai/xiaoai_ask.jpg">
+<meta property="article:published_time" content="2019-03-06T19:50:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.058Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="Dialogue System">
+<meta property="article:tag" content="NLP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://applenob.github.io/dialog_sys/xiaoai/xiaoai_intent.png">
+
+
+<link rel="canonical" href="https://applenob.github.io/dialog_sys/xiaoai/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/dialog_sys/xiaoai/","path":"dialog_sys/xiaoai/","title":"小爱同学学习总结"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>小爱同学学习总结 | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E8%BD%AE%E5%AF%B9%E8%AF%9D"><span class="nav-number">1.</span> <span class="nav-text">多轮对话</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%AD%E5%AF%B9%E8%AF%9D%E8%AF%AD%E6%96%99"><span class="nav-number">1.1.</span> <span class="nav-text">续对话语料</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E7%BD%AE%E6%84%8F%E5%9B%BE"><span class="nav-number">1.2.</span> <span class="nav-text">前置意图</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B"><span class="nav-number">2.</span> <span class="nav-text">案例</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/dialog_sys/xiaoai/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="小爱同学学习总结 | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          小爱同学学习总结
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2019-03-06 11:50:00" itemprop="dateCreated datePublished" datetime="2019-03-06T11:50:00-08:00">2019-03-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AF%B9%E8%AF%9D%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index"><span itemprop="name">对话系统</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>小爱开放平台技能开发平台：<a href="https://xiaoai.mi.com/skill/create/index">https://xiaoai.mi.com/skill/create/index</a></p>
+<p>音箱 Hello World 自定义技能: <a href="https://xiaoai.mi.com/documents/Home?type=/api/doc/render_markdown/SkillAccess/SkillDocument/SkillExample/SoundboxHelloWorld">https://xiaoai.mi.com/documents/Home?type=/api/doc/render_markdown/SkillAccess/SkillDocument/SkillExample/SoundboxHelloWorld</a></p>
+<h2 id="多轮对话"><a href="#多轮对话" class="headerlink" title="多轮对话"></a>多轮对话</h2><p>平台内置的模型工具中提供了两种实现上下文对话的功能。一是连续对话语料，能够实现在当前意图的多轮对话中进行槽位信息的传递，实现多轮对话。另外一个是前置意图，能够实现跨意图中的槽位信息传递。  <a href="https://xiaoai.mi.com/documents/Home?type=/api/doc/render_markdown/SkillAccess/BackendDocument/ImportantConcepts">https://xiaoai.mi.com/documents/Home?type=/api/doc/render_markdown/SkillAccess/BackendDocument/ImportantConcepts</a></p>
+<h3 id="续对话语料"><a href="#续对话语料" class="headerlink" title="续对话语料"></a>续对话语料</h3><p>连续对话语料是指在一段连续的上下文对话中，仍然会被识别成为当前意图的语料，同时会将一般对话语料中的槽位信息传递到当前语料中，这是实现多轮对话的一个设置项，开发者可以根据自己的需要选择是否要配置连续对话语料。在连续对话语料中，也可以使用槽位进行输入。</p>
+<p>例如对于查询天气这个意图，用户开始会说“北京今天天气怎么样”，这句话命中了用户提问语料中配置的”<code>&#123;ChinaCity&#125;&#123;Date&#125;</code>天气怎么样”这个句式，会被识别成为查询天气意图，技能会给出反馈，告诉用户北京今天的天气如何。接下来用户可能会说“那明天呢？”，这句话从上下文来看，仍然是一个查询天气的意图，并且实际是要查询“北京”“明天”的天气，但是用户的语料并不在用户提问语料中，也不包含“北京”这个槽位。如果要让模型理解这种多轮对话，可以在连续对话语料中配置用户可能会进行的上下文对话，上面这个例子，只需要在连续对话语料中配置一个“那<code>&#123;Date&#125;</code>呢”的语料即可，这样当用户说“那明天呢”时，会被继续识别为查询天气的意图，并且将上一句话中的<code>&#123;ChinaCity&#125;</code>参数传过来，模型就知道用户想要查询的是北京明天的天气。</p>
+<h3 id="前置意图"><a href="#前置意图" class="headerlink" title="前置意图"></a>前置意图</h3><p>前置意图跟连续对话语料类似，也是理解用户多轮对话的一个功能，但连续对话语料实现的是在同一个意图内槽位的传递，而前置意图解决的是在不同意图之间传递槽位的问题。有些技能，能处理用户的多个意图，例如一个生活类技能，可能既能查天气，又能查交通,这些意图虽然不一样，但是意图之间有些槽位是一样的，例如查天气需要<code>&#123;ChinaCity&#125;</code>和<code>&#123;Date&#125;</code>两个槽位，查交通同样需要<code>&#123;ChinaCity&#125;</code>和<code>&#123;Date&#125;</code>这两个参数。</p>
+<p>用户在实际使用技能过程中,可能会先问天气“北京今天交通怎么样”，在技能给出反馈以后，紧接着问“那天气呢”,在这样的一段上下文中，我们可以看出用户实际是想查“北京”的天气。为了让查天气和查交通这两个意图关联起来,我们可以设置查天气的前置意图为查交通。同时在<code>&#123;ChinaCity&#125;</code>和<code>&#123;Date&#125;</code>的前置意图传递槽位设置中,分别选择前置意图（查交通）中的<code>&#123;ChinaCity&#125;</code>和<code>&#123;Date&#125;</code>。</p>
+<h2 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h2><p>同样的，这里提供一个简单的电影推荐的使用案例。</p>
+<p>设置意图：</p>
+<p><img src="/dialog_sys/xiaoai/xiaoai_intent.png"></p>
+<p>意图的判别：</p>
+<p><img src="/dialog_sys/xiaoai/xiaoai_intent_corpus.jpg"></p>
+<p>设置槽位：</p>
+<p><img src="/dialog_sys/xiaoai/xiaoai_slots.jpg"></p>
+<p>槽位对应的用户自定义词典：</p>
+<p><img src="/dialog_sys/xiaoai/xiaoai_dict.png"></p>
+<p><img src="/dialog_sys/xiaoai/xiaoai_dict_2.png"></p>
+<p>槽位追问：</p>
+<p><img src="/dialog_sys/xiaoai/xiaoai_ask.jpg"></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Dialogue-System/" rel="tag"># Dialogue System</a>
+              <a href="/tags/NLP/" rel="tag"># NLP</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/dialog_sys/baidu-unit/" rel="prev" title="百度UNIT学习总结">
+                  <i class="fa fa-angle-left"></i> 百度UNIT学习总结
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/cpp/cpp_primer_practice/" rel="next" title="《C++ Primer中文版第5版》学习笔记">
+                  《C++ Primer中文版第5版》学习笔记 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

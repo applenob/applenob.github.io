@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="数组 Array   分类 leetcode 提示    哈希表 1. 两数之和    双指针 15. 三数之和 先排序    16. 最接近的三数之和 先排序    18. 四数之和     27. 移除元素 类似partition的交换    26. 删除排序数组中的重复项 不用交换，直接将需要的拷贝    283. 移动零 类似partition的交换   搜索 74. 搜索二维矩阵 从右上">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Leetcode算法题攻略之Python">
+<meta property="og:url" content="https://applenob.github.io/algrithom/leetcode_python/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="数组 Array   分类 leetcode 提示    哈希表 1. 两数之和    双指针 15. 三数之和 先排序    16. 最接近的三数之和 先排序    18. 四数之和     27. 移除元素 类似partition的交换    26. 删除排序数组中的重复项 不用交换，直接将需要的拷贝    283. 移动零 类似partition的交换   搜索 74. 搜索二维矩阵 从右上">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://applenob.github.io/algrithom/leetcode_python/2020-04-11-22-13-14.png">
+<meta property="article:published_time" content="2020-01-10T18:22:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.028Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://applenob.github.io/algrithom/leetcode_python/2020-04-11-22-13-14.png">
+
+
+<link rel="canonical" href="https://applenob.github.io/algrithom/leetcode_python/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/algrithom/leetcode_python/","path":"algrithom/leetcode_python/","title":"Leetcode算法题攻略之Python"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Leetcode算法题攻略之Python | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E7%BB%84-Array"><span class="nav-number">1.</span> <span class="nav-text">数组 Array</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2-String"><span class="nav-number">2.</span> <span class="nav-text">字符串 String</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B8%E5%9E%8B%E9%A2%98"><span class="nav-number">2.1.</span> <span class="nav-text">典型题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%8C%B9%E9%85%8D-String-Matching"><span class="nav-number">2.2.</span> <span class="nav-text">字符串匹配 String Matching</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B8%E5%9E%8B%E9%A2%98-1"><span class="nav-number">2.2.1.</span> <span class="nav-text">典型题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9E%E6%96%87-Palindrome"><span class="nav-number">2.3.</span> <span class="nav-text">回文 Palindrome</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E6%8A%80%E5%B7%A7%EF%BC%9A"><span class="nav-number">2.3.1.</span> <span class="nav-text">常用技巧：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B8%E5%9E%8B%E9%A2%98-2"><span class="nav-number">2.3.2.</span> <span class="nav-text">典型题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D-Anagrams"><span class="nav-number">2.4.</span> <span class="nav-text">字母异位词 Anagrams</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E6%8A%80%E5%B7%A7"><span class="nav-number">2.4.1.</span> <span class="nav-text">常用技巧</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B8%E5%9E%8B%E9%A2%98-3"><span class="nav-number">2.4.2.</span> <span class="nav-text">典型题</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%8D%E8%BF%90%E7%AE%97-Bit"><span class="nav-number">3.</span> <span class="nav-text">位运算 Bit</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%80%E5%B7%A7"><span class="nav-number">3.1.</span> <span class="nav-text">技巧</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B8%E5%9E%8B%E9%A2%98-4"><span class="nav-number">3.2.</span> <span class="nav-text">典型题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE-Binary-Search"><span class="nav-number">4.</span> <span class="nav-text">二分查找 Binary Search</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8E%92%E5%BA%8F-Sort"><span class="nav-number">5.</span> <span class="nav-text">排序 Sort</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A0%88-Stack"><span class="nav-number">6.</span> <span class="nav-text">栈 Stack</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%98%9F%E5%88%97-Queue"><span class="nav-number">7.</span> <span class="nav-text">队列 Queue</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%93%BE%E8%A1%A8-List-Node"><span class="nav-number">8.</span> <span class="nav-text">链表 List Node</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B8%E5%9E%8B%E9%A2%98-5"><span class="nav-number">8.1.</span> <span class="nav-text">典型题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A0%91-Tree"><span class="nav-number">9.</span> <span class="nav-text">树 Tree</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%91%E7%9A%84%E9%81%8D%E5%8E%86"><span class="nav-number">9.1.</span> <span class="nav-text">树的遍历</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%91%E7%9A%84%E6%B7%B1%E5%BA%A6"><span class="nav-number">9.2.</span> <span class="nav-text">树的深度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%91%E7%9A%84%E6%A0%A1%E9%AA%8C"><span class="nav-number">9.3.</span> <span class="nav-text">树的校验</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B8%E5%9E%8B%E9%A2%98-6"><span class="nav-number">9.3.1.</span> <span class="nav-text">典型题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E6%A0%91%E7%9B%B8%E5%85%B3"><span class="nav-number">9.4.</span> <span class="nav-text">其他树相关</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91-BST-Binary-Search-Tree"><span class="nav-number">10.</span> <span class="nav-text">二叉搜索树 BST, Binary Search Tree</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A0%86-Heap"><span class="nav-number">11.</span> <span class="nav-text">堆 Heap</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B8%E5%9E%8B%E9%A2%98-7"><span class="nav-number">11.1.</span> <span class="nav-text">典型题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%93%88%E5%B8%8C%E8%A1%A8-HashTable"><span class="nav-number">12.</span> <span class="nav-text">哈希表 HashTable</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%89%E5%BA%8F%E5%AD%97%E5%85%B8-Ordered-Dict"><span class="nav-number">13.</span> <span class="nav-text">有序字典 Ordered Dict</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B8%E5%9E%8B%E9%A2%98-8"><span class="nav-number">13.1.</span> <span class="nav-text">典型题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E7%BC%80%E6%A0%91-Trie-%E5%AD%97%E5%85%B8%E6%A0%91"><span class="nav-number">14.</span> <span class="nav-text">前缀树 Trie 字典树</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%80%E5%B7%A7-1"><span class="nav-number">14.1.</span> <span class="nav-text">技巧</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B8%E5%9E%8B%E9%A2%98-9"><span class="nav-number">14.2.</span> <span class="nav-text">典型题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BA%BF%E6%AE%B5%E6%A0%91-Segment-Tree"><span class="nav-number">15.</span> <span class="nav-text">线段树 Segment Tree</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84-Binary-Indexed-Tree"><span class="nav-number">16.</span> <span class="nav-text">树状数组 Binary Indexed Tree</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B9%B6%E6%9F%A5%E9%9B%86-Union-Find"><span class="nav-number">17.</span> <span class="nav-text">并查集 Union Find</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E9%A2%98"><span class="nav-number">17.1.</span> <span class="nav-text">基础题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%90%E9%AB%98%E9%A2%98"><span class="nav-number">17.2.</span> <span class="nav-text">提高题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%BE-Graph"><span class="nav-number">18.</span> <span class="nav-text">图 Graph</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E6%90%9C%E7%B4%A2"><span class="nav-number">18.1.</span> <span class="nav-text">图的搜索</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%BD%E5%BA%A6%E4%BC%98%E5%85%88%E6%90%9C%E7%B4%A2-%E5%B9%BF%E5%BA%A6%E4%BC%98%E5%85%88%E6%90%9C%E7%B4%A2-Breadth-First-Search-BFS"><span class="nav-number">18.1.1.</span> <span class="nav-text">宽度优先搜索 广度优先搜索 Breadth First Search, BFS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%B1%E5%BA%A6%E4%BC%98%E5%85%88%E6%90%9C%E7%B4%A2-Depth-First-Search-DFS"><span class="nav-number">18.1.2.</span> <span class="nav-text">深度优先搜索 Depth First Search, DFS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BFS-or-DFS"><span class="nav-number">18.1.3.</span> <span class="nav-text">BFS or DFS</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hierholzer%E7%AE%97%E6%B3%95"><span class="nav-number">18.2.</span> <span class="nav-text">Hierholzer算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F"><span class="nav-number">18.3.</span> <span class="nav-text">拓扑排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84"><span class="nav-number">18.4.</span> <span class="nav-text">最短路径</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Floyd%E7%AE%97%E6%B3%95"><span class="nav-number">18.4.1.</span> <span class="nav-text">Floyd算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dijkstra%E7%AE%97%E6%B3%95"><span class="nav-number">18.4.2.</span> <span class="nav-text">Dijkstra算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91"><span class="nav-number">18.5.</span> <span class="nav-text">最小生成树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%99%AE%E9%87%8C%E5%A7%86%EF%BC%88Prim%EF%BC%89%E7%AE%97%E6%B3%95"><span class="nav-number">18.5.1.</span> <span class="nav-text">普里姆（Prim）算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%8B%E9%B2%81%E6%96%AF%E5%8D%A1%E5%B0%94%EF%BC%88Kruskal%EF%BC%89%E7%AE%97%E6%B3%95"><span class="nav-number">18.5.2.</span> <span class="nav-text">克鲁斯卡尔（Kruskal）算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B8%E5%9E%8B%E9%A2%98-10"><span class="nav-number">18.5.3.</span> <span class="nav-text">典型题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%BA%E8%81%94%E9%80%9A%E5%88%86%E9%87%8F"><span class="nav-number">18.6.</span> <span class="nav-text">强联通分量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Kosaraju%E7%AE%97%E6%B3%95"><span class="nav-number">18.6.1.</span> <span class="nav-text">Kosaraju算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Tarjan%E7%AE%97%E6%B3%95"><span class="nav-number">18.6.2.</span> <span class="nav-text">Tarjan算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B8%E5%9E%8B%E9%A2%98-11"><span class="nav-number">18.6.3.</span> <span class="nav-text">典型题</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3-Sliding-Window"><span class="nav-number">19.</span> <span class="nav-text">滑动窗口 Sliding Window</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E9%A2%98-1"><span class="nav-number">19.1.</span> <span class="nav-text">基础题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%90%E5%8D%87%E9%A2%98"><span class="nav-number">19.2.</span> <span class="nav-text">提升题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%9E%E6%BA%AF-Backtracking"><span class="nav-number">20.</span> <span class="nav-text">回溯 Backtracking</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E9%A2%98-2"><span class="nav-number">20.1.</span> <span class="nav-text">基础题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%90%E5%8D%87%E9%A2%98-1"><span class="nav-number">20.2.</span> <span class="nav-text">提升题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95-Greedy-Algorithm"><span class="nav-number">21.</span> <span class="nav-text">贪心算法 Greedy Algorithm</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92-Dynamic-Programing"><span class="nav-number">22.</span> <span class="nav-text">动态规划 Dynamic Programing</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E9%A2%98-3"><span class="nav-number">22.1.</span> <span class="nav-text">基础题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%90%E5%8D%87%E9%A2%98-2"><span class="nav-number">22.2.</span> <span class="nav-text">提升题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E4%B8%AA%E7%8A%B6%E6%80%81%E5%87%BD%E6%95%B0"><span class="nav-number">22.3.</span> <span class="nav-text">多个状态函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8A%B6%E6%80%81%E5%8E%8B%E7%BC%A9"><span class="nav-number">22.4.</span> <span class="nav-text">状态压缩</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B4%E6%8E%A5%E8%AE%B0%E5%BF%86%E5%AD%90%E9%97%AE%E9%A2%98%E7%BB%93%E6%9E%9C"><span class="nav-number">22.5.</span> <span class="nav-text">直接记忆子问题结果</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98"><span class="nav-number">22.5.1.</span> <span class="nav-text">背包问题</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E5%AD%A6-Math"><span class="nav-number">23.</span> <span class="nav-text">数学 Math</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97"><span class="nav-number">23.1.</span> <span class="nav-text">计算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B4%A8%E6%95%B0"><span class="nav-number">23.2.</span> <span class="nav-text">质数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8B%92%E7%BB%9D%E9%87%87%E6%A0%B7"><span class="nav-number">23.3.</span> <span class="nav-text">拒绝采样</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%A0%E4%BD%95"><span class="nav-number">23.4.</span> <span class="nav-text">几何</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%92%E5%88%97%E7%BB%84%E5%90%88"><span class="nav-number">23.5.</span> <span class="nav-text">排列组合</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%A1%E7%89%B9%E5%85%B0%E6%95%B0"><span class="nav-number">23.5.1.</span> <span class="nav-text">卡特兰数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%9F%E8%AE%A1"><span class="nav-number">23.6.</span> <span class="nav-text">统计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%80%E5%A4%A7%E6%95%B0"><span class="nav-number">23.6.1.</span> <span class="nav-text">最大数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%97%E6%95%B0"><span class="nav-number">23.6.2.</span> <span class="nav-text">众数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%AD%E4%BD%8D%E6%95%B0"><span class="nav-number">23.6.3.</span> <span class="nav-text">中位数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B9%B3%E5%9D%87%E5%80%BC"><span class="nav-number">23.6.4.</span> <span class="nav-text">平均值</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%89%AB%E6%8F%8F%E7%BA%BF%E7%AE%97%E6%B3%95-Line-Sweep"><span class="nav-number">24.</span> <span class="nav-text">扫描线算法 Line Sweep</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B8%E5%9E%8B%E9%A2%98-12"><span class="nav-number">24.1.</span> <span class="nav-text">典型题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%84%91%E7%AD%8B%E6%80%A5%E8%BD%AC%E5%BC%AF"><span class="nav-number">25.</span> <span class="nav-text">脑筋急转弯</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%9A%E7%BA%BF%E7%A8%8B"><span class="nav-number">26.</span> <span class="nav-text">多线程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B8%E5%9E%8B%E9%A2%98-13"><span class="nav-number">26.1.</span> <span class="nav-text">典型题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%B7%E9%A2%98%E6%8E%A8%E8%8D%90%E9%98%85%E8%AF%BB%E8%B5%84%E6%96%99"><span class="nav-number">27.</span> <span class="nav-text">刷题推荐阅读资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/algrithom/leetcode_python/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Leetcode算法题攻略之Python | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Leetcode算法题攻略之Python
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-01-10 10:22:00" itemprop="dateCreated datePublished" datetime="2020-01-10T10:22:00-08:00">2020-01-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="数组-Array"><a href="#数组-Array" class="headerlink" title="数组 Array"></a>数组 Array</h1><table>
+<thead>
+<tr>
+<th>分类</th>
+<th>leetcode</th>
+<th>提示</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>哈希表</td>
+<td><a href="https://leetcode-cn.com/problems/two-sum">1. 两数之和</a></td>
+<td></td>
+</tr>
+<tr>
+<td>双指针</td>
+<td><a href="https://leetcode-cn.com/problems/3sum/">15. 三数之和</a></td>
+<td>先排序</td>
+</tr>
+<tr>
+<td></td>
+<td><a href="https://leetcode-cn.com/problems/3sum-closest">16. 最接近的三数之和</a></td>
+<td>先排序</td>
+</tr>
+<tr>
+<td></td>
+<td><a href="https://leetcode-cn.com/problems/4sum/">18. 四数之和</a></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td><a href="https://leetcode-cn.com/problems/remove-element/">27. 移除元素</a></td>
+<td>类似partition的交换</td>
+</tr>
+<tr>
+<td></td>
+<td><a href="https://leetcode-cn.com/problems/remove-duplicates-from-sorted-array">26. 删除排序数组中的重复项</a></td>
+<td>不用交换，直接将需要的拷贝</td>
+</tr>
+<tr>
+<td></td>
+<td><a href="https://leetcode-cn.com/problems/move-zeroes">283. 移动零</a></td>
+<td>类似partition的交换</td>
+</tr>
+<tr>
+<td>搜索</td>
+<td><a href="https://leetcode-cn.com/problems/search-a-2d-matrix/submissions/">74. 搜索二维矩阵</a></td>
+<td>从右上角开始开始缩小领域</td>
+</tr>
+<tr>
+<td></td>
+<td><a href="https://leetcode-cn.com/problems/search-a-2d-matrix-ii/">240. 搜索二维矩阵 II</a></td>
+<td>从左下角开始缩小领域</td>
+</tr>
+<tr>
+<td>动态规划</td>
+<td><a href="https://leetcode-cn.com/problems/maximum-subarray/">53. 最大子序和</a></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td><a href="https://leetcode-cn.com/problems/maximum-product-subarray">152. 乘积最大子序列</a></td>
+<td></td>
+</tr>
+<tr>
+<td>其他</td>
+<td><a href="https://leetcode-cn.com/problems/product-of-array-except-self/">238. 除自身以外数组的乘积</a></td>
+<td>乘积 &#x3D; 当前数左边的乘积 * 当前数右边的乘积</td>
+</tr>
+</tbody></table>
+<h1 id="字符串-String"><a href="#字符串-String" class="headerlink" title="字符串 String"></a>字符串 String</h1><p>常用操作：</p>
+<ul>
+<li><code>ord(c)</code>：返回字符<code>c</code>对应的对于8位的ASCII数值。</li>
+<li><code>chr(d)</code>：返回ASCII数值对应的字符。</li>
+</ul>
+<p>区分概念：</p>
+<p>子字符串：连续；子序列：可以不连续。</p>
+<h2 id="典型题"><a href="#典型题" class="headerlink" title="典型题"></a>典型题</h2><ul>
+<li><a href="https://leetcode-cn.com/problems/longest-substring-without-repeating-characters">3. 无重复字符的最长子串</a></li>
+<li><a href="https://leetcode-cn.com/problems/decode-string/">394. 字符串解码</a></li>
+<li><a href="https://leetcode-cn.com/problems/edit-distance/">72. 编辑距离</a>  提示：动态规划</li>
+<li><a href="https://leetcode-cn.com/problems/sequence-reconstruction/">444. 序列重建</a></li>
+<li><a href="https://leetcode-cn.com/problems/longest-common-subsequence/">1143. 最长公共子序列</a> 提示：动态规划</li>
+</ul>
+<h2 id="字符串匹配-String-Matching"><a href="#字符串匹配-String-Matching" class="headerlink" title="字符串匹配 String Matching"></a>字符串匹配 String Matching</h2><p>字符串匹配算法：</p>
+<ul>
+<li>KMP：<ul>
+<li>永不回退<strong>文本串</strong>的指针<code>i</code></li>
+<li>有限状态机</li>
+<li>二维状态跳转矩阵<code>fsm[i][j]</code>表示<strong>匹配串</strong>已匹配前i个字符的状态下，看到字符j应该回退至何处。</li>
+</ul>
+</li>
+<li>Sunday<ul>
+<li>偏移表：<img src="/algrithom/leetcode_python/2020-04-11-22-13-14.png"></li>
+</ul>
+</li>
+</ul>
+<h3 id="典型题-1"><a href="#典型题-1" class="headerlink" title="典型题"></a>典型题</h3><ul>
+<li><a href="https://leetcode-cn.com/problems/implement-strstr/">28. 实现 strStr</a></li>
+</ul>
+<h2 id="回文-Palindrome"><a href="#回文-Palindrome" class="headerlink" title="回文 Palindrome"></a>回文 Palindrome</h2><p>回文：从左往右读和从右往左读相同的字符串。</p>
+<h3 id="常用技巧："><a href="#常用技巧：" class="headerlink" title="常用技巧："></a>常用技巧：</h3><ul>
+<li>回文子串：遍历元素，每个元素都作为回文的中心出发（中心长度分1或2两种情况）。</li>
+</ul>
+<h3 id="典型题-2"><a href="#典型题-2" class="headerlink" title="典型题"></a>典型题</h3><ul>
+<li><a href="https://leetcode-cn.com/problems/longest-palindromic-substring/">5. 最长回文子串</a></li>
+<li><a href="https://leetcode-cn.com/problems/palindrome-number">9. 回文数</a></li>
+<li><a href="https://leetcode-cn.com/problems/palindromic-substrings/">647. 回文子串</a></li>
+<li><a href="https://leetcode-cn.com/problems/break-a-palindrome/">1328. 破坏回文串</a></li>
+<li><a href="https://leetcode-cn.com/problems/remove-palindromic-subsequences/">1332. 删除回文子序列</a></li>
+</ul>
+<h2 id="字母异位词-Anagrams"><a href="#字母异位词-Anagrams" class="headerlink" title="字母异位词 Anagrams"></a>字母异位词 Anagrams</h2><p>一个词的字母异位词即拥有的字符和该词相同，但顺序不一定相同。</p>
+<h3 id="常用技巧"><a href="#常用技巧" class="headerlink" title="常用技巧"></a>常用技巧</h3><p>常用哈希表存储，<code>&#123;字符: 次数&#125;</code>，哈希表相同则互为字母异位词。</p>
+<h3 id="典型题-3"><a href="#典型题-3" class="headerlink" title="典型题"></a>典型题</h3><ul>
+<li><a href="https://leetcode-cn.com/problems/find-all-anagrams-in-a-string/">438. 找到字符串中所有字母异位词</a></li>
+</ul>
+<h1 id="位运算-Bit"><a href="#位运算-Bit" class="headerlink" title="位运算 Bit"></a>位运算 Bit</h1><h2 id="技巧"><a href="#技巧" class="headerlink" title="技巧"></a>技巧</h2><ul>
+<li>Python中的按位运算符：<ul>
+<li>左移运算符 <code>&lt;&lt;</code></li>
+<li>右移运算符<code>&gt;&gt;</code></li>
+<li>按位与 <code>&amp;</code></li>
+<li>按位或 <code>|</code></li>
+<li>按位翻转 <code>～</code></li>
+<li>按位异或 <code>^</code></li>
+</ul>
+</li>
+<li>数字加上前缀<code>0b</code>表示是二进制数字：<code>0b1111</code></li>
+<li>用format字符串获取一个int的binary表示：<ul>
+<li><code>f&quot;&#123;a:b&#125;&quot;</code>：将a转换成binary的str。</li>
+<li><code>f&quot;&#123;a:030b&#125;&quot;</code>：将a转换成binary的str，并在前面补0使其总位数是30。</li>
+</ul>
+</li>
+<li><code>-i</code>是<code>i</code>的取反+1。</li>
+<li>判断<code>i</code>的第<code>u</code>位是不是1：<code>i &gt;&gt; u &amp; 1</code></li>
+</ul>
+<h2 id="典型题-4"><a href="#典型题-4" class="headerlink" title="典型题"></a>典型题</h2><table>
+<thead>
+<tr>
+<th>运算</th>
+<th>leetcode</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>或运算</td>
+<td><a href="https://leetcode-cn.com/problems/minimum-flips-to-make-a-or-b-equal-to-c/">1318. 或运算的最小翻转次数</a></td>
+</tr>
+<tr>
+<td>异或运算</td>
+<td><a href="https://leetcode-cn.com/problems/hamming-distance/">461. 汉明距离</a></td>
+</tr>
+</tbody></table>
+<h1 id="二分查找-Binary-Search"><a href="#二分查找-Binary-Search" class="headerlink" title="二分查找 Binary Search"></a>二分查找 Binary Search</h1><ul>
+<li><a href="https://leetcode-cn.com/problems/divide-two-integers/">29. 两数相除</a> </li>
+<li><a href="https://leetcode-cn.com/problems/find-first-and-last-position-of-element-in-sorted-array/">34. 在排序数组中查找元素的第一个和最后一个位置</a></li>
+<li><a href="https://leetcode-cn.com/problems/search-insert-position/">35. 搜索插入位置</a></li>
+<li><a href="https://leetcode-cn.com/problems/find-in-mountain-array/">1095. 山脉数组中查找目标值</a>  提示：拆分成三次二分查找：找顶点，上坡找target，下坡找target</li>
+</ul>
+<h1 id="排序-Sort"><a href="#排序-Sort" class="headerlink" title="排序 Sort"></a>排序 Sort</h1><p>对不考察排序算法本身的题可以灵活使用<code>sorted(key=...)</code>。</p>
+<ul>
+<li><a href="https://leetcode-cn.com/problems/insertion-sort-list/">147. 对链表进行插入排序</a></li>
+<li><a href="https://leetcode-cn.com/problems/sort-list/">148. 排序链表</a></li>
+<li><a href="https://leetcode-cn.com/problems/shortest-unsorted-continuous-subarray/">581. 最短无序连续子数组</a></li>
+<li><a href="https://leetcode-cn.com/problems/sort-color">75. 颜色分类</a> 提示：思路类似快排的partition。</li>
+<li><a href="https://leetcode-cn.com/problems/sorted-merge-lcci/">面试题 10.01. 合并排序的数组</a>  提示：从后往前</li>
+</ul>
+<h1 id="栈-Stack"><a href="#栈-Stack" class="headerlink" title="栈 Stack"></a>栈 Stack</h1><p>先进后出的数据结构。</p>
+<p>python中用<code>list</code>实现即可。入栈是<code>append()</code>，出栈是<code>pop()</code>。</p>
+<ul>
+<li><a href="https://leetcode-cn.com/problems/min-stack">155. 最小栈</a></li>
+<li><a href="https://leetcode-cn.com/problems/daily-temperatures">739. 每日温度</a></li>
+<li><a href="https://leetcode-cn.com/problems/implement-stack-using-queues/">225. 用队列实现栈</a></li>
+<li><a href="https://leetcode-cn.com/problems/implement-queue-using-stacks/">232. 用栈实现队列</a></li>
+<li><a href="https://leetcode-cn.com/problems/validate-stack-sequences">946. 验证栈序列</a></li>
+<li><a href="https://leetcode-cn.com/problems/simplify-path/">71. 简化路径</a></li>
+<li><a href="https://leetcode-cn.com/problems/decode-string/">394. 字符串解码</a>  提示：关键在于把什么压栈</li>
+<li><a href="https://leetcode-cn.com/problems/longest-valid-parentheses">32. 最长有效括号</a> 提示：压栈时把之前匹配上的最大长度也同时压入</li>
+<li><a href="https://leetcode-cn.com/problems/next-greater-element-i/">496. 下一个更大元素 I</a> 提示：单调栈</li>
+</ul>
+<h1 id="队列-Queue"><a href="#队列-Queue" class="headerlink" title="队列 Queue"></a>队列 Queue</h1><p>先进先出的数据结构。</p>
+<p>python中队列建议使用<code>deque</code>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> deque</span><br><span class="line"></span><br><span class="line"><span class="comment"># deque([iterable[, maxlen]])</span></span><br><span class="line">queue = deque()</span><br><span class="line">queue.appendleft(<span class="number">1</span>)  <span class="comment"># 入队</span></span><br><span class="line">queue.appendleft(<span class="number">2</span>)</span><br><span class="line"><span class="built_in">print</span>(queue.pop())  <span class="comment"># 出队，输出1</span></span><br><span class="line"><span class="built_in">print</span>(queue.pop())  <span class="comment"># 出队，输出2</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a href="https://leetcode-cn.com/problems/implement-stack-using-queues/">225. 用队列实现栈</a></li>
+<li><a href="https://leetcode-cn.com/problems/implement-queue-using-stacks/">232. 用栈实现队列</a></li>
+<li><a href="https://leetcode-cn.com/problems/binary-tree-level-order-traversal/">102. 二叉树的层次遍历</a></li>
+<li><a href="https://leetcode-cn.com/problems/dui-lie-de-zui-da-zhi-lcof/">面试题59 - II. 队列的最大值</a> 提示：维护一个辅助的递减双端队列。</li>
+</ul>
+<h1 id="链表-List-Node"><a href="#链表-List-Node" class="headerlink" title="链表 List Node"></a>链表 List Node</h1><p>常用技巧：</p>
+<ul>
+<li>在第一个节点前增加一个空数据的头结点，使得对第一个节点和对其他所有的节点的操作保持一致。</li>
+<li>使用快慢指针、前后指针帮助和长度相关的操作。</li>
+</ul>
+<h2 id="典型题-5"><a href="#典型题-5" class="headerlink" title="典型题"></a>典型题</h2><table>
+<thead>
+<tr>
+<th>链表操作</th>
+<th>leetcode</th>
+<th>提示</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>链表节点删除</td>
+<td><a href="https://leetcode-cn.com/problems/delete-node-in-a-linked-list/">237. 删除链表中的节点</a></td>
+<td>正常思路：<code>prev.next = cur.next</code>；若看不到上一个节点<code>prev</code>，则可将值拷贝到当前节点，然后删除下一个节点<code>cur.val=cur.next.val; cur.next = cur.next.next</code></td>
+</tr>
+<tr>
+<td>单链表反转</td>
+<td><a href="https://leetcode-cn.com/problems/reverse-linked-list/">206. 反转链表</a></td>
+<td>递归或正序遍历(增设头结点)</td>
+</tr>
+<tr>
+<td></td>
+<td><a href="https://leetcode-cn.com/problems/reverse-linked-list-ii/">92. 反转链表 II</a></td>
+<td></td>
+</tr>
+<tr>
+<td>寻找两个单链表相交的起始节点</td>
+<td><a href="https://leetcode-cn.com/problems/intersection-of-two-linked-lists/">160. 相交链表</a></td>
+<td>先后指针</td>
+</tr>
+<tr>
+<td>链表中环的检测</td>
+<td><a href="https://leetcode-cn.com/problems/linked-list-cycle/">141. 环形链表</a></td>
+<td>快慢指针</td>
+</tr>
+<tr>
+<td>有序的链表合并</td>
+<td><a href="https://leetcode-cn.com/problems/merge-two-sorted-lists/">21. 合并两个有序链表</a></td>
+<td>递归或正序遍历(增加头结点)</td>
+</tr>
+<tr>
+<td></td>
+<td><a href="https://leetcode-cn.com/problems/merge-k-sorted-lists/">23. 合并K个排序链表</a></td>
+<td>使用小顶堆</td>
+</tr>
+<tr>
+<td>删除链表倒数第n个结点</td>
+<td><a href="https://leetcode-cn.com/problems/remove-nth-node-from-end-of-list/">19. 删除链表的倒数第N个节点</a></td>
+<td>先后指针</td>
+</tr>
+<tr>
+<td>求链表的中间结点</td>
+<td><a href="https://leetcode-cn.com/problems/middle-of-the-linked-list/">876. 链表的中间结点</a></td>
+<td>快慢指针</td>
+</tr>
+<tr>
+<td>链表排序</td>
+<td><a href="https://leetcode-cn.com/problems/sort-list/">148. 排序链表</a></td>
+<td>归并排序</td>
+</tr>
+<tr>
+<td></td>
+<td><a href="https://leetcode-cn.com/problems/merge-k-sorted-lists/">23. 合并K个排序链表</a></td>
+<td></td>
+</tr>
+</tbody></table>
+<h1 id="树-Tree"><a href="#树-Tree" class="headerlink" title="树 Tree"></a>树 Tree</h1><h2 id="树的遍历"><a href="#树的遍历" class="headerlink" title="树的遍历"></a>树的遍历</h2><table>
+<thead>
+<tr>
+<th>遍历类型</th>
+<th>leetcode</th>
+<th>提示</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>中序遍历</td>
+<td><a href="https://leetcode-cn.com/problems/binary-tree-inorder-traversal/">94. 二叉树的中序遍历</a></td>
+<td>递归和非递归</td>
+</tr>
+<tr>
+<td></td>
+<td><a href="https://leetcode-cn.com/problems/kth-smallest-element-in-a-bst">230. 二叉搜索树中第K小的元素</a></td>
+<td></td>
+</tr>
+<tr>
+<td>前序遍历</td>
+<td><a href="https://leetcode-cn.com/problems/n-ary-tree-preorder-traversal/">589. N叉树的前序遍历</a></td>
+<td>递归和非递归</td>
+</tr>
+<tr>
+<td>后序遍历</td>
+<td><a href="https://leetcode-cn.com/problems/n-ary-tree-postorder-traversal/">590. N叉树的后序遍历</a></td>
+<td>递归和非递归</td>
+</tr>
+<tr>
+<td>层次遍历</td>
+<td><a href="https://leetcode-cn.com/problems/binary-tree-level-order-traversal/">102. 二叉树的层次遍历</a></td>
+<td>借助一个queue</td>
+</tr>
+<tr>
+<td></td>
+<td><a href="https://leetcode-cn.com/problems/binary-tree-zigzag-level-order-traversal/">103. 二叉树的锯齿形层次遍历</a></td>
+<td></td>
+</tr>
+</tbody></table>
+<p><strong>非递归</strong>方案：<strong>颜色标记法</strong>，用一个栈保存要搜索的节点。<a href="https://leetcode-cn.com/problems/binary-tree-inorder-traversal/solution/yan-se-biao-ji-fa-yi-chong-tong-yong-qie-jian-ming/">推荐阅读</a>。</p>
+<ul>
+<li>白色：顶点没有被访问过。</li>
+<li>灰色：当顶点第一次被访问时，它就会被标记为灰色;</li>
+<li>黑色：当完成对该顶点的访问之后，它就会被标记为黑色。</li>
+</ul>
+<h2 id="树的深度"><a href="#树的深度" class="headerlink" title="树的深度"></a>树的深度</h2><ul>
+<li><a href="https://leetcode-cn.com/problems/maximum-depth-of-binary-tree/">104. 二叉树的最大深度</a></li>
+<li><a href="https://leetcode-cn.com/problems/maximum-depth-of-n-ary-tree/">559. N叉树的最大深度</a></li>
+<li><a href="https://leetcode-cn.com/problems/minimum-depth-of-binary-tree/">111. 二叉树的最小深度</a></li>
+<li><a href="https://leetcode-cn.com/problems/balanced-binary-tree/">110. 平衡二叉树</a></li>
+</ul>
+<h2 id="树的校验"><a href="#树的校验" class="headerlink" title="树的校验"></a>树的校验</h2><p>树的特征：</p>
+<ul>
+<li><strong>有向图</strong>的判断：除了根节点，每个非空节点的入度都为1。</li>
+<li><strong>无向图</strong>的判断：任意两个节点都有且只有一条相连的路径。即：任何<strong>无环</strong>的<strong>连通图</strong>，就是一棵树。保证连通的同时确定无环，则必然是树。</li>
+</ul>
+<h3 id="典型题-6"><a href="#典型题-6" class="headerlink" title="典型题"></a>典型题</h3><ul>
+<li><a href="https://leetcode-cn.com/problems/validate-binary-tree-nodes">1361. 验证二叉树</a></li>
+<li><a href="https://leetcode-cn.com/problems/graph-valid-tree/">261. 以图判树</a></li>
+</ul>
+<h2 id="其他树相关"><a href="#其他树相关" class="headerlink" title="其他树相关"></a>其他树相关</h2><table>
+<thead>
+<tr>
+<th>操作</th>
+<th>leetcode</th>
+<th>提示</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>树的序列化</td>
+<td><a href="https://leetcode-cn.com/problems/serialize-and-deserialize-binary-tree/">297. 二叉树的序列化与反序列化</a></td>
+<td></td>
+</tr>
+</tbody></table>
+<h1 id="二叉搜索树-BST-Binary-Search-Tree"><a href="#二叉搜索树-BST-Binary-Search-Tree" class="headerlink" title="二叉搜索树 BST, Binary Search Tree"></a>二叉搜索树 BST, Binary Search Tree</h1><p>重要特性：1.左子树所有元素都小于根节点，右子树所有元素都大于根节点。2.中序遍历是升序的。</p>
+<ul>
+<li><a href="https://leetcode-cn.com/problems/kth-smallest-element-in-a-bst">230. 二叉搜索树中第K小的元素</a>  提示：中序遍历</li>
+<li><a href="https://leetcode-cn.com/problems/unique-binary-search-trees">96. 不同的二叉搜索树</a></li>
+<li><a href="https://leetcode-cn.com/problems/validate-binary-search-tree/">98. 验证二叉搜索树</a></li>
+</ul>
+<h1 id="堆-Heap"><a href="#堆-Heap" class="headerlink" title="堆 Heap"></a>堆 Heap</h1><p>python自带<code>heapq</code>支持小顶堆。最小的元素总是在根结点：<code>heap[0]</code>。<code>heapq</code>操作的是一个<code>list</code>：将一个初始<code>list</code>进行<code>heap</code>化（原地操作）。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> heapq</span><br><span class="line"></span><br><span class="line">l = [<span class="number">3</span>,<span class="number">2</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">1</span>]</span><br><span class="line">heapq.heapify(l)</span><br><span class="line"><span class="built_in">print</span>(l)  <span class="comment"># 输出： [1, 2, 4, 5, 3]</span></span><br><span class="line">heapq.heappush(l, <span class="number">0</span>)</span><br><span class="line"><span class="built_in">print</span>(l)  <span class="comment"># 输出： [0, 2, 1, 5, 3, 4]</span></span><br><span class="line"><span class="built_in">print</span>(heapq.heappop(l))  <span class="comment"># 输出： 0</span></span><br><span class="line"><span class="built_in">print</span>(l)  <span class="comment"># 输出： [1, 2, 4, 5, 3]</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="典型题-7"><a href="#典型题-7" class="headerlink" title="典型题"></a>典型题</h2><ul>
+<li><a href="https://leetcode-cn.com/problems/merge-k-sorted-lists/">23. 合并K个排序链表</a></li>
+<li><a href="https://leetcode-cn.com/problems/kth-largest-element-in-an-array/">215. 数组中的第K个最大元素</a> 提示：小顶堆</li>
+<li><a href="https://leetcode-cn.com/problems/ugly-number-ii/">264. 丑数 II</a></li>
+<li><a href="https://leetcode-cn.com/problems/find-median-from-data-stream/">295. 数据流的中位数</a> 提示：维护一个大顶堆，一个小顶堆</li>
+<li><a href="https://leetcode-cn.com/problems/sliding-window-median/">480. 滑动窗口中位数</a></li>
+<li><a href="https://leetcode-cn.com/problems/k-closest-points-to-origin/">973. 最接近原点的 K 个点</a></li>
+</ul>
+<h1 id="哈希表-HashTable"><a href="#哈希表-HashTable" class="headerlink" title="哈希表 HashTable"></a>哈希表 HashTable</h1><ul>
+<li><a href="https://leetcode-cn.com/problems/two-sum/">1. 两数之和</a></li>
+<li><a href="https://leetcode-cn.com/problems/subarray-sum-equals-k">560. 和为K的子数组</a>  提示：sum(i,j)&#x3D;sum(0,j)-sum(0,i)</li>
+</ul>
+<h1 id="有序字典-Ordered-Dict"><a href="#有序字典-Ordered-Dict" class="headerlink" title="有序字典 Ordered Dict"></a>有序字典 Ordered Dict</h1><p>有序字典综合了哈希表和链表，在Python中为<code>OrderedDict</code>，在Java中为<code>LinkedHashMap</code>。</p>
+<p><code>OrderedDict</code>特有的操作：</p>
+<ul>
+<li><code>popitem(last=True)</code>：如果last值为真，则按后进先出的顺序返回键值对，否则就按先进先出的顺序返回键值对。可用于lru的删除。</li>
+<li><code>move_to_end(key,last=True)</code>：将现有key移动到有序字典的首端或者末端。可用于lru当元素被再次访问时的提前。</li>
+</ul>
+<h2 id="典型题-8"><a href="#典型题-8" class="headerlink" title="典型题"></a>典型题</h2><ul>
+<li><a href="https://leetcode-cn.com/problems/lru-cache">146. LRU缓存机制</a></li>
+</ul>
+<h1 id="前缀树-Trie-字典树"><a href="#前缀树-Trie-字典树" class="headerlink" title="前缀树 Trie 字典树"></a>前缀树 Trie 字典树</h1><h2 id="技巧-1"><a href="#技巧-1" class="headerlink" title="技巧"></a>技巧</h2><p>常用<code>dict</code>实现。</p>
+<p>常规实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">trie = <span class="built_in">dict</span>()</span><br><span class="line">leaves = []</span><br><span class="line"><span class="keyword">for</span> word <span class="keyword">in</span> words:</span><br><span class="line">    cur_dict = trie</span><br><span class="line">    <span class="keyword">for</span> c <span class="keyword">in</span> word:</span><br><span class="line">        <span class="keyword">if</span> c <span class="keyword">not</span> <span class="keyword">in</span> cur_dict:</span><br><span class="line">            cur_dict[c] = &#123;&#125;</span><br><span class="line">        cur_dict = cur_dict[c]</span><br><span class="line">    leaves.append(cur_dict)</span><br></pre></td></tr></table></figure>
+
+<p>极简实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Trie = <span class="keyword">lambda</span>: collections.defaultdict(Trie)</span><br><span class="line">leaves = [reduce(<span class="built_in">dict</span>.__getitem__, word, trie) <span class="keyword">for</span> word <span class="keyword">in</span> words]</span><br></pre></td></tr></table></figure>
+
+<h2 id="典型题-9"><a href="#典型题-9" class="headerlink" title="典型题"></a>典型题</h2><ul>
+<li><a href="https://leetcode-cn.com/problems/implement-trie-prefix-tree/">208. 实现 Trie (前缀树)</a></li>
+<li><a href="https://leetcode-cn.com/problems/short-encoding-of-words">820. 单词的压缩编码</a></li>
+</ul>
+<h1 id="线段树-Segment-Tree"><a href="#线段树-Segment-Tree" class="headerlink" title="线段树 Segment Tree"></a>线段树 Segment Tree</h1><p>线段树是一棵完美二叉树（perfect binary tree），擅长处理区间，一般对区间操作的时间复杂度是$O(logn)$。</p>
+<p>线段树的每个节点维护对应区间的<strong>最小值</strong>。</p>
+<p>支持的操作：</p>
+<ul>
+<li>1.给定范围，求其中所有元素的最小值。</li>
+<li>2.赋值更新一个元素。</li>
+</ul>
+<p>实现：由于是完美二叉树，自然可以用array或者list来存储。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">SegmentTree</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, values</span>):</span><br><span class="line">        <span class="variable language_">self</span>.data = [<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> values] + values</span><br><span class="line">        <span class="variable language_">self</span>.n = <span class="built_in">len</span>(values)</span><br><span class="line">        <span class="keyword">for</span> idx <span class="keyword">in</span> <span class="built_in">reversed</span>(<span class="built_in">range</span>(<span class="number">1</span>, <span class="variable language_">self</span>.n)):</span><br><span class="line">            <span class="variable language_">self</span>.data[idx] = <span class="built_in">min</span>(<span class="variable language_">self</span>.data[<span class="number">2</span>*idx], <span class="variable language_">self</span>.data[<span class="number">2</span>*idx+<span class="number">1</span>])</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">update</span>(<span class="params">self, idx, value</span>):</span><br><span class="line">        idx += <span class="variable language_">self</span>.n</span><br><span class="line">        <span class="variable language_">self</span>.data[idx] = value</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> idx &gt; <span class="number">1</span>:</span><br><span class="line">            idx //= <span class="number">2</span></span><br><span class="line">            <span class="variable language_">self</span>.data[idx] = <span class="built_in">min</span>(<span class="variable language_">self</span>.data[<span class="number">2</span>*idx], <span class="variable language_">self</span>.data[<span class="number">2</span>*idx+<span class="number">1</span>])</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">minimum</span>(<span class="params">self, left, right</span>):</span><br><span class="line">        left += <span class="variable language_">self</span>.n</span><br><span class="line">        right += <span class="variable language_">self</span>.n</span><br><span class="line">        minimum = <span class="variable language_">self</span>.data[left]</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> left &lt; right:</span><br><span class="line">            <span class="keyword">if</span> left % <span class="number">2</span>:</span><br><span class="line">                minimum = <span class="built_in">min</span>(minimum, <span class="variable language_">self</span>.data[left])</span><br><span class="line">                left += <span class="number">1</span></span><br><span class="line">            <span class="keyword">if</span> right % <span class="number">2</span>:</span><br><span class="line">                right -= <span class="number">1</span></span><br><span class="line">                minimum = <span class="built_in">min</span>(minimum, <span class="variable language_">self</span>.data[right])</span><br><span class="line">            left //= <span class="number">2</span></span><br><span class="line">            right //= <span class="number">2</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> minimum</span><br></pre></td></tr></table></figure>
+
+<p>推荐阅读：<a href="https://www.youtube.com/watch?v=Oq2E2yGadnU">Efficient Segment Tree Tutorial</a></p>
+<p><a href="https://leetcode-cn.com/problems/my-calendar-iii/">732. 我的日程安排表 III</a></p>
+<h1 id="树状数组-Binary-Indexed-Tree"><a href="#树状数组-Binary-Indexed-Tree" class="headerlink" title="树状数组 Binary Indexed Tree"></a>树状数组 Binary Indexed Tree</h1><p>BIT的每个节点维护对应区间<strong>元素之和</strong>。</p>
+<p>支持操作：</p>
+<ul>
+<li>1.计算从起点到某个点之间所有元素之和。</li>
+<li>2.自加更新一个元素。</li>
+</ul>
+<p>实现：</p>
+<ul>
+<li>可基于线段树实现，想象删除所有右子节点。</li>
+<li><code>i &amp; -i</code>是获取i的二进制中最后一个1</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">BIT</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Implementation of a Binary Indexed Tree (Fennwick Tree)&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, nums</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;&quot;Initialize BIT with nums in O(n)&quot;&quot;&quot;</span></span><br><span class="line">        <span class="variable language_">self</span>.array = [<span class="number">0</span>] + nums</span><br><span class="line">        <span class="keyword">for</span> idx <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(<span class="variable language_">self</span>.array)):</span><br><span class="line">            idx2 = idx + (idx &amp; -idx)</span><br><span class="line">            <span class="keyword">if</span> idx2 &lt; <span class="built_in">len</span>(<span class="variable language_">self</span>.array):</span><br><span class="line">                <span class="variable language_">self</span>.array[idx2] += <span class="variable language_">self</span>.array[idx]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">prefix_query</span>(<span class="params">self, idx</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Computes prefix sum of up to including the idx-th element&quot;&quot;&quot;</span></span><br><span class="line">        idx += <span class="number">1</span></span><br><span class="line">        result = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> idx:</span><br><span class="line">            result += <span class="variable language_">self</span>.array[idx]</span><br><span class="line">            idx -= idx &amp; -idx</span><br><span class="line">        <span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">range_query</span>(<span class="params">self, from_idx, to_idx</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Computes the range sum between two indices (both inclusive)&quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.prefix_query(to_idx) - <span class="variable language_">self</span>.prefix_query(from_idx - <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">update</span>(<span class="params">self, idx, add</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Add a value to the idx-th element&quot;&quot;&quot;</span></span><br><span class="line">        idx += <span class="number">1</span></span><br><span class="line">        <span class="keyword">while</span> idx &lt; <span class="built_in">len</span>(<span class="variable language_">self</span>.array):</span><br><span class="line">            <span class="variable language_">self</span>.array[idx] += add</span><br><span class="line">            idx += idx &amp; -idx</span><br></pre></td></tr></table></figure>
+
+<p>推荐阅读：<a href="https://www.youtube.com/watch?v=v_wj_mOAlig">Tutorial: Binary Indexed Tree (Fenwick Tree)</a></p>
+<ul>
+<li><a href="https://leetcode-cn.com/problems/range-sum-query-mutable/">307. 区域和检索 - 数组可修改</a></li>
+</ul>
+<h1 id="并查集-Union-Find"><a href="#并查集-Union-Find" class="headerlink" title="并查集 Union Find"></a>并查集 Union Find</h1><p>并查集常用于<strong>连通</strong>相关的问题。并查集是一种树型（V字形，子节点指向父节点）的数据结构，支持下面两种操作：</p>
+<ul>
+<li><strong>Find</strong>：确定元素属于哪一个子集。返回的是该集合的代表元素（根）。</li>
+<li><strong>Union</strong>：将两个子集合并成同一个集合。</li>
+</ul>
+<p>对于一个大小为$n$的集合，任何$m$次<code>union</code>或<code>find</code>操作所需要的时间复杂度都 是$O((m+n) α(n))$，其中$α$是Ackermann 函数的反函数，一般可以视为常量4。</p>
+<p>需要自实现，因此需要记住并查集的实现方法。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">UnionFind</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, n</span>):</span><br><span class="line">        <span class="variable language_">self</span>.up = <span class="built_in">list</span>(<span class="built_in">range</span>(n))</span><br><span class="line">        <span class="variable language_">self</span>.rank = [<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(n)]</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">find</span>(<span class="params">self, x</span>):</span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.up[x] == x:</span><br><span class="line">            <span class="keyword">return</span> x</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="variable language_">self</span>.up[x] = <span class="variable language_">self</span>.find(<span class="variable language_">self</span>.up[x])</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.up[x]</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">union</span>(<span class="params">self, x, y</span>):</span><br><span class="line">        repr_x = <span class="variable language_">self</span>.find(x)</span><br><span class="line">        repr_y = <span class="variable language_">self</span>.find(y)</span><br><span class="line">        <span class="keyword">if</span> repr_x == repr_y:  <span class="comment"># 已在同一个集合中</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.rank[repr_x] == <span class="variable language_">self</span>.rank[repr_y]:  <span class="comment"># 若同两个集合rank相同，把y所属的集合挂在x所属的集合下，并将x所属的集合的rank增加1</span></span><br><span class="line">            <span class="variable language_">self</span>.rank[repr_x] += <span class="number">1</span></span><br><span class="line">            <span class="variable language_">self</span>.up[repr_y] = repr_x</span><br><span class="line">        <span class="keyword">elif</span> <span class="variable language_">self</span>.rank[repr_x] &gt; <span class="variable language_">self</span>.rank[repr_y]:  <span class="comment"># 否则谁的rank大，谁是被挂的，rank不需要改变</span></span><br><span class="line">            <span class="variable language_">self</span>.up[repr_y] = repr_x</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="variable language_">self</span>.up[repr_x] = repr_y</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
+
+<p>常用技巧：</p>
+<ul>
+<li>使用<code>find(a)</code>和<code>find(b)</code>的比较来判断是否在一个子集内。</li>
+<li>统计<code>find(a) == a</code>的个数（根的个数）来判断有多少个子集</li>
+</ul>
+<h2 id="基础题"><a href="#基础题" class="headerlink" title="基础题"></a>基础题</h2><ul>
+<li><a href="https://leetcode-cn.com/problems/graph-valid-tree/">261. 以图判树</a></li>
+<li><a href="https://leetcode-cn.com/problems/number-of-connected-components-in-an-undirected-graph/">323. 无向图中连通分量的数目</a></li>
+<li><a href="https://leetcode-cn.com/problems/number-of-operations-to-make-network-connected/">1319. 连通网络的操作次数</a></li>
+<li><a href="https://leetcode-cn.com/problems/number-of-islands/">200. 岛屿数量</a>  提示：两个坐标相邻，且值相等，执行union。</li>
+</ul>
+<h2 id="提高题"><a href="#提高题" class="headerlink" title="提高题"></a>提高题</h2><ul>
+<li><a href="https://leetcode-cn.com/problems/longest-consecutive-sequence">128. 最长连续序列</a>  提示：因为每次只加入一个节点，用一个add操作替代union。</li>
+</ul>
+<h1 id="图-Graph"><a href="#图-Graph" class="headerlink" title="图 Graph"></a>图 Graph</h1><p>邻接表：顶点-&gt;相邻顶点列表</p>
+<h2 id="图的搜索"><a href="#图的搜索" class="headerlink" title="图的搜索"></a>图的搜索</h2><h3 id="宽度优先搜索-广度优先搜索-Breadth-First-Search-BFS"><a href="#宽度优先搜索-广度优先搜索-Breadth-First-Search-BFS" class="headerlink" title="宽度优先搜索 广度优先搜索 Breadth First Search, BFS"></a>宽度优先搜索 广度优先搜索 Breadth First Search, BFS</h3><p>思路类似于树的层次遍历，但由于图可能存在环，所以需要一个数据结构记录某个顶点是否访问过。</p>
+<p>典型题目：</p>
+<ul>
+<li><a href="https://leetcode-cn.com/problems/rotting-oranges/">994. 腐烂的橘子</a> 提示：BFS基础题</li>
+<li><a href="https://leetcode-cn.com/problems/01-matrix/">542. 01 矩阵</a></li>
+<li><a href="https://leetcode-cn.com/problems/word-ladder/">127. 单词接龙</a>  提示：先利用桶（bucket）更高效地构建词图。</li>
+<li><a href="https://leetcode-cn.com/problems/minimum-height-trees/">310. 最小高度树</a> </li>
+<li><a href="https://leetcode-cn.com/problems/push-dominoes/">838. 推多米诺</a></li>
+</ul>
+<h3 id="深度优先搜索-Depth-First-Search-DFS"><a href="#深度优先搜索-Depth-First-Search-DFS" class="headerlink" title="深度优先搜索 Depth First Search, DFS"></a>深度优先搜索 Depth First Search, DFS</h3><p>使用递归和非递归。非递归借助一个栈实现。思路类似于树的前中后序遍历，但由于图可能存在环，所以需要一个数据结构记录某个顶点是否访问过。</p>
+<ul>
+<li><a href="https://leetcode-cn.com/problems/surrounded-regions">130. 被围绕的区域</a></li>
+</ul>
+<h3 id="BFS-or-DFS"><a href="#BFS-or-DFS" class="headerlink" title="BFS or DFS"></a>BFS or DFS</h3><p>用两种图搜索都能解决的问题：</p>
+<ul>
+<li><a href="https://leetcode-cn.com/problems/clone-graph/submissions/">133. 克隆图</a></li>
+<li><a href="https://leetcode-cn.com/problems/number-of-islands/">200. 岛屿数量</a></li>
+<li><a href="https://leetcode-cn.com/problems/max-area-of-island">695. 岛屿的最大面积</a></li>
+</ul>
+<h2 id="Hierholzer算法"><a href="#Hierholzer算法" class="headerlink" title="Hierholzer算法"></a>Hierholzer算法</h2><p>欧拉迹是指一条包含图中所有边的一条路径，该路径中所有的边会且仅会出现一次。Hierholzer算法用于在连通图寻找欧拉迹。</p>
+<p>推荐阅读：<a href="https://taodaling.github.io/blog/2019/04/25/Hierholzer%E7%AE%97%E6%B3%95/">Hierholzer算法
+</a></p>
+<ul>
+<li><a href="https://leetcode-cn.com/problems/reconstruct-itinerary">332. 重新安排行程</a></li>
+</ul>
+<h2 id="拓扑排序"><a href="#拓扑排序" class="headerlink" title="拓扑排序"></a>拓扑排序</h2><p>拓扑排序根据有向无环图（DAG）生成一个包含所有顶点的线性序列，使得如果图 G 中有一条边为 (v, w) ，那么顶点 v 排在顶点 w 之前。</p>
+<p>算法过程：</p>
+<p>使用<strong>卡恩算法</strong>：<a href="https://zh.wikipedia.org/wiki/%E6%8B%93%E6%92%B2%E6%8E%92%E5%BA%8F">维基百科</a>，实现类似层次遍历。</p>
+<p>典型题目：</p>
+<ul>
+<li><a href="https://leetcode-cn.com/problems/course-schedule/">207. 课程表</a></li>
+<li><a href="https://leetcode-cn.com/problems/course-schedule-ii/">210. 课程表 II</a></li>
+<li><a href="https://leetcode-cn.com/problems/sequence-reconstruction/">444. 序列重建</a></li>
+<li><a href="https://leetcode-cn.com/problems/alien-dictionary/">269. 火星词典</a></li>
+</ul>
+<h2 id="最短路径"><a href="#最短路径" class="headerlink" title="最短路径"></a>最短路径</h2><h3 id="Floyd算法"><a href="#Floyd算法" class="headerlink" title="Floyd算法"></a>Floyd算法</h3><p>经典多源最短路径算法。</p>
+<ul>
+<li><a href="https://leetcode-cn.com/problems/find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance/">1334. 阈值距离内邻居最少的城市</a></li>
+</ul>
+<h3 id="Dijkstra算法"><a href="#Dijkstra算法" class="headerlink" title="Dijkstra算法"></a>Dijkstra算法</h3><p>经典单源最短路径算法。实现通常借助一个小顶堆<code>heapq</code>，保存未检查的节点与其到起点的距离。</p>
+<ul>
+<li><a href="https://leetcode-cn.com/problems/cheapest-flights-within-k-stops/">787. K 站中转内最便宜的航班</a></li>
+<li><a href="https://leetcode-cn.com/problems/minimum-cost-to-make-at-least-one-valid-path-in-a-grid/">1368. 使网格图至少有一条有效路径的最小代价</a> 提示：将点看成有向带权图，能直接连上的两点，权重是0；连不上的（需要修改的）权重是1。最终要寻找从(0,0)到(m-1, n-1)的最短路径。</li>
+</ul>
+<h2 id="最小生成树"><a href="#最小生成树" class="headerlink" title="最小生成树"></a>最小生成树</h2><h3 id="普里姆（Prim）算法"><a href="#普里姆（Prim）算法" class="headerlink" title="普里姆（Prim）算法"></a>普里姆（Prim）算法</h3><p><strong>贪心增加顶点</strong>。</p>
+<p>大致实现流程：从第一个顶点开始，找最近的未加入顶点（借助<code>heapq</code>）。遍历类似BFS（借助<code>deque</code>）。直到所有顶点都加入。</p>
+<h3 id="克鲁斯卡尔（Kruskal）算法"><a href="#克鲁斯卡尔（Kruskal）算法" class="headerlink" title="克鲁斯卡尔（Kruskal）算法"></a>克鲁斯卡尔（Kruskal）算法</h3><p><strong>贪心增加边</strong>，保证无环。</p>
+<p>大致实现流程：将所有边按长度升序排列；借助并查集（union find）判断两个顶点是否连接通了不同的子集，是则加入该边。直到加入边的个数等于顶点数-1。</p>
+<h3 id="典型题-10"><a href="#典型题-10" class="headerlink" title="典型题"></a>典型题</h3><ul>
+<li><a href="https://leetcode-cn.com/problems/connecting-cities-with-minimum-cost/">1135. 最低成本联通所有城市</a></li>
+</ul>
+<h2 id="强联通分量"><a href="#强联通分量" class="headerlink" title="强联通分量"></a>强联通分量</h2><p>强联通分量（Strongly Connected Component）：有向图顶点子集S，内部任意两个顶点都能找到一条相连的路径。且S加入其它任意顶点后，都不满足这个条件。称S是原图的一个强连通分量。</p>
+<h3 id="Kosaraju算法"><a href="#Kosaraju算法" class="headerlink" title="Kosaraju算法"></a>Kosaraju算法</h3><p>核心思想：一个图的反向图和原图具有一样的强连通分量。</p>
+<p>算法：</p>
+<ul>
+<li>对有向图G取逆，得到G的反向图Gr。</li>
+<li>利用深度优先搜索求出G的后续遍历顺序。</li>
+<li>对Gr按照上述后续遍历顺序进行深度优先搜索。</li>
+<li>同一个深度优先搜索<strong>递归子程序</strong>中访问的所有顶点都在同一个强连通分量内</li>
+</ul>
+<h3 id="Tarjan算法"><a href="#Tarjan算法" class="headerlink" title="Tarjan算法"></a>Tarjan算法</h3><p>DFN(u)是节点u在DFS的序号；Low(u)是从u出发能到达的最小DFN(v)。Low(u)相同的点围成强连通分量。若DFN(u)&#x3D;Low(u)则从u开始的搜索树上的节点即一个强连通分量。</p>
+<ul>
+<li>u通过边到达v：Low(u) &#x3D; min(Low(u), Low(v))</li>
+<li>u通过返祖边到达v（v还在栈中）：Low(u) &#x3D; min(Low(u), DFN(v))</li>
+</ul>
+<p>推荐阅读：</p>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=TyWtx7q2D7Y">Tarjans Strongly Connected Components algorithm | Graph Theory</a></li>
+<li><a href="https://www.byvoid.com/zhs/blog/scc-tarjan">有向图强连通分量的Tarjan算法</a></li>
+<li><a href="https://github.com/hzwer/shareOI/blob/master/%E5%9B%BE%E8%AE%BA/%E5%9B%BE%E7%9A%84%E8%BF%9E%E9%80%9A_%E9%BB%84%E5%93%B2%E5%A8%81.pdf">图的连通</a></li>
+</ul>
+<p>拓展：找到无向联通图中的<strong>桥</strong>（割点，双联通分量）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">tarjan</span>(<span class="params">time_stamp, u, p</span>):</span><br><span class="line">    dfn = low[u] = time_stamp</span><br><span class="line">    <span class="keyword">for</span> v <span class="keyword">in</span> adj[u]:</span><br><span class="line">        <span class="keyword">if</span> v != p:</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> low[v]:  <span class="comment"># v not visited</span></span><br><span class="line">                time_stamp += <span class="number">1</span></span><br><span class="line">                tarjan(time_stamp, v, u)</span><br><span class="line">                <span class="keyword">if</span> low[v] &gt; dfn: ans.append([u, v])</span><br><span class="line">            low[u] = <span class="built_in">min</span>(low[u], low[v])</span><br></pre></td></tr></table></figure>
+
+<h3 id="典型题-11"><a href="#典型题-11" class="headerlink" title="典型题"></a>典型题</h3><ul>
+<li><a href="https://leetcode-cn.com/problems/critical-connections-in-a-network/">1192. 查找集群内的「关键连接」</a></li>
+</ul>
+<h1 id="滑动窗口-Sliding-Window"><a href="#滑动窗口-Sliding-Window" class="headerlink" title="滑动窗口 Sliding Window"></a>滑动窗口 Sliding Window</h1><p>滑动窗口的针对对象往往是一个字符串或者数组。一般题干会问是否有满足条件的子串或者子数组（连续的）。</p>
+<p>滑动窗口又名尺取法，即反复推进区间的开头（缩）和结尾（伸）。</p>
+<p><strong>操作</strong>：常用<strong>双指针</strong>实现，维护一个头指针，一个尾指针。当满足条件时移动尾指针（伸）；不满足要求时移动头指针（缩），直到重新满足要求。</p>
+<p><strong>分析</strong>：一般找一个满足某条件的子串的暴力解法的时间复杂度是$O(n^2)$。但若这个子串的条件满足一定的剪枝条件：如<code>s[i:j]</code>满足无重复字符且<code>s[i:j+1]</code>不满足，可以预见到对于所有k&gt;0，<code>s[i:j+k]</code>都不满足。所以这个时候，继续伸已经没有意义，直接考虑缩。若伸缩交换能找到满足条件的子串，可以使用滑动窗口的方法。此时时间复杂度是$O(n)$。</p>
+<p><strong>推荐阅读</strong>：</p>
+<ul>
+<li><a href="https://leetcode-cn.com/problems/longest-substring-without-repeating-characters/solution/hua-dong-chuang-kou-by-powcai/">滑动窗口</a></li>
+</ul>
+<p><strong>大致模板</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> end &lt; <span class="built_in">len</span>(s):</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">not</span> condition_func():</span><br><span class="line">        ...</span><br><span class="line">        start += <span class="number">1</span></span><br><span class="line">        ...</span><br><span class="line">    <span class="comment"># while condition_func():</span></span><br><span class="line">    <span class="comment">#   end += 1</span></span><br><span class="line">    end += <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p>可能会用到<code>Counter</code>：用于字符串的字符计数。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> Counter</span><br><span class="line"></span><br><span class="line">c1 = Counter(<span class="string">&quot;abbc&quot;</span>)  <span class="comment"># &#123;&quot;a&quot;: 1, &quot;b&quot;: 2, &quot;c&quot;: 1&#125;</span></span><br><span class="line">c2 = Counter(<span class="string">&quot;ab&quot;</span>)</span><br><span class="line">c3 = c1 &amp; c2  <span class="comment"># &#123;&quot;a&quot;: 1, &quot;b&quot;: 1&#125;</span></span><br><span class="line">c4 = c1 | c2  <span class="comment"># &#123;&#x27;a&#x27;: 1, &#x27;b&#x27;: 2, &#x27;c&#x27;: 1&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="基础题-1"><a href="#基础题-1" class="headerlink" title="基础题"></a>基础题</h2><ul>
+<li><a href="https://leetcode-cn.com/problems/longest-substring-without-repeating-characters/">3. 无重复字符的最长子串</a></li>
+<li><a href="https://leetcode-cn.com/problems/longest-substring-with-at-most-two-distinct-characters/">159. 至多包含两个不同字符的最长子串</a></li>
+<li><a href="https://leetcode-cn.com/problems/minimum-size-subarray-sum/">209. 长度最小的子数组</a></li>
+<li><a href="https://leetcode-cn.com/problems/permutation-in-string/">567. 字符串的排列</a></li>
+<li><a href="https://leetcode-cn.com/problems/number-of-substrings-containing-all-three-characters/">1358. 包含所有三种字符的子字符串数目</a></li>
+</ul>
+<h2 id="提升题"><a href="#提升题" class="headerlink" title="提升题"></a>提升题</h2><ul>
+<li><a href="https://leetcode-cn.com/problems/substring-with-concatenation-of-all-words/">30. 串联所有单词的子串</a>  提示：注意所有单词的长度是相等的。窗口可能不只从头到尾滑动一次。</li>
+<li><a href="https://leetcode-cn.com/problems/minimum-window-substring/">76. 最小覆盖子串</a></li>
+<li><a href="https://leetcode-cn.com/problems/longest-substring-with-at-most-k-distinct-characters/">340. 至多包含 K 个不同字符的最长子串</a></li>
+<li><a href="https://leetcode-cn.com/problems/smallest-range-covering-elements-from-k-lists/">632. 最小区间</a></li>
+<li><a href="https://leetcode-cn.com/problems/minimum-window-subsequence/">727. 最小窗口子序列</a></li>
+</ul>
+<h1 id="回溯-Backtracking"><a href="#回溯-Backtracking" class="headerlink" title="回溯 Backtracking"></a>回溯 Backtracking</h1><p><strong>基本思想</strong>：从一条路往前走，能进则进，不能进则退回来，换一条路再试。</p>
+<p><strong>建议</strong>：把搜索树大致画下，思路更清晰。回溯一般借助DFS来实现。</p>
+<h2 id="基础题-2"><a href="#基础题-2" class="headerlink" title="基础题"></a>基础题</h2><ul>
+<li><a href="https://leetcode-cn.com/problems/binary-tree-paths">257. 二叉树的所有路径</a></li>
+<li><a href="https://leetcode-cn.com/problems/path-sum/">112. 路径总和</a></li>
+<li><a href="https://leetcode-cn.com/problems/path-sum-ii/">113. 路径总和 II</a></li>
+<li><a href="https://leetcode-cn.com/problems/combination-sum/">39. 组合总和</a></li>
+<li><a href="https://leetcode-cn.com/problems/combination-sum-ii/">40. 组合总和 II</a></li>
+<li><a href="https://leetcode-cn.com/problems/permutations/">46. 全排列</a></li>
+<li><a href="https://leetcode-cn.com/problems/permutations-ii">47. 全排列 II</a></li>
+<li><a href="https://leetcode-cn.com/problems/combinations/">77. 组合</a></li>
+<li><a href="https://leetcode-cn.com/problems/subsets/">78. 子集</a></li>
+<li><a href="https://leetcode-cn.com/problems/word-search/">79. 单词搜索</a></li>
+</ul>
+<h2 id="提升题-1"><a href="#提升题-1" class="headerlink" title="提升题"></a>提升题</h2><ul>
+<li><a href="https://leetcode-cn.com/problems/sudoku-solver/">37. 解数独</a></li>
+<li><a href="https://leetcode-cn.com/problems/n-queens/">51. N皇后</a></li>
+</ul>
+<h1 id="贪心算法-Greedy-Algorithm"><a href="#贪心算法-Greedy-Algorithm" class="headerlink" title="贪心算法 Greedy Algorithm"></a>贪心算法 Greedy Algorithm</h1><p>贪心算法对问题求解时，总是做出在当前看来是最好的选择。选择的贪心策略必须具备<strong>无后效性</strong>，即某个状态以前的过程不会影响以后的状态，只与当前状态有关。</p>
+<ul>
+<li><a href="https://leetcode-cn.com/problems/jump-game/">55. 跳跃游戏</a>  提示：如果能到达某个位置，那一定能到达它前面的所有位置。</li>
+<li><a href="https://leetcode-cn.com/problems/queue-reconstruction-by-height/">406. 根据身高重建队列</a>  提示：如果最矮的人的前面有k个人，那么其位置就是k。</li>
+<li><a href="https://leetcode-cn.com/problems/task-scheduler/">621. 任务调度器</a> 提示：完成所有任务的最短时间取决于出现次数最多的任务数量。</li>
+</ul>
+<h1 id="动态规划-Dynamic-Programing"><a href="#动态规划-Dynamic-Programing" class="headerlink" title="动态规划 Dynamic Programing"></a>动态规划 Dynamic Programing</h1><p>动态规划把原问题分解为相对简单的<strong>子问题</strong>，并将子问题答案<strong>记忆化存储</strong>，以便下次需要同一个子问题解之时直接查表。动态规划通常<strong>自底向上</strong>地求解所有子问题结果，最终获得原问题结果。常适用于有<strong>重叠子问题和最优子结构性质</strong>的问题。</p>
+<p><strong>难点</strong>在于<strong>状态函数</strong>和<strong>递推关系</strong>的确定。</p>
+<h2 id="基础题-3"><a href="#基础题-3" class="headerlink" title="基础题"></a>基础题</h2><p>递推公式简单直接。</p>
+<table>
+<thead>
+<tr>
+<th>leetcode</th>
+<th>递推关系</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://leetcode-cn.com/problems/climbing-stairs/">70. 爬楼梯</a></td>
+<td>F(i) &#x3D; F(i-1) + F(i-2)</td>
+</tr>
+<tr>
+<td><a href="https://leetcode-cn.com/problems/maximum-subarray/submissions/">53. 最大子序和</a></td>
+<td>F(i) &#x3D; max{F(i-1) + v(i), v(i)}</td>
+</tr>
+<tr>
+<td><a href="https://leetcode-cn.com/problems/unique-paths/">62. 不同路径</a></td>
+<td>F(i, j) &#x3D; F(i-1, j) + F(i, j-1)</td>
+</tr>
+<tr>
+<td><a href="https://leetcode-cn.com/problems/unique-paths-ii/">63. 不同路径 II</a></td>
+<td>F(i, j) &#x3D; F(i-1, j) + F(i, j-1)</td>
+</tr>
+<tr>
+<td><a href="https://leetcode-cn.com/problems/minimum-path-sum/">64. 最小路径和</a></td>
+<td>F(i, j) &#x3D; min{F(i-1, j), F(i, j-1)} + d(i, j)}</td>
+</tr>
+<tr>
+<td><a href="https://leetcode-cn.com/problems/house-robber">198. 打家劫舍</a></td>
+<td>F(i) &#x3D; max{F(i-3) + F(i-2)} + v(i)}</td>
+</tr>
+</tbody></table>
+<h2 id="提升题-2"><a href="#提升题-2" class="headerlink" title="提升题"></a>提升题</h2><p>递推关系不明显。</p>
+<table>
+<thead>
+<tr>
+<th>leetcode</th>
+<th>状态函数</th>
+<th>递推关系</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://leetcode-cn.com/problems/unique-binary-search-trees">96. 不同的二叉搜索树</a></td>
+<td>$F(i)$代表前i个结点构成不同的二叉搜索树个数</td>
+<td>$F(i)&#x3D; \sum_{j&#x3D;1}^i F(j−1)⋅F(i-j)$</td>
+</tr>
+<tr>
+<td><a href="https://leetcode-cn.com/problems/word-break/">139. 单词拆分</a></td>
+<td>$F(i)$代表字符串中前i个字符是否能由字典中单词构成</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://leetcode-cn.com/problems/edit-distance/">72. 编辑距离</a></td>
+<td>$F(i, j)$代表<code>word1[:i+1]</code>位置转换成<code>word2[:j+1]</code>位置需要最少步数</td>
+<td>F(i,j) &#x3D; min{F(i-1,j-1), F(i-1,j), F(i,j-1)} + 1</td>
+</tr>
+<tr>
+<td><a href="https://leetcode-cn.com/problems/longest-palindromic-subsequence/">516. 最长回文子序列</a></td>
+<td>$F(i,j)$表示<code>s</code>第i个字符到第j个字符的子串最长回文长度</td>
+<td>若<code>s[i]==s[j]</code>，F(i,j)&#x3D;F(i+1,j-1)+2；否则F(i,j)&#x3D;max{F(i+1,j),F(i,j-1)}</td>
+</tr>
+<tr>
+<td><a href="https://leetcode-cn.com/problems/longest-common-subsequence/">1143. 最长公共子序列</a></td>
+<td>$F(i, j)$代表<code>text1[:i+1]</code>和<code>text2[:j+1]</code>之间的最长公共子序列</td>
+<td>若<code>text1[i]==text2[j]</code>则F(i,j)&#x3D;1+F(i-1,j-1);否则F(i,j)&#x3D;max{F(i-1,j),F(i,j-1)}</td>
+</tr>
+</tbody></table>
+<h2 id="多个状态函数"><a href="#多个状态函数" class="headerlink" title="多个状态函数"></a>多个状态函数</h2><p>有的时候状态函数可能不只一个，最终结果可能是多个状态函数综合计算的结果。</p>
+<table>
+<thead>
+<tr>
+<th>leetcode</th>
+<th>状态函数</th>
+<th>递推关系</th>
+<th>提示</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://leetcode-cn.com/problems/trapping-rain-water/">42. 接雨水</a></td>
+<td><code>max_left[i]</code>代表从最左到i的最大长度；<code>max_right[i]</code>代表从右到i的最大长度</td>
+<td>max_left[i] &#x3D; max{max_left[i-1], height[i]}，max_right[i] &#x3D; max{max_right[i+1], height[i]} ，Σi{min(max_left[i],max_right[i])−height[i]} <code>max_right</code>代表从右往左投影的面积；<code>max_left</code>代表从左往右投影的面积。二者相交部分，减去固有柱子面积，即水的面积。</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://leetcode-cn.com/problems/paint-house/">256. 粉刷房子</a></td>
+<td>$R[k]$表示第k个房子是红色的时候，前k个房子的最小花销；$B[k]$和$G[k]$定义类似</td>
+<td>R[k] &#x3D; min{B[k-1], G[k-1]} + cost[k][0]，B[k] &#x3D; min{R[k-1], G[k-1]} + cost[k][1]，G[k] &#x3D; min{R[k-1], B[k-1]} + cost[k][2]，result &#x3D; min{R[n-1], B[n-1], G[n-1]}</td>
+<td>此题像极解码器中的维特比算法</td>
+</tr>
+</tbody></table>
+<h2 id="状态压缩"><a href="#状态压缩" class="headerlink" title="状态压缩"></a>状态压缩</h2><p>状态压缩即<strong>把一个二元状态组用二进制数来表示</strong>。如开灯或关灯，选取或没选取，奇数或偶数，这些都属于二元状态。而如果有N盏灯、N个选项或者N个数，这就变成了一个二元状态组。</p>
+<p>之所以叫状态压缩是因为这个二元状态组可以用一个<strong>整数</strong>表示，方便了计算和维护。</p>
+<table>
+<thead>
+<tr>
+<th>leetcode</th>
+<th>二元状态</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://leetcode-cn.com/problems/maximum-students-taking-exam">1349. 参加考试的最大学生数</a></td>
+<td>是否坐人</td>
+</tr>
+<tr>
+<td><a href="https://leetcode-cn.com/problems/find-the-longest-substring-containing-vowels-in-even-counts/">5337. 每个元音包含偶数次的最长子字符串</a></td>
+<td>包含奇数或偶数个的第i个元音</td>
+</tr>
+<tr>
+<td><a href="https://leetcode-cn.com/problems/smallest-sufficient-team/">1125. 最小的必要团队</a></td>
+<td>是否包含第i个技能</td>
+</tr>
+<tr>
+<td><a href="https://leetcode-cn.com/problems/stickers-to-spell-word/">691. 贴纸拼词</a></td>
+<td>是否包含target的第i个字符</td>
+</tr>
+</tbody></table>
+<h2 id="直接记忆子问题结果"><a href="#直接记忆子问题结果" class="headerlink" title="直接记忆子问题结果"></a>直接记忆子问题结果</h2><p>动态规划总的来说是<strong>自底向上</strong>的，有的问题<strong>自顶向下</strong>分析更简单，则可以采用<strong>记忆子问题结果</strong>的方案。</p>
+<p>技巧：</p>
+<p>python中可以使用<code>lru_cache</code>装饰器来缓存子问题：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> functools <span class="keyword">import</span> lru_cache</span><br><span class="line"></span><br><span class="line"><span class="meta">@lru_cache(<span class="params"><span class="literal">None</span></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">func</span>(<span class="params">i, j</span>):</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a href="https://leetcode-cn.com/problems/regular-expression-matching/">10. 正则表达式匹配</a> 提示：从右往左检查</li>
+<li><a href="https://leetcode-cn.com/problems/wildcard-matching/">44. 通配符匹配</a></li>
+<li><a href="https://leetcode-cn.com/problems/paint-house/">256. 粉刷房子</a> 提示：从左往右刷，第一个房子有三种选择，其他房子都只有两种选择，此题如果能想到维特比算法用dp更简单。</li>
+</ul>
+<h3 id="背包问题"><a href="#背包问题" class="headerlink" title="背包问题"></a>背包问题</h3><p>推荐阅读：<a href="https://raw.githubusercontent.com/tianyicui/pack/master/V2.pdf">背包问题九讲</a></p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>状态定义</th>
+<th>递推关系</th>
+<th>相关leetcode</th>
+<th>提示</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0-1背包问题</td>
+<td>$F(i, v)$代表只考虑前i种物品放进容量为v的背包的最大价值。</td>
+<td>F(i, v) &#x3D; max{F(i-1, v), F(i-1, v-C(i)) + W(i)}</td>
+<td><a href="https://leetcode-cn.com/problems/partition-equal-subset-sum/">416. 分割等和子集</a></td>
+<td>问题转换成(sum&#x2F;2)的容量的0-1背包。状态$F(i,v)$表示使用前i种物品能否完全填满背包。F(i,v)&#x3D;F(i-1,v) or F(i-1,v-C(i))</td>
+</tr>
+<tr>
+<td>完全背包</td>
+<td>同上</td>
+<td>F(i, v) &#x3D; max{F(i-1, v-kC(i)) + kW(i)}，其中0 &lt;&#x3D; kC(i) &lt;&#x3D; v</td>
+<td><a href="https://leetcode-cn.com/problems/coin-change/">322.零钱兑换</a></td>
+<td>F(i,v)&#x3D;min_i{F(i,v), F(i-1,v-C(i))+1}</td>
+</tr>
+</tbody></table>
+<h1 id="数学-Math"><a href="#数学-Math" class="headerlink" title="数学 Math"></a>数学 Math</h1><p>常用python中的数学操作：</p>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>代码</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>乘方</td>
+<td><code>pow(4,3)</code> 和 <code>4 ** 3</code> 都表示4的3次方</td>
+</tr>
+<tr>
+<td>平方根</td>
+<td><code>math.sqrt(25)</code> 和 <code>pow(25, 0.5)</code> 都表示对25求平方根</td>
+</tr>
+<tr>
+<td>最大公约数</td>
+<td><code>math.gcd(a, b)</code>表示求a和 b的最大公约数（辗转取余）</td>
+</tr>
+</tbody></table>
+<h2 id="计算"><a href="#计算" class="headerlink" title="计算"></a>计算</h2><ul>
+<li><a href="https://leetcode-cn.com/problems/divide-two-integers/">29. 两数相除</a> 提示：二分法</li>
+<li><a href="https://leetcode-cn.com/problems/powx-n/">50. Pow(x, n)</a></li>
+<li><a href="https://leetcode-cn.com/problems/sqrtx/">69. x 的平方根</a>  提示：二分法 或 牛顿法：$f(x)≈f(x_0)+(x-x_0)f’(x_0)$</li>
+<li><a href="https://leetcode-cn.com/problems/add-strings/">415. 字符串相加</a></li>
+<li><a href="https://leetcode-cn.com/problems/multiply-strings/">43. 字符串相乘</a></li>
+<li><a href="https://leetcode-cn.com/problems/power-of-three/">326. 3的幂</a></li>
+<li><a href="https://leetcode-cn.com/problems/x-of-a-kind-in-a-deck-of-cards/">914. 卡牌分组</a> 提示： 最大公约数</li>
+</ul>
+<h2 id="质数"><a href="#质数" class="headerlink" title="质数"></a>质数</h2><ul>
+<li><a href="https://leetcode-cn.com/problems/count-primes/">204. 计数质数</a> 提示：厄拉多塞筛法</li>
+</ul>
+<h2 id="拒绝采样"><a href="#拒绝采样" class="headerlink" title="拒绝采样"></a>拒绝采样</h2><ul>
+<li><a href="https://leetcode-cn.com/problems/implement-rand10-using-rand7">470. 用 Rand7() 实现 Rand10()</a></li>
+</ul>
+<h2 id="几何"><a href="#几何" class="headerlink" title="几何"></a>几何</h2><ul>
+<li><a href="https://leetcode-cn.com/problems/surface-area-of-3d-shapes/">892. 三维形体的表面积</a></li>
+</ul>
+<h2 id="排列组合"><a href="#排列组合" class="headerlink" title="排列组合"></a>排列组合</h2><ul>
+<li><a href="https://leetcode-cn.com/problems/count-all-valid-pickup-and-delivery-options/">1359. 有效的快递序列数目</a></li>
+</ul>
+<h3 id="卡特兰数"><a href="#卡特兰数" class="headerlink" title="卡特兰数"></a>卡特兰数</h3><p>卡特兰数$C_n$满足以下递推关系：</p>
+<p>卡特兰数$C_n$满足以下递推关系$C_{n+1} &#x3D; C_0C_n+C_1C_{n-1}+…+C_nC_0 &#x3D; \sum_{i&#x3D;0}^n C_iC_{n-i}$</p>
+<ul>
+<li><a href="https://leetcode-cn.com/problems/unique-binary-search-trees">96. 不同的二叉搜索树</a></li>
+<li><a href="https://leetcode-cn.com/problems/unique-binary-search-trees-ii/">95. 不同的二叉搜索树 II</a></li>
+</ul>
+<h2 id="统计"><a href="#统计" class="headerlink" title="统计"></a>统计</h2><h3 id="最大数"><a href="#最大数" class="headerlink" title="最大数"></a>最大数</h3><ul>
+<li><a href="https://leetcode-cn.com/problems/sliding-window-maximum/">239. 滑动窗口最大值</a></li>
+</ul>
+<h3 id="众数"><a href="#众数" class="headerlink" title="众数"></a>众数</h3><p>出现次数超过列表长度一半的数。</p>
+<ul>
+<li><a href="https://leetcode-cn.com/problems/majority-element">169. 多数元素</a>  提示：Boyer-Moore</li>
+</ul>
+<h3 id="中位数"><a href="#中位数" class="headerlink" title="中位数"></a>中位数</h3><p>中位数是有序列表中间的数。</p>
+<p>特性：中位数可以将有序列表分成左右长度相同的两个子列表。</p>
+<ul>
+<li><a href="https://leetcode-cn.com/problems/median-of-two-sorted-arrays/">4. 寻找两个有序数组的中位数</a>  提示：中位数转换成寻找第k小；每次排除前1&#x2F;2可使时间复杂度为log(m+n)</li>
+<li><a href="https://leetcode-cn.com/problems/find-median-from-data-stream/">295. 数据流的中位数</a></li>
+<li><a href="https://leetcode-cn.com/problems/sliding-window-median/">480. 滑动窗口中位数</a></li>
+</ul>
+<h3 id="平均值"><a href="#平均值" class="headerlink" title="平均值"></a>平均值</h3><ul>
+<li><a href="https://leetcode-cn.com/problems/moving-average-from-data-stream/">346. 数据流中的移动平均值</a></li>
+</ul>
+<h1 id="扫描线算法-Line-Sweep"><a href="#扫描线算法-Line-Sweep" class="headerlink" title="扫描线算法 Line Sweep"></a>扫描线算法 Line Sweep</h1><p>扫描线（面）算法来自计算机图形学，原本用于多边形的填充显示。使用虚拟扫描线可以来解决欧几里德空间中的各种几何问题。</p>
+<p>推荐阅读：</p>
+<ul>
+<li><a href="https://oi-wiki.org/geometry/scanning/">扫描线</a></li>
+</ul>
+<h2 id="典型题-12"><a href="#典型题-12" class="headerlink" title="典型题"></a>典型题</h2><ul>
+<li><a href="https://leetcode-cn.com/problems/the-skyline-problem/">218. 天际线问题</a> 提示：竖线从左向右扫描</li>
+<li><a href="https://leetcode-cn.com/problems/perfect-rectangle/">391. 完美矩形</a></li>
+<li><a href="https://leetcode-cn.com/problems/meeting-scheduler/">1229. 安排会议日程</a></li>
+<li><a href="https://leetcode-cn.com/problems/rectangle-area-ii/">850. 矩形面积 II</a></li>
+</ul>
+<h1 id="脑筋急转弯"><a href="#脑筋急转弯" class="headerlink" title="脑筋急转弯"></a>脑筋急转弯</h1><p>此类题通常需要找规律。</p>
+<ul>
+<li><a href="https://leetcode-cn.com/problems/nim-game/">292. Nim 游戏</a></li>
+</ul>
+<h1 id="多线程"><a href="#多线程" class="headerlink" title="多线程"></a>多线程</h1><p>常用操作：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Lock</span><br><span class="line"></span><br><span class="line">l = Lock()  <span class="comment"># 初始化一个锁</span></span><br><span class="line">l.acquire()  <span class="comment"># 等待获取锁，并锁定</span></span><br><span class="line">l.release()  <span class="comment"># 释放该锁</span></span><br><span class="line"><span class="keyword">with</span> l:   <span class="comment"># 获取锁；执行动作；释放锁</span></span><br><span class="line">    xxx </span><br></pre></td></tr></table></figure>
+
+<h2 id="典型题-13"><a href="#典型题-13" class="headerlink" title="典型题"></a>典型题</h2><ul>
+<li><a href="https://leetcode-cn.com/problems/print-in-order/">1114. 按序打印</a></li>
+</ul>
+<h1 id="刷题推荐阅读资料"><a href="#刷题推荐阅读资料" class="headerlink" title="刷题推荐阅读资料"></a>刷题推荐阅读资料</h1><ul>
+<li><a href="https://github.com/hzwer/shareOI">算法竞赛课件分享</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/python/metaclass/" rel="prev" title="python的metaclass类元编程">
+                  <i class="fa fa-angle-left"></i> python的metaclass类元编程
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/philosophy/heart_sutra/" rel="next" title="心经">
+                  心经 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

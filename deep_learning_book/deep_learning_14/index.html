@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="14. Autoencoders自编码器（Autoencoders）自编码器是神经网络的一种，经过训练后能尝试将输入复制到输出。自编码器内部有一个隐藏层 $h$，产生编码表示输入。  该网络由两部分组成：一个由函数$h &#x3D; f(x)$表示的编码器和一个生成重构的解码器$r&#x3D;g(h)$。 如果一个自编码器只是简单地学会将处处设置为$g(f(x)) &#x3D; x$，那么这个自编">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第十四章：Autoencoders">
+<meta property="og:url" content="https://applenob.github.io/deep_learning_book/deep_learning_14/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="14. Autoencoders自编码器（Autoencoders）自编码器是神经网络的一种，经过训练后能尝试将输入复制到输出。自编码器内部有一个隐藏层 $h$，产生编码表示输入。  该网络由两部分组成：一个由函数$h &#x3D; f(x)$表示的编码器和一个生成重构的解码器$r&#x3D;g(h)$。 如果一个自编码器只是简单地学会将处处设置为$g(f(x)) &#x3D; x$，那么这个自编">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2017-05-09T21:00:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.028Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="笔记">
+<meta property="article:tag" content="Deep Learning">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://applenob.github.io/deep_learning_book/deep_learning_14/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/deep_learning_book/deep_learning_14/","path":"deep_learning_book/deep_learning_14/","title":"第十四章：Autoencoders"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>第十四章：Autoencoders | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#14-Autoencoders"><span class="nav-number">1.</span> <span class="nav-text">14. Autoencoders</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%EF%BC%88Autoencoders%EF%BC%89"><span class="nav-number">1.1.</span> <span class="nav-text">自编码器（Autoencoders）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AC%A0%E5%AE%8C%E5%A4%87%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%EF%BC%88Undercomplete-Autoencoder%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">欠完备自编码器（Undercomplete Autoencoder）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%EF%BC%88Regularized-Autoencoders%EF%BC%89"><span class="nav-number">1.3.</span> <span class="nav-text">正则自编码器（Regularized Autoencoders）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A8%80%E7%96%8F%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%EF%BC%88Sparse-Autoencoders%EF%BC%89"><span class="nav-number">1.3.1.</span> <span class="nav-text">稀疏自编码器（Sparse Autoencoders）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9A%8F%E6%9C%BA%E7%BC%96%E7%A0%81%E5%99%A8%E5%92%8C%E8%A7%A3%E7%A0%81%E5%99%A8%EF%BC%88Stochastic-Encoders-and-Decoders%EF%BC%89"><span class="nav-number">1.3.2.</span> <span class="nav-text">随机编码器和解码器（Stochastic Encoders and Decoders）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%BB%E5%99%AA%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%EF%BC%88Denoising-Autoencoders%EF%BC%8CDAE%EF%BC%89"><span class="nav-number">1.3.3.</span> <span class="nav-text">去噪自编码器（Denoising Autoencoders，DAE）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%81%E5%BD%A2%EF%BC%88manifold%EF%BC%89%E7%9B%B8%E5%85%B3"><span class="nav-number">1.3.4.</span> <span class="nav-text">流形（manifold）相关</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%94%B6%E7%BC%A9%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%EF%BC%88Contractive-Encoder%EF%BC%89"><span class="nav-number">1.3.5.</span> <span class="nav-text">收缩自编码器（Contractive Encoder）</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning_book/deep_learning_14/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="第十四章：Autoencoders | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第十四章：Autoencoders
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-05-09 14:00:00" itemprop="dateCreated datePublished" datetime="2017-05-09T14:00:00-07:00">2017-05-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E3%80%8ADeep-Learning%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">《Deep Learning》读书笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="14-Autoencoders"><a href="#14-Autoencoders" class="headerlink" title="14. Autoencoders"></a>14. Autoencoders</h1><h2 id="自编码器（Autoencoders）"><a href="#自编码器（Autoencoders）" class="headerlink" title="自编码器（Autoencoders）"></a>自编码器（Autoencoders）</h2><p>自编码器是神经网络的一种，经过训练后能尝试将输入复制到输出。自编码器内部有一个隐藏层 $h$，产生<strong>编码表示输入</strong>。 </p>
+<p>该网络由两部分组成：一个由函数$h &#x3D; f(x)$表示的编码器和一个生成重构的解码器$r&#x3D;g(h)$。 如果一个自编码器只是简单地学会将处处设置为$g(f(x)) &#x3D; x$，那么这个自编码器就没什么特别的用处。</p>
+<p>相反，我们不应该将自编码器设计成输入到输出完全相等:向自编码器强加一些约束，使它只能近似地复制，并只能复制与训练数据相似的输入。</p>
+<p><strong>这些约束强制模型考虑输入数据的哪些部分需要被优先复制，因此它往往能学习到数据的有用特性。</strong></p>
+<p>现代自编码器将编码器和解码器的概念推而广之，将确定函数推广为随机映射$p_{encoder} (h \mid x)$和$p_{decoder}(x \mid h)$。 </p>
+<p>所有自编码器的训练过程涉及<strong>两种推动力</strong>的折衷：</p>
+<p>1.学习训练样本$x$的表示$h$使得$x$能通过解码器近似地从$h$中恢复，$x$是从训练数据挑出的这一事实很关键，因为这意味着在自编码器不需要成功重构不属于数据生成分布下的输入；</p>
+<p>2.满足约束或正则惩罚。 这可以是限制自编码器容量的架构约束，也可以是加入到重构代价的一个正则项。<br>两种推动力结合才是有用的，因为它们驱使隐藏的表示能捕获有关数据分布结构的信息。</p>
+<p><a href="https://github.com/applenob/reading_note/raw/master/res/autoencoder.png">https://github.com/applenob/reading_note/raw/master/res/autoencoder.png</a></p>
+<p><strong>自编码器的应用</strong>：传统自编码器被用于<strong>降维</strong>或<strong>特征学习</strong>。 近年来，自编码器与潜变量模型理论的联系将自编码器带到了<strong>生成建模</strong>的前沿。</p>
+<h2 id="欠完备自编码器（Undercomplete-Autoencoder）"><a href="#欠完备自编码器（Undercomplete-Autoencoder）" class="headerlink" title="欠完备自编码器（Undercomplete Autoencoder）"></a>欠完备自编码器（Undercomplete Autoencoder）</h2><p>从自编码器获得有用特征的一种方法是<strong>限制$h$的维度比$x$小</strong>，这种编码维度小于输入维度的自编码器称为欠完备自编码器。<br>损失函数$L(x,g(f(x)))$，惩罚$g(f(x))$与$x$的差异，如均方误差。</p>
+<p>当解码器是线性的且$L$是均方误差，欠完备的自编码器会学习出与PCA相同的生成子空间。</p>
+<p>不幸的是，如果编码器和解码器被赋予过大的容量，自编码器会执行复制任务而捕捉不到任何有关数据分布的有用信息。 </p>
+<h2 id="正则自编码器（Regularized-Autoencoders）"><a href="#正则自编码器（Regularized-Autoencoders）" class="headerlink" title="正则自编码器（Regularized Autoencoders）"></a>正则自编码器（Regularized Autoencoders）</h2><p>使用的损失函数可以鼓励模型学习<strong>其他特性（除了将输入复制到输出）</strong>，而不必限制使用浅层的编码器和解码器以及小的编码维数来限制模型的容量。</p>
+<p>这些特性包括<strong>稀疏表示</strong>、<strong>表示的小导数</strong>、以及<strong>对噪声或输入缺失的鲁棒性</strong>。</p>
+<h3 id="稀疏自编码器（Sparse-Autoencoders）"><a href="#稀疏自编码器（Sparse-Autoencoders）" class="headerlink" title="稀疏自编码器（Sparse Autoencoders）"></a>稀疏自编码器（Sparse Autoencoders）</h3><p>训练时结合编码层的稀疏惩罚$\Omega(h)$和重构误差：$L(x,g(f(x)))+Ω(h)$。 其中，<br>$Ω(h)&#x3D;λ\sum_i|h_i|$一般用来学习特征，以便用于像分类这样的任务。</p>
+<h3 id="随机编码器和解码器（Stochastic-Encoders-and-Decoders）"><a href="#随机编码器和解码器（Stochastic-Encoders-and-Decoders）" class="headerlink" title="随机编码器和解码器（Stochastic Encoders and Decoders）"></a>随机编码器和解码器（Stochastic Encoders and Decoders）</h3><p>任何潜变量模型$p_{model}(h, x)$定义一个随机编码器：$p_{encoder}(h∣x)&#x3D;p_{model}(h∣x)$，以及一个随机解码器：$p_{decoder}(x∣h)&#x3D;p_{model}(x∣h)$。</p>
+<p><a href="https://github.com/applenob/reading_note/raw/master/res/stochasticAutoencoder.png">https://github.com/applenob/reading_note/raw/master/res/stochasticAutoencoder.png</a></p>
+<h3 id="去噪自编码器（Denoising-Autoencoders，DAE）"><a href="#去噪自编码器（Denoising-Autoencoders，DAE）" class="headerlink" title="去噪自编码器（Denoising Autoencoders，DAE）"></a>去噪自编码器（Denoising Autoencoders，DAE）</h3><p>使用损失函数：$L(x,g(f(\tilde x)))$，其中$\tilde<br>x$是被某种噪声损坏的$x$的副本。 </p>
+<p>引入损坏过程（corruption process）$C(\tilde{x} \mid x)$。</p>
+<p>训练过程：</p>
+<p>1.从训练数据中采一个训练样本$x$；</p>
+<p>2.从$C(\tilde{x} \mid x&#x3D;x)$采一个<strong>损坏样本</strong>$\tilde x$；</p>
+<p>3.将$(x, \tilde x)$作为训练样本来估计自编码器的重构分布$p_{reconstruct} (x \mid \tilde x) &#x3D; p_{decoder}(x \mid h)$，其中，$h$是编码器 $f(\tilde x)$的输出，$p_{decoder}$根据解码函数$g(h)$定义。</p>
+<p>通常我们可以简单地对<strong>负对数似然</strong>$-\log p_{decoder} (x \mid h)$进行基于梯度的近似最小化，因此，我们可以认为DAE是在以下期望下进行随机梯度下降：$E_{x \sim \hat{p}_{data}(x)} E_{\tilde{x} \sim C(\tilde{x}\mid x)} \log p_{decoder}(x \mid h &#x3D; f(\tilde{x}))$，其中，$\hat{p}_{data}(x)$是训练数据的分布。</p>
+<p>对一类采用高斯噪声和均方误差作为重构误差的特定去噪自编码器（具有sigmoid隐藏单元和relu）的去噪训练过程，与训练带高斯可见单元的RBM无向概率模型是等价的。</p>
+<p><a href="https://github.com/applenob/reading_note/raw/master/res/dae.png">https://github.com/applenob/reading_note/raw/master/res/dae.png</a></p>
+<h3 id="流形（manifold）相关"><a href="#流形（manifold）相关" class="headerlink" title="流形（manifold）相关"></a>流形（manifold）相关</h3><p><strong>流形的一些重要特性</strong>：一个重要特征是<strong>切平面（tangent<br>plane）</strong>：$d$维流形上的一点$x$，切平面由能张成流形上允许变动的局部方向的$d$维基向量给出。 $n$维流形在每个点处都具有$n$维切平面。</p>
+<p>该切平面恰好在该点接触流形，并且在该点处平行于流形表面。 它定义了为保持在流形上可以移动的方向空间。</p>
+<p><strong>使用自编码器学习流形</strong>：自编码器的目标是学习流形的结构。 我们可以通过构建对数据点周围的输入扰动不敏感的重构函数，使得自编码器恢复流形结构。<br><a href="https://github.com/applenob/reading_note/raw/master/res/manifold.png">https://github.com/applenob/reading_note/raw/master/res/manifold.png</a></p>
+<h3 id="收缩自编码器（Contractive-Encoder）"><a href="#收缩自编码器（Contractive-Encoder）" class="headerlink" title="收缩自编码器（Contractive Encoder）"></a>收缩自编码器（Contractive Encoder）</h3><p><strong>惩罚导数作为正则</strong>：$L(x,g(f(x)))+Ω(h,x)$，其中，$Ω(h,x)&#x3D;λ∑_i||∇_xh_i||^2$。<br>这迫使模型学习一个在$x$变化小时目标也没有太大变化的函数。</p>
+<p>鼓励$f$的导数尽可能小：$Ω(h)&#x3D;λ|\frac{∂f(x)}{∂x}|_F^2$。<br>惩罚项$\Omega(h)$为平方Frobenius范数（元素平方之和），作用于与编码器的函数相关偏导数的Jacobian矩阵。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"># 笔记</a>
+              <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/deep_learning_book/deep_learning_13/" rel="prev" title="第十三章：Linear Factor Models">
+                  <i class="fa fa-angle-left"></i> 第十三章：Linear Factor Models
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/deep_learning_book/deep_learning_15/" rel="next" title="第十五章：Representation Learning">
+                  第十五章：Representation Learning <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

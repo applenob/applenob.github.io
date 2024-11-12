@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="概览决策树是一种分类和回归的基本模型，可从三个角度来理解它，即：  一棵树。 if-then规则的集合，该集合是决策树上的所有从根节点到叶节点的路径的集合。 定义在特征空间与类空间上的条件概率分布，决策树实际上是将特征空间划分成了互不相交的单元，每个从根到叶的路径对应着一个单元。决策树所表示的条件概率分布由各个单元给定条件下类的条件概率分布组成。实际中，哪个类别有较高的条件概率，就把该单元中的实例">
+<meta property="og:type" content="article">
+<meta property="og:title" content="决策树基础">
+<meta property="og:url" content="https://applenob.github.io/machine_learning/Tree_Basic/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="概览决策树是一种分类和回归的基本模型，可从三个角度来理解它，即：  一棵树。 if-then规则的集合，该集合是决策树上的所有从根节点到叶节点的路径的集合。 定义在特征空间与类空间上的条件概率分布，决策树实际上是将特征空间划分成了互不相交的单元，每个从根到叶的路径对应着一个单元。决策树所表示的条件概率分布由各个单元给定条件下类的条件概率分布组成。实际中，哪个类别有较高的条件概率，就把该单元中的实例">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://applenob.github.io/machine_learning/Tree_Basic/dtree.jpg">
+<meta property="og:image" content="https://applenob.github.io/machine_learning/Tree_Basic/exp_1.png">
+<meta property="og:image" content="https://applenob.github.io/machine_learning/Tree_Basic/tree_1.png">
+<meta property="og:image" content="https://applenob.github.io/machine_learning/Tree_Basic/tree_2.png">
+<meta property="article:published_time" content="2016-12-20T07:12:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.078Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="Machine Learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://applenob.github.io/machine_learning/Tree_Basic/dtree.jpg">
+
+
+<link rel="canonical" href="https://applenob.github.io/machine_learning/Tree_Basic/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/machine_learning/Tree_Basic/","path":"machine_learning/Tree_Basic/","title":"决策树基础"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>决策树基础 | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%A7%88"><span class="nav-number">1.</span> <span class="nav-text">概览</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="nav-number">2.</span> <span class="nav-text">基础知识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%97%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ID3%E7%AE%97%E6%B3%95"><span class="nav-number">4.</span> <span class="nav-text">ID3算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ID3%E7%AE%97%E6%B3%95%E6%B5%81%E7%A8%8B"><span class="nav-number">4.1.</span> <span class="nav-text">ID3算法流程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#C4-5%E7%AE%97%E6%B3%95"><span class="nav-number">5.</span> <span class="nav-text">C4.5算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%AA%E6%9E%9D"><span class="nav-number">6.</span> <span class="nav-text">剪枝</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CART%E7%AE%97%E6%B3%95"><span class="nav-number">7.</span> <span class="nav-text">CART算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9E%E5%BD%92CART%E7%94%9F%E6%88%90"><span class="nav-number">7.1.</span> <span class="nav-text">回归CART生成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E7%B1%BBCART%E7%94%9F%E6%88%90"><span class="nav-number">7.2.</span> <span class="nav-text">分类CART生成</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E5%B0%BC%E7%B3%BB%E6%95%B0"><span class="nav-number">7.2.1.</span> <span class="nav-text">基尼系数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CART%E5%89%AA%E6%9E%9D"><span class="nav-number">7.3.</span> <span class="nav-text">CART剪枝</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93"><span class="nav-number">8.</span> <span class="nav-text">算法总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%B3%E7%AD%96%E6%A0%91%E5%AE%9E%E8%B7%B5"><span class="nav-number">9.</span> <span class="nav-text">决策树实践</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%B3%E7%AD%96%E6%A0%91%E7%9A%84%E5%8F%AF%E8%A7%A3%E9%87%8A%E6%80%A7"><span class="nav-number">9.1.</span> <span class="nav-text">决策树的可解释性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">10.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/machine_learning/Tree_Basic/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="决策树基础 | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          决策树基础
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2016-12-19 23:12:00" itemprop="dateCreated datePublished" datetime="2016-12-19T23:12:00-08:00">2016-12-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><p>决策树是一种分类和回归的基本模型，可从三个角度来理解它，即：</p>
+<ul>
+<li>一棵树。</li>
+<li>if-then规则的集合，该集合是决策树上的所有从根节点到叶节点的路径的集合。</li>
+<li>定义在特征空间与类空间上的条件概率分布，决策树实际上是将特征空间划分成了互不相交的单元，每个从根到叶的路径对应着一个单元。决策树所表示的条件概率分布由各个单元给定条件下类的条件概率分布组成。实际中，哪个类别有较高的条件概率，就把该单元中的实例强行划分为该类别。</li>
+</ul>
+<p>主要的<strong>优点</strong>有两个：</p>
+<ul>
+<li>模型具有可解释性，容易向业务部门人员描述。</li>
+<li>分类速度快。</li>
+</ul>
+<p><img src="/machine_learning/Tree_Basic/dtree.jpg"></p>
+<h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p><strong>熵</strong>：$H(x) &#x3D; -\sum_{i&#x3D;1}^np_ilog(p_i)$</p>
+<p><strong>条件熵</strong>：$H(Y|X) &#x3D; H(X,Y)-H(X) &#x3D; \sum_XP(X)H(Y|X) &#x3D; -\sum_{X,Y}logP(Y|X)$</p>
+<p><strong>基尼系数（Gini index）</strong>：$Gini(p) &#x3D; \sum_{k&#x3D;1}^Kp_k(1-p_k) &#x3D; 1-\sum_{k&#x3D;1}^Kp_k^2$，基尼指数反应了从数据集中随机抽取两个样本，其类标不一致的概率。</p>
+<h2 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h2><p>决策树的损失函数通常是正则化的极大似然函数，学习的策略是以损失函数为目标函数的最小化。</p>
+<p>所以决策树的本质和其他机器学习模型是一致的，有一个损失函数，然后去优化这个函数；然而，区别就在于如何优化。</p>
+<p>决策树采用<strong>启发式算法</strong>来近似求解最优化问题，得到的是次最优的结果。</p>
+<p>该启发式算法可分为三步：</p>
+<ul>
+<li>特征选择</li>
+<li>模型生成</li>
+<li>决策树的剪枝</li>
+</ul>
+<p>决策树学习算法通常是一个递归地选择最优特征，并根据该特征对训练数据进行分割。</p>
+<p>选择最优特征要根据<strong>特征的分类能力</strong>，特征分类能力的衡量通常采用信息增益或信息增益比。</p>
+<p>决策树学习常用的算法主要有以下三种：<code>ID3算法</code>，<code>C4.5算法</code>，<code>CART算法</code>。</p>
+<h2 id="ID3算法"><a href="#ID3算法" class="headerlink" title="ID3算法"></a>ID3算法</h2><p>ID3使用<strong>信息增益</strong>作为特征选取的依据：</p>
+<p>$G(D, A) &#x3D; H(D) - H(D|A)$，即<strong>经验熵</strong>和<strong>经验条件熵</strong>的差值，其中$D$是训练数据集，$A$是特征。</p>
+<p>$H(D)&#x3D;-\sum_{k&#x3D;1}^K\frac{|C_k|}{|D|}log\frac{|C_k|}{|D|}$，其中，$|C_k|$是属于类$C_k$的个数，$|D|$是所有样本的个数。</p>
+<p>$H(D|A)&#x3D;\sum_{i&#x3D;1}^np_{a_i}H(D|a_i)&#x3D;\sum_{i&#x3D;1}^n\frac{|D_i|}{|D|}H(D_i)&#x3D;-\sum_{i&#x3D;1}^n\frac{|D_i|}{|D|}\sum_{k&#x3D;1}^{K}\frac{|D_{ik}|}{|D_i|}log\frac{|D_{ik}|}{|D_i|}$，其中，特征$A$有$n$个不同的取值${a_1,<br>a_2, …, a_n}$，根据特征$A$的取值将$D$划分为$n$个子集$D_1, D_2, …, D_n$，$|D_i|$是$D_i$的样本个数，$D_{ik}$是$D_i$中属于类$C_k$的样本集合。</p>
+<h3 id="ID3算法流程"><a href="#ID3算法流程" class="headerlink" title="ID3算法流程"></a>ID3算法流程</h3><ol>
+<li>计算$A$中各个特征对$D$的信息增益，选择信息增益最大的特征：$A_g$。</li>
+<li>若$A_g$的信息增益小于**阈值$\epsilon$**，则置为单结点树，并将$D$中实例数最多的类$C_k$作为该结点的类标记。</li>
+<li>否则，对$A_g$的每一可能值：$a_i$，依据$A_g &#x3D; a_i$将$D$分割为若干非空子集$D_i$，同样，将$D_i$中实例数最多的类作为类标，构建子结点。</li>
+<li>对第$i$个子结点，以$D_i$为训练集，以$A-{A_g}$为特征集，递归地调用上面1-3步。</li>
+</ol>
+<h2 id="C4-5算法"><a href="#C4-5算法" class="headerlink" title="C4.5算法"></a>C4.5算法</h2><p>C4.5使用<strong>信息增益比</strong>，作为特征选取的依据：</p>
+<p><strong>信息增益比</strong>：$g_R(D,A)&#x3D;\frac{g(D,A)}{H_A(D)}$，即信息增益除以训练集$D$关于特征$A$的熵，$H_A(D) &#x3D; -\sum_{i&#x3D;1}^n\frac{D_i}{D}log_2\frac{D_i}{D}$，$n$是特征$A$取值的个数。</p>
+<p><strong>为什么使用信息增益比？</strong>先回顾信息增益：$H(D|A)&#x3D;-\sum_{i&#x3D;1}^n\frac{|D_i|}{|D|}\sum_{k&#x3D;1}^{K}\frac{|D_{ik}|}{|D_i|}log\frac{|D_{ik}|}{|D_i|}$，对于极限情况，如果某个特征$A$可以将数据集$D$完全分隔开，且每个子集的个数都是1，那么$log\frac{|D_{ik}|}{|D_i|} &#x3D; log1 &#x3D; 0$，于是信息增益取得最大。但这样的特征并不是最好的。</p>
+<p>也就是说，使用信息增益作为特征选择的标准时，容易偏向于那些<strong>取值比较多</strong>的特征，导致训练出来的树非常的<strong>宽</strong>然而<strong>深度不深</strong>的树，非常容易导致<strong>过拟合</strong>。</p>
+<p>而采用信息增益比则有效地抑制了这个缺点：取值多的特征，以它作为根节点的单节点树的熵很大，即$H_A(D)$较大，导致信息增益比减小，在特征选择上会更加合理。</p>
+<p>C4.5具体算法类似于ID3算法。</p>
+<h2 id="剪枝"><a href="#剪枝" class="headerlink" title="剪枝"></a>剪枝</h2><p>为了防止出现过拟合现象，要把过于复杂的树进行剪枝，将其简化。<br>决策树的剪枝往往通过极小化决策树整体的损失函数（loss function）或者代价函数（cost function）来实现。<br>决策树的生成学习局部的模型，而决策树剪枝学习整体的模型。</p>
+<p><strong>损失函数</strong>：$C_α(T) &#x3D; C(T)+α|T|&#x3D;\sum_{t&#x3D;1}^{|T|}N_tH_t(T)+α|T|$</p>
+<p>其中，$|T|$是树$T$的叶节点个数，$t$是其中一个结点，$N_t$是这个结点的样本个数，$H_t(T)$是这个结点的经验熵。</p>
+<p>$C(T)$表示模型对训练数据的预测误差， $α|T|$则是正则化项。</p>
+<p>使用叶子结点的熵作为的模型的评价是因为：</p>
+<p><strong>如果分到该叶节点的所有样本都属于同一类，那么分类效果最好，熵最小。</strong></p>
+<p><strong>一般的剪枝算法</strong>：</p>
+<ol>
+<li>计算每个结点的经验熵。</li>
+<li>递归地从叶节点向上回缩：设一叶结点回缩到父结点之前和之后，树分别是$T_B$和$T_A$，其对应的损失函数值分别是$C_α(T_B)$与$C_α(T_A)$，如果$C_α(T_A)≤C_α(T_B)$，则剪枝，即将父节点变成新的叶结点。</li>
+</ol>
+<h2 id="CART算法"><a href="#CART算法" class="headerlink" title="CART算法"></a>CART算法</h2><p><strong>CART（Classification And Regression Tree）</strong>本身是一种分类回归树，即，它既可以用来解决分类问题，也可以用来解决回归问题。</p>
+<p><strong>CART</strong>树是一棵<strong>二叉树</strong>，内部结点特征的取值是“是”和“否”，左分支是取值为“是”的分支，右分支是取值是“否”的分支。</p>
+<p>因此，注意到CART的生成过程和前面的ID3和C4.5略有不同，分回归树和分类树两种情况分析。</p>
+<h3 id="回归CART生成"><a href="#回归CART生成" class="headerlink" title="回归CART生成"></a>回归CART生成</h3><p>回归树的生成通常选择<strong>平方误差</strong>作为评判标准。</p>
+<p>假设已将输入空间划分为$M$个单元$R_1,R_2,…,R_M$，并且在每个单元$R_m$上有一个固定的输出值$c_m$，回归树可以表示为：$f(x) &#x3D; \sum_{m&#x3D;1}^Mc_mI(x \in R_m)$。</p>
+<p>在单元$R_m$上的$c_m$的最优值$\hat c_m$是$\hat c_m&#x3D;ave(y_i|x_i\in R_m)$（根据最小化该单元的平方误差可以得到这个结论）。</p>
+<p>至于空间的划分，先选择输入的第$j$个维度的特征$x^{(j)}$和对应的取值$s$，作为<strong>切分变量（splitting variable）和切分点（splitting point）</strong>，并定义两个区域：$R_1(j,s)&#x3D;{x|x^{(j)}≤s}$和$R_2(j,s)&#x3D;{x|x^{(j)}＞s}$。再寻找最优的切分变量和切分点：$\arg\underset{j,s}{min}[\underset{c_1}{min}\sum_{x_i\in R_1(j,s)}(y_i-c_1)^2+\underset{c_2}{min}\sum_{x_i\in R_1(j,s)}(y_i-c_2)^2]$。</p>
+<p><strong>回归CART生成</strong>：</p>
+<ul>
+<li>1.对于数的所有维度，遍历$j$；对固定的$j$扫描切分点$s$：<ul>
+<li>2.寻找最优的切分变量和切分点：$\arg\underset{j,s}{min}[\underset{c_1}{min}\sum_{x_i\in R_1(j,s)}(y_i-c_1)^2+\underset{c_2}{min}\sum_{x_i\in R_1(j,s)}(y_i-c_2)^2]$。</li>
+</ul>
+</li>
+<li>3.用选定的对$(j,s)$划分区域并决定相应的输出值：$R_1(j,s)&#x3D;{x|x^{(j)}≤s}$和$R_2(j,s)&#x3D;{x|x^{(j)}＞s}$。$\hat c_m&#x3D;ave(y_i|x_i\in R_m);;;x\in R_m,;m&#x3D;1,2$。</li>
+<li>4.重复1,2,3直到满足停止条件。</li>
+<li>5.生成决策树：$f(x) &#x3D; \sum_{m&#x3D;1}^Mc_mI(x \in R_m)$。</li>
+</ul>
+<h3 id="分类CART生成"><a href="#分类CART生成" class="headerlink" title="分类CART生成"></a>分类CART生成</h3><h4 id="基尼系数"><a href="#基尼系数" class="headerlink" title="基尼系数"></a>基尼系数</h4><p>CART使用<strong>基尼系数（Gini index）</strong>最小化准则，进行特征选择。</p>
+<p><strong>基尼系数（Gini index）</strong>：</p>
+<p>$Gini(D) &#x3D; 1-\sum_{k&#x3D;1}^{K}(\frac{|C_k|}{|D|})^2$</p>
+<p>$Gini(D,A) &#x3D; \sum_i\frac{D_i}{D}Gini(D_i)$</p>
+<p>基尼指数$Gini(D,A)$表示经$A&#x3D;a$分割后集合$D$的<strong>不纯度（impurity）</strong>，基尼指数越大，纯度越低，和熵类似。</p>
+<p><strong>分类CART生成</strong>：</p>
+<ul>
+<li>1.对现有特征A的每一个特征，每一个可能的取值a，<strong>根据样本点对$A&#x3D;a$的测试是“是”还是“否”</strong>，将$D$分割成$D_1$和$D_2$两部分，计算$A&#x3D;a$时的基尼指数。</li>
+<li>2.选择基尼指数最小的特征机器对应的切分点作为<strong>最优特征</strong>和<strong>最优切分点</strong>。</li>
+<li>3.递归调用，直到满足停止条件。</li>
+</ul>
+<p><strong>停止条件</strong>：</p>
+<ul>
+<li>结点中样本个数小于预定阈值；</li>
+<li>样本集的基尼指数小于预定阈值（基本属于同一类）；</li>
+<li>没有更多特征。</li>
+</ul>
+<h3 id="CART剪枝"><a href="#CART剪枝" class="headerlink" title="CART剪枝"></a>CART剪枝</h3><p>相比一般剪枝算法，CART剪枝算法的优势在于，<strong>不用提前确定$α$值</strong>，而是在剪枝的同时找到最优的α值。</p>
+<p>对于固定的$α$值，一定存在让$C_α(T)$最小的唯一的子树，记为$T_α$。</p>
+<p>对于某个结点$t$，单结点树的损失函数是：$C_α(t) &#x3D; C(t) + α$，而以$t$为根的子树$T_t$的损失函数是：$C_α(T_t) &#x3D; C(T_t) + α|T_t|$。</p>
+<p>当$α$充分小的时候，有$C_α(T_t) &lt; C_α(t)$；</p>
+<p>当$α$增大到某一$α$时有：$C_α(T_t) &#x3D; C_α(t)$。</p>
+<p>即，只要$α &#x3D; \frac{ C(t)-C(T_t)}{|T_t|-1}$，就可以保证$T_t$和$t$有相同的损失函数，也就代表着可以对$T_t$剪枝。</p>
+<p>因此，对于每个内部结点，计算$g(t) &#x3D; \frac{C(t)-C(T_t)}{|T_t|-1}$，代表<strong>剪枝后误差增加率</strong>，或者用我自己的话理解就是<strong>代表$α$最少要达到多少时，结点$t$是可剪的。</strong></p>
+<p>将最小的$g(t)$设为$α_1$，剪枝得$T_1$，不断地重复此步骤，可以增加$α$，获得一系列$T_0, T_1, …, T_n$。</p>
+<p>通过<strong>交叉验证</strong>，从剪枝得到的子树序列$T_0, T_1, …, T_n$中选取最优子树$T_α$。</p>
+<p><strong>CART剪枝算法</strong>：</p>
+<ul>
+<li>输入：生成的决策树$T_0$；</li>
+<li>输出：最有决策树$T_α$；</li>
+<li>1.$k&#x3D;0,T&#x3D;T_0$；</li>
+<li>2.$α&#x3D;+∞$；</li>
+<li>3.自下而上地对各内部结点$t$计算$C(T_t),|T_t|$以及$g(t)&#x3D;\frac{C(t)-C(T_t)}{|T_t|-1}$。</li>
+<li>4.从小到大遍历$α&#x3D;g(t)$剪枝得到的子树序列$T_0, T_1, …, T_n$。</li>
+<li>5.交叉验证法在子树序列$T_0, T_1, …, T_n$中选取最优子树$T_α$。</li>
+</ul>
+<h2 id="算法总结"><a href="#算法总结" class="headerlink" title="算法总结"></a>算法总结</h2><p>ID3算法&#x2F;C4.5算法&#x2F;CART算法。</p>
+<p>ID3算法和C4.5算法用于生成<strong>分类树</strong>，区别主要在于选取特征的依据，前者是<strong>信息增益</strong>，后者是<strong>信息增益比</strong>。</p>
+<p>CART算法可以生成<strong>分类树</strong>和<strong>回归树</strong>，分类树使用<strong>基尼指数</strong>选取特征，并且不用提前确定$α$值，而是在剪枝的同时找到最优的$α$值。</p>
+<h2 id="决策树实践"><a href="#决策树实践" class="headerlink" title="决策树实践"></a>决策树实践</h2><p>使用sklearn的决策树实现来看看实践中如何使用决策树模型，sklearn中的决策树模型：<strong>DecisionTreeClassifier</strong>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span></span><br><span class="line"><span class="title class_">sklearn</span>.tree.DecisionTreeClassifier(criterion=’gini’, splitter=’best’,</span><br><span class="line">max_depth=<span class="literal">None</span>, min_samples_split=<span class="number">2</span>, min_samples_leaf=<span class="number">1</span>,</span><br><span class="line">min_weight_fraction_leaf=<span class="number">0.0</span>, max_features=<span class="literal">None</span>, random_state=<span class="literal">None</span>,</span><br><span class="line">max_leaf_nodes=<span class="literal">None</span>, min_impurity_decrease=<span class="number">0.0</span>, min_impurity_split=<span class="literal">None</span>,</span><br><span class="line">class_weight=<span class="literal">None</span>, presort=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+
+<p>重要参数：</p>
+<ul>
+<li><code>criterion</code>: “gini” for the Gini<br>impurity and “entropy” for the information gain.</li>
+<li><code>max_depth</code>: 树的最大深度。</li>
+<li><code>min_impurity_decrease</code>: 最小的基尼指数下降。<br>下面代码摘自<a href="http://blog.csdn.net/sinat_22594309/article/details/59090895">这里</a>：</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np  </span><br><span class="line"><span class="keyword">import</span> sklearn</span><br><span class="line"><span class="keyword">from</span> sklearn.tree <span class="keyword">import</span> DecisionTreeClassifier  </span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> datasets  </span><br><span class="line">  </span><br><span class="line"><span class="comment">#读取数据，划分训练集和测试集  </span></span><br><span class="line">iris=datasets.load_iris()  </span><br><span class="line"><span class="comment"># 只保留数据集的前五个特征</span></span><br><span class="line">x=iris.data[:, :<span class="number">5</span>]</span><br><span class="line">y=iris.target  </span><br><span class="line">x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=<span class="number">0.7</span>, random_state=<span class="number">1</span>)  </span><br><span class="line"><span class="comment">#模型训练  </span></span><br><span class="line">model = DecisionTreeClassifier(max_depth=<span class="number">3</span>)  </span><br><span class="line">model = model.fit(x_train,y_train)  </span><br><span class="line">y_test_hat = model.predict(x_test)  </span><br><span class="line">res=y_test == y_test_hat  </span><br><span class="line">acc=np.mean(res)  </span><br><span class="line"><span class="built_in">print</span> <span class="string">&#x27;正确率是%.2f%%&#x27;</span>%(acc*<span class="number">100</span>)  </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">正确率是95.56%</span><br></pre></td></tr></table></figure>
+
+<p>比较不同深度对预测准确率的影响：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> matplotlib <span class="keyword">import</span> pyplot <span class="keyword">as</span> plt </span><br><span class="line">%matplotlib inline </span><br><span class="line"><span class="comment">#模型训练  </span></span><br><span class="line">depth_test=np.linspace(<span class="number">1</span>,<span class="number">10</span>,<span class="number">11</span>)  </span><br><span class="line">accurate=[]  </span><br><span class="line"><span class="keyword">for</span> depth <span class="keyword">in</span> depth_test:  </span><br><span class="line">    test_model=DecisionTreeClassifier(max_depth=depth)  </span><br><span class="line">    test_model=test_model.fit(x_train,y_train)  </span><br><span class="line">    y_test_hat=test_model.predict(x_test)  </span><br><span class="line">    res=y_test==y_test_hat  </span><br><span class="line">    acc=np.mean(res)  </span><br><span class="line">    accurate.append(acc)  </span><br><span class="line">    <span class="built_in">print</span> <span class="string">&#x27;正确率是%.2f%%&#x27;</span>%(acc*<span class="number">100</span>)  </span><br><span class="line">plt.plot(depth_test,accurate,<span class="string">&#x27;r-&#x27;</span>)  </span><br><span class="line">plt.grid()  </span><br><span class="line">plt.title(<span class="string">&#x27;Accuracy by tree_depth&#x27;</span>)  </span><br><span class="line">plt.show()  </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">正确率是60.00%</span><br><span class="line">正确率是60.00%</span><br><span class="line">正确率是95.56%</span><br><span class="line">正确率是95.56%</span><br><span class="line">正确率是95.56%</span><br><span class="line">正确率是95.56%</span><br><span class="line">正确率是95.56%</span><br><span class="line">正确率是95.56%</span><br><span class="line">正确率是95.56%</span><br><span class="line">正确率是95.56%</span><br><span class="line">正确率是95.56%</span><br></pre></td></tr></table></figure>
+
+<p><img src="/machine_learning/Tree_Basic/exp_1.png"></p>
+<h3 id="决策树的可解释性"><a href="#决策树的可解释性" class="headerlink" title="决策树的可解释性"></a>决策树的可解释性</h3><p>本文一开始提到决策树的一个优点是其可解释性。</p>
+<p>接下来通过一些代码来演示其可解释性，代码来自sklearn官网。</p>
+<p>1.<strong>用graphviz可视化决策树</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> graphviz </span><br><span class="line"><span class="keyword">import</span> sklearn.tree  <span class="keyword">as</span> tree</span><br><span class="line"><span class="comment"># sklearn 支持将决策树模型导出成可视化的graphviz</span></span><br><span class="line">dot_data = tree.export_graphviz(model,</span><br><span class="line">out_file=<span class="literal">None</span>) </span><br><span class="line">graph = graphviz.Source(dot_data) </span><br><span class="line">graph.render(<span class="string">&quot;iris&quot;</span>) </span><br><span class="line">graph</span><br></pre></td></tr></table></figure>
+<p><img src="/machine_learning/Tree_Basic/tree_1.png"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">dot_data = tree.export_graphviz(model, out_file=<span class="literal">None</span>,</span><br><span class="line">feature_names=iris.feature_names,</span><br><span class="line">class_names=iris.target_names,  </span><br><span class="line">                         filled=<span class="literal">True</span>,</span><br><span class="line">rounded=<span class="literal">True</span>,  </span><br><span class="line">                         special_characters=<span class="literal">True</span>)  </span><br><span class="line">graph =</span><br><span class="line">graphviz.Source(dot_data)  </span><br><span class="line">graph </span><br></pre></td></tr></table></figure>
+<p><img src="/machine_learning/Tree_Basic/tree_2.png"></p>
+<p>2.<strong>手动输出决策树信息</strong></p>
+<p>sklearn中决策树模型的信息保存在<code>xxx.tree_</code>中：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">Attributes</span><br><span class="line">----------</span><br><span class="line">node_count : <span class="built_in">int</span></span><br><span class="line">    The number of nodes (internal nodes + leaves) <span class="keyword">in</span> the tree.</span><br><span class="line">capacity : <span class="built_in">int</span></span><br><span class="line">    The current capacity (i.e., size) of the arrays, which <span class="keyword">is</span> at</span><br><span class="line">least <span class="keyword">as</span></span><br><span class="line">    great <span class="keyword">as</span> `node_count`.</span><br><span class="line"></span><br><span class="line">max_depth : <span class="built_in">int</span></span><br><span class="line">    The maximal depth of</span><br><span class="line">the tree.</span><br><span class="line"></span><br><span class="line">children_left : array of <span class="built_in">int</span>, shape [node_count]</span><br><span class="line">    children_left[i]</span><br><span class="line">holds the node <span class="built_in">id</span> of the left child of node i.</span><br><span class="line">    For leaves, children_left[i]</span><br><span class="line">== TREE_LEAF. Otherwise,</span><br><span class="line">    children_left[i] &gt; i. This child handles the <span class="keyword">case</span></span><br><span class="line">where</span><br><span class="line">    X[:, feature[i]] &lt;= threshold[i].</span><br><span class="line"></span><br><span class="line">children_right : array of <span class="built_in">int</span>,</span><br><span class="line">shape [node_count]</span><br><span class="line">    children_right[i] holds the node <span class="built_in">id</span> of the right child of</span><br><span class="line">node i.</span><br><span class="line">    For leaves, children_right[i] == TREE_LEAF. Otherwise,</span><br><span class="line">children_right[i] &gt; i. This child handles the <span class="keyword">case</span> where</span><br><span class="line">    X[:, feature[i]] &gt;</span><br><span class="line">threshold[i].</span><br><span class="line"></span><br><span class="line">feature : array of <span class="built_in">int</span>, shape [node_count]</span><br><span class="line">    feature[i] holds</span><br><span class="line">the feature to split on, <span class="keyword">for</span> the internal node i.</span><br><span class="line"></span><br><span class="line">threshold : array of double,</span><br><span class="line">shape [node_count]</span><br><span class="line">    threshold[i] holds the threshold <span class="keyword">for</span> the internal node i.</span><br><span class="line">value : array of double, shape [node_count, n_outputs, max_n_classes]</span><br><span class="line">Contains the constant prediction value of each node.</span><br><span class="line"></span><br><span class="line">impurity : array of</span><br><span class="line">double, shape [node_count]</span><br><span class="line">    impurity[i] holds the impurity (i.e., the value</span><br><span class="line">of the splitting</span><br><span class="line">    criterion) at node i.</span><br><span class="line"></span><br><span class="line">n_node_samples : array of <span class="built_in">int</span>, shape</span><br><span class="line">[node_count]</span><br><span class="line">    n_node_samples[i] holds the number of training samples reaching</span><br><span class="line">node i.</span><br><span class="line"></span><br><span class="line">weighted_n_node_samples : array of <span class="built_in">int</span>, shape [node_count]</span><br><span class="line">weighted_n_node_samples[i] holds the weighted number of training samples</span><br><span class="line">reaching node i.</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># The decision estimator has an attribute called tree_  which stores the entire</span></span><br><span class="line"><span class="comment"># tree structure and allows access to low level attributes. The binary tree</span></span><br><span class="line"><span class="comment"># tree_ is represented as a number of parallel arrays. The i-th element of each</span></span><br><span class="line"><span class="comment"># array holds information about the node `i`. Node 0 is the tree&#x27;s root. <span class="doctag">NOTE:</span></span></span><br><span class="line"><span class="comment"># Some of the arrays only apply to either leaves or split nodes, resp. In this</span></span><br><span class="line"><span class="comment"># case the values of nodes of the other type are arbitrary!</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Among those arrays, we have:</span></span><br><span class="line"><span class="comment">#   - left_child, id of the left child of the node</span></span><br><span class="line"><span class="comment">#   - right_child, id of the right child of the node</span></span><br><span class="line"><span class="comment">#   - feature, feature used for splitting the node</span></span><br><span class="line"><span class="comment">#   - threshold, threshold value at the node</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Using those arrays, we can parse the tree structure:</span></span><br><span class="line"></span><br><span class="line">n_nodes = model.tree_.node_count</span><br><span class="line">children_left = model.tree_.children_left</span><br><span class="line">children_right = model.tree_.children_right</span><br><span class="line">feature = model.tree_.feature</span><br><span class="line">threshold = model.tree_.threshold</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span> <span class="string">&quot;n_nodes:  &quot;</span>, n_nodes</span><br><span class="line"><span class="built_in">print</span> <span class="string">&quot;children_left:  &quot;</span>, children_left</span><br><span class="line"><span class="built_in">print</span> <span class="string">&quot;children_right: &quot;</span>, children_right</span><br><span class="line"><span class="built_in">print</span> <span class="string">&quot;feature: &quot;</span>, feature</span><br><span class="line"><span class="built_in">print</span> <span class="string">&quot;threshold: &quot;</span>, threshold</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">n_nodes:   13</span><br><span class="line">children_left:   [ 1  2  3 -1 -1 -1  7  8 -1 -1 11 -1 -1]</span><br><span class="line">children_right:  [ 6  5  4 -1 -1 -1 10  9 -1 -1 12 -1 -1]</span><br><span class="line">feature:  [ 0  1  0 -2 -2 -2  0  1 -2 -2  1 -2 -2]</span><br><span class="line">threshold:  [ 5.44999981  2.80000019  4.69999981 -2.         -2.         -2.          6.25</span><br><span class="line">  3.45000005 -2.         -2.          2.54999995 -2.         -2.        ]</span><br></pre></td></tr></table></figure>
+
+<p>注意到上面出现了-1和-2这些让人觉得奇怪的值，解释一下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">TREE_LEAF = -<span class="number">1</span></span><br><span class="line">TREE_UNDEFINED = -<span class="number">2</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 遍历树，获取每个结点的深度和每个结点是否是叶结点</span></span><br><span class="line"><span class="comment"># The tree structure can be traversed to compute various properties such</span></span><br><span class="line"><span class="comment"># as the depth of each node and whether or not it is a leaf.</span></span><br><span class="line">node_depth = np.zeros(shape=n_nodes, dtype=np.int64)</span><br><span class="line">is_leaves = np.zeros(shape=n_nodes, dtype=<span class="built_in">bool</span>)</span><br><span class="line">stack = [(<span class="number">0</span>, -<span class="number">1</span>)]  <span class="comment"># seed is the root node id and its parent depth</span></span><br><span class="line"><span class="keyword">while</span> <span class="built_in">len</span>(stack) &gt; <span class="number">0</span>:</span><br><span class="line">    node_id, parent_depth = stack.pop()</span><br><span class="line">    node_depth[node_id] = parent_depth + <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># If we have a test node</span></span><br><span class="line">    <span class="keyword">if</span> (children_left[node_id] != children_right[node_id]):</span><br><span class="line">        stack.append((children_left[node_id], parent_depth + <span class="number">1</span>))</span><br><span class="line">        stack.append((children_right[node_id], parent_depth + <span class="number">1</span>))</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        is_leaves[node_id] = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;The binary tree structure has %s nodes and has &quot;</span></span><br><span class="line">      <span class="string">&quot;the following tree structure:&quot;</span></span><br><span class="line">      % n_nodes)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(n_nodes):</span><br><span class="line">    <span class="keyword">if</span> is_leaves[i]:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;%snode=%s leaf node.&quot;</span> % (node_depth[i] * <span class="string">&quot;\t&quot;</span>, i))</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;%snode=%s test node: go to node %s if X[:, %s] &lt;= %s else to &quot;</span></span><br><span class="line">              <span class="string">&quot;node %s.&quot;</span></span><br><span class="line">              % (node_depth[i] * <span class="string">&quot;\t&quot;</span>,</span><br><span class="line">                 i,</span><br><span class="line">                 children_left[i],</span><br><span class="line">                 feature[i],</span><br><span class="line">                 threshold[i],</span><br><span class="line">                 children_right[i],</span><br><span class="line">                 ))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">The binary tree structure has 13 nodes and has the following tree structure:</span><br><span class="line">node=0 test node: go to node 1 if X[:, 0] &lt;= 5.44999980927 else to node 6.</span><br><span class="line">	node=1 test node: go to node 2 if X[:, 1] &lt;= 2.80000019073 else to node 5.</span><br><span class="line">		node=2 test node: go to node 3 if X[:, 0] &lt;= 4.69999980927 else to node 4.</span><br><span class="line">			node=3 leaf node.</span><br><span class="line">			node=4 leaf node.</span><br><span class="line">		node=5 leaf node.</span><br><span class="line">	node=6 test node: go to node 7 if X[:, 0] &lt;= 6.25 else to node 10.</span><br><span class="line">		node=7 test node: go to node 8 if X[:, 1] &lt;= 3.45000004768 else to node 9.</span><br><span class="line">			node=8 leaf node.</span><br><span class="line">			node=9 leaf node.</span><br><span class="line">		node=10 test node: go to node 11 if X[:, 1] &lt;= 2.54999995232 else to node 12.</span><br><span class="line">			node=11 leaf node.</span><br><span class="line">			node=12 leaf node.</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># First let&#x27;s retrieve the decision path of each sample. The decision_path</span></span><br><span class="line"><span class="comment"># method allows to retrieve the node indicator functions. A non zero element of</span></span><br><span class="line"><span class="comment"># indicator matrix at the position (i, j) indicates that the sample i goes</span></span><br><span class="line"><span class="comment"># through the node j.</span></span><br><span class="line"></span><br><span class="line">node_indicator = model.decision_path(x_test)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Similarly, we can also have the leaves ids reached by each sample.</span></span><br><span class="line"></span><br><span class="line">leave_id = model.apply(x_test)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Now, it&#x27;s possible to get the tests that were used to predict a sample or</span></span><br><span class="line"><span class="comment"># a group of samples. First, let&#x27;s make it for the sample.</span></span><br><span class="line"></span><br><span class="line">sample_id = <span class="number">0</span></span><br><span class="line">node_index = node_indicator.indices[node_indicator.indptr[sample_id]:</span><br><span class="line">                                    node_indicator.indptr[sample_id + <span class="number">1</span>]]</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Rules used to predict sample %s: &#x27;</span> % sample_id)</span><br><span class="line"><span class="keyword">for</span> node_id <span class="keyword">in</span> node_index:</span><br><span class="line">    <span class="keyword">if</span> leave_id[sample_id] != node_id:</span><br><span class="line">        <span class="keyword">continue</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (x_test[sample_id, feature[node_id]] &lt;= threshold[node_id]):</span><br><span class="line">        threshold_sign = <span class="string">&quot;&lt;=&quot;</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        threshold_sign = <span class="string">&quot;&gt;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;decision id node %s : (X_test[%s, %s] (= %s) %s %s)&quot;</span></span><br><span class="line">          % (node_id,</span><br><span class="line">             sample_id,</span><br><span class="line">             feature[node_id],</span><br><span class="line">             x_test[sample_id, feature[node_id]],</span><br><span class="line">             threshold_sign,</span><br><span class="line">             threshold[node_id]))</span><br><span class="line"></span><br><span class="line"><span class="comment"># For a group of samples, we have the following common node.</span></span><br><span class="line">sample_ids = [<span class="number">0</span>, <span class="number">1</span>]</span><br><span class="line">common_nodes = (node_indicator.toarray()[sample_ids].<span class="built_in">sum</span>(axis=<span class="number">0</span>) ==</span><br><span class="line">                <span class="built_in">len</span>(sample_ids))</span><br><span class="line"></span><br><span class="line">common_node_id = np.arange(n_nodes)[common_nodes]</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;\nThe following samples %s share the node %s in the tree&quot;</span></span><br><span class="line">      % (sample_ids, common_node_id))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;It is %s %% of all nodes.&quot;</span> % (<span class="number">100</span> * <span class="built_in">len</span>(common_node_id) / n_nodes,))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Rules used to predict sample 0: </span><br><span class="line">decision id node 9 : (X_test[0, -2] (= 5.8) &gt; -2.0)</span><br><span class="line"></span><br><span class="line">The following samples [0, 1] share the node [0] in the tree</span><br><span class="line">It is 7 % of all nodes.</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="http://www.jianshu.com/p/fb97b21aeb1d">数据挖掘面试题之决策树必知必会</a></li>
+<li><a href="http://blog.csdn.net/sinat_22594309/article/details/59090895">机器学习笔记（五）决策树算法及实践</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+              <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/machine_learning/HMM/" rel="prev" title="隐马尔科夫模型（HMM）及其Python实现">
+                  <i class="fa fa-angle-left"></i> 隐马尔科夫模型（HMM）及其Python实现
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/machine_learning/Tree_Ensemble/" rel="next" title="决策树模型的各种Ensemble">
+                  决策树模型的各种Ensemble <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

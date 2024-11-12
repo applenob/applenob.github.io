@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="3. Finite Markov DecisionProcessesAgent和Environment的交互 学习者和决策者称为agent。 agent交互的对象，外部环境，称为Environment。 在时刻t，agent的所处的环境用状态：$S_t \in S$表示，$S$是可能的状态集。假设agent采用了动作$A_t\in A(S_t)$，$A(S_t)$代表在状态$S_t$下可能的动作集">
+<meta property="og:type" content="article">
+<meta property="og:title" content="强化学习导论学习笔记——（三）">
+<meta property="og:url" content="https://applenob.github.io/rl_note/intro-note-3/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="3. Finite Markov DecisionProcessesAgent和Environment的交互 学习者和决策者称为agent。 agent交互的对象，外部环境，称为Environment。 在时刻t，agent的所处的环境用状态：$S_t \in S$表示，$S$是可能的状态集。假设agent采用了动作$A_t\in A(S_t)$，$A(S_t)$代表在状态$S_t$下可能的动作集">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://applenob.github.io/rl_note/intro-note-3/agent_env.png">
+<meta property="og:image" content="https://applenob.github.io/rl_note/intro-note-3/backup.png">
+<meta property="og:image" content="https://applenob.github.io/rl_note/intro-note-3/backup_opt.png">
+<meta property="og:image" content="https://applenob.github.io/rl_note/intro-note-3/3_grid_world.jpg">
+<meta property="article:published_time" content="2018-07-06T23:34:20.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.108Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="Reinforcement Learning, 笔记">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://applenob.github.io/rl_note/intro-note-3/agent_env.png">
+
+
+<link rel="canonical" href="https://applenob.github.io/rl_note/intro-note-3/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/rl_note/intro-note-3/","path":"rl_note/intro-note-3/","title":"强化学习导论学习笔记——（三）"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>强化学习导论学习笔记——（三） | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#3-Finite-Markov-DecisionProcesses"><span class="nav-number">1.</span> <span class="nav-text">3. Finite Markov DecisionProcesses</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Agent%E5%92%8CEnvironment%E7%9A%84%E4%BA%A4%E4%BA%92"><span class="nav-number">1.1.</span> <span class="nav-text">Agent和Environment的交互</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%9C%89%E9%99%90"><span class="nav-number">1.2.</span> <span class="nav-text">什么是有限</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87%E5%92%8C%E5%A5%96%E5%8A%B1%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">1.3.</span> <span class="nav-text">目标和奖励的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFEpisode"><span class="nav-number">1.4.</span> <span class="nav-text">什么是Episode</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Continuing-Tasks"><span class="nav-number">1.5.</span> <span class="nav-text">Continuing Tasks</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Episode%E5%92%8CContinuing-Tasks%E7%9A%84%E7%BB%9F%E4%B8%80%E8%A7%84%E8%8C%83"><span class="nav-number">1.6.</span> <span class="nav-text">Episode和Continuing Tasks的统一规范</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Expected-Discounted-Return"><span class="nav-number">1.7.</span> <span class="nav-text">Expected Discounted Return</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A9%AC%E5%B0%94%E7%A7%91%E5%A4%AB%E6%80%A7%E8%B4%A8%EF%BC%88Markov-property%EF%BC%89"><span class="nav-number">1.8.</span> <span class="nav-text">马尔科夫性质（Markov property）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Markov-Dicision-Processes%EF%BC%88MDP%EF%BC%89"><span class="nav-number">1.9.</span> <span class="nav-text">Markov Dicision Processes（MDP）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%B7%E5%80%BC%E5%87%BD%E6%95%B0"><span class="nav-number">1.10.</span> <span class="nav-text">价值函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bellman-Euqation"><span class="nav-number">1.11.</span> <span class="nav-text">Bellman Euqation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E4%BC%98%E5%8C%96%E4%BB%B7%E5%80%BC%E5%87%BD%E6%95%B0"><span class="nav-number">1.12.</span> <span class="nav-text">最优化价值函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90"><span class="nav-number">1.13.</span> <span class="nav-text">代码分析</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/rl_note/intro-note-3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="强化学习导论学习笔记——（三） | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          强化学习导论学习笔记——（三）
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2018-07-06 16:34:20" itemprop="dateCreated datePublished" datetime="2018-07-06T16:34:20-07:00">2018-07-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E5%AF%BC%E8%AE%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">强化学习导论学习笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="3-Finite-Markov-DecisionProcesses"><a href="#3-Finite-Markov-DecisionProcesses" class="headerlink" title="3. Finite Markov DecisionProcesses"></a>3. Finite Markov DecisionProcesses</h1><h2 id="Agent和Environment的交互"><a href="#Agent和Environment的交互" class="headerlink" title="Agent和Environment的交互"></a>Agent和Environment的交互</h2><ul>
+<li>学习者和决策者称为<strong>agent</strong>。</li>
+<li>agent交互的对象，外部环境，称为<strong>Environment</strong>。</li>
+<li>在时刻t，agent的所处的环境用状态：$S_t \in S$表示，$S$是可能的状态集。假设agent采用了动作$A_t\in A(S_t)$，$A(S_t)$代表在状态$S_t$下可能的动作集。</li>
+<li>到了下一个时刻t+1，agent收到了一个奖励：$R_{t+1} \in R$，并且发现自己处在一个新的state中：$S_{t+1}$。</li>
+</ul>
+<p><img src="/rl_note/intro-note-3/agent_env.png" alt="agent_env"></p>
+<h2 id="什么是有限"><a href="#什么是有限" class="headerlink" title="什么是有限"></a>什么是有限</h2><p>有限MDP中的有限意味着：状态空间S、动作空间A和奖励空间R都是<strong>离散且有限</strong>的。</p>
+<h2 id="目标和奖励的区别"><a href="#目标和奖励的区别" class="headerlink" title="目标和奖励的区别"></a>目标和奖励的区别</h2><ul>
+<li>每个时间节点上，agent都会收到一个奖励的数值：$R_t$。</li>
+<li>但是，agent的目标应该是：所有时间结点上的奖励的和的最大化。</li>
+<li>即：$G_t &#x3D; R_{t+1} +  R_{t+2} + … + R_T$</li>
+</ul>
+<h2 id="什么是Episode"><a href="#什么是Episode" class="headerlink" title="什么是Episode"></a>什么是Episode</h2><p>一系列的agent和environment<strong>交互序列</strong>。每个episode之间相互不影响，且都是有一个相同的终止状态（terminate state）。</p>
+<h2 id="Continuing-Tasks"><a href="#Continuing-Tasks" class="headerlink" title="Continuing Tasks"></a>Continuing Tasks</h2><p>不同于Episode类的任务，这类任务没有终止状态，也就是说$T &#x3D; \infty$。因此，如果考虑这类任务，那么$G_t$将是无穷大，于是引入discounting。</p>
+<h2 id="Episode和Continuing-Tasks的统一规范"><a href="#Episode和Continuing-Tasks的统一规范" class="headerlink" title="Episode和Continuing Tasks的统一规范"></a>Episode和Continuing Tasks的统一规范</h2><p>在Episode的尾部加入吸收状态（absorbing state），在此状态下，奖励永远是0，且下一个状态永远是当前状态。</p>
+<p>这样收益可以统一使用下面的Expected Discounted Return表示。</p>
+<h2 id="Expected-Discounted-Return"><a href="#Expected-Discounted-Return" class="headerlink" title="Expected Discounted Return"></a>Expected Discounted Return</h2><ul>
+<li>回报：$G_t &#x3D; R_{t+1} +  \gamma R_{t+2} + … &#x3D; \sum_{k&#x3D;0}^{\infty} \gamma ^k R_{t+k+1}$</li>
+<li>$\gamma$是参数，且$0\leq \gamma \leq 1$，被称为<strong>discount rate</strong>。</li>
+<li>含义：一个奖励，如果是在k个时间节点以后收到，那么对于当前来说，它的价值是即时奖励的$\gamma^{k-1}$倍。</li>
+<li>从$G_t$的定义，很容易获得递推式：$G_t &#x3D; R_{t+1} + \gamma G_{t+1}$</li>
+</ul>
+<h2 id="马尔科夫性质（Markov-property）"><a href="#马尔科夫性质（Markov-property）" class="headerlink" title="马尔科夫性质（Markov property）"></a>马尔科夫性质（Markov property）</h2><ul>
+<li>核心思想：<strong>当前state继承了所有的环境历史信息。</strong></li>
+<li>$Pr{S_{t+1}&#x3D;s’, R_{t+1}&#x3D;r|S_0,A_0,R_1,…,S_{t-1},A_{t_1},R_t,S_t,A_t} &#x3D; Pr{S_{t+1}&#x3D;s’, R_{t+1}&#x3D;r|S_t,A_t}$</li>
+<li>即便state是非马尔科夫的，我们也希望近似到马尔科夫。</li>
+</ul>
+<h2 id="Markov-Dicision-Processes（MDP）"><a href="#Markov-Dicision-Processes（MDP）" class="headerlink" title="Markov Dicision Processes（MDP）"></a>Markov Dicision Processes（MDP）</h2><ul>
+<li><strong>满足马尔科夫性质的强化学习任务称为MDP。</strong></li>
+<li>如果state和action空间有限，则称为有限MDP（涵盖了现代强化学习90%的问题）。</li>
+<li>用$p(s’,r|s,a)$表示$Pr{S_{t+1}&#x3D;{s}’, R_{t+1}&#x3D;r|S_t,A_t}$，这个条件概率是描绘了整个MDP的动态（Dynamics）。</li>
+<li>state-action期望奖励：$r(s,a) &#x3D; \mathbb{E}[R_{t+1}|S_t&#x3D;s,A_t&#x3D;a]&#x3D;\sum_{r\in R}r\sum_{s’\in S}p(s’, r|s,a)$</li>
+<li>状态转移概率：$p(s’|s,a) &#x3D; Pr{S_{t+1}&#x3D;s’|S_t&#x3D;s, A_t&#x3D;a}&#x3D;\sum_{r\in R}p(s’, r| s, a)$</li>
+<li>state-action-nextstate期望奖励：$r(s, a, s’) &#x3D; \mathbb{E}[R_{t+1}|S_t&#x3D;s,A_t&#x3D;a, S_{t+1}&#x3D;s’] &#x3D; \sum_{r\in R}r\frac{p(s’,r|s,a)}{p(s’|s,a)}$</li>
+</ul>
+<h2 id="价值函数"><a href="#价值函数" class="headerlink" title="价值函数"></a>价值函数</h2><p>关于策略$\pi$的state-value函数：</p>
+<p>$$v_{\pi}(s) &#x3D; {\mathbb{E}}_{\pi}[G_t|S_t&#x3D;s] &#x3D; \mathbb{E}_{\pi}[\sum_k\gamma^kR_{t+k+1}|S_t&#x3D;s]$$</p>
+<p>即，<strong>在使用策略$\pi$的前提下，衡量处于某个state有多好</strong>。</p>
+<p>关于策略$\pi$的action-value函数：</p>
+<p>$$q_{\pi}(a,s) &#x3D; \mathbb{E}_{\pi}[G_t|S_t&#x3D;s,A_t&#x3D;a] &#x3D; \mathbb{E}_{\pi}[\sum_{k&#x3D;0}^{\infty}\gamma^kR_{t+k+1}\bigm|S_t&#x3D;s,A_t&#x3D;a]$$</p>
+<p>即，在使用策略$\pi$的前提下，衡量处于某个state下，执行某个action有多好。</p>
+<h2 id="Bellman-Euqation"><a href="#Bellman-Euqation" class="headerlink" title="Bellman Euqation"></a>Bellman Euqation</h2><p><strong>Bellman Expectation Euqation for</strong> $v_{\pi}$：</p>
+<p>$$v_{\pi}(s) &#x3D; \sum_a\pi(a|s)\sum_{s’,r}p(s’,r|s,a)[r+\gamma v_{\pi}(s’)];;\forall s \in S$$</p>
+<p>理解：</p>
+<ul>
+<li>1.方括号中是根据后继状态的价值重新估计的价值函数，再在动作空间、后继状态空间和动作空间用相应的概率做加权求和。</li>
+<li>2.<strong>表达的是某个状态的价值和其后继状态的价值之间的关系。</strong></li>
+</ul>
+<p><strong>backup</strong>：是强化学习方法的核心，以时序意义上的回退，用下一个时刻的值去评估当前时刻的值。</p>
+<p><strong>Bellman Expectation Euqation for</strong> $q_{\pi}$</p>
+<p>$$q_{\pi}(s,a) &#x3D; \sum_{s’}p(s’,r|s,a)[r+\gamma \sum_{a’}q(s’,a’)]$$</p>
+<p><img src="/rl_note/intro-note-3/backup.png" alt="backup"></p>
+<p>推导：</p>
+<p>$$v_\pi(s) &#x3D; \mathbb{E}_{\pi}[G_t \mid S_t &#x3D; s]$$</p>
+<p>$$&#x3D; \mathbb{E}_{\pi} [R_{t+1} + \gamma G_{t+1} \mid S_t &#x3D; s]$$</p>
+<p>$$&#x3D; \sum_a \pi(a \mid s) \sum_{s’, r} p(s’, r \mid s, a) [r + \gamma v_\pi(s’)].$$</p>
+<p>$$q_{\pi}(s,a) &#x3D; \mathbb{E}_{\pi}[G_t \mid S_t &#x3D; s, A_t &#x3D; a]$$</p>
+<p>$$&#x3D; \mathbb{E}_\pi [R_{t+1} + \gamma G_{t+1} \mid S_t &#x3D; s, A_t &#x3D; a]$$</p>
+<p>$$&#x3D; \sum_{s’,r}p(s’,r|s,a)[r+\gamma \sum_{a’}q(s’,a’)]$$</p>
+<p>参考资料：<a href="https://joshgreaves.com/reinforcement-learning/understanding-rl-the-bellman-equations/">https://joshgreaves.com/reinforcement-learning/understanding-rl-the-bellman-equations/</a></p>
+<h2 id="最优化价值函数"><a href="#最优化价值函数" class="headerlink" title="最优化价值函数"></a>最优化价值函数</h2><p>$$v_*(s) &#x3D; \underset{\pi}{max}v_{\pi}(s)$$</p>
+<p>$$q_*(s,a) &#x3D; \underset{\pi}{max}q_{\pi}(s,a)$$</p>
+<p><strong>Bellman Optimality Euqation for</strong> $v_*(s)$：</p>
+<p>$$\underset{a\in A(s)}{max}\sum_{s’,r}p(s’,r|s,a)[r+\gamma v_*(s’)]$$</p>
+<p><strong>Bellman Optimality Euqation for</strong> $q_*(s,a)$：</p>
+<p>$$\sum_{s’,r}p(s’,r|s,a)[r+\gamma \underset{a’}{max}q_*(s’, a’)]$$</p>
+<p><img src="/rl_note/intro-note-3/backup_opt.png" alt="backup_opt"></p>
+<h2 id="代码分析"><a href="#代码分析" class="headerlink" title="代码分析"></a>代码分析</h2><p><a href="https://github.com/ShangtongZhang/reinforcement-learning-an-introduction/blob/master/chapter03/grid_world.py">完整源码</a></p>
+<p><strong>问题描述</strong>：</p>
+<ul>
+<li>动作空间：上下左右。</li>
+<li>奖励：到A点会有10的奖励，且会被带到A’，到B有10的奖励，且会被带到B’。如果动作要把agent带离格子世界，则agent不懂，且奖励是-1。其他动作奖励是0。</li>
+</ul>
+<p><img src="/rl_note/intro-note-3/3_grid_world.jpg" alt="3_grid_world"></p>
+<p>假设初始策略是等概率地选择上下左右这四个动作：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># left, up, right, down</span></span><br><span class="line">ACTIONS = [np.array([<span class="number">0</span>, -<span class="number">1</span>]),</span><br><span class="line">           np.array([-<span class="number">1</span>, <span class="number">0</span>]),</span><br><span class="line">           np.array([<span class="number">0</span>, <span class="number">1</span>]),</span><br><span class="line">           np.array([<span class="number">1</span>, <span class="number">0</span>])]</span><br><span class="line">ACTION_PROB = <span class="number">0.25</span></span><br></pre></td></tr></table></figure>
+
+<p>下面代码描述了给定当前状态和动作，下一个状态和奖励是什么。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">step</span>(<span class="params">state, action</span>):</span><br><span class="line">    <span class="keyword">if</span> state == A_POS:</span><br><span class="line">        <span class="keyword">return</span> A_PRIME_POS, <span class="number">10</span></span><br><span class="line">    <span class="keyword">if</span> state == B_POS:</span><br><span class="line">        <span class="keyword">return</span> B_PRIME_POS, <span class="number">5</span></span><br><span class="line"></span><br><span class="line">    state = np.array(state)</span><br><span class="line">    next_state = (state + action).tolist()</span><br><span class="line">    x, y = next_state</span><br><span class="line">    <span class="keyword">if</span> x &lt; <span class="number">0</span> <span class="keyword">or</span> x &gt;= WORLD_SIZE <span class="keyword">or</span> y &lt; <span class="number">0</span> <span class="keyword">or</span> y &gt;= WORLD_SIZE:</span><br><span class="line">        reward = -<span class="number">1.0</span></span><br><span class="line">        next_state = state</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        reward = <span class="number">0</span></span><br><span class="line">    <span class="keyword">return</span> next_state, reward</span><br></pre></td></tr></table></figure>
+
+<p>下面代码使用bellman equation做backup，去迭代价值函数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, WORLD_SIZE):</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, WORLD_SIZE):</span><br><span class="line">        <span class="keyword">for</span> action <span class="keyword">in</span> ACTIONS:</span><br><span class="line">            (next_i, next_j), reward = step([i, j], action)</span><br><span class="line">            <span class="comment"># bellman equation for value function</span></span><br><span class="line">            new_value[i, j] += ACTION_PROB * (reward + DISCOUNT * value[next_i, next_j])</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Reinforcement-Learning-%E7%AC%94%E8%AE%B0/" rel="tag"># Reinforcement Learning, 笔记</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/rl_note/intro-note-2/" rel="prev" title="强化学习导论学习笔记——（二）">
+                  <i class="fa fa-angle-left"></i> 强化学习导论学习笔记——（二）
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/tensorflow/15_dataset_basic/" rel="next" title="十五. Tensorflow Dataset基础">
+                  十五. Tensorflow Dataset基础 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

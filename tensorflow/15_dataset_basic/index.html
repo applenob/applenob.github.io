@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="熟悉接口下面这些接口在调用时并不会真正处理数据，类似其他的tensorflow构图机制，只是构图，真正启用需要调用session run。 12345678910111213141516171819202122232425262728293031323334353637383940414243444546import tensorflow as tfimport numpy as npimport">
+<meta property="og:type" content="article">
+<meta property="og:title" content="十五. Tensorflow Dataset基础">
+<meta property="og:url" content="https://applenob.github.io/tensorflow/15_dataset_basic/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="熟悉接口下面这些接口在调用时并不会真正处理数据，类似其他的tensorflow构图机制，只是构图，真正启用需要调用session run。 12345678910111213141516171819202122232425262728293031323334353637383940414243444546import tensorflow as tfimport numpy as npimport">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2018-07-08T21:50:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.118Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="Tensorflow">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://applenob.github.io/tensorflow/15_dataset_basic/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/tensorflow/15_dataset_basic/","path":"tensorflow/15_dataset_basic/","title":"十五. Tensorflow Dataset基础"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>十五. Tensorflow Dataset基础 | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%86%9F%E6%82%89%E6%8E%A5%E5%8F%A3"><span class="nav-number">1.</span> <span class="nav-text">熟悉接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#from-tensor-slices"><span class="nav-number">2.</span> <span class="nav-text">from_tensor_slices</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#repeat"><span class="nav-number">3.</span> <span class="nav-text">repeat</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#batch"><span class="nav-number">4.</span> <span class="nav-text">batch</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#shuffle"><span class="nav-number">5.</span> <span class="nav-text">shuffle</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#prefetch"><span class="nav-number">6.</span> <span class="nav-text">prefetch</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/tensorflow/15_dataset_basic/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="十五. Tensorflow Dataset基础 | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          十五. Tensorflow Dataset基础
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2018-07-08 14:50:00" itemprop="dateCreated datePublished" datetime="2018-07-08T14:50:00-07:00">2018-07-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Tensorflow%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">Tensorflow学习笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="熟悉接口"><a href="#熟悉接口" class="headerlink" title="熟悉接口"></a>熟悉接口</h2><p>下面这些接口在调用时并不会真正处理数据，类似其他的tensorflow构图机制，只是构图，真正启用需要调用session run。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">train_file = <span class="string">&quot;/nfs/project/han_new/all_data/data_kuai_che_fea/kc.train.feature.npy&quot;</span></span><br><span class="line">test_file = <span class="string">&quot;/nfs/project/han_new/all_data/data_kuai_che_fea/kc.test.feature.npy&quot;</span></span><br><span class="line"></span><br><span class="line">train_dense_feature = np.load(train_file).astype(np.float32)[:<span class="number">200</span>]</span><br><span class="line">test_dense_feature = np.load(test_file).astype(np.float32)[:<span class="number">100</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_session</span>():</span><br><span class="line">    <span class="string">&quot;&quot;&quot;load a new session&quot;&quot;&quot;</span></span><br><span class="line">    config = tf.ConfigProto()</span><br><span class="line">    config.gpu_options.allow_growth = <span class="literal">True</span></span><br><span class="line">    <span class="keyword">return</span> tf.Session(config=config)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">simple_time</span>(<span class="params">func</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">wrapper</span>(<span class="params">*arg, **kw</span>):</span><br><span class="line">        t1 = time.time()</span><br><span class="line">        res = func(*arg, **kw)</span><br><span class="line">        t2 = time.time()</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;time cost: &quot;</span>, t2 - t1)</span><br><span class="line">        <span class="keyword">return</span> res</span><br><span class="line">    <span class="keyword">return</span> wrapper</span><br><span class="line"></span><br><span class="line"><span class="meta">@simple_time</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">inspect_dataset</span>(<span class="params">dataset, sess</span>):</span><br><span class="line">    <span class="comment"># 检查数据集内容</span></span><br><span class="line">    iterator = dataset.make_one_shot_iterator() </span><br><span class="line">    data_tensor = iterator.get_next()</span><br><span class="line">    <span class="built_in">print</span>(sess.run(data_tensor))</span><br><span class="line">    <span class="built_in">print</span>(sess.run(data_tensor))</span><br><span class="line"></span><br><span class="line"><span class="meta">@simple_time</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_dataset_size_by_iter</span>(<span class="params">dataset, sess</span>):</span><br><span class="line">    <span class="comment"># 通过实际调用迭代器，获取数据集的长度</span></span><br><span class="line">    count = <span class="number">0</span></span><br><span class="line">    iterator = dataset.make_one_shot_iterator() </span><br><span class="line">    data_tensor = iterator.get_next()</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            sess.run(data_tensor)</span><br><span class="line">            count += <span class="number">1</span></span><br><span class="line">        <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line"><span class="comment">#             print(e)</span></span><br><span class="line">            <span class="keyword">return</span> count </span><br></pre></td></tr></table></figure>
+
+<h2 id="from-tensor-slices"><a href="#from-tensor-slices" class="headerlink" title="from_tensor_slices"></a>from_tensor_slices</h2><p>创造一个数据集，每个元素来自于传入数据的每个切片。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">t = time.time()</span><br><span class="line">dataset = tf.data.Dataset.from_tensor_slices(train_dense_feature)</span><br><span class="line"><span class="built_in">print</span>(time.time() - t)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0.0039520263671875</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(dataset)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;TensorSliceDataset shapes: (3,), types: tf.float32&gt;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sess = get_session()</span><br><span class="line"></span><br><span class="line">inspect_dataset(dataset, sess)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[-0.37590072 -0.11182938  0.40723833]</span><br><span class="line">[ 0.1867499   1.4743736  -0.02962399]</span><br><span class="line">time cost:  0.053751230239868164</span><br></pre></td></tr></table></figure>
+
+<p>输出两条数据</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">get_dataset_size_by_iter(dataset, sess)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">time cost:  0.038236379623413086</span><br><span class="line"></span><br><span class="line">200</span><br></pre></td></tr></table></figure>
+
+<h2 id="repeat"><a href="#repeat" class="headerlink" title="repeat"></a>repeat</h2><p>重复拷贝数据集。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dataset = dataset.repeat(count=<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(dataset)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;RepeatDataset shapes: (3,), types: tf.float32&gt;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">get_dataset_size_by_iter(dataset, sess)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">time cost:  0.06870865821838379</span><br><span class="line"></span><br><span class="line">400</span><br></pre></td></tr></table></figure>
+
+<p>输出的数据条数是之前的两倍。</p>
+<h2 id="batch"><a href="#batch" class="headerlink" title="batch"></a>batch</h2><p>数据集分批。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dataset1 = dataset.batch(<span class="number">5</span>)  <span class="comment"># batch size = 5</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(dataset1)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;BatchDataset shapes: (?, 3), types: tf.float32&gt;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">get_dataset_size_by_iter(dataset, sess)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">time cost:  0.07429909706115723</span><br><span class="line"></span><br><span class="line">400</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">400</span> / <span class="number">32</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">12.5</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">inspect_dataset(dataset1, sess)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[[-0.37590072 -0.11182938  0.40723833]</span><br><span class="line"> [ 0.1867499   1.4743736  -0.02962399]</span><br><span class="line"> [-0.83972436 -0.33842978 -0.2310548 ]</span><br><span class="line"> [ 0.31345868 -0.6216803  -0.28837252]</span><br><span class="line"> [-0.69582295 -0.7916306  -0.07001938]]</span><br><span class="line">[[ 0.33324835 -0.7349805  -0.22900774]</span><br><span class="line"> [ 0.79372746 -0.5650302  -1.0580674 ]</span><br><span class="line"> [ 0.5861701   4.1369286  -0.5831493 ]</span><br><span class="line"> [-0.20523202 -0.8482807   1.7013708 ]</span><br><span class="line"> [ 0.16267557 -0.11182938  0.05143963]]</span><br><span class="line">time cost:  0.015297651290893555</span><br></pre></td></tr></table></figure>
+
+<h2 id="shuffle"><a href="#shuffle" class="headerlink" title="shuffle"></a>shuffle</h2><p>shuffle的实现是先在取一些元素到buffer中，然后每次从buffer中sample一个元素。<code>buffer_size</code>代表这个buffer的最大尺寸。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dataset11 = dataset1.shuffle(buffer_size=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">inspect_dataset(dataset11, sess)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[[-0.37590072 -0.11182938  0.40723833]</span><br><span class="line"> [ 0.1867499   1.4743736  -0.02962399]</span><br><span class="line"> [-0.83972436 -0.33842978 -0.2310548 ]</span><br><span class="line"> [ 0.31345868 -0.6216803  -0.28837252]</span><br><span class="line"> [-0.69582295 -0.7916306  -0.07001938]]</span><br><span class="line">[[ 0.33324835 -0.7349805  -0.22900774]</span><br><span class="line"> [ 0.79372746 -0.5650302  -1.0580674 ]</span><br><span class="line"> [ 0.5861701   4.1369286  -0.5831493 ]</span><br><span class="line"> [-0.20523202 -0.8482807   1.7013708 ]</span><br><span class="line"> [ 0.16267557 -0.11182938  0.05143963]]</span><br><span class="line">time cost:  0.016983985900878906</span><br></pre></td></tr></table></figure>
+
+<p>可以发现，如果<code>buffer_size</code>是1，则完全没有起到shuffle的作用。另外可以认识到，shuffle是针对element在shuffle，而element内部的数据不会被shuffle。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dataset12 = dataset1.shuffle(buffer_size=<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">inspect_dataset(dataset12, sess)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[[ 0.33324835 -0.7349805  -0.22900774]</span><br><span class="line"> [ 0.79372746 -0.5650302  -1.0580674 ]</span><br><span class="line"> [ 0.5861701   4.1369286  -0.5831493 ]</span><br><span class="line"> [-0.20523202 -0.8482807   1.7013708 ]</span><br><span class="line"> [ 0.16267557 -0.11182938  0.05143963]]</span><br><span class="line">[[-0.37590072 -0.11182938  0.40723833]</span><br><span class="line"> [ 0.1867499   1.4743736  -0.02962399]</span><br><span class="line"> [-0.83972436 -0.33842978 -0.2310548 ]</span><br><span class="line"> [ 0.31345868 -0.6216803  -0.28837252]</span><br><span class="line"> [-0.69582295 -0.7916306  -0.07001938]]</span><br><span class="line">time cost:  0.021335840225219727</span><br></pre></td></tr></table></figure>
+
+<p><code>buffer_size</code>是2，发现第一第二个数据变换了顺序。</p>
+<p>因此，在设置buffer_size的时候一定要设置较大的数。</p>
+<h2 id="prefetch"><a href="#prefetch" class="headerlink" title="prefetch"></a>prefetch</h2><p>prefetch将提前fetch一些element保存在buffer中，<code>buffer_size</code>代表这个buffer的最大尺寸。用于减少数据读取和计算的串行时间。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dataset11 = dataset1.prefetch(buffer_size=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">inspect_dataset(dataset11, sess)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[[-0.37590072 -0.11182938  0.40723833]</span><br><span class="line"> [ 0.1867499   1.4743736  -0.02962399]</span><br><span class="line"> [-0.83972436 -0.33842978 -0.2310548 ]</span><br><span class="line"> [ 0.31345868 -0.6216803  -0.28837252]</span><br><span class="line"> [-0.69582295 -0.7916306  -0.07001938]]</span><br><span class="line">[[ 0.33324835 -0.7349805  -0.22900774]</span><br><span class="line"> [ 0.79372746 -0.5650302  -1.0580674 ]</span><br><span class="line"> [ 0.5861701   4.1369286  -0.5831493 ]</span><br><span class="line"> [-0.20523202 -0.8482807   1.7013708 ]</span><br><span class="line"> [ 0.16267557 -0.11182938  0.05143963]]</span><br><span class="line">time cost:  0.01833629608154297</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Tensorflow/" rel="tag"># Tensorflow</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/rl_note/intro-note-3/" rel="prev" title="强化学习导论学习笔记——（三）">
+                  <i class="fa fa-angle-left"></i> 强化学习导论学习笔记——（三）
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/rl_note/intro-note-4/" rel="next" title="强化学习导论学习笔记——（四）">
+                  强化学习导论学习笔记——（四） <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

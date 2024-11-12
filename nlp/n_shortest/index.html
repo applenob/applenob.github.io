@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="这篇文章是我照着《基于N最短路径方法的中文词语粗分模型》这篇论文，自己用Python实现了下文中的算法，用于理解原理。 大致思想考虑到汉语自动分词中存在切分歧义消除和未登录词识别两个主要问题，因此，有专家将分词过程分成两个阶段：首先采用切分算法对句子词语进行初步切分，得到一个相对最好的粗分结果，然后，再进行歧义排除和未登录词识别。N-最短路径方法就是一种词语粗分模型，大致步骤：  1.根据词典，找">
+<meta property="og:type" content="article">
+<meta property="og:title" content="N-最短路径方法的分词实现">
+<meta property="og:url" content="https://applenob.github.io/nlp/n_shortest/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="这篇文章是我照着《基于N最短路径方法的中文词语粗分模型》这篇论文，自己用Python实现了下文中的算法，用于理解原理。 大致思想考虑到汉语自动分词中存在切分歧义消除和未登录词识别两个主要问题，因此，有专家将分词过程分成两个阶段：首先采用切分算法对句子词语进行初步切分，得到一个相对最好的粗分结果，然后，再进行歧义排除和未登录词识别。N-最短路径方法就是一种词语粗分模型，大致步骤：  1.根据词典，找">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://applenob.github.io/nlp/n_shortest/nsp_graph.png">
+<meta property="og:image" content="https://applenob.github.io/nlp/n_shortest/nsp_example.png">
+<meta property="article:published_time" content="2017-11-29T06:29:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.088Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="NLP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://applenob.github.io/nlp/n_shortest/nsp_graph.png">
+
+
+<link rel="canonical" href="https://applenob.github.io/nlp/n_shortest/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/nlp/n_shortest/","path":"nlp/n_shortest/","title":"N-最短路径方法的分词实现"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>N-最短路径方法的分词实现 | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%A7%E8%87%B4%E6%80%9D%E6%83%B3"><span class="nav-number">1.</span> <span class="nav-text">大致思想</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B7%E4%BD%93%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.</span> <span class="nav-text">具体介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.</span> <span class="nav-text">实现</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/nlp/n_shortest/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="N-最短路径方法的分词实现 | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          N-最短路径方法的分词实现
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-11-28 22:29:00" itemprop="dateCreated datePublished" datetime="2017-11-28T22:29:00-08:00">2017-11-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NLP/" itemprop="url" rel="index"><span itemprop="name">NLP</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>这篇文章是我照着《基于N最短路径方法的中文词语粗分模型》这篇论文，自己用Python实现了下文中的算法，用于理解原理。</p>
+<h2 id="大致思想"><a href="#大致思想" class="headerlink" title="大致思想"></a>大致思想</h2><p>考虑到汉语自动分词中存在切分歧义消除和未登录词识别两个主要问题，因此，有专家将分词过程分成两个阶段：首先采用切分算法对句子词语进行初步切分，得到一个相对最好的粗分结果，然后，再进行歧义排除和未登录词识别。<br>N-最短路径方法就是一种词语<strong>粗分模型</strong>，大致步骤：</p>
+<ul>
+<li>1.根据词典，找出字串中所有可能的词，构造词语切分有向无环图。 </li>
+<li>2.每个词对应图中的一条有向边，并赋给相应的边长（权值） 。 </li>
+<li>3.然后针对该切分图，在起点到终点的所有路径中，求出长度值按严格升序排列（任何两个不同位置上的值一定不等）依次为第1、第2、…、第i、…、第N（N≥1）的路径集合作为相应的粗分结果集。 </li>
+<li>4.如果两条或两条以上路径长度相等，那么它们的长度并列第i，都要列入粗分结果集，而且不影响其他路径的排列序号，最后的粗分结果集合大小大于或等于N。</li>
+</ul>
+<h2 id="具体介绍"><a href="#具体介绍" class="headerlink" title="具体介绍"></a>具体介绍</h2><p>假设待分字符串$S&#x3D;c_1c_2…c_n$，$c_i$是单个汉字，$n$是字符串的长度。</p>
+<p>建立一个结点个数是$n+1$的有向无环图$G$，结点编号是$V_0,…V_n$。</p>
+<p>通过以下的步骤建立可能的词边：</p>
+<ul>
+<li>1.相邻结点$V_{k-1}， V_k;(1≤k≤n)$ 之间建立有向边$V_{k-1}$，$V_k$，边的长度值为$L_k$，边对应的词默认为$c_k(k＝1,2, …,n)$。</li>
+<li>2.如果$w＝c_ic_{i＋1}…c_j;(0＜i＜j≤n)$是词表中的词，则结点$V_{i-1}，V_j$之间建立有向边$V_{i-1}, V_j$， 边的长度值为$L_w$， 边对应的词为$w$。</li>
+</ul>
+<p><img src="/nlp/n_shortest/nsp_graph.png"></p>
+<p>具体权重$L_k$和$L_w$的计算也有很多种方法，最简单的一种就是所有的权重都是1。</p>
+<p>基于<strong>Dijkstra的贪心算法</strong>： </p>
+<ul>
+<li>每个结点处记录$N$个最短路径值，并记录相应路径上当前结点的<strong>前驱</strong>。 </li>
+<li>如果同一长度对应多条路径，必须同时记录这些路径上当前结点的前驱，最后通过回溯即可求出NSP（NSP为结点$V_0$到$V_n$的前$N$个最短路径的集合）。</li>
+</ul>
+<p><strong>一个实例</strong>：句子：“他说的确实在理”</p>
+<p><img src="/nlp/n_shortest/nsp_example.png"></p>
+<p>上面图中，$Table(i)$表示结点$i$的信息记录表，表里记录的是不同长度的路径的编号（不超过$N$），且从小到大排列。</p>
+<p>前驱字段里的$(i,j)$表示沿当前路径到达当前结点的最后一条边的出发结点是$i$，这条边对应的是结点$i$的信息记录表中编号为$j$的路径。如果$j＝0$，表示没有其他候选的路径。</p>
+<p>如结点$7$对应的信息记录表$Table(7)$中编号为1的路径前驱$(5,1)$表示前一条边为结点$5$的信息表中第$1$条路径。<br>信息记录表为系统回溯找出所有可选路径提供了依据。</p>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">get_dict</span>(<span class="params">filename=<span class="string">&#x27;SogouLabDic.dic.utf8&#x27;</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;读取字典&quot;&quot;&quot;</span></span><br><span class="line">    d = &#123;&#125;</span><br><span class="line">    d[<span class="string">&#x27;_t_&#x27;</span>] = <span class="number">0.0</span></span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(filename, <span class="string">&quot;r&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        <span class="keyword">for</span> line <span class="keyword">in</span> f:</span><br><span class="line">            word, freq = line.split(<span class="string">&#x27;\t&#x27;</span>)[:<span class="number">2</span>]</span><br><span class="line">            d[<span class="string">&#x27;_t_&#x27;</span>] += <span class="built_in">int</span>(freq)+<span class="number">1</span></span><br><span class="line">            d[word] = <span class="built_in">int</span>(freq)+<span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> d</span><br><span class="line">d = get_dict()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 为了使得演示效果和上面的图一致，去掉字典中原有的“他说”，加入没有的“在理”。</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">del</span>(d[<span class="string">&quot;他说&quot;</span>])</span><br><span class="line">d[<span class="string">&quot;在理&quot;</span>] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">build_graph</span>(<span class="params">s, big_dict</span>):</span><br><span class="line">    l = <span class="built_in">len</span>(s)</span><br><span class="line">    <span class="comment"># 邻接矩阵，用dict实现</span></span><br><span class="line">    adj = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(l+<span class="number">1</span>):</span><br><span class="line">        adj[i] = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(l):</span><br><span class="line">        adj[i][i+<span class="number">1</span>] = <span class="number">1</span></span><br><span class="line">    <span class="keyword">for</span> size <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>, l+<span class="number">1</span>):</span><br><span class="line">        <span class="keyword">for</span> start <span class="keyword">in</span> <span class="built_in">range</span>(l+<span class="number">1</span>):</span><br><span class="line">            <span class="keyword">if</span> start + size &lt;= l <span class="keyword">and</span> s[start: start+size] <span class="keyword">in</span> big_dict:</span><br><span class="line">                <span class="comment"># 所有权值（长度）都直接选用1</span></span><br><span class="line">                adj[start][start+size] = <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> adj</span><br><span class="line"></span><br><span class="line">test_s = <span class="string">&quot;他说的确实在理&quot;</span></span><br><span class="line">adj = build_graph(test_s, d)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;邻接矩阵：&quot;</span>, adj)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">邻接矩阵： &#123;0: &#123;1: 1&#125;, 1: &#123;2: 1&#125;, 2: &#123;3: 1, 4: 1&#125;, 3: &#123;4: 1, 5: 1&#125;, 4: &#123;5: 1, 6: 1&#125;, 5: &#123;6: 1, 7: 1&#125;, 6: &#123;7: 1&#125;, 7: &#123;&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>邻接矩阵和上面的图可以一一对应。</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">row_equal</span>(<span class="params">row_1, row_2</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;判断信息记录表中某两行是否重复&quot;&quot;&quot;</span></span><br><span class="line"><span class="comment">#     print(row_1, row_2)</span></span><br><span class="line">    <span class="keyword">return</span> row_1[<span class="number">1</span>] == row_2[<span class="number">1</span>] <span class="keyword">and</span> row_1[<span class="number">2</span>][<span class="number">0</span>] == row_2[<span class="number">2</span>][<span class="number">0</span>] <span class="keyword">and</span> row_1[<span class="number">2</span>][<span class="number">1</span>] == row_2[<span class="number">2</span>][<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">keep_n_min</span>(<span class="params">candidates, n, length_index=<span class="number">1</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;保留前N小的所有路径&quot;&quot;&quot;</span></span><br><span class="line">    candidates = <span class="built_in">sorted</span>(candidates, key=<span class="keyword">lambda</span> x: x[length_index])</span><br><span class="line">    last_one = -<span class="number">1</span></span><br><span class="line">    count = <span class="number">0</span></span><br><span class="line">    last = -<span class="number">1</span></span><br><span class="line">    <span class="keyword">for</span> i, one <span class="keyword">in</span> <span class="built_in">enumerate</span>(candidates):</span><br><span class="line">        <span class="keyword">if</span> one[length_index] != last_one:</span><br><span class="line">            last_one = one[length_index]</span><br><span class="line">            count += <span class="number">1</span></span><br><span class="line">            <span class="keyword">if</span> count &gt; n:</span><br><span class="line">                last = i</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">if</span> last != -<span class="number">1</span>:</span><br><span class="line">        candidates = candidates[:last]</span><br><span class="line">    index = <span class="number">0</span></span><br><span class="line">    <span class="comment"># 更新路径编号</span></span><br><span class="line">    last_len = -<span class="number">1</span></span><br><span class="line">    del_indices = []</span><br><span class="line">    <span class="keyword">for</span> i, row <span class="keyword">in</span> <span class="built_in">enumerate</span>(candidates):</span><br><span class="line">        <span class="keyword">if</span> i &gt; <span class="number">0</span> <span class="keyword">and</span> row_equal(candidates[i], candidates[i-<span class="number">1</span>]):</span><br><span class="line">            del_indices.append(i)</span><br><span class="line">        <span class="keyword">if</span> row[length_index] != last_len:</span><br><span class="line">            last_len = row[length_index]</span><br><span class="line">            index += <span class="number">1</span></span><br><span class="line">        candidates[i][<span class="number">0</span>] = index</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> del_indices[::-<span class="number">1</span>]:</span><br><span class="line">        <span class="keyword">del</span> candidates[i]</span><br><span class="line">    <span class="keyword">return</span> candidates</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_tables_by_adj</span>(<span class="params">adj, n</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;使用类似Dijkstra的贪心算法获得信息表&quot;&quot;&quot;</span></span><br><span class="line">    l = <span class="built_in">len</span>(adj)</span><br><span class="line">    tables = [[[<span class="number">1</span>, <span class="number">0</span>, (<span class="number">0</span>, <span class="number">0</span>)]]]  <span class="comment"># 第0个table实际上用不到，这里初始化用于占位</span></span><br><span class="line">    <span class="keyword">for</span> cur <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, l):</span><br><span class="line">        candidates = []</span><br><span class="line">        i = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> pre <span class="keyword">in</span> <span class="built_in">range</span>(cur):</span><br><span class="line">            <span class="keyword">if</span> cur <span class="keyword">in</span> adj[pre]:  <span class="comment"># 存在从结点pre指向结点cur的边</span></span><br><span class="line">                <span class="keyword">for</span> row <span class="keyword">in</span> tables[pre]:</span><br><span class="line">                    candidates.append([i, row[<span class="number">1</span>] + <span class="number">1</span>, (pre, row[<span class="number">0</span>])])</span><br><span class="line">        <span class="comment"># 保留长度前N小的所有candidate到table</span></span><br><span class="line">        table = keep_n_min(candidates, n)</span><br><span class="line">        tables.append(table)</span><br><span class="line">    <span class="keyword">return</span> tables</span><br><span class="line"></span><br><span class="line">tables = get_tables_by_adj(adj, <span class="number">3</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Table(i): 编号，长度，（前驱结点，前驱路径下标）&quot;</span>)</span><br><span class="line"><span class="keyword">for</span> i, table <span class="keyword">in</span> <span class="built_in">enumerate</span>(tables):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Table(&#123;&#125;): &quot;</span>.<span class="built_in">format</span>(i), table)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Table(i): 编号，长度，（前驱结点，前驱路径下标）</span><br><span class="line">Table(0):  [[1, 0, (0, 0)]]</span><br><span class="line">Table(1):  [[1, 1, (0, 1)]]</span><br><span class="line">Table(2):  [[1, 2, (1, 1)]]</span><br><span class="line">Table(3):  [[1, 3, (2, 1)]]</span><br><span class="line">Table(4):  [[1, 3, (2, 1)], [2, 4, (3, 1)]]</span><br><span class="line">Table(5):  [[1, 4, (3, 1)], [1, 4, (4, 1)], [2, 5, (4, 2)]]</span><br><span class="line">Table(6):  [[1, 4, (4, 1)], [2, 5, (4, 2)], [2, 5, (5, 1)], [3, 6, (5, 2)]]</span><br><span class="line">Table(7):  [[1, 5, (5, 1)], [1, 5, (6, 1)], [2, 6, (5, 2)], [2, 6, (6, 2)], [3, 7, (6, 3)]]</span><br></pre></td></tr></table></figure>
+
+<p><strong>产生的信息记录表和上面图片中的一致</strong>，区别是，我不再使用只有一种情况的时候使用$j&#x3D;0$的约定，即便是一种情况，也是$j&#x3D;1$。<br>下面根据这些信息记录表回溯分词结果。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">core_retro</span>(<span class="params">s, cur, pre, path_index, one_res, one_length_res, pre_node_index</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;回溯的核心函数&quot;&quot;&quot;</span></span><br><span class="line">    one_res.append(s[pre: cur]) </span><br><span class="line">    <span class="keyword">if</span> pre == <span class="number">0</span>:</span><br><span class="line">        one_length_res.append(one_res[::-<span class="number">1</span>])</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">for</span> one_row <span class="keyword">in</span> tables[pre]:</span><br><span class="line">            <span class="keyword">if</span> one_row[<span class="number">0</span>] == path_index:</span><br><span class="line">                core_retro(s, pre, one_row[pre_node_index][<span class="number">0</span>], </span><br><span class="line">                           one_row[pre_node_index][<span class="number">1</span>], one_res, one_length_res, pre_node_index)</span><br><span class="line">                one_res.pop()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">retro_back</span>(<span class="params">s, tables, n, length_index=<span class="number">1</span>, pre_node_index=<span class="number">2</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;根据信息记录表回溯分词结果&quot;&quot;&quot;</span></span><br><span class="line">    count = <span class="number">0</span></span><br><span class="line">    last_len = -<span class="number">1</span></span><br><span class="line">    res = &#123;&#125;</span><br><span class="line">    l = <span class="built_in">len</span>(s)</span><br><span class="line">    <span class="keyword">for</span> row <span class="keyword">in</span> tables[-<span class="number">1</span>]:</span><br><span class="line">        <span class="comment"># 只留长度是前n个的结果</span></span><br><span class="line">        cur = l</span><br><span class="line">        <span class="keyword">if</span> row[length_index] != last_len:</span><br><span class="line">            last_len = row[length_index]</span><br><span class="line">            count += <span class="number">1</span></span><br><span class="line">            <span class="keyword">if</span> count &gt; n:</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">        <span class="comment"># 开始回溯</span></span><br><span class="line">        one_length_res = []</span><br><span class="line">        one_res = []</span><br><span class="line">        <span class="comment"># 回溯的核心函数</span></span><br><span class="line">        core_retro(s, cur, row[pre_node_index][<span class="number">0</span>], row[pre_node_index][<span class="number">1</span>], one_res, one_length_res, pre_node_index)   </span><br><span class="line">        <span class="keyword">if</span> row[length_index] <span class="keyword">not</span> <span class="keyword">in</span> res:</span><br><span class="line">            res[row[length_index]] = one_length_res</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            res[row[length_index]] += one_length_res</span><br><span class="line">    <span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line">res = retro_back(test_s, tables, <span class="number">3</span>)</span><br><span class="line">res</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;5: [[&#x27;他&#x27;, &#x27;说&#x27;, &#x27;的&#x27;, &#x27;确实&#x27;, &#x27;在理&#x27;],</span><br><span class="line">  [&#x27;他&#x27;, &#x27;说&#x27;, &#x27;的确&#x27;, &#x27;实&#x27;, &#x27;在理&#x27;],</span><br><span class="line">  [&#x27;他&#x27;, &#x27;说&#x27;, &#x27;的确&#x27;, &#x27;实在&#x27;, &#x27;理&#x27;]],</span><br><span class="line"> 6: [[&#x27;他&#x27;, &#x27;说&#x27;, &#x27;的&#x27;, &#x27;确&#x27;, &#x27;实&#x27;, &#x27;在理&#x27;],</span><br><span class="line">  [&#x27;他&#x27;, &#x27;说&#x27;, &#x27;的&#x27;, &#x27;确&#x27;, &#x27;实在&#x27;, &#x27;理&#x27;],</span><br><span class="line">  [&#x27;他&#x27;, &#x27;说&#x27;, &#x27;的&#x27;, &#x27;确实&#x27;, &#x27;在&#x27;, &#x27;理&#x27;],</span><br><span class="line">  [&#x27;他&#x27;, &#x27;说&#x27;, &#x27;的确&#x27;, &#x27;实&#x27;, &#x27;在&#x27;, &#x27;理&#x27;]],</span><br><span class="line"> 7: [[&#x27;他&#x27;, &#x27;说&#x27;, &#x27;的&#x27;, &#x27;确&#x27;, &#x27;实&#x27;, &#x27;在&#x27;, &#x27;理&#x27;]]&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当$N&#x3D;3$时，返回了3种长度的分词，7个分词结果。</p>
+<p>参考资料：</p>
+<ul>
+<li>《基于N最短路径方法的中文词语粗分模型》，张华平，刘群。</li>
+<li>《自然语言处理》，宗庆成，第七章。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+              <a href="/tags/NLP/" rel="tag"># NLP</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/nlp/statistics_seg/" rel="prev" title="基于统计学的的分词">
+                  <i class="fa fa-angle-left"></i> 基于统计学的的分词
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/nlp/gen_dep_parser/" rel="next" title="一个简单的生成式依存句法解析器">
+                  一个简单的生成式依存句法解析器 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

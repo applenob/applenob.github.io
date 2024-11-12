@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="最近在一个项目中大量使用正则表达式，对各种用法做个梳理。 简介正则表达式的作用是检查一个字符串是否与某种模式匹配。Python中的re模块提供正则匹配相关的方法。 语法Python正则表达式测试网站：https:&#x2F;&#x2F;pythex.org&#x2F;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python正则表达式梳理">
+<meta property="og:url" content="https://applenob.github.io/python/py3_re/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="最近在一个项目中大量使用正则表达式，对各种用法做个梳理。 简介正则表达式的作用是检查一个字符串是否与某种模式匹配。Python中的re模块提供正则匹配相关的方法。 语法Python正则表达式测试网站：https:&#x2F;&#x2F;pythex.org&#x2F;">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://applenob.github.io/python/py3_re/pyre1.png">
+<meta property="article:published_time" content="2018-06-25T18:30:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.098Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://applenob.github.io/python/py3_re/pyre1.png">
+
+
+<link rel="canonical" href="https://applenob.github.io/python/py3_re/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/python/py3_re/","path":"python/py3_re/","title":"Python正则表达式梳理"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Python正则表达式梳理 | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">常用方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#re-match"><span class="nav-number">3.1.</span> <span class="nav-text">re.match</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#re-search"><span class="nav-number">3.2.</span> <span class="nav-text">re.search</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Match"><span class="nav-number">3.3.</span> <span class="nav-text">Match</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#re-sub"><span class="nav-number">3.4.</span> <span class="nav-text">re.sub</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#re-compile"><span class="nav-number">3.5.</span> <span class="nav-text">re.compile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pattern"><span class="nav-number">3.6.</span> <span class="nav-text">Pattern</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-7-flags"><span class="nav-number">3.7.</span> <span class="nav-text">3.7 flags</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E6%96%B9%E5%BC%8F"><span class="nav-number">4.</span> <span class="nav-text">常用方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B4%E6%8E%A5%E6%89%BE%E5%88%B0%E5%8C%B9%E9%85%8D%E7%9A%84%E5%AD%90%E4%B8%B2"><span class="nav-number">4.1.</span> <span class="nav-text">直接找到匹配的子串</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%BE%E5%88%B0%E5%8C%B9%E9%85%8D%E7%9A%84%E5%AD%90%E4%B8%B2%E4%B8%AD%E7%9A%84%E4%B8%80%E9%83%A8%E5%88%86"><span class="nav-number">4.2.</span> <span class="nav-text">找到匹配的子串中的一部分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%8D%E6%9D%82%E7%9A%84%E6%9B%BF%E6%8D%A2"><span class="nav-number">4.3.</span> <span class="nav-text">复杂的替换</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%BB%E8%BE%91%E6%93%8D%E4%BD%9C"><span class="nav-number">5.</span> <span class="nav-text">逻辑操作</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/python/py3_re/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Python正则表达式梳理 | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Python正则表达式梳理
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2018-06-25 11:30:00" itemprop="dateCreated datePublished" datetime="2018-06-25T11:30:00-07:00">2018-06-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>最近在一个项目中大量使用正则表达式，对各种用法做个梳理。</p>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>正则表达式的作用是<strong>检查一个字符串是否与某种模式匹配</strong>。Python中的<code>re</code>模块提供正则匹配相关的方法。</p>
+<h2 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h2><p>Python正则表达式测试网站：<a href="https://pythex.org/">https://pythex.org/</a></p>
+<p><img src="/python/py3_re/pyre1.png"></p>
+<p>图片来自：<a href="https://www.cnblogs.com/huxi/archive/2010/07/04/1771073.html">https://www.cnblogs.com/huxi/archive/2010/07/04/1771073.html</a></p>
+<h2 id="常用方法"><a href="#常用方法" class="headerlink" title="常用方法"></a>常用方法</h2><h3 id="re-match"><a href="#re-match" class="headerlink" title="re.match"></a>re.match</h3><p><code>re.match</code>尝试从字符串的<strong>起始位置</strong>匹配一个模式，如果不是起始位置匹配成功的话，返回<code>None</code>。</p>
+<p>函数语法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">re.<span class="keyword">match</span>(pattern, string, flags=<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> re</span><br><span class="line"></span><br><span class="line"><span class="comment"># 匹配网址</span></span><br><span class="line">pattern_str = <span class="string">&quot;w&#123;3&#125;\..*\.com&quot;</span></span><br><span class="line"><span class="comment"># match</span></span><br><span class="line">match_1 = re.<span class="keyword">match</span>(pattern_str, <span class="string">&quot;www.didichuxing.com&quot;</span>)</span><br><span class="line">match_1.group()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x27;www.didichuxing.com&#x27;</span><br></pre></td></tr></table></figure>
+
+<h3 id="re-search"><a href="#re-search" class="headerlink" title="re.search"></a>re.search</h3><p><code>re.search</code>扫描整个字符串并返回<strong>第一个</strong>成功的匹配。</p>
+<p>函数语法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">re.search(pattern, string, flags=<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 匹配网址</span></span><br><span class="line">pattern_str = <span class="string">&quot;w&#123;3&#125;\..*\.com&quot;</span></span><br><span class="line"><span class="comment"># search</span></span><br><span class="line">match_2 = re.search(pattern_str, <span class="string">&quot;The url is: www.didichuxing.com&quot;</span>)  <span class="comment"># 不是从头开始</span></span><br><span class="line">match_2.group()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x27;www.didichuxing.com&#x27;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Match"><a href="#Match" class="headerlink" title="Match"></a>Match</h3><p><code>re.match</code>和<code>re.search</code>返回的都是一个<code>Match</code> 对象（如果成功匹配）。</p>
+<p><code>Match</code>对象又有如下常用的方法：</p>
+<ul>
+<li><code>start([group])</code>：返回指定的组截获的子串在string中的起始索引（<strong>子串第一个字符的索引</strong>）。group默认值为0。</li>
+<li><code>end([group])</code>: 返回指定的组截获的子串在string中的结束索引（<strong>子串最后一个字符的索引+1</strong>）。group默认值为0。</li>
+<li><code>span([group])</code>：返回<code>(start(group), end(group))</code>。</li>
+<li><code>group([group1,…])</code>：获得一个或多个分组截获的字符串；指定多个参数时将以元组形式返回。<code>group1</code>可以使用编号也可以使用别名；编号0代表整个匹配的子串，<strong>默认是0</strong>。</li>
+<li><code>groups([default])</code>：以元组形式返回全部分组截获的字符串。相当于调用<code>group(1,2,…last)</code>。<code>default</code>表示没有截获字符串的组以这个值替代，默认为<code>None</code>。</li>
+<li><code>groupdict([default])</code>: 返回以有别名的组的别名为键、以该组截获的子串为值的字典，没有别名的组不包含在内。</li>
+<li><code>expand(template)</code>: 将匹配到的分组代入<code>template</code>中然后返回。<code>template</code>中可以使用<code>\id</code>或<code>\g&lt;id&gt;</code>、<code>\g&lt;name&gt;</code>引用分组，但不能使用编号0。<code>\id</code>与<code>\g&lt;id&gt;</code>是等价的；但<code>\10</code>将被认为是第10个分组，如果你想表达<code>\1</code>之后是字符<code>&#39;0&#39;</code>，只能使用<code>\g&lt;1&gt;0</code>。</li>
+</ul>
+<p><strong>注意：<code>group(0)</code>返回的是整个匹配的结果，<code>group(n)</code>或者<code>group(name)</code>是某个匹配的组。</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 匹配数字</span></span><br><span class="line">pattern_str = <span class="string">&quot;(\d+)元&quot;</span></span><br><span class="line"><span class="comment"># search</span></span><br><span class="line">match_3 = re.search(pattern_str, <span class="string">&quot;今天花了15元&quot;</span>)</span><br><span class="line"><span class="comment"># match object</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;match_3: &quot;</span>, match_3)</span><br><span class="line"><span class="comment"># span</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;match_3.span(): &quot;</span>, match_3.span())</span><br><span class="line"><span class="comment"># group</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;match_3.group(): &quot;</span>, match_3.group())</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;match_3.group(1): &quot;</span>, match_3.group(<span class="number">1</span>))</span><br><span class="line"><span class="comment"># groups</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;match_3.groups(): &quot;</span>, match_3.groups())</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">match_3:  &lt;_sre.SRE_Match object; span=(4, 7), match=&#x27;15元&#x27;&gt;</span><br><span class="line">match_3.span():  (4, 7)</span><br><span class="line">match_3.group():  15元</span><br><span class="line">match_3.group(1):  15</span><br><span class="line">match_3.groups():  (&#x27;15&#x27;,)</span><br></pre></td></tr></table></figure>
+
+<h3 id="re-sub"><a href="#re-sub" class="headerlink" title="re.sub"></a>re.sub</h3><p>实现字符串<strong>替换</strong>。</p>
+<p>语法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">re.sub(pattern, repl, string,</span><br><span class="line">count=<span class="number">0</span>, flags=<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意，这里的<code>repl</code>可以是字符串也可以是一个函数。</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 匹配数字</span></span><br><span class="line">pattern_str = <span class="string">&quot;贰|二&quot;</span></span><br><span class="line"><span class="comment"># 用字符串替换</span></span><br><span class="line">res = re.sub(pattern_str, <span class="string">&quot;2&quot;</span>, <span class="string">&quot;今天花了贰元&quot;</span>)</span><br><span class="line">res</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x27;今天花了2元&#x27;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">pattern_str = <span class="string">&quot;(\d)+(元)&quot;</span></span><br><span class="line"><span class="comment"># 用替换</span></span><br><span class="line">res = re.sub(pattern_str, <span class="keyword">lambda</span> <span class="keyword">match</span>: <span class="keyword">match</span>.group(<span class="number">1</span>) * <span class="number">2</span> + <span class="keyword">match</span>.group(<span class="number">2</span>), <span class="string">&quot;今天花了2元&quot;</span>)</span><br><span class="line"></span><br><span class="line">res</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x27;今天花了22元&#x27;</span><br></pre></td></tr></table></figure>
+
+<h3 id="re-compile"><a href="#re-compile" class="headerlink" title="re.compile"></a>re.compile</h3><p><code>re.compile</code>用于编译正则表达式，生成一个正则表达式<code>Pattern</code>对象。</p>
+<p>语法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">re.<span class="built_in">compile</span>(pattern[, flags])</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pattern_str = <span class="string">&quot;(\d)+(元)&quot;</span></span><br><span class="line">pattern = re.<span class="built_in">compile</span>(pattern_str)</span><br></pre></td></tr></table></figure>
+
+<h3 id="Pattern"><a href="#Pattern" class="headerlink" title="Pattern"></a>Pattern</h3><p><code>Pattern</code>不能直接实例化，必须使用<code>re.compile()</code>进行构造。</p>
+<p>常用方法：</p>
+<ul>
+<li><code>match(string[, pos[, endpos]]) | re.match(pattern, string[, flags])</code>:这个方法将从<code>string</code>的<code>pos</code>下标处起尝试匹配<code>pattern</code>；如果<code>pattern</code>结束时仍可匹配，则返回一个<code>Match</code>对象；如果匹配过程中<code>pattern</code>无法匹配，或者匹配未结束就已到达<code>endpos</code>，则返回<code>None</code>。</li>
+<li><code>search(string[, pos[, endpos]]) | re.search(pattern, string[, flags])</code>: 这个方法用于查找字符串中可以匹配成功的子串。从<code>string</code>的<code>pos</code>下标处起尝试匹配<code>pattern</code>，如果<code>pattern</code>结束时仍可匹配，则返回一个<code>Match</code>对象；若无法匹配，则将<code>pos</code>加1后重新尝试匹配；直到<code>pos=endpos</code>时仍无法匹配则返回<code>None</code>。</li>
+<li><code>split(string[, maxsplit]) | re.split(pattern, string[, maxsplit])</code>: 按照能够匹配的子串将<code>string</code>分割后返回列表。<code>maxsplit</code>用于指定最大分割次数，不指定将全部分割。 </li>
+<li><code>findall(string[,pos[, endpos]]) | re.findall(pattern, string[, flags])</code>: 搜索string，以列表形式返回全部能匹配的子串。 </li>
+<li><code>finditer(string[, pos[, endpos]]) | re.finditer(pattern, string[, flags])</code>: 搜索string，返回一个顺序访问每一个匹配结果（Match对象）的迭代器。</li>
+<li><code>sub(repl, string[, count]) | re.sub(pattern, repl, string[, count])</code>: 使用repl替换string中每一个匹配的子串后返回替换后的字符串。 </li>
+<li><code>subn(repl, string[, count]) |re.sub(pattern, repl, string[, count])</code>: 返回 <code>(sub(repl, string[, count])</code>,替换次数)。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">test_str = <span class="string">&quot;吃饭花费15元，坐车6元&quot;</span></span><br><span class="line"><span class="comment"># match</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;pattern.match: &quot;</span>, pattern.<span class="keyword">match</span>(test_str))</span><br><span class="line"><span class="comment"># search</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;pattern.search: &quot;</span>, pattern.search(test_str))</span><br><span class="line"><span class="comment"># split</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;pattern.split: &quot;</span>, pattern.split(test_str))</span><br><span class="line"><span class="comment"># findall</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;pattern.findall: &quot;</span>, pattern.findall(test_str))</span><br><span class="line"><span class="comment"># sub</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;pattern.sub: &quot;</span>, pattern.sub(<span class="keyword">lambda</span> <span class="keyword">match</span>: <span class="keyword">match</span>.group(<span class="number">1</span>) + <span class="string">&quot;块&quot;</span>, test_str))</span><br><span class="line"><span class="comment"># subn</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;pattern.sub: &quot;</span>, pattern.subn(<span class="keyword">lambda</span> <span class="keyword">match</span>: <span class="keyword">match</span>.group(<span class="number">1</span>) + <span class="string">&quot;块&quot;</span>, test_str))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">pattern.match:  None</span><br><span class="line">pattern.search:  &lt;_sre.SRE_Match object; span=(4, 7), match=&#x27;15元&#x27;&gt;</span><br><span class="line">pattern.split:  [&#x27;吃饭花费&#x27;, &#x27;5&#x27;, &#x27;元&#x27;, &#x27;，坐车&#x27;, &#x27;6&#x27;, &#x27;元&#x27;, &#x27;&#x27;]</span><br><span class="line">pattern.findall:  [(&#x27;5&#x27;, &#x27;元&#x27;), (&#x27;6&#x27;, &#x27;元&#x27;)]</span><br><span class="line">pattern.sub:  吃饭花费5块，坐车6块</span><br><span class="line">pattern.sub:  (&#x27;吃饭花费5块，坐车6块&#x27;, 2)</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-7-flags"><a href="#3-7-flags" class="headerlink" title="3.7 flags"></a>3.7 flags</h3><p>多个标志可以通过<code>|</code>来指定。</p>
+<ul>
+<li><code>I(IGNORECASE)</code>: 忽略大小写。</li>
+<li><code>M(MULTILINE)</code>: 多行模式，改变<code>^</code>和<code>$</code>的行为。</li>
+<li><code>S(DOTALL)</code>: 点任意匹配模式，改变<code>.</code>的行为。</li>
+<li><code>L(LOCALE)</code>: 使预定字符类<code>\w</code> <code>\W</code> <code>\b</code> <code>\B</code> <code>\s</code> <code>\S</code> 取决于当前区域设定。</li>
+<li><code>U(UNICODE)</code>: 使预定字符类<code>\w</code> <code>\W</code> <code>\b</code> <code>\B</code> <code>\s</code> <code>\S</code> <code>\d</code> <code>\D</code> 取决于unicode定义的字符属性。</li>
+<li><code>X(VERBOSE)</code>: 详细模式。这个模式下正则表达式可以是多行，忽略空白字符，并可以加入注释。。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pattern_str = <span class="string">&quot;ABc&quot;</span></span><br><span class="line"><span class="comment"># I</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;I: &quot;</span>, re.<span class="keyword">match</span>(pattern_str, <span class="string">&quot;abcd&quot;</span>, flags=re.I))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">I:  &lt;_sre.SRE_Match object; span=(0, 3), match=&#x27;abc&#x27;&gt;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">pattern_str = <span class="string">&quot;^ABc$&quot;</span></span><br><span class="line">test_str = <span class="string">&quot;abc\nABD\nabc&quot;</span></span><br><span class="line"><span class="comment"># M</span></span><br><span class="line"><span class="built_in">print</span>(re.<span class="keyword">match</span>(pattern_str, test_str))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;M: &quot;</span>, re.findall(pattern_str, test_str, flags=re.I|re.M))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">None</span><br><span class="line">M:  [&#x27;abc&#x27;, &#x27;abc&#x27;]</span><br></pre></td></tr></table></figure>
+
+<h2 id="常用方式"><a href="#常用方式" class="headerlink" title="常用方式"></a>常用方式</h2><h3 id="直接找到匹配的子串"><a href="#直接找到匹配的子串" class="headerlink" title="直接找到匹配的子串"></a>直接找到匹配的子串</h3><p>这是最常见的需求，提取出符合pattern的子串，一般用<code>search</code>可以搞定。</p>
+<p><strong>案例</strong>：</p>
+<p>从文本里抽取手机号码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">pattern_str = <span class="string">&quot;\d&#123;11&#125;&quot;</span>  <span class="comment"># 11位的数字认为是手机号码</span></span><br><span class="line">test_str = <span class="string">&quot;我的手机号码是18801010101&quot;</span></span><br><span class="line"><span class="keyword">match</span> = re.search(pattern_str, test_str)</span><br><span class="line"><span class="built_in">print</span>(<span class="keyword">match</span>.group())</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">18801010101</span><br></pre></td></tr></table></figure>
+
+<h3 id="找到匹配的子串中的一部分"><a href="#找到匹配的子串中的一部分" class="headerlink" title="找到匹配的子串中的一部分"></a>找到匹配的子串中的一部分</h3><p>比如匹配距离：从“125公里”中找到“125”，但是直接匹配数字可能是其他的数据，可能是“1天”、“3元钱”等。<br>这种情况使用<strong>分组</strong>即可。分组可以按照<code>(?P&lt;first&gt;\d)</code>起名，或者不起名，从<code>1</code>开始索引。</p>
+<p><strong>案例</strong>：</p>
+<p>抽取距离数值：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pattern_str = <span class="string">&quot;(?P&lt;distance&gt;\d+)公里&quot;</span></span><br><span class="line">test_str = <span class="string">&quot;距离是34公里，耗时25分钟&quot;</span></span><br><span class="line"><span class="built_in">print</span>(re.findall(pattern_str, test_str))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[&#x27;34&#x27;]</span><br></pre></td></tr></table></figure>
+
+<p>还可以使用<code>(?=)</code>来实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pattern_str = <span class="string">&quot;\d+(?=公里)&quot;</span></span><br><span class="line">test_str = <span class="string">&quot;距离是34公里，耗时25分钟&quot;</span></span><br><span class="line"><span class="built_in">print</span>(re.findall(pattern_str, test_str))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[&#x27;34&#x27;]</span><br></pre></td></tr></table></figure>
+
+<p><code>(?=)</code>，<code>(?!)</code>，<code>(?&lt;=)</code>，<code>(?&lt;!)</code>都是属于<strong>不消耗字符串</strong>的操作，非常有用。<code>!</code>代表不等，<code>&lt;</code>代表前面匹配。</p>
+<h3 id="复杂的替换"><a href="#复杂的替换" class="headerlink" title="复杂的替换"></a>复杂的替换</h3><p>比如我们需要把所有的量词数字替换成一个特殊符号<code>&lt;number&gt;</code>。</p>
+<p>一般使用<code>sub</code>可以解决。</p>
+<p>参数<code>repl</code>接受函数时，参数是返回的<code>Match</code>对象。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">lambda</span> <span class="keyword">match</span>: repl_str + <span class="keyword">match</span>.group(<span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+
+<p>含义是将数量替换，单位保留。</p>
+<p><strong>案例</strong>：</p>
+<p>替换数量：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">pattern_str = <span class="string">&quot;(\d+)(个)&quot;</span></span><br><span class="line">test_str = <span class="string">&quot;我需要买10个苹果和6个鸡蛋，预算是100元。&quot;</span></span><br><span class="line">repl_str = <span class="string">&quot;&lt;number&gt;&quot;</span></span><br><span class="line">res = re.sub(pattern_str, <span class="keyword">lambda</span> <span class="keyword">match</span>: repl_str + <span class="keyword">match</span>.group(<span class="number">2</span>), test_str)</span><br><span class="line"><span class="built_in">print</span>(res)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">我需要买&lt;number&gt;个苹果和&lt;number&gt;个鸡蛋，预算是100元。</span><br></pre></td></tr></table></figure>
+
+<p>继续把上面这种情况复杂化，单位可能是<code>个</code>或者<code>只</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">pattern_str = <span class="string">&quot;(\d+)(?P&lt;unit&gt;个|只)&quot;</span></span><br><span class="line">test_str = <span class="string">&quot;我需要买10个苹果和6只鸡蛋，预算是100元。&quot;</span></span><br><span class="line">repl_str = <span class="string">&quot;&lt;number&gt;&quot;</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">repl_func</span>(<span class="params"><span class="keyword">match</span></span>):</span><br><span class="line">    <span class="keyword">return</span> repl_str + <span class="keyword">match</span>.group(<span class="string">&quot;unit&quot;</span>)</span><br><span class="line">res = re.sub(pattern_str, repl_func, test_str)</span><br><span class="line"><span class="built_in">print</span>(res)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">我需要买&lt;number&gt;个苹果和&lt;number&gt;只鸡蛋，预算是100元。</span><br></pre></td></tr></table></figure>
+
+<h2 id="逻辑操作"><a href="#逻辑操作" class="headerlink" title="逻辑操作"></a>逻辑操作</h2><p>接上面的案例，可能会遇到更复杂的<strong>或</strong>逻辑，甚至是<strong>否</strong>逻辑：</p>
+<p><strong>案例</strong>：</p>
+<p>稍复杂的<strong>或</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">pattern_str = <span class="string">&quot;\d+顿(?:麦当劳[A-Z]套餐|肯德基[0-9]号套餐)&quot;</span></span><br><span class="line">test_str = <span class="string">&quot;我上个月吃了3顿麦当劳A套餐，2顿肯德基3号套餐&quot;</span></span><br><span class="line">repl_str = <span class="string">&quot;&lt;number&gt;&quot;</span></span><br><span class="line"><span class="built_in">print</span>(re.findall(pattern_str, test_str))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[&#x27;3顿麦当劳A套餐&#x27;, &#x27;2顿肯德基3号套餐&#x27;]</span><br></pre></td></tr></table></figure>
+
+<p>上面的<code>(?:)</code>不算入分组。</p>
+<p><strong>案例</strong>：<br>稍复杂的<strong>否</strong>，比如我想抽取所有的<strong>钱数</strong>，因此我认为带钱单位的数字和不带钱的单位的数字都是钱数，带其他单位的数字都忽略，为简化问题，不是钱的单位假设只有“号”和“天”，认为其他数字都是和钱数。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pattern_str = <span class="string">&quot;\d+(?!号|天)&quot;</span></span><br><span class="line">test_str = <span class="string">&quot;3号我的开销1000元&quot;</span></span><br><span class="line"><span class="built_in">print</span>(re.findall(pattern_str, test_str))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[&#x27;1000&#x27;]</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/tensorflow/14_math/" rel="prev" title="十四. Tensorflow常用数学操作">
+                  <i class="fa fa-angle-left"></i> 十四. Tensorflow常用数学操作
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/rl_note/intro-note-1/" rel="next" title="强化学习导论学习笔记——（一）">
+                  强化学习导论学习笔记——（一） <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

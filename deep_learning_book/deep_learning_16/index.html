@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="16. Structured Probabilistic Models for Deep Learning多样化的任务：除了分类任务以外，很多任务需要对输入数据整个结构有完整理解，包括：  1.概率密度估计（Density Estimation）：给定一个输入x，机器学习系统返回一个对数据生成分布的真实密度函数p(x)的估计。 2.去噪（Denoising）：给定一个受损的或者观察有误的输入数据$">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第十六章：Structured Probabilistic Models for Deep Learning">
+<meta property="og:url" content="https://applenob.github.io/deep_learning_book/deep_learning_16/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="16. Structured Probabilistic Models for Deep Learning多样化的任务：除了分类任务以外，很多任务需要对输入数据整个结构有完整理解，包括：  1.概率密度估计（Density Estimation）：给定一个输入x，机器学习系统返回一个对数据生成分布的真实密度函数p(x)的估计。 2.去噪（Denoising）：给定一个受损的或者观察有误的输入数据$">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2017-05-09T23:00:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.028Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="笔记">
+<meta property="article:tag" content="Deep Learning">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://applenob.github.io/deep_learning_book/deep_learning_16/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/deep_learning_book/deep_learning_16/","path":"deep_learning_book/deep_learning_16/","title":"第十六章：Structured Probabilistic Models for Deep Learning"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>第十六章：Structured Probabilistic Models for Deep Learning | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#16-Structured-Probabilistic-Models-for-Deep-Learning"><span class="nav-number">1.</span> <span class="nav-text">16. Structured Probabilistic Models for Deep Learning</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E6%A0%B7%E5%8C%96%E7%9A%84%E4%BB%BB%E5%8A%A1%EF%BC%9A"><span class="nav-number">1.1.</span> <span class="nav-text">多样化的任务：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%9E%E7%BB%93%E6%9E%84%E5%8C%96%E5%BB%BA%E6%A8%A1%E7%9A%84%E6%8C%91%E6%88%98"><span class="nav-number">1.2.</span> <span class="nav-text">非结构化建模的挑战</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A5%E5%8A%9B%E8%B7%91%E9%97%AE%E9%A2%98"><span class="nav-number">1.2.1.</span> <span class="nav-text">接力跑问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.3.</span> <span class="nav-text">图模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%89%E5%90%91%E5%9B%BE%E6%A8%A1%E5%9E%8B%EF%BC%88Directed-Graphical-Model%EF%BC%89"><span class="nav-number">1.3.1.</span> <span class="nav-text">有向图模型（Directed Graphical Model）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%84%9F%E5%86%92%E7%94%9F%E7%97%85%E9%97%AE%E9%A2%98"><span class="nav-number">1.3.2.</span> <span class="nav-text">感冒生病问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A0%E5%90%91%E5%9B%BE%E6%A8%A1%E5%9E%8B%EF%BC%88Undirected-Graphical-Model%EF%BC%89"><span class="nav-number">1.3.3.</span> <span class="nav-text">无向图模型（Undirected Graphical Model）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E7%A6%BB%EF%BC%88seperation%EF%BC%89%E5%92%8Cd-%E5%88%86%E7%A6%BB%EF%BC%88d-seperation%EF%BC%89"><span class="nav-number">1.3.4.</span> <span class="nav-text">分离（seperation）和d-分离（d-seperation）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%89%E5%90%91%E6%A8%A1%E5%9E%8B%E5%88%B0%E6%97%A0%E5%90%91%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.3.5.</span> <span class="nav-text">有向模型到无向模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A0%E5%90%91%E6%A8%A1%E5%9E%8B%E5%88%B0%E6%9C%89%E5%90%91%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.3.6.</span> <span class="nav-text">无向模型到有向模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%A0%E5%AD%90%E5%9B%BE%EF%BC%88Factor-Graphs%EF%BC%89"><span class="nav-number">1.3.7.</span> <span class="nav-text">因子图（Factor Graphs）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E6%A8%A1%E5%9E%8B%E7%9A%84%E9%87%87%E6%A0%B7%EF%BC%88Sampling%EF%BC%89"><span class="nav-number">1.3.8.</span> <span class="nav-text">图模型的采样（Sampling）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%93%E6%9E%84%E5%8C%96%E6%A6%82%E7%8E%87%E6%A8%A1%E5%9E%8B%E7%9A%84%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95"><span class="nav-number">1.3.9.</span> <span class="nav-text">结构化概率模型的深度学习方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E6%A8%A1%E5%9E%8B%E4%B8%BE%E4%BE%8B%EF%BC%9A%E5%8F%97%E9%99%90%E7%8E%BB%E5%B0%94%E5%85%B9%E6%9B%BC%E6%9C%BA%EF%BC%88Restricted-Boltzmann-Machine%EF%BC%89%E7%AE%80%E4%BB%8B"><span class="nav-number">1.3.10.</span> <span class="nav-text">图模型举例：受限玻尔兹曼机（Restricted Boltzmann Machine）简介</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning_book/deep_learning_16/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="第十六章：Structured Probabilistic Models for Deep Learning | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第十六章：Structured Probabilistic Models for Deep Learning
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-05-09 16:00:00" itemprop="dateCreated datePublished" datetime="2017-05-09T16:00:00-07:00">2017-05-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E3%80%8ADeep-Learning%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">《Deep Learning》读书笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="16-Structured-Probabilistic-Models-for-Deep-Learning"><a href="#16-Structured-Probabilistic-Models-for-Deep-Learning" class="headerlink" title="16. Structured Probabilistic Models for Deep Learning"></a>16. Structured Probabilistic Models for Deep Learning</h1><h2 id="多样化的任务："><a href="#多样化的任务：" class="headerlink" title="多样化的任务："></a>多样化的任务：</h2><p>除了分类任务以外，很多任务需要<strong>对输入数据整个结构有完整理解</strong>，包括：</p>
+<ul>
+<li>1.<strong>概率密度估计（Density Estimation）</strong>：给定一个输入x，机器学习系统返回一个对数据生成分布的真实密度函数p(x)的估计。</li>
+<li>2.<strong>去噪（Denoising）</strong>：给定一个受损的或者观察有误的输入数据$\tilde{x}$，机器学习系统返回一个对原始的真实x的估计。</li>
+<li>3.<strong>缺失值的填补（Missing Value Imputation）</strong>：给定x的某些元素作为观察值，模型被要求返回一些或者全部未观察值的估计或者概率分布。</li>
+<li>4.<strong>采样（Sampling）</strong>：模型从分布$p(x)$中抽取新的样本。</li>
+</ul>
+<h2 id="非结构化建模的挑战"><a href="#非结构化建模的挑战" class="headerlink" title="非结构化建模的挑战"></a>非结构化建模的挑战</h2><p>如果我们希望对一个包含$n$个离散变量并且每个变量都能取$k$个值的$x$的分布建模，那么最简单的表示$P(x)$的方法需要存储一个可以查询的表格。</p>
+<p>这个表格记录了每一种可能值的概率，则需要$k^n$个参数。</p>
+<p>非结构化建模不可行的原因：</p>
+<ul>
+<li><strong>1.内存</strong>：前面提到的存储参数的开销。</li>
+<li><strong>2.统计的有效性</strong>：当模型中的参数个数增加时，使用统计估计器估计这些参数所需要的训练数据数量也需要相应地增加。<br>因为基于查表的模型拥有天文数字级别的参数，为了准确地拟合，相应的训练集的大小也是相同级别的。</li>
+<li><strong>3.运行时间：推断的开销。</strong>比如推断边缘分布$P(x_1)$或者条件分布$P(x_2∣x_1)$。<br>计算这样的分布需要对整个表格的某些项进行求和操作，开销也很大。</li>
+<li><strong>4.运行时间：采样的开销。</strong>最简单的方法就是从均匀分布中采样，$u∼U(0,1)$，然后把表格中的元素累加起来，直到和大于u，然后返回最后一个加上的元素。最差情况下，这个操作需要读取整个表格。</li>
+</ul>
+<p><strong>本质问题</strong>：基于表格操作的方法的主要问题是我们显式地对每一种可能的变量子集所产生的每一种可能类型的相互作用建模。<br>在实际问题中我们遇到的概率分布远比这个简单。 通常，许多变量只是间接地相互作用。</p>
+<h3 id="接力跑问题"><a href="#接力跑问题" class="headerlink" title="接力跑问题"></a>接力跑问题</h3><p>对接力跑步比赛中一个队伍完成比赛的时间进行建模。<br>假设这个队伍有三名成员：Alice， Bob和Carol，分别对应1&#x2F;2&#x2F;3棒。</p>
+<p>如果我们已经知道了Bob的完成时间，知道Alice的完成时间对估计Carol的完成时间并无任何帮助。</p>
+<p>这意味着我们可以通过<strong>两个相互作用</strong>来建模这个接力赛。 </p>
+<p>即，我们可以忽略第三种间接的相互作用，即Alice的完成时间对Carol的完成时间的影响。</p>
+<p><strong>用接力跑问题分析非结构化建模的问题</strong>：如果我们把10分钟分为100份，那么三个离散随机变量$t_1$，$t_2$，$t_3$都有100种可能值。于是，非结构化建模要表示$p(t_0,t_1,t_2)$需要保存999999种可能值。</p>
+<h2 id="图模型"><a href="#图模型" class="headerlink" title="图模型"></a>图模型</h2><p>图模型的每个结点表示一个随机变量，每条边表示一个直接相互作用（direct interaction）。</p>
+<h3 id="有向图模型（Directed-Graphical-Model）"><a href="#有向图模型（Directed-Graphical-Model）" class="headerlink" title="有向图模型（Directed Graphical Model）"></a>有向图模型（Directed Graphical Model）</h3><p>有向图模型是一种结构化概率模型，也被称为<strong>信念网络（Belief Network）</strong>或者<strong>贝叶斯网络（Baysian Network）</strong>。<strong>箭头所指的方向</strong>表示了<strong>这个随机变量的概率分布是由其他变量的概率分布所定义的</strong>。</p>
+<p>画一个从结点$a$到结点$b$的箭头表示了我们用一个条件分布来定义b，而a是作为这个条件分布符号右边的一个变量。<br>正式地说，变量$x$的有向概率模型是通过有向无环图$G$和一系列局部条件概率分布$p(x_i∣Pa_G(x_i))$来定义的，其中$Pa_G(x_i)$表示结点$x_i$的所有父结点。</p>
+<p>$x$的概率分布可以表示为$p(x)&#x3D;\underset{i}{∏}p(x_i∣Pa_G(x_i))$。通常意义上说，对每个变量都能取$k$个值的$n$个变量建模，基于建表的方法需要的复杂度是$O(k^n)$。<br>但如果用一个有向图模型来对这些变量建模：**$m$代表图模型的单个条件概率分布中最大的变量数目（包括在条件符号的左和右）**，那么对这个有向模型建表的复杂度大致$O(k^m)$。</p>
+<p>只要我们在设计模型时使其满足$m≪n$，那么复杂度就会被大大地减小。</p>
+<p><strong>有向图模型描述接力跑问题</strong>：$p(t_0,t_1,t_2)&#x3D;p(t_0)p(t_1∣t_0)p(t_2∣t_1)$。那么，记录$t_0$的分布需要存储99个值，给定$t_0$情况下$t_1$的分布需要存储9900个值，给定$t_1$情况下$t_2$的分布也需要存储9900个值。<br>加起来总共需要存储19,899个值。 这意味着使用有向图模型将参数的个数减少了超过50倍！</p>
+<p><a href="https://raw.githubusercontent.com/applenob/reading_note/master/res/race.png">https://raw.githubusercontent.com/applenob/reading_note/master/res/race.png</a></p>
+<h3 id="感冒生病问题"><a href="#感冒生病问题" class="headerlink" title="感冒生病问题"></a>感冒生病问题</h3><p>你是否生病，你的同事是否生病以及你的室友是否生病。</p>
+<h3 id="无向图模型（Undirected-Graphical-Model）"><a href="#无向图模型（Undirected-Graphical-Model）" class="headerlink" title="无向图模型（Undirected Graphical Model）"></a>无向图模型（Undirected Graphical Model）</h3><p>无向模型，也被称为<strong>马尔可夫随机场（Markov random fields， MRFs）</strong>或者是<strong>马尔可夫网络（Markov networks）</strong>。</p>
+<p>当相互的作用并没有本质性的指向，或者是明确的双向相互作用时，使用无向模型更加合适。 </p>
+<p>正式地说，一个无向模型是一个定义在无向模型G上的结构化概率模型。</p>
+<p>对于图中的每一个团C，**一个因子（factor）$ϕ(C)$(也称为团势能)**，衡量了团中变量每一种可能的联合状态所对应的密切程度。这些因子都被限制为是非负的。</p>
+<p>它们一起定义了未归一化概率函数：$\tilde{p}(x)&#x3D;_{C∈G}ϕ(C)$。</p>
+<p>只要所有团中的结点数都不大，那么我们就能够高效地处理这些未归一化概率函数</p>
+<p><strong>无向图描述感冒生病问题</strong>：假设你的室友和同事并不认识，所以他们不太可能直接相互传染一些疾病，比如说感冒。 这个事件太过罕见，所以我们不对此事件建模。</p>
+<p>然而，很有可能其中之一将感冒传染给你，然后通过你再传染给了另一个人。你健康状况的随机变量记作$h_y$，对应你的室友健康状况的随机变量记作$h_r$，你的同事健康的变量记作$h_c$。</p>
+<p><a href="https://raw.githubusercontent.com/applenob/reading_note/master/res/cold.png">https://raw.githubusercontent.com/applenob/reading_note/master/res/cold.png</a></p>
+<p>因子（团势能）：</p>
+<p><a href="https://raw.githubusercontent.com/applenob/reading_note/master/res/factor.png">https://raw.githubusercontent.com/applenob/reading_note/master/res/factor.png</a></p>
+<p><strong>配分函数（Partition Function）</strong>：因为$\tilde{p}(x)$是为归一化的概率，于是$p(x)&#x3D;\frac{1}{Z}\tilde{p}(x)$。</p>
+<p><strong>归一化常数Z被称作是配分函数</strong>，是关于参数Θ的函数，这是一个从统计物理学中借鉴的术语。</p>
+<p><strong>由于Z通常是由对所有可能的x状态的联合分布空间求和或者求积分得到的，它通常是很难计算的。</strong> 在深度学习中，$Z$通常是难以处理的。</p>
+<p>由于$Z$难以精确地计算出，我们只能使用一些近似的方法。</p>
+<p><strong>基于能量的模型（Energy-Based-Models）</strong>：无向模型中许多有趣的理论结果都依赖于$∀x, \tilde{p}(x)&gt;0$，这个假设。</p>
+<p>使这个条件满足的一种简单方式是使用基于能量的模型，其中$\tilde{p}(x)&#x3D;exp(−E(x))$，$E(x)$被称作是能量函数。<br>对所有的$z$，$exp⁡(z)$都是正的，这保证了没有一个能量函数会使得某一个状态$x$的概率为0。</p>
+<p>服从上面形式的任意分布都是玻尔兹曼分布的一个实例，基于这个原因，<strong>我们把许多基于能量的模型称为玻尔兹曼机。</strong></p>
+<h3 id="分离（seperation）和d-分离（d-seperation）"><a href="#分离（seperation）和d-分离（d-seperation）" class="headerlink" title="分离（seperation）和d-分离（d-seperation）"></a>分离（seperation）和d-分离（d-seperation）</h3><p>图模型中的边告诉我们哪些变量直接相互作用。 同时，我们经常需要知道哪些变量间接相互作用。</p>
+<p>也就是说，我们想知道在给定其他变量子集的值时，哪些变量子集彼此条件独立。</p>
+<p><strong>分离（seperation）</strong>：如果图结构显示给定变量集S的情况下变量集A与变量集B无关，那么我们声称给定变量集S时，变量集A与另一组变量集B是分离的。</p>
+<p>连接两个变量a和b的连接路径<strong>只包含由未观察变量</strong>，那么这些变量不是分离的。 如果它们之间没有路径，或者所有路径都包含可观测的变量，那么它们是分离的。</p>
+<p>只包含由未观察变量的路径是<strong>活跃（active）</strong>的，而包括可观察变量的路径称为”非活跃”（inactive）的。</p>
+<p><strong>d-分离（d-seperation）</strong>：“d”代表”依赖”的意思；有向图中d-分离的定义与无向模型中分离的定义相同：如果图结构显示给定变量集S时，变量集A与变量集B无关，那么我们认为给定变量集S时，变量集Ad-分离于变量集B。</p>
+<p>如果两个变量之间存在活跃路径，则两个变量是依赖的，如果没有活跃路径，则为d-分离。 在有向网络中，确定路径是否活跃有点复杂。</p>
+<p><strong>判断有向图路径是否活跃的细节</strong>：两个变量之间存在活跃路径的四中情况：<a href="https://raw.githubusercontent.com/applenob/reading_note/master/res/d-sep.png">https://raw.githubusercontent.com/applenob/reading_note/master/res/d-sep.png</a></p>
+<p>下图中：a和b是d-seperated；给定c时，a和e是d-seperated；给定c时，d和e是d-seperated。给定c，a和b不是d-seperated；给定d，a和b不是d-seperated。</p>
+<p><a href="https://raw.githubusercontent.com/applenob/reading_note/master/res/d-sep-2.png">https://raw.githubusercontent.com/applenob/reading_note/master/res/d-sep-2.png</a></p>
+<h3 id="有向模型到无向模型"><a href="#有向模型到无向模型" class="headerlink" title="有向模型到无向模型"></a>有向模型到无向模型</h3><p>有向模型能够使用一种无向模型无法完美表示的特定类型的子结构，这个子结构被称为<strong>不道德（immorality）</strong>。</p>
+<p>这种结构出现在当两个随机变量a和b都是第三个随机变量c的父结点，并且不存在任一方向上直接连接a和b的边时。</p>
+<p><a href="https://raw.githubusercontent.com/applenob/reading_note/master/res/d2ud.png">https://raw.githubusercontent.com/applenob/reading_note/master/res/d2ud.png</a></p>
+<h3 id="无向模型到有向模型"><a href="#无向模型到有向模型" class="headerlink" title="无向模型到有向模型"></a>无向模型到有向模型</h3><p>无向模型也可能包括有向模型不能完美表示的子结构：如果U包含长度大于3的环（loop），则有向图D不能捕获无向模型U所包含的所有条件独立性，除非该环还包含<strong>弦（chord）</strong>。</p>
+<p>环指的是由无向边连接的变量序列，并且满足序列中的最后一个变量连接回序列中的第一个变量。 </p>
+<p>弦是定义环序列中任意两个非连续变量之间的连接。</p>
+<p>如果U具有长度为4或更大的环，并且这些环没有弦，我们必须在将它们转换为有向模型之前添加弦。</p>
+<p><a href="https://raw.githubusercontent.com/applenob/reading_note/master/res/ud2d.png">https://raw.githubusercontent.com/applenob/reading_note/master/res/ud2d.png</a></p>
+<h3 id="因子图（Factor-Graphs）"><a href="#因子图（Factor-Graphs）" class="headerlink" title="因子图（Factor Graphs）"></a>因子图（Factor Graphs）</h3><p>因子图是从无向模型中抽样的另一种方法，它可以解决标准无向模型语法中图表达的模糊性。 些节点被绘制为圆形。<br>就像在标准无向模型中一样，这些节点对应于随机变量。 其余节点绘制为<strong>方块</strong>。 这些节点对应于未归一化概率函数的因子ϕ。</p>
+<p><a href="https://raw.githubusercontent.com/applenob/reading_note/master/res/factor-model.png">https://raw.githubusercontent.com/applenob/reading_note/master/res/factor-model.png</a></p>
+<h3 id="图模型的采样（Sampling）"><a href="#图模型的采样（Sampling）" class="headerlink" title="图模型的采样（Sampling）"></a>图模型的采样（Sampling）</h3><p><strong>有向图模型</strong>的采样比较简单，称为<strong>原始采样（ancestral sampling）</strong>。</p>
+<p>始采样的基本思想是将图中的变量$x_i$使用拓扑排序，使得对于所有$i$和$j$，如果$x_i$是$x_j$的一个父亲结点，则$j$大于$i$。</p>
+<p>然后可以按此顺序对变量进行采样。 </p>
+<p>换句话说，我们可以首先采$x_1\sim P(x_1)$，然后采$x_2\sim P(x_2∣Pa_G(x_2))$，以此类推，直到最后我们从$P(x_n∣Pa_G(x_n))$中采样。</p>
+<p>从<strong>无向模型</strong>中抽取样本是一个成本很高的多次迭代的过程。 理论上最简单的方法是<strong>Gibbs采样</strong>。</p>
+<h3 id="结构化概率模型的深度学习方法"><a href="#结构化概率模型的深度学习方法" class="headerlink" title="结构化概率模型的深度学习方法"></a>结构化概率模型的深度学习方法</h3><p>在图模型中，我们可以根据图模型的图而不是计算图来定义模型的深度。</p>
+<p>如果从潜变量$h_i$到可观察变量的最短路径是$j$步，我们可以认为潜变量$h_j$处于深度j。 </p>
+<p>我们通常将模型的深度描述为任何这样的$h_j$的最大深度。<br>深度学习模型通常具有比可观察变量更多的潜变量。 </p>
+<p>潜变量的设计方式在深度学习中也有所不同。 </p>
+<p>另一个明显的区别是深度学习方法中经常使用的连接类型。<br>深度图模型通常具有大的与其他单元组全连接的单元组，使得两个组之间的相互作用可以由单个矩阵描述。</p>
+<p>在深度学习中使用的模型倾向于将每个可见单元$v_i$连接到非常多的隐藏单元$h_j$上，从而使得h可以获得一个$v_i$的分布式表示。</p>
+<p>最后，图模型的深度学习方法的一个主要特征在于对未知量的较高容忍度。 </p>
+<h3 id="图模型举例：受限玻尔兹曼机（Restricted-Boltzmann-Machine）简介"><a href="#图模型举例：受限玻尔兹曼机（Restricted-Boltzmann-Machine）简介" class="headerlink" title="图模型举例：受限玻尔兹曼机（Restricted Boltzmann Machine）简介"></a>图模型举例：受限玻尔兹曼机（Restricted Boltzmann Machine）简介</h3><p>具体关于rbm的内容在第20章笔记。</p>
+<p>标准的RBM是具有二值的可见和隐藏单元的基于能量的模型，其能量函数为：$E(v,h)&#x3D;−b^⊤v−c^⊤h−v^⊤Wh$，其中$b$,$c$和$W$都是无约束、实值的可学习参数。</p>
+<p>模型的一个重要方面是在<strong>任何两个可见单元之间或任何两个隐藏单元之间没有直接的相互作用（从图上理解即横向没有连线，因此称为”受限”）</strong>。</p>
+<p>因此，有良好的性质$p(h∣v)&#x3D;∏_ip(h_i∣v)$，以及$p(v∣h)&#x3D;∏_ip(v_i∣h)$。 </p>
+<p>对于二元的受限玻尔兹曼机，我们可以得到：<br>$p(h_i&#x3D;1∣v)&#x3D;σ(v^⊤W:,i+b_i),p(h_i&#x3D;0∣v)&#x3D;1−σ(v^⊤W_{:,i}+b_i)$</p>
+<p><a href="https://github.com/applenob/reading_note/raw/master/res/rbm.png">https://github.com/applenob/reading_note/raw/master/res/rbm.png</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"># 笔记</a>
+              <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/deep_learning_book/deep_learning_15/" rel="prev" title="第十五章：Representation Learning">
+                  <i class="fa fa-angle-left"></i> 第十五章：Representation Learning
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/deep_learning_book/deep_learning_17/" rel="next" title="第十七章：Monte Carlo Methods">
+                  第十七章：Monte Carlo Methods <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

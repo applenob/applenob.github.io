@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="5. Machine Learning Basics机器学习定义：一个计算机程序，如果它能做到在任务T中的性能P随着经验E可以提高，那就可以称它是关于某类任务T和性能衡量P，从经验E中学习。 机器学习任务（$T$）类别：分类（classification）&#x2F;缺失输入数据的分类（classification with missingdata）&#x2F;回归（regression）&amp;#x2">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第五章：Machine Learning Basics">
+<meta property="og:url" content="https://applenob.github.io/deep_learning_book/deep_learning_5/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="5. Machine Learning Basics机器学习定义：一个计算机程序，如果它能做到在任务T中的性能P随着经验E可以提高，那就可以称它是关于某类任务T和性能衡量P，从经验E中学习。 机器学习任务（$T$）类别：分类（classification）&#x2F;缺失输入数据的分类（classification with missingdata）&#x2F;回归（regression）&amp;#x2">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2017-05-09T12:00:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.028Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="笔记">
+<meta property="article:tag" content="Deep Learning">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://applenob.github.io/deep_learning_book/deep_learning_5/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/deep_learning_book/deep_learning_5/","path":"deep_learning_book/deep_learning_5/","title":"第五章：Machine Learning Basics"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>第五章：Machine Learning Basics | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#5-Machine-Learning-Basics"><span class="nav-number">1.</span> <span class="nav-text">5. Machine Learning Basics</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%9F%E8%AE%A1%E5%AD%A6%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%EF%BC%9A%E4%BC%B0%E8%AE%A1%EF%BC%88Estimators%EF%BC%89-%E5%81%8F%E5%B7%AE%EF%BC%88Bias%EF%BC%89-%E6%96%B9%E5%B7%AE%EF%BC%88Variance%EF%BC%89"><span class="nav-number">1.1.</span> <span class="nav-text">统计学的一些基本概念：估计（Estimators）&#x2F;偏差（Bias）&#x2F;方差（Variance）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E5%A4%A7%E4%BC%BC%E7%84%B6%E4%BC%B0%E8%AE%A1%EF%BC%88Maximum-Likelihood-Estimation-MLE%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">最大似然估计（Maximum Likelihood Estimation, MLE）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B4%9D%E5%8F%B6%E6%96%AF%E7%BB%9F%E8%AE%A1%EF%BC%88Bayesian-Statistics%EF%BC%89"><span class="nav-number">1.3.</span> <span class="nav-text">贝叶斯统计（Bayesian Statistics）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E5%A4%A7%E5%90%8E%E9%AA%8C-Maximum-A-Posteriori-MAP-%E4%BC%B0%E8%AE%A1"><span class="nav-number">1.4.</span> <span class="nav-text">最大后验(Maximum A Posteriori, MAP)估计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%81%E5%BD%A2%EF%BC%88manifold%EF%BC%89%E5%AD%A6%E4%B9%A0"><span class="nav-number">1.4.1.</span> <span class="nav-text">流形（manifold）学习</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning_book/deep_learning_5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="第五章：Machine Learning Basics | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第五章：Machine Learning Basics
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-05-09 05:00:00" itemprop="dateCreated datePublished" datetime="2017-05-09T05:00:00-07:00">2017-05-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E3%80%8ADeep-Learning%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">《Deep Learning》读书笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="5-Machine-Learning-Basics"><a href="#5-Machine-Learning-Basics" class="headerlink" title="5. Machine Learning Basics"></a>5. Machine Learning Basics</h1><p><strong>机器学习定义</strong>：一个计算机程序，如果它能做到在任务T中的性能P随着经验E可以提高，那就可以称它是关于某类任务T和性能衡量P，从经验E中学习。</p>
+<p><strong>机器学习任务（$T$）类别</strong>：分类（classification）&#x2F;缺失输入数据的分类（classification with missing<br>data）&#x2F;回归（regression）&#x2F;转录（transciption）&#x2F;机器翻译（machine translation）&#x2F;结构化输出（structured<br>output）&#x2F;异常检测（anomaly detection）&#x2F;合成和采样（synthesis and smapling）&#x2F;缺失值填补（imputation<br>of missing data）&#x2F;去噪（denoising）&#x2F;密度估计（density estimation）</p>
+<p><strong>机器学习的性能（$P$）</strong>：$P$因为$T$的不同而不同。对于像分类&#x2F;缺失输入数据的分类&#x2F;转录，使用准确率（accuracy）来衡量性能；而对于密度估计，通常输出模型在一些样本上概率对数的平均值。</p>
+<p><strong>机器学习的经验（$E$）</strong>：根据经验的不同，分为监督学习和无监督学习。监督学习：学习$p(x)$；无监督学习：学习$p(y|x)$。通常来说，无监督学习通常指代从不需要人工标注数据中提取信息。</p>
+<p><strong>泛化（generalization）</strong>：在先前未观测到的输入上表现良好的能力被称为泛化。</p>
+<p><strong>欠拟合（underfitting）和过拟合（overfitting）</strong>：机器学习的性能取决于两点因素：1.使训练误差更小；2.使训练误差和测试误差的差距更小。分别对应欠拟合的改善和过拟合的改善。</p>
+<p><strong>模型的容量（capacity）</strong>：模型的容量是指其拟合各种函数的能力。</p>
+<p><strong>VC维（Vapnik-Chervonenkis dimension）</strong>：VC维用来度量二分类器的容量。假设存在$m$个不同的$x$点的训练集，分类器可以任意地标记该$m$个不同的$x$点，VC维即$m$的最大可能值。<a href="http://www.flickering.cn/machine_learning/2015/04/vc%E7%BB%B4%E7%9A%84%E6%9D%A5%E9%BE%99%E5%8E%BB%E8%84%89/">详细解释</a></p>
+<p><strong>奥卡姆剃刀（Occam’s razor）</strong>：在同样能够解释已知观测现象的假设中，我们应该挑选”最简单”的那一个。</p>
+<p><strong>没有免费的午餐定理（no free lunch theorem）</strong>：所有分类算法在分类没有见过的点的时候，他们的错误率的期望是一样的。这个定理告诉我们，必须要针对特定的任务去设计机器学习算法。</p>
+<p><strong>正则化（Regularization）</strong>：正则化是指我们针对减少泛化误差而不是训练误差，在一个机器学习算法上做的任何改动。<br><strong>超参数（Hyperparameters）</strong>：超参数的值不能通过学习算法本身学习出来。</p>
+<p><strong>验证集（Validation Sets）</strong>：验证集用来调超参数。</p>
+<h2 id="统计学的一些基本概念：估计（Estimators）-偏差（Bias）-方差（Variance）"><a href="#统计学的一些基本概念：估计（Estimators）-偏差（Bias）-方差（Variance）" class="headerlink" title="统计学的一些基本概念：估计（Estimators）&#x2F;偏差（Bias）&#x2F;方差（Variance）"></a>统计学的一些基本概念：估计（Estimators）&#x2F;偏差（Bias）&#x2F;方差（Variance）</h2><p><strong>点估计（Point Estimation）</strong>：</p>
+<p>试图为某些参数提供一个“最优”的预测。</p>
+<p>将参数$θ$的点估计记为$\hat<br>θ$，令${x^{(1)}, . . . , x^{(m)}}$是$m$个独立同分布(i.i.d.)的数据点。点估计是这些数据的任意函数：$\hat<br>θ&#x3D;g(x^{(1)}, . . . , x^{(m)})$</p>
+<p><strong>估计的偏差（Bias）</strong>：</p>
+<p>估计的偏差被定义为:$bias(\hat θ_m) &#x3D; E(\hat θ_m) - θ$，即，估计的期望和真实值的差。</p>
+<p>如果$bias(\hat θ_m)&#x3D;0$,那么估计量$θ_m$被称为是无偏估计。</p>
+<p><strong>估计的方差（Variance）</strong>：</p>
+<p>就是一个方差$Var(\hat θ)$。</p>
+<p>$Var(X) &#x3D; E[(X - \mu)^2]$，其中$μ&#x3D;E[X]$。</p>
+<p><strong>均方误差（mean squared error， MSE）</strong>：</p>
+<p>$MSE &#x3D; E[(\hat θ_m - θ)^2] &#x3D; Bias(\hat θ_m)^2 + Var(\hat θ_m)$</p>
+<h2 id="最大似然估计（Maximum-Likelihood-Estimation-MLE）"><a href="#最大似然估计（Maximum-Likelihood-Estimation-MLE）" class="headerlink" title="最大似然估计（Maximum Likelihood Estimation, MLE）"></a>最大似然估计（Maximum Likelihood Estimation, MLE）</h2><p>参数θ的最大似然估计：</p>
+<p>$$θ_{ML} &#x3D; \underset{θ}{argmax};p_{model}(\mathbb{X};θ) &#x3D;<br>\underset{θ}{argmax};\prod_{i&#x3D;1}^mp_{model}(x^{(i)};θ)$$</p>
+<p>其中$\mathbb{X}&#x3D;{x^{(1)}, … , x^{(m)}}$</p>
+<p>似然函数：$p_{model}(\mathbb{X};θ)$是一族由$θ$确定在相同空间上的概率分布。可以看到，<strong>这里$θ$并不是一个随机变量，而仅仅是一个参数。</strong></p>
+<p>对数形式：</p>
+<p>$$θ_{ML} &#x3D; \underset{θ}{argmax}\sum_{i&#x3D;1}^mlogp_{model}(x^{(i)};θ)$$</p>
+<p>是一种点估计方法。</p>
+<h2 id="贝叶斯统计（Bayesian-Statistics）"><a href="#贝叶斯统计（Bayesian-Statistics）" class="headerlink" title="贝叶斯统计（Bayesian Statistics）"></a>贝叶斯统计（Bayesian Statistics）</h2><p>最大似然估计是频率学派的观点，认为参数θ是固定的，但是未知；贝叶斯统计观点认为，数据集是直接观察得到的，因此数据集不是随机的，但是<strong>参数θ是一个随机变量</strong>。</p>
+<p>在观察到数据前,我们将$θ$的已知知识表示成<strong>先验概率分布(prior probability distribution)</strong>$p(θ)$。</p>
+<p>$$p(θ|x^{(1)},x^{(2)},…,x^{(m)}) &#x3D;<br>\frac{p(x^{(1)},x^{(2)},…,x^{(m)}|θ)p(θ)}{p(x^{(1)},x^{(2)},…,x^{(m)})}$$</p>
+<h2 id="最大后验-Maximum-A-Posteriori-MAP-估计"><a href="#最大后验-Maximum-A-Posteriori-MAP-估计" class="headerlink" title="最大后验(Maximum A Posteriori, MAP)估计"></a>最大后验(Maximum A Posteriori, MAP)估计</h2><p>$$θ_{MAP}&#x3D;\underset{θ}{argmax};p(θ∣x)&#x3D;\underset{θ}{argmax};logp(x∣θ)+logp(θ)$$</p>
+<p>我们可以认出上式右边的$logp(x|θ)$对应着标准的对数似然项，$logp(θ)$对应着先验分布。</p>
+<p>正如全贝叶斯推断,MAP贝叶斯推断的优势是能够利用来自先验的信息,这些信息无法从训练数据中获得。该附加信息有助于减少最大后验点估计的方差，然而,这个优点的代价是增加了偏差。<br>依然是一种点估计方法。</p>
+<p><strong>机器学习算法的常见组成部分</strong>：一个数据集（dataset）+一个损失函数（cost function）+一个优化过程（optimization procedure）+一个模型（model）</p>
+<p><strong>维数灾难（the Curse of Dimensionality）</strong>：当数据的维数很高时，很多机器学习问题变得相当困难。 这种现象被称为维数灾难。</p>
+<h3 id="流形（manifold）学习"><a href="#流形（manifold）学习" class="headerlink" title="流形（manifold）学习"></a>流形（manifold）学习</h3><p>流形指连接在一起的区域。 数学上，它是指一组点，且每个点都有其邻域。 给定一个任意的点，其流形局部看起来像是欧几里得空间。</p>
+<p>日常生活中，我们将地球视为二维平面，但实际上它是三维空间中的球状流形。</p>
+<p>流形学习算法通过一个假设来克服这个障碍，该假设认为$R_n$中大部分区域都是无效的输入，有意义的输入只分布在包含少量数据点的子集构成的一组流形中，而学习函数的输出中，有意义的变化都沿着流形的方向或仅发生在我们切换到另一流形时。</p>
+<p>我们认为在人工智能的一些场景中，如涉及到处理图像、声音或者文本时，流形假设至少是近似对的。</p>
+<p>关于流形学习有一个很好的<a href="http://www.cad.zju.edu.cn/reports/%C1%F7%D0%CE%D1%A7%CF%B0.pdf">中文ppt</a>，可以作为参考材料。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"># 笔记</a>
+              <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/deep_learning_book/deep_learning_4/" rel="prev" title="第四章：Numerical Computation">
+                  <i class="fa fa-angle-left"></i> 第四章：Numerical Computation
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/deep_learning_book/deep_learning_6/" rel="next" title="第六章：Deep Feedforward Networks">
+                  第六章：Deep Feedforward Networks <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

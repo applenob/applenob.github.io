@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="18. Confronting the Partition Function配分函数（Partition Function）许多概率模型（通常是无向图模型）由一个未归一化的概率分布$\tilde{p}(x,θ)$定义。 必须通过除以**配分函数Z(θ)来归一化$\tilde{p}$**，以获得一个有效的概率分布：$p(x;θ)&#x3D;\frac{1}{Z(θ)}\tilde{p}(x;θ)$。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第十八章：Confronting the Partition Function">
+<meta property="og:url" content="https://applenob.github.io/deep_learning_book/deep_learning_18/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="18. Confronting the Partition Function配分函数（Partition Function）许多概率模型（通常是无向图模型）由一个未归一化的概率分布$\tilde{p}(x,θ)$定义。 必须通过除以**配分函数Z(θ)来归一化$\tilde{p}$**，以获得一个有效的概率分布：$p(x;θ)&#x3D;\frac{1}{Z(θ)}\tilde{p}(x;θ)$。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2017-05-10T01:00:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.028Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="笔记">
+<meta property="article:tag" content="Deep Learning">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://applenob.github.io/deep_learning_book/deep_learning_18/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/deep_learning_book/deep_learning_18/","path":"deep_learning_book/deep_learning_18/","title":"第十八章：Confronting the Partition Function"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>第十八章：Confronting the Partition Function | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#18-Confronting-the-Partition-Function"><span class="nav-number">1.</span> <span class="nav-text">18. Confronting the Partition Function</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E5%88%86%E5%87%BD%E6%95%B0%EF%BC%88Partition-Function%EF%BC%89"><span class="nav-number">1.1.</span> <span class="nav-text">配分函数（Partition Function）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8EMCMC%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-number">1.2.</span> <span class="nav-text">基于MCMC的方法</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning_book/deep_learning_18/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="第十八章：Confronting the Partition Function | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第十八章：Confronting the Partition Function
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-05-09 18:00:00" itemprop="dateCreated datePublished" datetime="2017-05-09T18:00:00-07:00">2017-05-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E3%80%8ADeep-Learning%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">《Deep Learning》读书笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="18-Confronting-the-Partition-Function"><a href="#18-Confronting-the-Partition-Function" class="headerlink" title="18. Confronting the Partition Function"></a>18. Confronting the Partition Function</h1><h2 id="配分函数（Partition-Function）"><a href="#配分函数（Partition-Function）" class="headerlink" title="配分函数（Partition Function）"></a>配分函数（Partition Function）</h2><p>许多概率模型（<strong>通常是无向图模型</strong>）由一个未归一化的概率分布$\tilde{p}(x,θ)$定义。</p>
+<p>必须通过除以**配分函数Z(θ)来归一化$\tilde{p}$**，以获得一个有效的概率分布：$p(x;θ)&#x3D;\frac{1}{Z(θ)}\tilde{p}(x;θ)$。</p>
+<p>配分函数是未归一化概率所有状态的积分（对于连续变量）或求和（对于离散变量）：$∫\tilde{p}(x)dx$或者$∑_x\tilde{p}(x)$。对很多有趣的模型，以上积分或求和难以计算。</p>
+<p>有些深度学习模型被设计成具有一个易于处理的归一化常数，或被设计成能够在不涉及计算p(x)p(x)的情况下使用。</p>
+<p>然而，其他一些模型会直接面对难以计算的配分函数的挑战。</p>
+<p><strong>对数似然梯度（Log-Likelihood Gradient）</strong>：对数似然对参数的梯度具有一项对应于配分函数的梯度：$∇_θlogp(x;θ)&#x3D;∇_θlog\tilde{p}(x;θ)−∇_θlogZ(θ)$，这是非常著名的正相（positive phase）和负相（negative phase）的分解。</p>
+<p>对于保证所有的$x$都有$p(x)&gt;0$的模型，我们可以用$exp(log\tilde{p}(x))$代替$\tilde{p}(x)$，$∇_θlogZ(θ)$可以化简成$E_{x\sim p(x)}∇_θlog\tilde{p}(x)$。 转换成这种形式后，我们自然可以考虑用蒙特卡洛法来近似这个期望。</p>
+<p>在正相中，我们增大从数据中采样得到的$log\tilde{p}(x)$。</p>
+<p>在负相中，我们通过降低从模型分布中采样的$log\tilde{p}(x)$来降低配分函数。</p>
+<p><a href="https://raw.githubusercontent.com/applenob/reading_note/master/res/p-n-phase.png">https://raw.githubusercontent.com/applenob/reading_note/master/res/p-n-phase.png</a></p>
+<h2 id="基于MCMC的方法"><a href="#基于MCMC的方法" class="headerlink" title="基于MCMC的方法"></a>基于MCMC的方法</h2><p><strong>朴素的MCMC算法</strong>：该算法计算代价太高，实际上不可行。 但是是其他算法的思想基础。</p>
+<p><a href="https://raw.githubusercontent.com/applenob/reading_note/master/res/18-1.png">https://raw.githubusercontent.com/applenob/reading_note/master/res/18-1.png</a></p>
+<p>负相涉及到从模型分布中抽样，可以认为它在找模型信任度很高的点。 负相减少了这些点的概率，这些点一般被认为代表了模型不正确的信念。</p>
+<p>还可以用“做梦”来帮助理解：我们的大脑维护了一个现实世界的概率模型。醒着的时候，当你经历真实的事件，相当于按照$\tilde{p}(x)$的梯度去完善这个模型；做梦相当于从这个概率模型里随机抽样，当你醒来发现这是梦，就会按照$\tilde{p}(x)$的负梯度去更新模型，因为你知道梦是假的。</p>
+<p><strong>对比散度（Contrastive Divergence，CD）算法</strong>：接下来寻找计算代价更低的替代算法。</p>
+<p>朴素的MCMC算法的计算成本主要来自每一步的<strong>随机初始化</strong>磨合马尔可夫链。</p>
+<p>一个自然的解决方法是<strong>初始化马尔可夫链为一个非常接近模型分布的分布</strong>，从而大大减少磨合步骤。 CD算法在每个步骤中初始化马尔可夫链为采样自数据分布中的样本。</p>
+<p>缺点：它不能抑制远离真实训练样本的高概率区域。 这些区域在模型上具有高概率，但是在数据生成区域上具有低概率，被称为虚假模态（spurious modes）。</p>
+<p>在训练诸如RBM的浅层网络时,CD算法是很有用的；但CD算法并不直接有助于训练更深的模型。</p>
+<p><a href="https://raw.githubusercontent.com/applenob/reading_note/master/res/18-2.png">https://raw.githubusercontent.com/applenob/reading_note/master/res/18-2.png</a></p>
+<p><strong>持续性对比散度（Persistent Contrastive Divergence，PCD）算法</strong>：又称<strong>随机最大似然（Stochastic Maximum Likelihood，SML）</strong>，不同于CD，它在每个梯度步骤中初始化马尔可夫链为<strong>先前梯度步骤的状态值</strong>。</p>
+<p>因为每个马尔可夫链在整个学习过程中不断更新，而不是在每个梯度步骤中重新开始，马尔可夫链可以自由探索很远，以找到模型的所有峰值。</p>
+<p>因此，SML比CD更不容易形成具有虚假模态的模型。</p>
+<p><a href="https://raw.githubusercontent.com/applenob/reading_note/master/res/18-3.png">https://raw.githubusercontent.com/applenob/reading_note/master/res/18-3.png</a></p>
+<p><strong>伪似然（Pseudolikelihood）</strong>：伪似然基于以下观察：无向概率模型中很容易计算概率的比率：$\frac{p(x)}{p(y)}&#x3D;\frac{\frac{1}{Z}\tilde{p}(x)}{\frac{1}{Z}\tilde{p}(y)}&#x3D;\frac{\tilde{p}(x)}{\tilde{p}(y)}$。伪似然的目标函数使用条件概率：$∑_{i&#x3D;1}^nlogp(x_i∣x_{−i})$。</p>
+<p>如果每个随机变量有k个不同的值，那么考虑边缘概率的计算，$\tilde{p}$需要$k×n$次估计，而计算配分函数需要$k^n$次估计。</p>
+<p><strong>得分匹配（Score Matching）</strong>：对数密度关于参数的导数$∇_xlogp(x)$，被称为其得分（Score）。</p>
+<p>$$L(x, \theta) &#x3D; \frac{1}{2} || ∇_x \log p_{model}(x; \theta) - ∇_x log p_{data} (x) ||_2^2$$</p>
+<p>用下面的式子估计：</p>
+<p>$$ \tilde{L}(x,\theta)&#x3D;\sum_{j&#x3D;1}^n(\frac{\partial^2}{\partial x^2_j}logp_{model}(x;\theta)+\frac{1}{2}(\frac{\partial }{\partial x_j}logp_{model}(x;\theta))^2 )$$</p>
+<p><strong>比率匹配（Ratio Matching）</strong>：比率匹配特别适用于二值数据。</p>
+<p>比率匹配最小化以下目标函数在样本上的均值：</p>
+<p>$$L^{(RM)}(x,θ)&#x3D;∑_{j&#x3D;1}{n}(\frac{1}{1+\frac{p_{model}(x;θ)}{p_{model}(f(x),j;θ)}}^2$$</p>
+<p>其中f(x,j)返回j处位值取反的x。</p>
+<p>比率匹配使用了与伪似然估计相同的策略来绕开配分函数：配分函数会在两个概率的比率中抵消掉。</p>
+<p><strong>去噪得分匹配（Denoising Score Matching）</strong>：可以去拟合正则化的$p_{smoothed}(x)&#x3D;∫p_{data}(y)q(x∣y)dy$，而不是拟合真实分布$p_{data}$。</p>
+<p>分布q(x∣y)是一个损坏过程，通常在形成x的过程中会向y中添加少量噪声。</p>
+<p><strong>噪声对比估计（Noise-Contrastive Estimation，NCE）</strong>：噪声对比估计直接估计模型的概率分布：$\log p_{model} (x) &#x3D; \log \tilde{p}_{model} (x; \theta) + c$，其中c是$−logZ(θ)$的近似。 噪声对比估计过程将c视为另一参数，使用相同的算法同时估计θ和c。</p>
+<p>NCE将估计p(x)的无监督学习问题转化为学习一个概率二元分类器，其中一个类别对应模型生成的数据，另一个对应噪声生成的数据。</p>
+<p>具体地：我们引入噪声分布$p_{noise}(x)$。 噪声分布应该易于估计和从中采样。 再构造一个联合x和新二值变量y的模型。</p>
+<p>指定：$p_{joint}(y&#x3D;1)&#x3D;\frac{1}{2}$，有$p_{joint}(x∣y&#x3D;1)&#x3D;p_{model}(x)$和$p_{joint}(x∣y&#x3D;0)&#x3D;p_{noise}(x)$</p>
+<p><strong>直接估计配分函数</strong>：当我们需要评估模型，监控训练性能，和比较模型时，还是需要直接估计配分函数，我们可以考虑蒙塔卡洛的方法去估计它。</p>
+<p>首先找到一个简单的提议分布（proposal distribution）：$p_0(x)&#x3D;\frac{1}{Z_0}\tilde{p}_0(x)$，其在配分函数$Z_0$和未归一化分布$\tilde{p}_0(x)$上易于采样和估计。</p>
+<p>那么：</p>
+<p>$$Z_1&#x3D;∫\tilde{p}_1(x)dx&#x3D;∫\frac{p_0(x)}{p_0(x)}\tilde{p}_1(x)dx&#x3D;Z_0∫p_0(x)\frac{\tilde{p}_1(x)}{\tilde{p}_0(x)dx}$$</p>
+<p>可以使用简单重要采样（importance sampling）来估计：<br>$$\hat{Z}_1&#x3D;\frac{Z_0}{K}\sum_{k&#x3D;1}^K\frac{\tilde{p}_1(x^{(k)})}{\tilde{p}_0(x^{(k)})};;s.t.;:;x^{(k)}\sim p_0$$</p>
+<p><strong>退火重要采样（Annealed Importance Sampling, AIS）</strong>：在$D_{KL}(p_0|p_1)$很大的情况下（即$p_0$和$p_1$之间几乎没有重叠），退火重要采样通过引入中间分布来缩小这种差距。</p>
+<p>考虑分布序列$p_{η_0},…,p_{η_n}$，其中$0&#x3D;η_0&lt;η_1&lt;⋯&lt;η_{n−1}&lt;η_n&#x3D;1$，分布序列中的第一个和最后一个分别是p0和p1。</p>
+<p>$\frac{Z_1}{Z_0}$写作$\frac{Z_1}{Z_0}&#x3D;\prod_{j&#x3D;0}^{n-1} \frac{Z_{η_{j+1}}}{Z_{η_j}}$。</p>
+<p>如果对于所有的$0≤j≤n−10≤j≤n−1$，分布$p_{η_j}$和$p_{η_{j+1}}$足够接近，那么能够使用简单的重要采样来估计每个因子$\frac{Z_{η_{j+1}}}{Z_{η_j}}$，然后使用这些得到$\frac{Z_1}{Z_0}$的估计。</p>
+<p>中间分布的一个通用和流行选择是使用目标分布p1和建议分布p0的加权几何平均：$p_{η_j}∝p^{η_j}_1p^{1−η_j}_0$。</p>
+<p><strong>桥式采样（Bridge Sampling）</strong>：桥式采样依赖于单个分布$p^∗$（被称为桥），在已知配分函数的分布$p_0$和分布$p_1$之间插值。</p>
+<p>$$\frac{Z_1}{Z_0} ≈ \frac{\sum_{k&#x3D;1}^K \frac{ \tilde{p}<em>(x_0^{(k)}) }{\tilde{p}_0(x_0^{(k)}) }} {\sum_{k&#x3D;1}^K \frac{ \tilde{p}</em>(x_1^{(k)}) }{\tilde{p}_1(x_1^{(k)}) }} $$</p>
+<p>最优的桥式采样是$p^{(opt)}_∗(x)∝\frac{\tilde{p}_0(x)\tilde{p}_1(x)}{r\tilde{p}_0(x)+\tilde{p}_1(x)}$，其中$r&#x3D;Z_1&#x2F;Z_0$。可以从粗糙的r开始估计，然后使用得到的桥式采样逐步迭代以改进估计。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"># 笔记</a>
+              <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/deep_learning_book/deep_learning_17/" rel="prev" title="第十七章：Monte Carlo Methods">
+                  <i class="fa fa-angle-left"></i> 第十七章：Monte Carlo Methods
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/deep_learning_book/deep_learning_19/" rel="next" title="第十九章：Approximate Inference">
+                  第十九章：Approximate Inference <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

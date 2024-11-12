@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="简介在一个稍大一点的python项目中，我们很有可能会用到注册器（register）。这个注册器不是用户账号注册的模块，而是项目中注册模块的一个模块。举个例子，一个深度学习项目可能支持多种模型；具体使用哪种模型可能是用户在配置文件中指定的。最简单的实现方式，就是维护一个模型名称-&gt;模型类的字典。但每当你增加一个模型时，这个字典就需要手动维护，比较繁琐。本文介绍一种注册器的模块，你需要维护的是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python中的注册器模块">
+<meta property="og:url" content="https://applenob.github.io/python/register/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="简介在一个稍大一点的python项目中，我们很有可能会用到注册器（register）。这个注册器不是用户账号注册的模块，而是项目中注册模块的一个模块。举个例子，一个深度学习项目可能支持多种模型；具体使用哪种模型可能是用户在配置文件中指定的。最简单的实现方式，就是维护一个模型名称-&gt;模型类的字典。但每当你增加一个模型时，这个字典就需要手动维护，比较繁琐。本文介绍一种注册器的模块，你需要维护的是">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-08-18T23:39:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.098Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://applenob.github.io/python/register/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/python/register/","path":"python/register/","title":"Python中的注册器模块"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Python中的注册器模块 | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A6%81%E6%B3%A8%E5%86%8C%E7%9A%84%E6%A8%A1%E5%9D%97"><span class="nav-number">2.</span> <span class="nav-text">要注册的模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E5%86%8C%E5%99%A8-Register"><span class="nav-number">3.</span> <span class="nav-text">注册器 Register</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%80%E6%9C%89%E6%B3%A8%E5%86%8C%E5%99%A8-Registers"><span class="nav-number">4.</span> <span class="nav-text">所有注册器 Registers</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E8%BD%BD%E6%89%80%E6%9C%89%E9%9C%80%E8%A6%81%E7%9A%84%E6%A8%A1%E5%9D%97%E5%88%B0%E6%B3%A8%E5%86%8C%E5%99%A8-import-all-modules-for-register"><span class="nav-number">5.</span> <span class="nav-text">加载所有需要的模块到注册器 import_all_modules_for_register</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8"><span class="nav-number">6.</span> <span class="nav-text">使用</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/python/register/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Python中的注册器模块 | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Python中的注册器模块
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2019-08-18 16:39:00" itemprop="dateCreated datePublished" datetime="2019-08-18T16:39:00-07:00">2019-08-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>在一个稍大一点的python项目中，我们很有可能会用到<strong>注册器</strong>（register）。这个注册器不是用户账号注册的模块，而是项目中注册模块的一个模块。举个例子，一个深度学习项目可能支持多种模型；具体使用哪种模型可能是用户在配置文件中指定的。最简单的实现方式，就是维护一个<code>模型名称-&gt;模型类</code>的字典。但每当你增加一个模型时，这个字典就需要手动维护，比较繁琐。本文介绍一种注册器的模块，你需要维护的是<strong>需要注册的模块的代码路径</strong>（相对简介些）。</p>
+<p>这个模块在我们的开源项目<a href="https://github.com/didi/delta">Delta</a>中也有使用。</p>
+<p><a href="https://github.com/didi/delta/blob/master/delta/utils/register.py">点这里看完整源代码</a></p>
+<h2 id="要注册的模块"><a href="#要注册的模块" class="headerlink" title="要注册的模块"></a>要注册的模块</h2><p><code>models/model.py</code>:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Model</span>:</span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@Registers.model.register</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Model1</span>(<span class="title class_ inherited__">Model</span>):</span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@Registers.model.register</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Model2</span>(<span class="title class_ inherited__">Model</span>):</span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@Registers.model.register</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Model3</span>(<span class="title class_ inherited__">Model</span>):</span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="注册器-Register"><a href="#注册器-Register" class="headerlink" title="注册器 Register"></a>注册器 Register</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Register</span>:</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, registry_name</span>):</span><br><span class="line">        <span class="variable language_">self</span>._<span class="built_in">dict</span> = &#123;&#125;</span><br><span class="line">        <span class="variable language_">self</span>._name = registry_name</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__setitem__</span>(<span class="params">self, key, value</span>):</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> <span class="built_in">callable</span>(value):</span><br><span class="line">            <span class="keyword">raise</span> Exception(<span class="string">f&quot;Value of a Registry must be a callable!\nValue: <span class="subst">&#123;value&#125;</span>&quot;</span>)</span><br><span class="line">        <span class="keyword">if</span> key <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            key = value.__name__</span><br><span class="line">        <span class="keyword">if</span> key <span class="keyword">in</span> <span class="variable language_">self</span>._<span class="built_in">dict</span>:</span><br><span class="line">            logging.warning(<span class="string">&quot;Key %s already in registry %s.&quot;</span> % (key, <span class="variable language_">self</span>._name))</span><br><span class="line">        <span class="variable language_">self</span>._<span class="built_in">dict</span>[key] = value</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">register</span>(<span class="params">self, target</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Decorator to register a function or class.&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">def</span> <span class="title function_">add</span>(<span class="params">key, value</span>):</span><br><span class="line">            <span class="variable language_">self</span>[key] = value</span><br><span class="line">            <span class="keyword">return</span> value</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">callable</span>(target):</span><br><span class="line">            <span class="comment"># @reg.register</span></span><br><span class="line">            <span class="keyword">return</span> add(<span class="literal">None</span>, target)</span><br><span class="line">        <span class="comment"># @reg.register(&#x27;alias&#x27;)</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">lambda</span> x: add(target, x)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__getitem__</span>(<span class="params">self, key</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>._<span class="built_in">dict</span>[key]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__contains__</span>(<span class="params">self, key</span>):</span><br><span class="line">        <span class="keyword">return</span> key <span class="keyword">in</span> <span class="variable language_">self</span>._<span class="built_in">dict</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">keys</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;key&quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>._<span class="built_in">dict</span>.keys()</span><br></pre></td></tr></table></figure>
+
+<p>补充一个知识点，<code>@</code>是python的<strong>装饰器语法糖</strong>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@decorate</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">func</span>():</span><br></pre></td></tr></table></figure>
+
+<p>等价于：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">func = decorate(func)</span><br></pre></td></tr></table></figure>
+
+<p>这里，<code>Register</code>类似于一个<code>dict</code>（实际上是有一个<code>_dict</code>属性），可以<code>set_item</code>和<code>get_item</code>。关键是<code>register</code>函数，它可以作为装饰器，注册一个函数或者一个类。例如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@register_obj.register</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Modle1</span>:</span><br></pre></td></tr></table></figure>
+
+<p>等价于<code>register_obj.register(Model1)</code>，最终执行的是<code>add(None, Model1)</code>。</p>
+<p>而：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@register_obj.register(<span class="params"><span class="string">&quot;model_one&quot;</span></span>)</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Model1</span>:</span><br></pre></td></tr></table></figure>
+
+<p>实际上是<code>register_obj.register(&quot;model_one&quot;)(Model1)</code>，最终执行的是<code>add(&quot;model_one&quot;, Model_1)</code>。</p>
+<p>总结下：<code>Register</code>类保存了<code>名称-&gt;模块</code>的数据，且提供了方便的注册装饰器。</p>
+<h2 id="所有注册器-Registers"><a href="#所有注册器-Registers" class="headerlink" title="所有注册器 Registers"></a>所有注册器 Registers</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Registers</span>:</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">raise</span> RuntimeError(<span class="string">&quot;Registries is not intended to be instantiated&quot;</span>)</span><br><span class="line"></span><br><span class="line">    model = Register(<span class="string">&#x27;model&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p><code>Registers</code>保存了所有的<code>Register</code>对象。</p>
+<h2 id="加载所有需要的模块到注册器-import-all-modules-for-register"><a href="#加载所有需要的模块到注册器-import-all-modules-for-register" class="headerlink" title="加载所有需要的模块到注册器 import_all_modules_for_register"></a>加载所有需要的模块到注册器 import_all_modules_for_register</h2><p>在模块代码中加入注册装饰器之后，我们还需要把这些模块<strong>实际地导入</strong>，才能让这些子模块加入进注册器中。</p>
+<p>一般大家会首先想到<code>import</code>。比如这里可以直接<code>import models.models</code>就可以让注册装饰器起作用。</p>
+<p>但是<code>import</code>子模块这种形式很有可能导致<strong>循环引用</strong>的问题。为了避免循环引用，我们可以在代码入口处，统一地动态引入所有子模块。动态导入包使用<code>importlib</code>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">MODEL_MODULES = [<span class="string">&quot;models&quot;</span>]</span><br><span class="line"></span><br><span class="line">ALL_MODULES = [(<span class="string">&quot;models&quot;</span>, MODEL_MODULES)]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">_handle_errors</span>(<span class="params">errors</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Log out and possibly reraise errors during import.&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> errors:</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    <span class="keyword">for</span> name, err <span class="keyword">in</span> errors:</span><br><span class="line">        logging.warning(<span class="string">&quot;Module &#123;&#125; import failed: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(name, err))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">import_all_modules_for_register</span>(<span class="params">custom_module_paths=<span class="literal">None</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Import all modules for register.&quot;&quot;&quot;</span></span><br><span class="line">    modules = []</span><br><span class="line">    <span class="keyword">for</span> base_dir, modules <span class="keyword">in</span> ALL_MODULES:</span><br><span class="line">        <span class="keyword">for</span> name <span class="keyword">in</span> modules:</span><br><span class="line">            full_name = base_dir + <span class="string">&quot;.&quot;</span> + name</span><br><span class="line">            modules.append(full_name)</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">isinstance</span>(custom_module_paths, <span class="built_in">list</span>):</span><br><span class="line">        modules += custom_module_paths</span><br><span class="line">    errors = []</span><br><span class="line">    <span class="keyword">for</span> module <span class="keyword">in</span> modules:</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            importlib.import_module(module)</span><br><span class="line">        <span class="keyword">except</span> ImportError <span class="keyword">as</span> error:</span><br><span class="line">            errors.append((module, error))</span><br><span class="line">    _handle_errors(errors)</span><br></pre></td></tr></table></figure>
+
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>最后我们使用下我们的注册器模块：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> register <span class="keyword">import</span> import_all_modules_for_register</span><br><span class="line"><span class="keyword">from</span> register <span class="keyword">import</span> Registers</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Registers.model._dict before: &quot;</span>, Registers.model._<span class="built_in">dict</span>)</span><br><span class="line">import_all_modules_for_register()</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Registers.model._dict after: &quot;</span>, Registers.model._<span class="built_in">dict</span>)</span><br></pre></td></tr></table></figure>
+
+<p>输出：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Registers.model._<span class="built_in">dict</span> before:  &#123;&#125;</span><br><span class="line">Registers.model._<span class="built_in">dict</span> after:  &#123;<span class="string">&#x27;Model&#x27;</span>: &lt;<span class="keyword">class</span> <span class="string">&#x27;models.models.Model&#x27;</span>&gt;, <span class="string">&#x27;Model1&#x27;</span>: &lt;<span class="keyword">class</span> <span class="string">&#x27;models.models.Model1&#x27;</span>&gt;, <span class="string">&#x27;Model2&#x27;</span>: &lt;<span class="keyword">class</span> <span class="string">&#x27;models.models.Model2&#x27;</span>&gt;, <span class="string">&#x27;Model3&#x27;</span>: &lt;<span class="keyword">class</span> <span class="string">&#x27;models.models.Model3&#x27;</span>&gt;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，需要的模块已经加入到注册器中。</p>
+<p>这个模块在我们的开源项目<a href="https://github.com/didi/delta">Delta</a>中也有使用。</p>
+<p><a href="https://github.com/didi/delta/blob/master/delta/utils/register.py">点这里看完整源代码</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/dialog_sys/redp/" rel="prev" title="Few-Shot Generalization Across Dialogue Tasks（paper）">
+                  <i class="fa fa-angle-left"></i> Few-Shot Generalization Across Dialogue Tasks（paper）
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/dialog_sys/dialog_sys/" rel="next" title="任务型对话系统综述">
+                  任务型对话系统综述 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

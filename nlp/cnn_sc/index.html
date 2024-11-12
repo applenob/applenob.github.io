@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="1. Intro1本篇博客来细说CNN在NLP中的一大应用————句子分类。通过Yoon Kim的论文介绍一个应用，分析代码，并重构代码。  传统的句子分类器一般使用SVM和Naive Bayes。传统方法使用的文本表示方法大多是“词袋模型”。即只考虑文本中词的出现的频率，不考虑词的序列信息。传统方法也可以强行使用N-gram的方法，但是这样会带来稀疏问题，意义不大。 CNN（卷积神经网络），虽然">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CNN Sentence Classification (with Theano code)">
+<meta property="og:url" content="https://applenob.github.io/nlp/cnn_sc/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="1. Intro1本篇博客来细说CNN在NLP中的一大应用————句子分类。通过Yoon Kim的论文介绍一个应用，分析代码，并重构代码。  传统的句子分类器一般使用SVM和Naive Bayes。传统方法使用的文本表示方法大多是“词袋模型”。即只考虑文本中词的出现的频率，不考虑词的序列信息。传统方法也可以强行使用N-gram的方法，但是这样会带来稀疏问题，意义不大。 CNN（卷积神经网络），虽然">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://applenob.github.io/nlp/cnn_sc/cnn.png">
+<meta property="og:image" content="https://applenob.github.io/nlp/cnn_sc/cnn_data.png">
+<meta property="og:image" content="https://applenob.github.io/nlp/cnn_sc/cnn_res.png">
+<meta property="article:published_time" content="2017-01-01T07:00:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.078Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="Deep Learning">
+<meta property="article:tag" content="NLP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://applenob.github.io/nlp/cnn_sc/cnn.png">
+
+
+<link rel="canonical" href="https://applenob.github.io/nlp/cnn_sc/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/nlp/cnn_sc/","path":"nlp/cnn_sc/","title":"CNN Sentence Classification (with Theano code)"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>CNN Sentence Classification (with Theano code) | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Intro"><span class="nav-number">1.</span> <span class="nav-text">1. Intro</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E8%AE%BA%E6%96%87%E6%A1%86%E6%9E%B6%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.</span> <span class="nav-text">2. 论文框架介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E8%BE%93%E5%85%A5%E5%B1%82"><span class="nav-number">2.1.</span> <span class="nav-text">1.输入层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%8D%B7%E7%A7%AF%E5%B1%82"><span class="nav-number">2.2.</span> <span class="nav-text">2.卷积层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%B1%A0%E5%8C%96%E5%B1%82"><span class="nav-number">2.3.</span> <span class="nav-text">3.池化层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%85%A8%E8%BF%9E%E6%8E%A5%E5%B1%82"><span class="nav-number">2.4.</span> <span class="nav-text">4.全连接层</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E8%AE%BA%E6%96%87%E5%AE%9E%E9%AA%8C%E4%BB%8B%E7%BB%8D"><span class="nav-number">3.</span> <span class="nav-text">3. 论文实验介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE"><span class="nav-number">3.1.</span> <span class="nav-text">数据</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E8%AF%95%E7%9D%80%E8%B7%91%E8%B7%91"><span class="nav-number">4.</span> <span class="nav-text">4.试着跑跑</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%8A%A0%E8%BD%BD%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">4.1.</span> <span class="nav-text">1.加载数据集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%B7%91%E6%A8%A1%E5%9E%8B"><span class="nav-number">4.2.</span> <span class="nav-text">2.跑模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E4%BB%A3%E7%A0%81%E6%A2%B3%E7%90%86"><span class="nav-number">5.</span> <span class="nav-text">5. 代码梳理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-%E5%A4%A7%E4%BD%93%E7%BB%93%E6%9E%84%EF%BC%9A"><span class="nav-number">5.1.</span> <span class="nav-text">5.1 大体结构：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#conv-net-sentences-py"><span class="nav-number">5.1.1.</span> <span class="nav-text">conv_net_sentences.py</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-%E6%95%B0%E6%8D%AE%E6%B5%81%EF%BC%9A"><span class="nav-number">5.2.</span> <span class="nav-text">5.2 数据流：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-%E6%A8%A1%E5%9E%8B%E6%9E%B6%E6%9E%84%EF%BC%9A"><span class="nav-number">5.3.</span> <span class="nav-text">5.3 模型架构：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E4%BB%A3%E7%A0%81%E9%87%8D%E6%9E%84"><span class="nav-number">6.</span> <span class="nav-text">6 代码重构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-%E4%B8%BA%E4%BB%80%E4%B9%88%E9%87%8D%E6%9E%84"><span class="nav-number">6.1.</span> <span class="nav-text">6.1 为什么重构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-%E5%93%AA%E9%87%8C%E5%8F%AF%E4%BB%A5%E9%87%8D%E6%9E%84"><span class="nav-number">6.2.</span> <span class="nav-text">6.2 哪里可以重构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-3-%E9%87%8D%E6%9E%84%E7%BB%86%E8%8A%82"><span class="nav-number">6.3.</span> <span class="nav-text">6.3 重构细节</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E9%87%8D%E6%9E%84%E5%8D%95%E5%B1%82%E7%B1%BB%EF%BC%9A"><span class="nav-number">6.3.1.</span> <span class="nav-text">1.重构单层类：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E9%87%8D%E6%9E%84%E6%95%B4%E4%BD%93%E6%A8%A1%E5%9E%8B%E7%9A%84%E6%9E%84%E5%BB%BA%EF%BC%9A"><span class="nav-number">6.3.2.</span> <span class="nav-text">2.重构整体模型的构建：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E5%A2%9E%E5%8A%A0%E6%95%B4%E4%BD%93%E6%A8%A1%E5%9E%8B%E7%9A%84%E7%B1%BB%EF%BC%9ACNN-Sen-Model"><span class="nav-number">6.3.3.</span> <span class="nav-text">3. 增加整体模型的类：CNN_Sen_Model()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E5%B0%86%E6%A8%A1%E5%9E%8B%E5%8F%82%E6%95%B0%E4%BF%9D%E5%AD%98%E5%9C%A8model-json%E4%B8%AD%EF%BC%9A"><span class="nav-number">6.3.4.</span> <span class="nav-text">4.将模型参数保存在model.json中：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-%E7%BB%93%E8%AF%AD"><span class="nav-number">7.</span> <span class="nav-text">7. 结语</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/nlp/cnn_sc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="CNN Sentence Classification (with Theano code) | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CNN Sentence Classification (with Theano code)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2016-12-31 23:00:00" itemprop="dateCreated datePublished" datetime="2016-12-31T23:00:00-08:00">2016-12-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NLP/" itemprop="url" rel="index"><span itemprop="name">NLP</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="1-Intro"><a href="#1-Intro" class="headerlink" title="1. Intro"></a>1. Intro</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">本篇博客来细说CNN在NLP中的一大应用————句子分类。通过Yoon Kim的论文介绍一个应用，分析代码，并重构代码。</span><br></pre></td></tr></table></figure>
+
+<p>传统的句子分类器一般使用SVM和Naive Bayes。传统方法使用的文本表示方法大多是“词袋模型”。即只考虑文本中词的出现的频率，不考虑词的序列信息。传统方法也可以强行使用N-gram的方法，但是这样会带来稀疏问题，意义不大。</p>
+<p><strong>CNN（卷积神经网络）</strong>，虽然出身于图像处理，但是它的思路，给我们提供了在NLP应用上的参考。<strong>“卷积”</strong>这个术语本身来自于信号处理，它的物理意义可以参考<a href="https://www.zhihu.com/question/22298352?rf=21686447">知乎上关于“复利”的回答</a>，或者参考<a href="http://colah.github.io/posts/2014-07-Understanding-Convolutions/">colah大神的博客</a>。简单地说就是一系列的输入信号进来之后，系统也会有一系列的输出。但是并不是某一时刻的输出只对应该时刻的输入，而是根据系统自身的特征，<strong>每一个时刻的输出，都和之前的输入相关。</strong>那么如果文本是一些列输入，我们当然希望考虑词和词的序列特征，比如“Tom的 手机 ”，使用卷积，系统就会知道“手机是tom”的，而不是仅仅是一个“手机”。</p>
+<p>或者更直观地理解，在CNN模型中，卷积就是拿<strong>kernel</strong>在图像上到处移动，每移动一次提取一次特征，组成feature map，<br>这个提取特征的过程，就是卷积。</p>
+<p>接下来，我们看看Yoon Kim的paper：<a href="http://arxiv.org/abs/1408.5882">Convolutional Neural Networks for Sentence Classification</a> (EMNLP 2014)</p>
+<h2 id="2-论文框架介绍"><a href="#2-论文框架介绍" class="headerlink" title="2. 论文框架介绍"></a>2. 论文框架介绍</h2><p>Yoon Kim 自己画的结构图：</p>
+<p><img src="/nlp/cnn_sc/cnn.png"></p>
+<p>具体结构介绍：</p>
+<h3 id="1-输入层"><a href="#1-输入层" class="headerlink" title="1.输入层"></a>1.输入层</h3><p>可以把输入层理解成把一句话转化成了一个二维的图像：每一排是一个词的word2vec向量，纵向是这句话的每个词按序排列。输入数据的size，也就是图像的size，<strong>n×k</strong>，n代表训练数据中最长的句子的词个数，这里是64（不够64个词的句子采用zero padding），k是embbeding的维度，这里是300。所谓的static和non-static的chanel解释如下：</p>
+<ul>
+<li>CNN-rand: 所有的word vector都是随机初始化的，同时当做训练过程中优化的参数；</li>
+<li>CNN-static: 所有的word vector直接使用无监督学习即Google的Word2Vector工具(COW模型)得到的结果，并且是固定不变的；</li>
+<li>CNN-non-static: 所有的word vector直接使用无监督学习即Google的Word2Vector工具(COW模型)得到的结果，但是会在训练过程中被Fine tuned；</li>
+<li>CNN-multichannel: CNN-static和CNN-non-static的混合版本，即两种类型的输入； 从输入层还可以看出kernel的size。很明显kernel的高(h)会有不同的值，图上有的是2，有的是3。这很容易理解，不同的kernel想获取不同范围内词的关系；和图像不同的是，<strong>nlp中的cnn的kernel的宽(w)一般都是图像的宽</strong>，也就是word2vec的维度，这也可以理解，因为我们需要获得的是纵向的差异信息，也就是不同范围的词出现会带来什么信息。</li>
+</ul>
+<h3 id="2-卷积层"><a href="#2-卷积层" class="headerlink" title="2.卷积层"></a>2.卷积层</h3><p>由于kernel的特殊形状，因此卷积后的feature map是一个宽度是1的长条。</p>
+<h3 id="3-池化层"><a href="#3-池化层" class="headerlink" title="3.池化层"></a>3.池化层</h3><p>这里使用是MaxPooling，并且一个feature map只选一个最大值留下。这被认为是按照这个kernel卷积后的最重要的特征。</p>
+<h3 id="4-全连接层"><a href="#4-全连接层" class="headerlink" title="4.全连接层"></a>4.全连接层</h3><p>这里的全连接层是带dropout的全连接层和softmax。</p>
+<h2 id="3-论文实验介绍"><a href="#3-论文实验介绍" class="headerlink" title="3. 论文实验介绍"></a>3. 论文实验介绍</h2><h3 id="数据"><a href="#数据" class="headerlink" title="数据"></a>数据</h3><p>1.word2vec使用谷歌预训练的GoogleNews-vectors-negative300.bin</p>
+<p>2.数据集</p>
+<p><img src="/nlp/cnn_sc/cnn_data.png"></p>
+<p><strong>训练和调参</strong></p>
+<ul>
+<li>filter window(kernel)的高度(h)：3,4,5；每个高度的Feature Map的数量为100，一共300个Feature Map；</li>
+<li>Dropout rate 0.5；</li>
+<li>L2 constraint （正则化限制权值大小）不超过3；</li>
+<li>mini-batch size 50；</li>
+<li>通过网格搜索方法(Grid Search)得到的最优参数；</li>
+<li>优化器使用Adadelta。</li>
+</ul>
+<p><strong>结果</strong></p>
+<p><img src="/nlp/cnn_sc/cnn_res.png"></p>
+<h2 id="4-试着跑跑"><a href="#4-试着跑跑" class="headerlink" title="4.试着跑跑"></a>4.试着跑跑</h2><p>Yoon Kim在GitHub上分享了自己的<a href>代码和数据集</a>MR（Movie Review， 只有两个类，neg和pos）。<br>让我们动手跑跑这个程序！</p>
+<h3 id="1-加载数据集"><a href="#1-加载数据集" class="headerlink" title="1.加载数据集"></a>1.加载数据集</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python process_data.py /home/cer/Data/GoogleNews-vectors-negative300.<span class="built_in">bin</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">loading data... data loaded!</span><br><span class="line">number of sentences: 10662</span><br><span class="line">vocab size: 18765</span><br><span class="line">max sentence length: 56</span><br><span class="line">loading word2vec vectors... </span><br><span class="line">word2vec loaded!</span><br><span class="line">num words already in word2vec: 16448</span><br><span class="line">dataset created!</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-跑模型"><a href="#2-跑模型" class="headerlink" title="2.跑模型"></a>2.跑模型</h3><p>使用预先加载的word2vec，并且不改变。</p>
+<p>注：为了便于显示cv个数从10减到2。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">THEANO_FLAGS=mode=FAST_RUN,device=gpu,floatX=float32 python conv_net_sentence.py -nonstatic -word2vec</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">Using gpu device 0: GeForce GTX 960M (CNMeM is disabled, cuDNN not available)</span><br><span class="line">loading data... data loaded!</span><br><span class="line">model architecture: CNN-non-static</span><br><span class="line">using: word2vec vectors</span><br><span class="line">[(&#x27;image shape&#x27;, 64, 300), (&#x27;filter shape&#x27;, [(100, 1, 3, 300), (100, 1, 4, 300), (100, 1, 5, 300)]), (&#x27;hidden_units&#x27;, [100, 2]), (&#x27;dropout&#x27;, [0.5]), (&#x27;batch_size&#x27;, 50), (&#x27;non_static&#x27;, True), (&#x27;learn_decay&#x27;, 0.95), (&#x27;conv_non_linear&#x27;, &#x27;relu&#x27;), (&#x27;non_static&#x27;, True), (&#x27;sqr_norm_lim&#x27;, 9), (&#x27;shuffle_batch&#x27;, True)]</span><br><span class="line">... training</span><br><span class="line">epoch: 1, training time: 10.58 secs, train perf: 79.86 %, val perf: 75.16 %</span><br><span class="line">epoch: 2, training time: 10.48 secs, train perf: 86.93 %, val perf: 77.89 %</span><br><span class="line">epoch: 3, training time: 11.05 secs, train perf: 88.25 %, val perf: 77.68 %</span><br><span class="line">epoch: 4, training time: 10.73 secs, train perf: 95.44 %, val perf: 79.89 %</span><br><span class="line">epoch: 5, training time: 10.69 secs, train perf: 97.91 %, val perf: 79.58 %</span><br><span class="line">epoch: 6, training time: 11.38 secs, train perf: 99.11 %, val perf: 80.74 %</span><br><span class="line">epoch: 7, training time: 10.80 secs, train perf: 99.13 %, val perf: 79.16 %</span><br><span class="line">epoch: 8, training time: 11.11 secs, train perf: 99.84 %, val perf: 80.53 %</span><br><span class="line">epoch: 9, training time: 11.05 secs, train perf: 99.94 %, val perf: 80.95 %</span><br><span class="line">epoch: 10, training time: 11.03 secs, train perf: 99.91 %, val perf: 79.68 %</span><br><span class="line">epoch: 11, training time: 10.85 secs, train perf: 99.97 %, val perf: 80.74 %</span><br><span class="line">epoch: 12, training time: 11.01 secs, train perf: 99.98 %, val perf: 80.42 %</span><br><span class="line">epoch: 13, training time: 10.64 secs, train perf: 99.98 %, val perf: 80.53 %</span><br><span class="line">epoch: 14, training time: 11.32 secs, train perf: 99.99 %, val perf: 80.32 %</span><br><span class="line">epoch: 15, training time: 11.04 secs, train perf: 99.99 %, val perf: 79.68 %</span><br><span class="line">epoch: 16, training time: 10.98 secs, train perf: 99.99 %, val perf: 80.21 %</span><br><span class="line">epoch: 17, training time: 11.14 secs, train perf: 99.99 %, val perf: 80.53 %</span><br><span class="line">epoch: 18, training time: 11.06 secs, train perf: 99.99 %, val perf: 80.53 %</span><br><span class="line">epoch: 19, training time: 12.21 secs, train perf: 99.99 %, val perf: 80.63 %</span><br><span class="line">epoch: 20, training time: 10.68 secs, train perf: 100.00 %, val perf: 80.95 %</span><br><span class="line">epoch: 21, training time: 10.64 secs, train perf: 100.00 %, val perf: 80.42 %</span><br><span class="line">epoch: 22, training time: 11.16 secs, train perf: 100.00 %, val perf: 80.32 %</span><br><span class="line">epoch: 23, training time: 10.88 secs, train perf: 100.00 %, val perf: 80.53 %</span><br><span class="line">epoch: 24, training time: 10.65 secs, train perf: 100.00 %, val perf: 80.32 %</span><br><span class="line">epoch: 25, training time: 10.84 secs, train perf: 100.00 %, val perf: 80.32 %</span><br><span class="line">cv: 0, perf: 0.793002915452</span><br><span class="line">[(&#x27;image shape&#x27;, 64, 300), (&#x27;filter shape&#x27;, [(100, 1, 3, 300), (100, 1, 4, 300), (100, 1, 5, 300)]), (&#x27;hidden_units&#x27;, [100, 2]), (&#x27;dropout&#x27;, [0.5]), (&#x27;batch_size&#x27;, 50), (&#x27;non_static&#x27;, True), (&#x27;learn_decay&#x27;, 0.95), (&#x27;conv_non_linear&#x27;, &#x27;relu&#x27;), (&#x27;non_static&#x27;, True), (&#x27;sqr_norm_lim&#x27;, 9), (&#x27;shuffle_batch&#x27;, True)]</span><br><span class="line">... training</span><br><span class="line">epoch: 1, training time: 10.92 secs, train perf: 80.01 %, val perf: 77.16 %</span><br><span class="line">epoch: 2, training time: 10.68 secs, train perf: 87.68 %, val perf: 79.89 %</span><br><span class="line">epoch: 3, training time: 10.78 secs, train perf: 91.45 %, val perf: 80.53 %</span><br><span class="line">epoch: 4, training time: 10.76 secs, train perf: 95.78 %, val perf: 80.63 %</span><br><span class="line">epoch: 5, training time: 10.62 secs, train perf: 97.99 %, val perf: 80.42 %</span><br><span class="line">epoch: 6, training time: 10.69 secs, train perf: 99.10 %, val perf: 79.89 %</span><br><span class="line">epoch: 7, training time: 10.95 secs, train perf: 99.31 %, val perf: 79.68 %</span><br><span class="line">epoch: 8, training time: 10.86 secs, train perf: 99.68 %, val perf: 79.68 %</span><br><span class="line">epoch: 9, training time: 10.64 secs, train perf: 99.82 %, val perf: 79.89 %</span><br><span class="line">epoch: 10, training time: 10.75 secs, train perf: 99.93 %, val perf: 80.32 %</span><br><span class="line">epoch: 11, training time: 10.94 secs, train perf: 99.97 %, val perf: 80.21 %</span><br><span class="line">epoch: 12, training time: 10.71 secs, train perf: 99.99 %, val perf: 80.53 %</span><br><span class="line">epoch: 13, training time: 10.74 secs, train perf: 99.97 %, val perf: 80.00 %</span><br><span class="line">epoch: 14, training time: 10.86 secs, train perf: 99.99 %, val perf: 80.00 %</span><br><span class="line">epoch: 15, training time: 11.00 secs, train perf: 99.99 %, val perf: 79.37 %</span><br><span class="line">epoch: 16, training time: 10.87 secs, train perf: 99.99 %, val perf: 80.11 %</span><br><span class="line">epoch: 17, training time: 10.94 secs, train perf: 99.99 %, val perf: 79.79 %</span><br><span class="line">epoch: 18, training time: 10.73 secs, train perf: 99.99 %, val perf: 79.79 %</span><br><span class="line">epoch: 19, training time: 11.05 secs, train perf: 100.00 %, val perf: 79.89 %</span><br><span class="line">epoch: 20, training time: 11.83 secs, train perf: 100.00 %, val perf: 79.79 %</span><br><span class="line">epoch: 21, training time: 10.85 secs, train perf: 100.00 %, val perf: 80.42 %</span><br><span class="line">epoch: 22, training time: 10.70 secs, train perf: 100.00 %, val perf: 79.79 %</span><br><span class="line">epoch: 23, training time: 10.89 secs, train perf: 100.00 %, val perf: 80.32 %</span><br><span class="line">epoch: 24, training time: 10.78 secs, train perf: 100.00 %, val perf: 80.00 %</span><br><span class="line">epoch: 25, training time: 11.19 secs, train perf: 100.00 %, val perf: 80.32 %</span><br><span class="line">cv: 1, perf: 0.814338235294</span><br><span class="line">0.803670575373</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-代码梳理"><a href="#5-代码梳理" class="headerlink" title="5. 代码梳理"></a>5. 代码梳理</h2><p>接下来研究研究Yoon Kim的代码，看看像这样的一个Deep NLP的应用，是怎么实现的。</p>
+<h3 id="5-1-大体结构："><a href="#5-1-大体结构：" class="headerlink" title="5.1 大体结构："></a>5.1 大体结构：</h3><p><strong>process_data.py</strong>:</p>
+<p>数据预处理，数据以<code>[revs, W, W2, word_idx_map, vocab]</code>保存在pkl文件“mr.p”中。</p>
+<p><strong>revs</strong>的单条数据格式如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"> datum = &#123;<span class="string">&quot;y&quot;</span>: <span class="number">1</span>,</span><br><span class="line"><span class="string">&quot;text&quot;</span>: orig_rev,</span><br><span class="line">         <span class="string">&quot;num_words&quot;</span>: <span class="built_in">len</span>(orig_rev.split()),</span><br><span class="line">         <span class="string">&quot;split&quot;</span>:</span><br><span class="line">np.random.randint(<span class="number">0</span>, cv)&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中y是类标；text是句子原文（经过清洗）；num_words是句子长度（词数）；split是分配的cv索引。</p>
+<ul>
+<li><strong>W</strong>即word matrix，W[i]是索引为i的词对应的词向量。</li>
+<li><strong>W2</strong>类似于W，但是是随机初始化的。</li>
+<li><strong>word_idx_map</strong>是一个dict，key是数据集中出现的word，value是该word的索引。</li>
+<li><strong>vocab</strong>是一个dict，key是数据集中出现的word，value是该word出现的次数。</li>
+</ul>
+<p><strong>conv_net_classes.py</strong>:</p>
+<p>定义具体的模型结构，不同的结构的层用不同的类定义。</p>
+<p>如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span></span><br><span class="line"><span class="title class_">HiddenLayer</span>(<span class="title class_ inherited__">object</span>)</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MLPDropout</span>(<span class="title class_ inherited__">object</span>)</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">LogisticRegression</span>(<span class="title class_ inherited__">object</span>)</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="conv-net-sentences-py"><a href="#conv-net-sentences-py" class="headerlink" title="conv_net_sentences.py"></a>conv_net_sentences.py</h4><p>完成数据的加载，模型的构建和连接，再训练模型。</p>
+<h3 id="5-2-数据流："><a href="#5-2-数据流：" class="headerlink" title="5.2 数据流："></a>5.2 数据流：</h3><p>输入的数据来自rt-polarity.neg和rt-polarity.pos，原始数据是很多英文句子，类标从文件名获取。以及google的word2vec。</p>
+<p>在<strong>process_data.py</strong>中：</p>
+<ul>
+<li><p>1.build_data_cv()：接收数据集文件，读取两个文件，生成基本数据<strong>revs</strong>（rev的内容上面已经分析）。</p>
+</li>
+<li><p>2.load_bin_vec()：从GoogleNews-vectors-negative300.bin中加载w2v矩阵。生成w2v。w2v是一个dict，key是word，value是vector。</p>
+</li>
+<li><p>3.get_W():接收w2v，相当于把w2v从字典转换成矩阵W，并且生成word_idx_map。相当于原来从word到vector只用查阅w2v字典；现在需要先从word_idx_map查阅word的索引，再2用word的索引到W矩阵获取vector。</p>
+</li>
+</ul>
+<p>在<strong>conv_net_sentences.py</strong>中：</p>
+<ul>
+<li>4.make_idx_data_cv():读取rev中的text字段，传入get_idx_from_sent()方法，将句子转换成一个list，list里面的元素是这句话每个词的索引。这个list形如(filter padding) - (word indices) - (Max padding) - (filter padding)，长度为max_l+2×(filter_h-1)，每句句子虽然本身长度不同，经过这步都转换成相同长度的list。然后，按照cv索引，分割训练集和测试集。</li>
+</ul>
+<h3 id="5-3-模型架构："><a href="#5-3-模型架构：" class="headerlink" title="5.3 模型架构："></a>5.3 模型架构：</h3><p>在<strong>conv_net_classes.py</strong>中：</p>
+<p>定义了所有网络层次和具体实现：</p>
+<ul>
+<li>HiddenLayer</li>
+<li>DropoutHiddenLayer</li>
+<li>MLPDropout</li>
+<li>MLP</li>
+<li>LogisticRegression</li>
+<li>LeNetConvPoolLayer</li>
+</ul>
+<p>这些类大多数的实现都在__init__方法中：</p>
+<ol>
+<li>首先接收这一层的输入输出的尺寸和这一层的输入数据。</li>
+<li>然后初始化这层的参数，参数都是theano.shared。</li>
+<li>对于给定的输入和参数，构建这层的输出。</li>
+</ol>
+<p>在<strong>conv_net_sentences.py</strong>中</p>
+<p>获取训练数据和测试数据以后，绝大部分的工作由train_conv_net()完成：</p>
+<ol>
+<li>传入参数分为两部分：（1）训练数据+W矩阵（2）模型结构参数</li>
+<li>组建模型网络：每层的定义都在conv_net_classes.py中实现了，因此这里组建网络首先要初始化一个参数list：parameters，将每层的参数加入这个list统一管理；然后对于每一层，初始化该层的类，给该层喂入数据，获取输出；再将输出喂给下一层，依照输入输出将每一层连接起来。</li>
+<li>将训练数据抽取0.1作为val数据。</li>
+<li>构建function（theano.function）：（1）根据cost function构建train_model；（2）构建val集的测试函数：val_model（3）构建测试集的测试函数：test_model。</li>
+<li>开始训练。</li>
+</ol>
+<h2 id="6-代码重构"><a href="#6-代码重构" class="headerlink" title="6 代码重构"></a>6 代码重构</h2><h3 id="6-1-为什么重构"><a href="#6-1-为什么重构" class="headerlink" title="6.1 为什么重构"></a>6.1 为什么重构</h3><p>首先要明确重构代码的目的：我不是真的认为Yoon Kim的代码写的不好，我也不认为我重构完以后架构有多好；我的目的是<strong>learn by doing</strong>，通过重构代码加深对代码的理解，这是学习代码最好的方式之一。</p>
+<h3 id="6-2-哪里可以重构"><a href="#6-2-哪里可以重构" class="headerlink" title="6.2 哪里可以重构"></a>6.2 哪里可以重构</h3><p>这份代码本来就是一分学术论文的实验代码，可扩展性不高，我想用工业界的玩法去改这份代码，下面列出可以重构的地方：</p>
+<ol>
+<li>如何定义神经网络某一层。原来的代码用一个类定义一层，这本身没有问题，但所有的细节都在__init__方法中实现，让该方法显得很臃肿，我们可以根据职责的不同，分开两个方法：init_param()和build()。也就是构建某一层神经网络最重要的两部：初始化参数和根据输入获取输出。</li>
+<li>train_conv_net()方法太臃肿，这一步包括了构建网络，拆分train&#x2F;val，构建function，训练。一共四大步，我们应该把每步拆分开。</li>
+<li>为什么没有模型的类？模型的行为类似于具体某层的行为，一层可以是类，为什么很多层组装以后反而装在一个方法里？我们也可以写一个模型类。</li>
+<li>模型的结构参数为什么由方法参数传入？我们可以写一个config文件，把模型的结构参数写在这个config文件里。这样再做实验时，调模型的参数只需修改config文件。</li>
+</ol>
+<h3 id="6-3-重构细节"><a href="#6-3-重构细节" class="headerlink" title="6.3 重构细节"></a>6.3 重构细节</h3><p>接下来按照上面的几点，演示下重构的细节：</p>
+<ul>
+<li><strong>cer_main.py</strong>:加载数据，开始训练。</li>
+<li><strong>cer_module.py</strong>:每层模型的实现细节。</li>
+<li><strong>cer_model.py</strong>:整体模型的实现。</li>
+</ul>
+<h4 id="1-重构单层类："><a href="#1-重构单层类：" class="headerlink" title="1.重构单层类："></a>1.重构单层类：</h4><p>重构前：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">HiddenLayer</span>(<span class="title class_ inherited__">object</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Class for HiddenLayer</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, rng, <span class="built_in">input</span>, n_in, n_out, activation, W=<span class="literal">None</span>, b=<span class="literal">None</span>,</span></span><br><span class="line"><span class="params">use_bias=<span class="literal">False</span></span>):</span><br><span class="line"></span><br><span class="line">        <span class="variable language_">self</span>.<span class="built_in">input</span> = <span class="built_in">input</span></span><br><span class="line">        <span class="variable language_">self</span>.activation =</span><br><span class="line">activation</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> W <span class="keyword">is</span> <span class="literal">None</span>:            </span><br><span class="line">            <span class="keyword">if</span></span><br><span class="line">activation.func_name == <span class="string">&quot;ReLU&quot;</span>:</span><br><span class="line">                W_values = numpy.asarray(<span class="number">0.01</span> *</span><br><span class="line">rng.standard_normal(size=(n_in, n_out)), dtype=theano.config.floatX)</span><br><span class="line"><span class="keyword">else</span>:                </span><br><span class="line">                W_values =</span><br><span class="line">numpy.asarray(rng.uniform(low=-numpy.sqrt(<span class="number">6.</span> / (n_in + n_out)),</span><br><span class="line">high=numpy.sqrt(<span class="number">6.</span> / (n_in + n_out)),</span><br><span class="line">size=(n_in, n_out)), dtype=theano.config.floatX)</span><br><span class="line">            W =</span><br><span class="line">theano.shared(value=W_values, name=<span class="string">&#x27;W&#x27;</span>)        </span><br><span class="line">        <span class="keyword">if</span> b <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">b_values = numpy.zeros((n_out,), dtype=theano.config.floatX)</span><br><span class="line">            b =</span><br><span class="line">theano.shared(value=b_values, name=<span class="string">&#x27;b&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="variable language_">self</span>.W = W</span><br><span class="line">        <span class="variable language_">self</span>.b = b</span><br><span class="line"><span class="keyword">if</span> use_bias:</span><br><span class="line">            lin_output = T.dot(<span class="built_in">input</span>, <span class="variable language_">self</span>.W) + <span class="variable language_">self</span>.b</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">            lin_output = T.dot(<span class="built_in">input</span>, <span class="variable language_">self</span>.W)</span><br><span class="line"></span><br><span class="line">        <span class="variable language_">self</span>.output =</span><br><span class="line">(lin_output <span class="keyword">if</span> activation <span class="keyword">is</span> <span class="literal">None</span> <span class="keyword">else</span> activation(lin_output))</span><br><span class="line">    </span><br><span class="line">        <span class="comment">#</span></span><br><span class="line">parameters of the model</span><br><span class="line">        <span class="keyword">if</span> use_bias:</span><br><span class="line">            <span class="variable language_">self</span>.params = [<span class="variable language_">self</span>.W,</span><br><span class="line"><span class="variable language_">self</span>.b]</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="variable language_">self</span>.params = [<span class="variable language_">self</span>.W]</span><br></pre></td></tr></table></figure>
+
+<p>重构后：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">HiddenLayer</span>(<span class="title class_ inherited__">object</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Class for HiddenLayer</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span></span><br><span class="line"><span class="title function_">__init__</span>(<span class="params">self, rng,  n_in, n_out, activation, W=<span class="literal">None</span>, b=<span class="literal">None</span></span>):</span><br><span class="line"></span><br><span class="line">        <span class="variable language_">self</span>.rng</span><br><span class="line">= rng</span><br><span class="line">        <span class="variable language_">self</span>.activation = activation</span><br><span class="line">        <span class="variable language_">self</span>.init_param(W, b, n_in,</span><br><span class="line">n_out)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">init_param</span>(<span class="params">self, W, b, n_in, n_out</span>):</span><br><span class="line">        <span class="keyword">if</span> W <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line"><span class="keyword">if</span> <span class="variable language_">self</span>.activation.func_name == <span class="string">&quot;ReLU&quot;</span>:</span><br><span class="line">                W_values =</span><br><span class="line">numpy.asarray(<span class="number">0.01</span> * <span class="variable language_">self</span>.rng.standard_normal(size=(n_in, n_out)),</span><br><span class="line">dtype=theano.config.floatX)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                W_values =</span><br><span class="line">numpy.asarray(</span><br><span class="line">                    <span class="variable language_">self</span>.rng.uniform(low=-numpy.sqrt(<span class="number">6.</span> / (n_in +</span><br><span class="line">n_out)), high=numpy.sqrt(<span class="number">6.</span> / (n_in + n_out)),</span><br><span class="line">size=(n_in, n_out)), dtype=theano.config.floatX)</span><br><span class="line">            W =</span><br><span class="line">theano.shared(value=W_values, name=<span class="string">&#x27;W&#x27;</span>)</span><br><span class="line">        <span class="keyword">if</span> b <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">b_values = numpy.zeros((n_out,), dtype=theano.config.floatX)</span><br><span class="line">            b =</span><br><span class="line">theano.shared(value=b_values, name=<span class="string">&#x27;b&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="variable language_">self</span>.W = W</span><br><span class="line">        <span class="variable language_">self</span>.b = b</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">build</span>(<span class="params">self, <span class="built_in">input</span>, use_bias=<span class="literal">False</span></span>):</span><br><span class="line">        <span class="keyword">if</span> use_bias:</span><br><span class="line">lin_output = T.dot(<span class="built_in">input</span>, <span class="variable language_">self</span>.W) + <span class="variable language_">self</span>.b</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            lin_output</span><br><span class="line">= T.dot(<span class="built_in">input</span>, <span class="variable language_">self</span>.W)</span><br><span class="line"></span><br><span class="line">        <span class="variable language_">self</span>.output = (lin_output <span class="keyword">if</span> <span class="variable language_">self</span>.activation <span class="keyword">is</span></span><br><span class="line"><span class="literal">None</span> <span class="keyword">else</span> <span class="variable language_">self</span>.activation(lin_output))</span><br><span class="line"></span><br><span class="line">        <span class="comment"># parameters of the model</span></span><br><span class="line"><span class="keyword">if</span> use_bias:</span><br><span class="line">            <span class="variable language_">self</span>.params = [<span class="variable language_">self</span>.W, <span class="variable language_">self</span>.b]</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line"><span class="variable language_">self</span>.params = [<span class="variable language_">self</span>.W]</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.output</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-重构整体模型的构建："><a href="#2-重构整体模型的构建：" class="headerlink" title="2.重构整体模型的构建："></a>2.重构整体模型的构建：</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">################################网络架构：1.初始化###########################</span></span><br><span class="line">        <span class="comment">#</span></span><br><span class="line"><span class="number">1.</span>embedding层</span><br><span class="line">        <span class="variable language_">self</span>.emb_layer = EmbeddingLayer(U)</span><br><span class="line">        <span class="comment"># 2.卷积层</span></span><br><span class="line"><span class="variable language_">self</span>.conv_layers = []</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="built_in">len</span>(<span class="variable language_">self</span>.conf[<span class="string">&#x27;filter_hs&#x27;</span>])):</span><br><span class="line">filter_shape = filter_shapes[i]</span><br><span class="line">            <span class="comment"># print &quot;filter_shape:&quot;,</span></span><br><span class="line">filter_shape</span><br><span class="line">            pool_size = pool_sizes[i]</span><br><span class="line">            conv_layer =</span><br><span class="line">LeNetConvPoolLayer(rng, image_shape=(<span class="variable language_">self</span>.conf[<span class="string">&#x27;batch_size&#x27;</span>], <span class="number">1</span>, <span class="variable language_">self</span>.img_h,</span><br><span class="line"><span class="variable language_">self</span>.conf[<span class="string">&#x27;img_w&#x27;</span>]),</span><br><span class="line">filter_shape=filter_shape, poolsize=pool_size,</span><br><span class="line">non_linear=<span class="variable language_">self</span>.conf[<span class="string">&#x27;conv_non_linear&#x27;</span>])</span><br><span class="line"><span class="variable language_">self</span>.conv_layers.append(conv_layer)</span><br><span class="line">        <span class="comment"># 3.MLP(多层神经感知机，带dropout)</span></span><br><span class="line"><span class="variable language_">self</span>.conf[<span class="string">&#x27;hidden_units&#x27;</span>][<span class="number">0</span>] = feature_maps * <span class="built_in">len</span>(<span class="variable language_">self</span>.conf[<span class="string">&#x27;filter_hs&#x27;</span>])</span><br><span class="line"><span class="variable language_">self</span>.classifier = MLPDropout(rng, layer_sizes=<span class="variable language_">self</span>.conf[<span class="string">&#x27;hidden_units&#x27;</span>],</span><br><span class="line">activations=[<span class="built_in">eval</span>(f_s) <span class="keyword">for</span> f_s <span class="keyword">in</span> <span class="variable language_">self</span>.conf[<span class="string">&#x27;activations&#x27;</span>]],</span><br><span class="line">dropout_rates=<span class="variable language_">self</span>.conf[<span class="string">&#x27;dropout_rate&#x27;</span>])</span><br><span class="line"><span class="comment">#################################网络架构：2.连接网络#########################</span></span><br><span class="line">        <span class="comment">#</span></span><br><span class="line"><span class="number">1.</span>embbeding层</span><br><span class="line">        emb_output = <span class="variable language_">self</span>.emb_layer.build(<span class="variable language_">self</span>.x)</span><br><span class="line">        <span class="comment"># 2.卷积层</span></span><br><span class="line">layer0_input = emb_output</span><br><span class="line">        layer1_inputs = []</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span></span><br><span class="line">xrange(<span class="built_in">len</span>(<span class="variable language_">self</span>.conf[<span class="string">&#x27;filter_hs&#x27;</span>])):</span><br><span class="line">            conv_layer =</span><br><span class="line"><span class="variable language_">self</span>.conv_layers[i]</span><br><span class="line">            layer1_input =</span><br><span class="line">conv_layer.build(layer0_input).flatten(<span class="number">2</span>)</span><br><span class="line">layer1_inputs.append(layer1_input)</span><br><span class="line">        layer1_input =</span><br><span class="line">T.concatenate(layer1_inputs, <span class="number">1</span>)</span><br><span class="line">        <span class="variable language_">self</span>.classifier.build(layer1_input)</span><br><span class="line"><span class="comment">###################提取模型参数########################################</span></span><br><span class="line">        <span class="comment">#</span></span><br><span class="line">define parameters of the model <span class="keyword">and</span> update functions using adadelta</span><br><span class="line">params = <span class="variable language_">self</span>.classifier.params</span><br><span class="line">        <span class="keyword">for</span> conv_layer <span class="keyword">in</span> <span class="variable language_">self</span>.conv_layers:</span><br><span class="line">params += conv_layer.params</span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.conf[<span class="string">&quot;non_static&quot;</span>]:</span><br><span class="line">            <span class="comment"># if</span></span><br><span class="line">word vectors are allowed to change, add them <span class="keyword">as</span> model parameters</span><br><span class="line">params += [emb_output.Words]</span><br><span class="line"></span><br><span class="line">        <span class="variable language_">self</span>.cost =</span><br><span class="line"><span class="variable language_">self</span>.classifier.negative_log_likelihood(<span class="variable language_">self</span>.y)</span><br><span class="line">        <span class="variable language_">self</span>.dropout_cost =</span><br><span class="line"><span class="variable language_">self</span>.classifier.dropout_negative_log_likelihood(<span class="variable language_">self</span>.y)</span><br><span class="line"><span class="variable language_">self</span>.grad_updates = sgd_updates_adadelta(params, <span class="variable language_">self</span>.dropout_cost,</span><br><span class="line"><span class="variable language_">self</span>.conf[<span class="string">&#x27;lr_decay&#x27;</span>],</span><br><span class="line">                                            <span class="number">1e-6</span>,</span><br><span class="line"><span class="variable language_">self</span>.conf[<span class="string">&#x27;sqr_norm_lim&#x27;</span>])</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-增加整体模型的类：CNN-Sen-Model"><a href="#3-增加整体模型的类：CNN-Sen-Model" class="headerlink" title="3. 增加整体模型的类：CNN_Sen_Model()"></a>3. 增加整体模型的类：CNN_Sen_Model()</h4><p>类方法：</p>
+<ul>
+<li>build_model()</li>
+<li>train()</li>
+<li>build_function()</li>
+</ul>
+<p>整体模型的类和具体某层的类共同点在于build，也就是给定输入获取输出的过程。不同点在于要少一个init_param()方法，因为整体模型不需要去初始化模型训练的参数，直接从细节类获取即可。另外还多一个train的方法用于模型的训练。</p>
+<p>具体可以看我的<a href="https://github.com/applenob/CNN_sentence">代码</a>。</p>
+<h4 id="4-将模型参数保存在model-json中："><a href="#4-将模型参数保存在model-json中：" class="headerlink" title="4.将模型参数保存在model.json中："></a>4.将模型参数保存在model.json中：</h4><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;img_w&quot;</span><span class="punctuation">:</span><span class="number">300</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;max_l&quot;</span><span class="punctuation">:</span><span class="number">56</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;filter_hs&quot;</span><span class="punctuation">:</span><span class="punctuation">[</span><span class="number">3</span><span class="punctuation">,</span> <span class="number">4</span><span class="punctuation">,</span> <span class="number">5</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;hidden_units&quot;</span><span class="punctuation">:</span><span class="punctuation">[</span><span class="number">100</span><span class="punctuation">,</span> <span class="number">2</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;dropout_rate&quot;</span><span class="punctuation">:</span><span class="punctuation">[</span><span class="number">0.5</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;shuffle_batch&quot;</span><span class="punctuation">:</span><span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;n_epochs&quot;</span><span class="punctuation">:</span><span class="number">25</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;batch_size&quot;</span><span class="punctuation">:</span><span class="number">50</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;lr_decay&quot;</span><span class="punctuation">:</span><span class="number">0.95</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;conv_non_linear&quot;</span><span class="punctuation">:</span><span class="string">&quot;relu&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;activations&quot;</span><span class="punctuation">:</span><span class="punctuation">[</span><span class="string">&quot;Iden&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;sqr_norm_lim&quot;</span><span class="punctuation">:</span><span class="number">9</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;non_static&quot;</span><span class="punctuation">:</span><span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;word_vectors&quot;</span><span class="punctuation">:</span><span class="string">&quot;word2vec&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>来跑跑看：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">THEANO_FLAGS=mode=FAST_RUN,device=gpu,floatX=float32 python cer_main.py</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">Using gpu device 0: GeForce GTX 960M (CNMeM is disabled, cuDNN not available)</span><br><span class="line">/home/cer/anaconda2/lib/python2.7/site-packages/theano/tensor/signal/downsample.py:6: UserWarning: downsample module has been moved to the theano.tensor.signal.pool module.</span><br><span class="line">  &quot;downsample module has been moved to the theano.tensor.signal.pool module.&quot;)</span><br><span class="line">loading data... model architecture: CNN-static</span><br><span class="line">using: word2vec vectors</span><br><span class="line">model configs:  &#123;u&#x27;dropout_rate&#x27;: [0.5], u&#x27;hidden_units&#x27;: [100, 2], u&#x27;word_vectors&#x27;: u&#x27;word2vec&#x27;, u&#x27;filter_hs&#x27;: [3, 4, 5], u&#x27;conv_non_linear&#x27;: u&#x27;relu&#x27;, u&#x27;max_l&#x27;: 56, u&#x27;img_w&#x27;: 300, u&#x27;batch_size&#x27;: 50, u&#x27;n_epochs&#x27;: 25, u&#x27;sqr_norm_lim&#x27;: 9, u&#x27;non_static&#x27;: False, u&#x27;shuffle_batch&#x27;: True, u&#x27;activations&#x27;: [u&#x27;Iden&#x27;], u&#x27;lr_decay&#x27;: 0.95&#125;</span><br><span class="line">emb_output shape : [1029    1   64  300]</span><br><span class="line">conv_layer shape : [1029  100    1    1]</span><br><span class="line">conv_layer shape : [1029  100    1    1]</span><br><span class="line">conv_layer shape : [1029  100    1    1]</span><br><span class="line">... training</span><br><span class="line">epoch: 1, training time: 6.09 secs, train perf: 77.54 %, val perf: 73.79 %</span><br><span class="line">epoch: 2, training time: 6.05 secs, train perf: 84.10 %, val perf: 76.53 %</span><br><span class="line">epoch: 3, training time: 5.84 secs, train perf: 83.85 %, val perf: 76.32 %</span><br><span class="line">epoch: 4, training time: 6.36 secs, train perf: 89.45 %, val perf: 78.32 %</span><br><span class="line">epoch: 5, training time: 6.01 secs, train perf: 94.51 %, val perf: 79.26 %</span><br><span class="line">epoch: 6, training time: 6.72 secs, train perf: 95.07 %, val perf: 78.63 %</span><br><span class="line">epoch: 7, training time: 6.96 secs, train perf: 98.09 %, val perf: 79.89 %</span><br><span class="line">epoch: 8, training time: 6.41 secs, train perf: 98.91 %, val perf: 80.00 %</span><br><span class="line">epoch: 9, training time: 6.19 secs, train perf: 99.39 %, val perf: 78.63 %</span><br><span class="line">epoch: 10, training time: 6.57 secs, train perf: 98.83 %, val perf: 78.84 %</span><br><span class="line">epoch: 11, training time: 6.84 secs, train perf: 99.68 %, val perf: 80.00 %</span><br><span class="line">epoch: 12, training time: 5.84 secs, train perf: 99.84 %, val perf: 78.74 %</span><br><span class="line">epoch: 13, training time: 5.93 secs, train perf: 99.82 %, val perf: 79.16 %</span><br><span class="line">epoch: 14, training time: 5.94 secs, train perf: 99.95 %, val perf: 78.63 %</span><br><span class="line">epoch: 15, training time: 6.39 secs, train perf: 99.94 %, val perf: 78.42 %</span><br><span class="line">epoch: 16, training time: 6.92 secs, train perf: 99.95 %, val perf: 79.16 %</span><br><span class="line">epoch: 17, training time: 6.83 secs, train perf: 99.98 %, val perf: 78.53 %</span><br><span class="line">epoch: 18, training time: 6.72 secs, train perf: 99.98 %, val perf: 79.26 %</span><br><span class="line">epoch: 19, training time: 5.97 secs, train perf: 99.98 %, val perf: 78.63 %</span><br><span class="line">epoch: 20, training time: 5.92 secs, train perf: 99.98 %, val perf: 78.63 %</span><br><span class="line">epoch: 21, training time: 6.56 secs, train perf: 99.98 %, val perf: 79.37 %</span><br><span class="line">epoch: 22, training time: 6.05 secs, train perf: 99.98 %, val perf: 78.95 %</span><br><span class="line">epoch: 23, training time: 6.69 secs, train perf: 99.98 %, val perf: 78.63 %</span><br><span class="line">epoch: 24, training time: 7.03 secs, train perf: 99.98 %, val perf: 78.84 %</span><br><span class="line">epoch: 25, training time: 6.06 secs, train perf: 99.98 %, val perf: 79.16 %</span><br><span class="line">cv: 0, perf: 0.781341107872</span><br></pre></td></tr></table></figure>
+
+<h2 id="7-结语"><a href="#7-结语" class="headerlink" title="7. 结语"></a>7. 结语</h2><p>这篇博客记录了这个CNN Sentence Classification的基础论文和代码实现，并没有关注调参，Yoon Kim的github提到了一篇关于这种模型调参的<a href="http://arxiv.org/abs/1510.03820">paper</a>，有兴趣可以去看看。</p>
+<p>这个模型还有<a href="http://www.wildml.com/2015/12/implementing-a-cnn-for-text-classification-in-tensorflow">Tensorflow的实现</a>，同样可以看看。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
+              <a href="/tags/NLP/" rel="tag"># NLP</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/nlp/word2vec/" rel="prev" title="Word2Vec学习总结">
+                  <i class="fa fa-angle-left"></i> Word2Vec学习总结
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/tensorflow/1_basic/" rel="next" title="一. Tensorflow基础篇">
+                  一. Tensorflow基础篇 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

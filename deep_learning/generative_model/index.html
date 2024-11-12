@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前段时间研究了一段Zero Shot Learning，研究了一些生成模型，总结一下备忘。 关于生成模型有一个很好的github仓库，而且作者的博客写的也非常精彩。 所谓生成模型，即，给定一些数据，用一个向量$x$表示，每一个datapoint对应一张图片或者一句话，生成模型的目标是学会$P(x)$，有了$P(x)$就可以从中sample，从而生成一些数据。 本文主要总结下GAN和VAE两种生成模">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度生成模型总结--原始GAN和VAE">
+<meta property="og:url" content="https://applenob.github.io/deep_learning/generative_model/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="前段时间研究了一段Zero Shot Learning，研究了一些生成模型，总结一下备忘。 关于生成模型有一个很好的github仓库，而且作者的博客写的也非常精彩。 所谓生成模型，即，给定一些数据，用一个向量$x$表示，每一个datapoint对应一张图片或者一句话，生成模型的目标是学会$P(x)$，有了$P(x)$就可以从中sample，从而生成一些数据。 本文主要总结下GAN和VAE两种生成模">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://applenob.github.io/deep_learning/generative_model/gan_1.png">
+<meta property="og:image" content="https://applenob.github.io/deep_learning/generative_model/gan_cmp.png">
+<meta property="og:image" content="https://applenob.github.io/deep_learning/generative_model/009_gan.png">
+<meta property="og:image" content="https://applenob.github.io/deep_learning/generative_model/autoencoder.jpg">
+<meta property="og:image" content="https://applenob.github.io/deep_learning/generative_model/vae_3.png">
+<meta property="og:image" content="https://applenob.github.io/deep_learning/generative_model/009_vae.png">
+<meta property="article:published_time" content="2017-08-22T06:00:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.028Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="Deep Learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://applenob.github.io/deep_learning/generative_model/gan_1.png">
+
+
+<link rel="canonical" href="https://applenob.github.io/deep_learning/generative_model/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/deep_learning/generative_model/","path":"deep_learning/generative_model/","title":"深度生成模型总结--原始GAN和VAE"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>深度生成模型总结--原始GAN和VAE | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#GAN"><span class="nav-number">1.</span> <span class="nav-text">GAN</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87%E5%87%BD%E6%95%B0"><span class="nav-number">1.2.</span> <span class="nav-text">目标函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%97%E6%B3%95%E6%B5%81%E7%A8%8B"><span class="nav-number">1.3.</span> <span class="nav-text">算法流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="nav-number">1.4.</span> <span class="nav-text">优缺点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-number">1.5.</span> <span class="nav-text">代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E6%95%88%E6%9E%9C"><span class="nav-number">1.6.</span> <span class="nav-text">生成效果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VAE"><span class="nav-number">2.</span> <span class="nav-text">VAE</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B-1"><span class="nav-number">2.1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-1"><span class="nav-number">2.2.</span> <span class="nav-text">代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E6%95%88%E6%9E%9C-1"><span class="nav-number">2.3.</span> <span class="nav-text">生成效果</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning/generative_model/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="深度生成模型总结--原始GAN和VAE | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          深度生成模型总结--原始GAN和VAE
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-08-21 23:00:00" itemprop="dateCreated datePublished" datetime="2017-08-21T23:00:00-07:00">2017-08-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>前段时间研究了一段<code>Zero Shot Learning</code>，研究了一些生成模型，总结一下备忘。</p>
+<p>关于生成模型有一个很好的<a href="https://github.com/wiseodd/generative-models">github仓库</a>，而且作者的<a href="https://wiseodd.github.io/">博客</a>写的也非常精彩。</p>
+<p>所谓生成模型，即，给定一些数据，用一个向量$x$表示，每一个datapoint对应一张图片或者一句话，生成模型的目标是学会$P(x)$，有了$P(x)$就可以从中sample，从而<strong>生成</strong>一些数据。</p>
+<p>本文主要总结下<strong>GAN</strong>和<strong>VAE</strong>两种生成模型。</p>
+<h2 id="GAN"><a href="#GAN" class="headerlink" title="GAN"></a>GAN</h2><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>GAN的原始paper是大神Goodfellow的<a href="https://papers.nips.cc/paper/5423-generative-adversarial-nets.pdf">《Generative Adversarial Nets》</a></p>
+<p>先简介下模型的<strong>思想</strong>：</p>
+<p>GAN包含：<strong>一个生成模型$G$<strong>和</strong>一个判别模型$D$<strong>，$G$的输入是一个随机扰动$z$，输出是生成的数据$\hat x$；$D$的输入是原始数据$x$或者$G$生成的数据$\hat x$，输出是</strong>输入来自训练数据的概率</strong>。</p>
+<p>如果将$G$看作假币生产者，$D$看作警察，那么作假者的任务是尽量生产可以以假换真的假币，警察的任务是尽可能区分假币和真币，二者将不断地竞争直到生产者生产的假币完全以假乱真。</p>
+<p><img src="/deep_learning/generative_model/gan_1.png"></p>
+<h3 id="目标函数"><a href="#目标函数" class="headerlink" title="目标函数"></a>目标函数</h3><p>$$\underset{G}{min}\underset{D}{max};V(D, G) &#x3D; E_{x∼p_{data}(x)}[log<br>D(x)] + E_{z∼p_z(z)}[log(1 − D(G(z)))]$$</p>
+<p>上面的目标函数修改自<strong>交叉熵</strong>损失函数。</p>
+<h3 id="算法流程"><a href="#算法流程" class="headerlink" title="算法流程"></a>算法流程</h3><p>很多初次接触GAN的同学都会对GAN的训练感到迷惑，看下面的<strong>训练算法</strong>：</p>
+<ul>
+<li>每轮训练迭代：<ul>
+<li>前k步，训练分类器：<ul>
+<li>从先验噪声：$p_g(z)$中采样m个<strong>噪声</strong>作为minibatch：${z^{(1)}, …, z^{(m)}}$。</li>
+<li>从数据生成分布中$p_{data}(x)$采样m个<strong>真实数据</strong>作为minibatch：${x^{(1)}, …, x^{(m)}}$。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>使用随机梯度<strong>上升</strong>更新<strong>判别器的参数</strong>：<ul>
+<li>$\bigtriangledown_{\theta_d}\frac{1}{m}\sum_{i&#x3D;1}^m[logD(x^{(i)})+log(D(G(z^{(i)})))]$</li>
+<li>从先验噪声：$p_g(z)$中采样m个<strong>噪声</strong>作为minibatch：${z^{(1)}, …, z^{(m)}}$。</li>
+<li>使用随机梯度<strong>下降</strong>更新<strong>生成器的参数</strong>：<ul>
+<li>$\bigtriangledown_{\theta_g}\frac{1}{m}\sum_{i&#x3D;1}^mlog(D(G(z^{(i)})))$</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>虽然是同一个损失函数按照相反的方向训练，但训练判别器和生成器时针对的<strong>参数</strong>不同（上面算法中$\theta_d$和$\theta_g$），因此并不会出现南辕北辙的情况。</p>
+<h3 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h3><ul>
+<li>缺点：没有明确的$p_g(x)$的表示；$D$的训练需要和$G$同步。</li>
+<li>优点：采样时无需Markov chain；训练时无需inference，模型设计的范围更广。</li>
+</ul>
+<p><img src="/deep_learning/generative_model/gan_cmp.png"></p>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><p>下面代码来自<a href="https://github.com/wiseodd/generative-models">https://github.com/wiseodd/generative-models</a> ，使用python3.5。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br></pre></td><td class="code"><pre><span class="line">%matplotlib inline</span><br><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> torch.nn.functional <span class="keyword">as</span> nn</span><br><span class="line"><span class="keyword">import</span> torch.autograd <span class="keyword">as</span> autograd</span><br><span class="line"><span class="keyword">import</span> torch.optim <span class="keyword">as</span> optim</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> matplotlib.gridspec <span class="keyword">as</span> gridspec</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">from</span> torch.autograd <span class="keyword">import</span> Variable</span><br><span class="line"><span class="keyword">from</span> tensorflow.examples.tutorials.mnist <span class="keyword">import</span> input_data</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">mnist = input_data.read_data_sets(<span class="string">&#x27;data&#x27;</span>, one_hot=<span class="literal">True</span>)</span><br><span class="line">mb_size = <span class="number">64</span></span><br><span class="line">Z_dim = <span class="number">100</span></span><br><span class="line">X_dim = mnist.train.images.shape[<span class="number">1</span>]</span><br><span class="line">y_dim = mnist.train.labels.shape[<span class="number">1</span>]</span><br><span class="line">h_dim = <span class="number">128</span></span><br><span class="line">c = <span class="number">0</span></span><br><span class="line">lr = <span class="number">1e-3</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">xavier_init</span>(<span class="params">size</span>):</span><br><span class="line">    in_dim = size[<span class="number">0</span>]</span><br><span class="line">    xavier_stddev = <span class="number">1.</span> / np.sqrt(in_dim / <span class="number">2.</span>)</span><br><span class="line">    <span class="keyword">return</span> Variable(torch.randn(*size) * xavier_stddev, requires_grad=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="string">&quot;&quot;&quot; ==================== GENERATOR ======================== &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">Wzh = xavier_init(size=[Z_dim, h_dim])</span><br><span class="line">bzh = Variable(torch.zeros(h_dim), requires_grad=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">Whx = xavier_init(size=[h_dim, X_dim])</span><br><span class="line">bhx = Variable(torch.zeros(X_dim), requires_grad=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">G</span>(<span class="params">z</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;一个简单的双层神经网络作为生成器&quot;&quot;&quot;</span></span><br><span class="line">    h = nn.relu(z @ Wzh + bzh.repeat(z.size(<span class="number">0</span>), <span class="number">1</span>))  <span class="comment"># @是python3中新加入的矩阵乘法符号</span></span><br><span class="line">    X = nn.sigmoid(h @ Whx + bhx.repeat(h.size(<span class="number">0</span>), <span class="number">1</span>))</span><br><span class="line">    <span class="keyword">return</span> X</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="string">&quot;&quot;&quot; ==================== DISCRIMINATOR ======================== &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">Wxh = xavier_init(size=[X_dim, h_dim])</span><br><span class="line">bxh = Variable(torch.zeros(h_dim), requires_grad=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">Why = xavier_init(size=[h_dim, <span class="number">1</span>])</span><br><span class="line">bhy = Variable(torch.zeros(<span class="number">1</span>), requires_grad=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">D</span>(<span class="params">X</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;一个简单的双层神经网络作为生成器&quot;&quot;&quot;</span></span><br><span class="line">    h = nn.relu(X @ Wxh + bxh.repeat(X.size(<span class="number">0</span>), <span class="number">1</span>))</span><br><span class="line">    y = nn.sigmoid(h @ Why + bhy.repeat(h.size(<span class="number">0</span>), <span class="number">1</span>))</span><br><span class="line">    <span class="keyword">return</span> y</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">G_params = [Wzh, bzh, Whx, bhx]</span><br><span class="line">D_params = [Wxh, bxh, Why, bhy]</span><br><span class="line">params = G_params + D_params</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="string">&quot;&quot;&quot; ===================== TRAINING ======================== &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">reset_grad</span>():</span><br><span class="line">    <span class="keyword">for</span> p <span class="keyword">in</span> params:</span><br><span class="line">        <span class="keyword">if</span> p.grad <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            data = p.grad.data</span><br><span class="line">            p.grad = Variable(data.new().resize_as_(data).zero_())</span><br><span class="line"></span><br><span class="line"><span class="comment"># 优化器指定参数</span></span><br><span class="line">G_solver = optim.Adam(G_params, lr=<span class="number">1e-3</span>)</span><br><span class="line">D_solver = optim.Adam(D_params, lr=<span class="number">1e-3</span>)</span><br><span class="line"></span><br><span class="line">ones_label = Variable(torch.ones(mb_size))</span><br><span class="line">zeros_label = Variable(torch.zeros(mb_size))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> it <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10000</span>):</span><br><span class="line">    <span class="comment"># Sample data</span></span><br><span class="line">    z = Variable(torch.randn(mb_size, Z_dim))</span><br><span class="line">    X, _ = mnist.train.next_batch(mb_size)</span><br><span class="line">    X = Variable(torch.from_numpy(X))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Dicriminator forward-loss-backward-update</span></span><br><span class="line">    G_sample = G(z)</span><br><span class="line">    D_real = D(X)</span><br><span class="line">    D_fake = D(G_sample)</span><br><span class="line"></span><br><span class="line">    D_loss_real = nn.binary_cross_entropy(D_real, ones_label)</span><br><span class="line">    D_loss_fake = nn.binary_cross_entropy(D_fake, zeros_label)</span><br><span class="line">    D_loss = D_loss_real + D_loss_fake</span><br><span class="line"></span><br><span class="line">    D_loss.backward()</span><br><span class="line">    D_solver.step()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Housekeeping - reset gradient</span></span><br><span class="line">    reset_grad()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Generator forward-loss-backward-update</span></span><br><span class="line">    z = Variable(torch.randn(mb_size, Z_dim))</span><br><span class="line">    G_sample = G(z)</span><br><span class="line">    D_fake = D(G_sample)</span><br><span class="line"></span><br><span class="line">    G_loss = nn.binary_cross_entropy(D_fake, ones_label)</span><br><span class="line"></span><br><span class="line">    G_loss.backward()</span><br><span class="line">    G_solver.step()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Housekeeping - reset gradient</span></span><br><span class="line">    reset_grad()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Print and plot every now and then</span></span><br><span class="line">    <span class="keyword">if</span> it % <span class="number">1000</span> == <span class="number">0</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;Iter-&#123;&#125;; D_loss: &#123;&#125;; G_loss: &#123;&#125;&#x27;</span>.<span class="built_in">format</span>(it, D_loss.data.numpy(), G_loss.data.numpy()))</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 取前16张图保存</span></span><br><span class="line">        samples = G(z).data.numpy()[:<span class="number">16</span>]</span><br><span class="line"></span><br><span class="line">        fig = plt.figure(figsize=(<span class="number">4</span>, <span class="number">4</span>))</span><br><span class="line">        gs = gridspec.GridSpec(<span class="number">4</span>, <span class="number">4</span>)</span><br><span class="line">        gs.update(wspace=<span class="number">0.05</span>, hspace=<span class="number">0.05</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i, sample <span class="keyword">in</span> <span class="built_in">enumerate</span>(samples):</span><br><span class="line">            ax = plt.subplot(gs[i])</span><br><span class="line">            plt.axis(<span class="string">&#x27;off&#x27;</span>)</span><br><span class="line">            ax.set_xticklabels([])</span><br><span class="line">            ax.set_yticklabels([])</span><br><span class="line">            ax.set_aspect(<span class="string">&#x27;equal&#x27;</span>)</span><br><span class="line">            plt.imshow(sample.reshape(<span class="number">28</span>, <span class="number">28</span>), cmap=<span class="string">&#x27;Greys_r&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(<span class="string">&#x27;out/&#x27;</span>):</span><br><span class="line">            os.makedirs(<span class="string">&#x27;out/&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        plt.savefig(<span class="string">&#x27;out/&#123;&#125;.png&#x27;</span>.<span class="built_in">format</span>(<span class="built_in">str</span>(c).zfill(<span class="number">3</span>)), bbox_inches=<span class="string">&#x27;tight&#x27;</span>)</span><br><span class="line">        c += <span class="number">1</span></span><br><span class="line">        plt.close(fig)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">Extracting data/train-images-idx3-ubyte.gz</span><br><span class="line">Extracting data/train-labels-idx1-ubyte.gz</span><br><span class="line">Extracting data/t10k-images-idx3-ubyte.gz</span><br><span class="line">Extracting data/t10k-labels-idx1-ubyte.gz</span><br><span class="line"></span><br><span class="line">Iter-0; D_loss: [ 1.50280118]; G_loss: [ 1.64008629]</span><br><span class="line">Iter-1000; D_loss: [ 0.0023118]; G_loss: [ 8.38419437]</span><br><span class="line">Iter-2000; D_loss: [ 0.00522094]; G_loss: [ 7.93807125]</span><br><span class="line">Iter-3000; D_loss: [ 0.03023708]; G_loss: [ 4.29144192]</span><br><span class="line">Iter-4000; D_loss: [ 0.02870584]; G_loss: [ 6.23502254]</span><br><span class="line">Iter-5000; D_loss: [ 0.15886861]; G_loss: [ 4.66118479]</span><br><span class="line">Iter-6000; D_loss: [ 0.26347995]; G_loss: [ 4.20204782]</span><br><span class="line">Iter-7000; D_loss: [ 0.51319796]; G_loss: [ 2.98293495]</span><br><span class="line">Iter-8000; D_loss: [ 0.70317507]; G_loss: [ 2.42791796]</span><br><span class="line">Iter-9000; D_loss: [ 0.93306208]; G_loss: [ 2.59884763]</span><br></pre></td></tr></table></figure>
+
+<h3 id="生成效果"><a href="#生成效果" class="headerlink" title="生成效果"></a>生成效果</h3><p><img src="/deep_learning/generative_model/009_gan.png"></p>
+<h2 id="VAE"><a href="#VAE" class="headerlink" title="VAE"></a>VAE</h2><h3 id="简介-1"><a href="#简介-1" class="headerlink" title="简介"></a>简介</h3><p>关于VAE可以直接看这篇<a href="https://arxiv.org/pdf/1606.05908.pdf">《Tutorial on Variational Autoencoders》</a>。</p>
+<p>先来看看普通的Auto-Encoder长什么样：</p>
+<p><img src="/deep_learning/generative_model/autoencoder.jpg"></p>
+<p>也就是$x$作为输入，要努力使输出$\tilde x$接近$x$，最终使用的是中间的隐层向量，作为一个输入$x$的特征。</p>
+<p>VAE是结合了<strong>隐变量（latent variable）</strong>的Auto-Encoder。</p>
+<p>先考虑隐变量，假设输入的是一张猫的图片，隐变量可以是“腿的个数”&#x2F;“耳朵的大小”等。</p>
+<p>那么原来的生成模型可以转换成：$P(X) &#x3D; \int P(X \vert z) P(z) dz$，$z$是隐变量（向量）。</p>
+<p>但是手动去设计$z$向量显然是不可操作的，于是VAE假设，$z$的某个维度并不能简单地解释，并且$z\sim N(0,I)$。即便有这样的先验假设，只要映射函数足够复杂（$P(X|z)$），最终的$P(X)$也可以足够复杂。</p>
+<p>但是这里还有一个问题，即，对于大多数的$z$，$P(X|z)&#x3D;0$，直接去做积分是一个很没有必要的劳动。</p>
+<p>于是有人提出，学一个$Q(z|X)$，这个$Q$可以根据某个$X$，返回可能的$z$的分布。我们希望这里的$z$是比较可能产生$X$的，即$P(X|z)&gt;0$，并且这里的$z$的空间比一开始$z$的空间要小。这样的话，计算$E_{z\sim Q}P(X|z)$去代替上面的积分，会更简单。</p>
+<p>下面计算$Q(z|X)$和$P(z|X)$的<strong>KL散度</strong>：</p>
+<p>$$D_{KL}[Q(z \vert X)<br>\Vert P(z \vert X)] &#x3D; \sum_z Q(z \vert X) , \log \frac{Q(z \vert X)}{P(z \vert<br>X)} $$<br>$$&#x3D; E_{z\sim Q} \left[ \log \frac{Q(z \vert<br>X)}{P(z \vert X)} \right]$$<br>$$&#x3D; E_{z\sim Q}[\log Q(z<br>\vert X) - \log P(z \vert X)]$$<br>$$&#x3D; E_{z\sim Q} \left[<br>\log Q(z \vert X) - \log \frac{P(X \vert z) P(z)}{P(X)} \right]$$<br>$$&#x3D; E_{z\sim Q}[\log Q(z \vert X) - (\log P(X \vert z) + \log P(z) - \log P(X))]$$<br>$$&#x3D; E_{z\sim Q}[\log Q(z \vert X) - \log P(X \vert z) - \log P(z) + \log P(X)]$$</p>
+<p>把$\log P(X)$移到左边：</p>
+<p>$$\log P(X) - D_{KL}[Q(z \vert<br>X) \Vert P(z \vert X)] $$<br>$$&#x3D; E_{z\sim Q}[\log P(X \vert z) - (\log Q(z \vert X) - \log P(z))]$$<br>$$&#x3D; E_{z\sim Q}[\log P(X \vert z)] - E[\log Q(z \vert X) - \log P(z)] $$<br>$$&#x3D; E_{z\sim Q}[\log P(X \vert z)] - D_{KL}[Q(z \vert X) \Vert P(z)]$$</p>
+<p>于是我们得到了VAE的<strong>核心方程（目标函数）</strong>：</p>
+<p>$$\log P(X) - D_{KL}[Q(z \vert X) \Vert P(z \vert X)]$$<br>$$&#x3D; E_{z\sim Q}[\log P(X \vert z)] - D_{KL}[Q(z \vert X) \Vert P(z)]$$</p>
+<p><strong>等式的左边</strong>：</p>
+<ol>
+<li>$\log P(X)$是对数似然函数，使我们要最大化的对象；</li>
+<li>$- D_{KL}[Q(z \vert X) \Vert P(z \vert X)]$，使用$Q(z \vert X)$代替$ P(z \vert X)$时的产生的误差项。于是左边可以理解成：我们要找一个$\log P(X)$的下界函数。</li>
+</ol>
+<p>回顾下一开始介绍的Auto-Encoder，我们可以：</p>
+<ul>
+<li>把$Q(z \vert X)$当做<strong>Encoder</strong>；</li>
+<li>把z当做隐层；</li>
+<li>把$P(X \vert z)$当做<strong>Decoder</strong>。<br><strong>等式的右边</strong>：这部分是我们可以用随机梯度下降去优化的。</li>
+</ul>
+<ol>
+<li>$E_{z\sim Q}[\log P(X \vert z)]$是Decoder的目标函数，即如果把z理解成输入，X是输出，则$E_{z\sim Q}[\log P(X \vert z)]$是极大似然函数；</li>
+<li>$-D_{KL}[Q(z \vert X) \Vert P(z)]$是Encoder的目标函数，要训练一个使$Q(z \vert X)$尽可能接近$P(z)$的Encoder。</li>
+</ol>
+<p>之前我们已经限定$z\sim N(0, I)$，现在再限定$Q(z \vert X)$服从参数是$\mu(X)$和$\Sigma(X)$的高斯分布。这时，右边第二项是有准确表达式的：</p>
+<p>$$D_{KL}[N(\mu(X),\Sigma(X)) \Vert N(0, 1)] &#x3D; \frac{1}{2} \sum_k \left( \exp(\Sigma(X)) + \mu^2(X) - 1 - \Sigma(X) \right)$$</p>
+<p>至于右边第一个表达式，我们可以使用二次损失函数替代。<br><img src="/deep_learning/generative_model/vae_3.png"></p>
+<p>这里为了训练的方便，使用了<strong>重参数技巧</strong>（reparameterization trick），即，引入一个随机性变量：$\epsilon \sim N(0,1)$，$z &#x3D; \mu(X) + \Sigma^{\frac{1}{2}}(X) , \epsilon$，这样使得网络反向传播时没有涉及到随机变量。</p>
+<h3 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> torch.nn.functional <span class="keyword">as</span> nn</span><br><span class="line"><span class="keyword">import</span> torch.autograd <span class="keyword">as</span> autograd</span><br><span class="line"><span class="keyword">import</span> torch.optim <span class="keyword">as</span> optim</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> matplotlib.gridspec <span class="keyword">as</span> gridspec</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">from</span> torch.autograd <span class="keyword">import</span> Variable</span><br><span class="line"><span class="keyword">from</span> tensorflow.examples.tutorials.mnist <span class="keyword">import</span> input_data</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">mnist = input_data.read_data_sets(<span class="string">&#x27;data&#x27;</span>, one_hot=<span class="literal">True</span>)</span><br><span class="line">mb_size = <span class="number">64</span></span><br><span class="line">Z_dim = <span class="number">100</span></span><br><span class="line">X_dim = mnist.train.images.shape[<span class="number">1</span>]</span><br><span class="line">y_dim = mnist.train.labels.shape[<span class="number">1</span>]</span><br><span class="line">h_dim = <span class="number">128</span></span><br><span class="line">c = <span class="number">0</span></span><br><span class="line">lr = <span class="number">1e-3</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">xavier_init</span>(<span class="params">size</span>):</span><br><span class="line">    in_dim = size[<span class="number">0</span>]</span><br><span class="line">    xavier_stddev = <span class="number">1.</span> / np.sqrt(in_dim / <span class="number">2.</span>)</span><br><span class="line">    <span class="keyword">return</span> Variable(torch.randn(*size) * xavier_stddev, requires_grad=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># =============================== Q(z|X) ======================================</span></span><br><span class="line"></span><br><span class="line">Wxh = xavier_init(size=[X_dim, h_dim])</span><br><span class="line">bxh = Variable(torch.zeros(h_dim), requires_grad=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">Whz_mu = xavier_init(size=[h_dim, Z_dim])</span><br><span class="line">bhz_mu = Variable(torch.zeros(Z_dim), requires_grad=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">Whz_var = xavier_init(size=[h_dim, Z_dim])</span><br><span class="line">bhz_var = Variable(torch.zeros(Z_dim), requires_grad=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">Q</span>(<span class="params">X</span>):</span><br><span class="line">    h = nn.relu(X @ Wxh + bxh.repeat(X.size(<span class="number">0</span>), <span class="number">1</span>))</span><br><span class="line">    z_mu = h @ Whz_mu + bhz_mu.repeat(h.size(<span class="number">0</span>), <span class="number">1</span>)</span><br><span class="line">    z_var = h @ Whz_var + bhz_var.repeat(h.size(<span class="number">0</span>), <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> z_mu, z_var</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">sample_z</span>(<span class="params">mu, log_var</span>):</span><br><span class="line">    eps = Variable(torch.randn(mb_size, Z_dim))</span><br><span class="line">    <span class="keyword">return</span> mu + torch.exp(log_var / <span class="number">2</span>) * eps</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># =============================== P(X|z) ======================================</span></span><br><span class="line"></span><br><span class="line">Wzh = xavier_init(size=[Z_dim, h_dim])</span><br><span class="line">bzh = Variable(torch.zeros(h_dim), requires_grad=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">Whx = xavier_init(size=[h_dim, X_dim])</span><br><span class="line">bhx = Variable(torch.zeros(X_dim), requires_grad=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">P</span>(<span class="params">z</span>):</span><br><span class="line">    h = nn.relu(z @ Wzh + bzh.repeat(z.size(<span class="number">0</span>), <span class="number">1</span>))</span><br><span class="line">    X = nn.sigmoid(h @ Whx + bhx.repeat(h.size(<span class="number">0</span>), <span class="number">1</span>))</span><br><span class="line">    <span class="keyword">return</span> X</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># =============================== TRAINING ====================================</span></span><br><span class="line"></span><br><span class="line">params = [Wxh, bxh, Whz_mu, bhz_mu, Whz_var, bhz_var,</span><br><span class="line">          Wzh, bzh, Whx, bhx]</span><br><span class="line"></span><br><span class="line">solver = optim.Adam(params, lr=lr)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> it <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10000</span>):</span><br><span class="line">    X, _ = mnist.train.next_batch(mb_size)</span><br><span class="line">    X = Variable(torch.from_numpy(X))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Forward</span></span><br><span class="line">    z_mu, z_var = Q(X)</span><br><span class="line">    z = sample_z(z_mu, z_var)</span><br><span class="line">    X_sample = P(z)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Loss</span></span><br><span class="line">    recon_loss = nn.binary_cross_entropy(X_sample, X, size_average=<span class="literal">False</span>) / mb_size</span><br><span class="line">    kl_loss = torch.mean(<span class="number">0.5</span> * torch.<span class="built_in">sum</span>(torch.exp(z_var) + z_mu**<span class="number">2</span> - <span class="number">1.</span> - z_var, <span class="number">1</span>))</span><br><span class="line">    <span class="comment"># loss包含两项：重构损失（Decoder），kl损失（Encoder）</span></span><br><span class="line">    loss = recon_loss + kl_loss</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Backward</span></span><br><span class="line">    loss.backward()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Update</span></span><br><span class="line">    solver.step()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Housekeeping</span></span><br><span class="line">    <span class="keyword">for</span> p <span class="keyword">in</span> params:</span><br><span class="line">        <span class="keyword">if</span> p.grad <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            data = p.grad.data</span><br><span class="line">            p.grad = Variable(data.new().resize_as_(data).zero_())</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Print and plot every now and then</span></span><br><span class="line">    <span class="keyword">if</span> it % <span class="number">1000</span> == <span class="number">0</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;Iter-&#123;&#125;; Loss: &#123;:.4&#125;&#x27;</span>.<span class="built_in">format</span>(it, loss.data[<span class="number">0</span>]))</span><br><span class="line"></span><br><span class="line">        samples = P(z).data.numpy()[:<span class="number">16</span>]</span><br><span class="line"></span><br><span class="line">        fig = plt.figure(figsize=(<span class="number">4</span>, <span class="number">4</span>))</span><br><span class="line">        gs = gridspec.GridSpec(<span class="number">4</span>, <span class="number">4</span>)</span><br><span class="line">        gs.update(wspace=<span class="number">0.05</span>, hspace=<span class="number">0.05</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i, sample <span class="keyword">in</span> <span class="built_in">enumerate</span>(samples):</span><br><span class="line">            ax = plt.subplot(gs[i])</span><br><span class="line">            plt.axis(<span class="string">&#x27;off&#x27;</span>)</span><br><span class="line">            ax.set_xticklabels([])</span><br><span class="line">            ax.set_yticklabels([])</span><br><span class="line">            ax.set_aspect(<span class="string">&#x27;equal&#x27;</span>)</span><br><span class="line">            plt.imshow(sample.reshape(<span class="number">28</span>, <span class="number">28</span>), cmap=<span class="string">&#x27;Greys_r&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(<span class="string">&#x27;out/&#x27;</span>):</span><br><span class="line">            os.makedirs(<span class="string">&#x27;out/&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        plt.savefig(<span class="string">&#x27;out/&#123;&#125;_vae.png&#x27;</span>.<span class="built_in">format</span>(<span class="built_in">str</span>(c).zfill(<span class="number">3</span>)), bbox_inches=<span class="string">&#x27;tight&#x27;</span>)</span><br><span class="line">        c += <span class="number">1</span></span><br><span class="line">        plt.close(fig)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Extracting data/train-images-idx3-ubyte.gz</span><br><span class="line">Extracting data/train-labels-idx1-ubyte.gz</span><br><span class="line">Extracting data/t10k-images-idx3-ubyte.gz</span><br><span class="line">Extracting data/t10k-labels-idx1-ubyte.gz</span><br><span class="line">Iter-0; Loss: 790.1</span><br><span class="line">Iter-1000; Loss: 157.6</span><br><span class="line">Iter-2000; Loss: 132.7</span><br><span class="line">Iter-3000; Loss: 121.2</span><br><span class="line">Iter-4000; Loss: 118.5</span><br><span class="line">Iter-5000; Loss: 115.5</span><br><span class="line">Iter-6000; Loss: 118.2</span><br><span class="line">Iter-7000; Loss: 114.2</span><br><span class="line">Iter-8000; Loss: 108.9</span><br><span class="line">Iter-9000; Loss: 108.6</span><br></pre></td></tr></table></figure>
+
+<h3 id="生成效果-1"><a href="#生成效果-1" class="headerlink" title="生成效果"></a>生成效果</h3><p><img src="/deep_learning/generative_model/009_vae.png"></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/machine_learning/interview/" rel="prev" title="机器学习基础知识汇总">
+                  <i class="fa fa-angle-left"></i> 机器学习基础知识汇总
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/tensorflow/3_placeholder/" rel="next" title="三. Tensorflow基础：placeholder, embedding_lookup 和dropout">
+                  三. Tensorflow基础：placeholder, embedding_lookup 和dropout <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

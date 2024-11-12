@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="模型推导最大熵是选择最优模型的一个准则，即，首先要满足已有的事实（约束条件），然后在没有更多信息的情况下，那些不确定的部分都是“等可能的”。“等可能”本身不容易操作，熵是一个可以优化的数值目标。 这里最大熵最大化的，是条件熵$H(Y|X)$。 $$H(Y|X)&#x3D;-\sum_{x,y}\hat{P}(x)P(y|x)logP(y|x)$$ 具体的关于信息熵的文章，可以看colah的这篇博客">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Max Entropy学习总结">
+<meta property="og:url" content="https://applenob.github.io/machine_learning/max_entropy/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="模型推导最大熵是选择最优模型的一个准则，即，首先要满足已有的事实（约束条件），然后在没有更多信息的情况下，那些不确定的部分都是“等可能的”。“等可能”本身不容易操作，熵是一个可以优化的数值目标。 这里最大熵最大化的，是条件熵$H(Y|X)$。 $$H(Y|X)&#x3D;-\sum_{x,y}\hat{P}(x)P(y|x)logP(y|x)$$ 具体的关于信息熵的文章，可以看colah的这篇博客">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2017-11-30T06:19:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.078Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="NLP">
+<meta property="article:tag" content="Machine Learning">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://applenob.github.io/machine_learning/max_entropy/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/machine_learning/max_entropy/","path":"machine_learning/max_entropy/","title":"Max Entropy学习总结"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Max Entropy学习总结 | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E6%8E%A8%E5%AF%BC"><span class="nav-number">1.</span> <span class="nav-text">模型推导</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E6%95%B0%E4%BC%BC%E7%84%B6%E5%87%BD%E6%95%B0"><span class="nav-number">2.</span> <span class="nav-text">对数似然函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83%E7%9A%84%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">模型训练的优化算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#GIS%E7%AE%97%E6%B3%95"><span class="nav-number">3.1.</span> <span class="nav-text">GIS算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IIS%E7%AE%97%E6%B3%95"><span class="nav-number">4.</span> <span class="nav-text">IIS算法</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/machine_learning/max_entropy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Max Entropy学习总结 | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Max Entropy学习总结
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-11-29 22:19:00" itemprop="dateCreated datePublished" datetime="2017-11-29T22:19:00-08:00">2017-11-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="模型推导"><a href="#模型推导" class="headerlink" title="模型推导"></a>模型推导</h2><p><strong>最大熵</strong>是选择最优模型的一个准则，即，首先要<strong>满足已有的事实（约束条件）</strong>，然后在没有更多信息的情况下，那些不确定的部分都是<strong>“等可能的”。</strong>“等可能”本身不容易操作，熵是一个可以优化的数值目标。</p>
+<p>这里最大熵最大化的，是<strong>条件熵</strong>$H(Y|X)$。</p>
+<p>$$H(Y|X)&#x3D;-\sum_{x,y}\hat{P}(x)P(y|x)logP(y|x)$$</p>
+<p>具体的关于信息熵的文章，可以看<a href="https://colah.github.io/posts/2015-09-Visual-Information/">colah的这篇博客</a>，里面对信息熵&#x2F;互信息&#x2F;条件熵的物理意义做很好的解释。</p>
+<p>好的，我们的最大熵有了目标函数。刚才说了，我们还必须要保证满足已有的事实，这一点如何用数学公式去描述呢？</p>
+<p>首先引入<strong>特征函数</strong>：<br>$$f(x,y)&#x3D;\left\{\begin{matrix}<br>1, \;\;x与y满足某一事实 \\<br>0，\;\;否则<br>\end{matrix}\right.$$</p>
+<p>下面注意到两个期望：</p>
+<ul>
+<li>1.特征函数$f(x,y)$在<strong>训练样本</strong>中关于<strong>经验分布</strong>$\tilde P(x,y)$的期望：$E_{\tilde P}(f)&#x3D;\sum_{x,y}\tilde P(x,y)f(x,y)$。</li>
+<li>2.特征函数$f(x,y)$关于建立的<strong>理论模型</strong>$P(Y|X)$与经验分布$\tilde P(x)$的期望：$E_{P}(f)&#x3D;\sum_{x,y}\tilde P(x)P(y|x)f(x,y)$。</li>
+</ul>
+<p>我们希望，模型在训练完以后，<strong>能够获取到训练数据中的信息</strong>。这个想法，用上面的两个期望表达，就是：</p>
+<p>$$E_{\tilde P}(f)&#x3D;E_{P}(f)$$</p>
+<p>给定了目标函数和约束条件，我们通过拉格朗日对偶法，解得模型的<strong>更一般的形式</strong>，（具体的求解过程省略，这里主要是展现模型思想）：</p>
+<p>$$P_w(y|x)&#x3D;\frac{1}{Z_w(x)}exp\bigl(\begin{smallmatrix} \sum_{i&#x3D;1}^{n} w_i\cdot f_i(x,y) \end{smallmatrix}\bigr)$$</p>
+<p>其中，$Z_w(x)$是归一化因子，$Z_w(x)&#x3D;\sum_yexp\bigl(\begin{smallmatrix}\sum_{i&#x3D;1}^{n} w_i\cdot f_i(x,y) \end{smallmatrix}\bigr)$。$w \in R^n$是权值向量，$f_i(x,y)$是特征函数。</p>
+<p>这个形式和无向图模型几乎一毛一样～</p>
+<h2 id="对数似然函数"><a href="#对数似然函数" class="headerlink" title="对数似然函数"></a>对数似然函数</h2><p>$$L(w) &#x3D; log\prod_{x,y}P(y|x)^{\tilde P(x,y)} $$</p>
+<p>$$ &#x3D; \sum_{x,y}\tilde P(x,y)logP(y|x) \;\;代入最大熵模型 $$</p>
+<p>$$ &#x3D; \sum_{x,y}\tilde P(x,y)\sum_{i&#x3D;1}^nw_if_i(x,y)-\sum_{x,y}\tilde P(x,y)logZ_w(x)$$</p>
+<p>$$ &#x3D; \sum_{x,y}\tilde P(x,y)\sum_{i&#x3D;1}^nw_if_i(x,y)-\sum_x\tilde P(x)logZ_w(x)$$</p>
+<h2 id="模型训练的优化算法"><a href="#模型训练的优化算法" class="headerlink" title="模型训练的优化算法"></a>模型训练的优化算法</h2><h3 id="GIS算法"><a href="#GIS算法" class="headerlink" title="GIS算法"></a>GIS算法</h3><p>GIS，Generalized Iterative Scaling，算法流程：</p>
+<ul>
+<li>初始化所有$w_i$为任意值，一般可以设置为0，即：$w_i^{(0)}&#x3D;0,\;i\in {1,2,3,…,n}$。其中$n$是特征的个数，上标表示迭代轮数。</li>
+<li>重复更新权值直到收敛：<ul>
+<li>$w_i^{(t+1)}&#x3D;w_i^{(t)}+\frac{1}{C}log\frac{E_{\tilde P}(f_i)}{E_{P^{(n)}}(f_i)}$</li>
+</ul>
+</li>
+<li>具体的，$E_{\tilde P}(f_i)&#x3D;\frac{1}{N}\sum_{j&#x3D;1}^Nf_i(x_j, y_j)$，即，这个特征函数在所有训练数据上的值的平均值。<ul>
+<li>具体的，$E_{P^{(n)}}(f_i)&#x3D;\frac{1}{N}\sum^N_{j&#x3D;1}\sum_yP^{(n)}(y|x_j)f_i(x_i, y)$。即，某个特征关于模型的期望值在训练集上的值的平均值。</li>
+</ul>
+</li>
+</ul>
+<p><strong>GIS的python实现</strong>，参考<a href="http://www.hankcs.com/ml/the-logistic-regression-and-the-maximum-entropy-model.html">http://www.hankcs.com/ml/the-logistic-regression-and-the-maximum-entropy-model.html</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> math</span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> defaultdict</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MaxEnt</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="variable language_">self</span>._train_data = []  <span class="comment"># 样本集, 元素是[y,x1,x2,...,xn]的元组</span></span><br><span class="line">        <span class="variable language_">self</span>._Y = <span class="built_in">set</span>()  <span class="comment"># 标签集合,相当于去重之后的y</span></span><br><span class="line">        <span class="variable language_">self</span>._xy2num = defaultdict(<span class="built_in">int</span>)  <span class="comment"># Key是(xi,yi)对，Value是count(xi,yi)</span></span><br><span class="line">        <span class="variable language_">self</span>._data_N = <span class="number">0</span>  <span class="comment"># 样本数量</span></span><br><span class="line">        <span class="variable language_">self</span>._fea_N = <span class="number">0</span>  <span class="comment"># 特征对(xi,yi)总数量</span></span><br><span class="line">        <span class="variable language_">self</span>._xy2id = &#123;&#125;  <span class="comment"># 对(x,y)对做的顺序编号(ID), Key是(xi,yi)对,Value是ID</span></span><br><span class="line">        <span class="variable language_">self</span>._C = <span class="number">0</span>  <span class="comment"># 样本最大的特征数量,用于求参数时的迭代，见IIS原理说明</span></span><br><span class="line">        <span class="variable language_">self</span>._train_exp = []  <span class="comment"># 样本分布的特征期望值</span></span><br><span class="line">        <span class="variable language_">self</span>._model_exp = []  <span class="comment"># 模型分布的特征期望值</span></span><br><span class="line">        <span class="variable language_">self</span>._w = []  <span class="comment"># 对应n个特征的权值</span></span><br><span class="line">        <span class="variable language_">self</span>._lastw = []  <span class="comment"># 上一轮迭代的权值</span></span><br><span class="line">        <span class="variable language_">self</span>._EPS = <span class="number">0.01</span>  <span class="comment"># 判断是否收敛的阈值</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">load_data</span>(<span class="params">self, filename</span>):</span><br><span class="line">        <span class="keyword">for</span> line <span class="keyword">in</span> <span class="built_in">open</span>(filename, <span class="string">&quot;r&quot;</span>):</span><br><span class="line">            sample = line.strip().split(<span class="string">&quot;\t&quot;</span>)</span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">len</span>(sample) &lt; <span class="number">2</span>:  <span class="comment"># 至少：标签 + 一个特征</span></span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            y = sample[<span class="number">0</span>]</span><br><span class="line">            X = sample[<span class="number">1</span>:]</span><br><span class="line">            <span class="variable language_">self</span>._train_data.append(sample)  <span class="comment"># labe + features</span></span><br><span class="line">            <span class="variable language_">self</span>._Y.add(y)  <span class="comment"># label</span></span><br><span class="line">            <span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">set</span>(X):  <span class="comment"># set给X去重</span></span><br><span class="line">                <span class="variable language_">self</span>._xy2num[(x, y)] += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_init_params</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="variable language_">self</span>._data_N = <span class="built_in">len</span>(<span class="variable language_">self</span>._train_data)</span><br><span class="line">        <span class="variable language_">self</span>._fea_N = <span class="built_in">len</span>(<span class="variable language_">self</span>._xy2num)</span><br><span class="line">        <span class="variable language_">self</span>._C = <span class="built_in">max</span>([<span class="built_in">len</span>(sample) - <span class="number">1</span> <span class="keyword">for</span> sample <span class="keyword">in</span> <span class="variable language_">self</span>._train_data])</span><br><span class="line">        <span class="variable language_">self</span>._w = [<span class="number">0.0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>._fea_N)]</span><br><span class="line">        <span class="variable language_">self</span>._lastw = <span class="variable language_">self</span>._w[:]</span><br><span class="line">        <span class="variable language_">self</span>._calc_train_exp()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">is_convergence</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;判断是否收敛&quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">for</span> w, lw <span class="keyword">in</span> <span class="built_in">zip</span>(<span class="variable language_">self</span>._w, <span class="variable language_">self</span>._lastw):</span><br><span class="line">            <span class="keyword">if</span> math.fabs(w - lw) &gt;= <span class="variable language_">self</span>._EPS:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_zx</span>(<span class="params">self, X</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;计算Z(X)&quot;&quot;&quot;</span></span><br><span class="line">        ZX = <span class="number">0.0</span></span><br><span class="line">        <span class="keyword">for</span> y <span class="keyword">in</span> <span class="variable language_">self</span>._Y:</span><br><span class="line">            sum_ = <span class="number">0.0</span></span><br><span class="line">            <span class="keyword">for</span> x <span class="keyword">in</span> X:</span><br><span class="line">                <span class="keyword">if</span> (x, y) <span class="keyword">in</span> <span class="variable language_">self</span>._xy2num:</span><br><span class="line">                    sum_ += <span class="variable language_">self</span>._w[<span class="variable language_">self</span>._xy2id[(x, y)]]</span><br><span class="line">            ZX += math.exp(sum_)</span><br><span class="line">        <span class="keyword">return</span> ZX</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_pyx</span>(<span class="params">self, X</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;计算p(y|x)&quot;&quot;&quot;</span></span><br><span class="line">        ZX = <span class="variable language_">self</span>._zx(X)</span><br><span class="line">        results = []</span><br><span class="line">        <span class="keyword">for</span> y <span class="keyword">in</span> <span class="variable language_">self</span>._Y:</span><br><span class="line">            sum_ = <span class="number">0.0</span></span><br><span class="line">            <span class="keyword">for</span> x <span class="keyword">in</span> X:</span><br><span class="line">                <span class="keyword">if</span> (x, y) <span class="keyword">in</span> <span class="variable language_">self</span>._xy2num:  <span class="comment"># 这个判断相当于指示函数的作用</span></span><br><span class="line">                    sum_ += <span class="variable language_">self</span>._w[<span class="variable language_">self</span>._xy2id[(x, y)]]</span><br><span class="line">            pyx = <span class="number">1.0</span> / ZX * math.exp(sum_)</span><br><span class="line">            results.append((y, pyx))</span><br><span class="line">        <span class="keyword">return</span> results</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_calc_train_exp</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;特征关于经验数据的期望&quot;&quot;&quot;</span></span><br><span class="line">        <span class="variable language_">self</span>._train_exp = [<span class="number">0.0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>._fea_N)]</span><br><span class="line">        <span class="keyword">for</span> i, xy <span class="keyword">in</span> <span class="built_in">enumerate</span>(<span class="variable language_">self</span>._xy2num):</span><br><span class="line">            <span class="variable language_">self</span>._train_exp[i] = <span class="variable language_">self</span>._xy2num[xy] * <span class="number">1.0</span> / <span class="variable language_">self</span>._data_N</span><br><span class="line">            <span class="variable language_">self</span>._xy2id[xy] = i</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_calc_model_exp</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;特征关于模型的期望&quot;&quot;&quot;</span></span><br><span class="line">        <span class="variable language_">self</span>._model_exp = [<span class="number">0.0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>._fea_N)]</span><br><span class="line">        <span class="keyword">for</span> sample <span class="keyword">in</span> <span class="variable language_">self</span>._train_data:</span><br><span class="line">            X = sample[<span class="number">1</span>:]</span><br><span class="line">            pyx = <span class="variable language_">self</span>._pyx(X)</span><br><span class="line">            <span class="keyword">for</span> y, p <span class="keyword">in</span> pyx:</span><br><span class="line">                <span class="keyword">for</span> x <span class="keyword">in</span> X:</span><br><span class="line">                    <span class="keyword">if</span> (x, y) <span class="keyword">in</span> <span class="variable language_">self</span>._xy2num:</span><br><span class="line">                        <span class="variable language_">self</span>._model_exp[<span class="variable language_">self</span>._xy2id[(x, y)]] += p * <span class="number">1.0</span> / <span class="variable language_">self</span>._data_N</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">train</span>(<span class="params">self, maxiter=<span class="number">1000</span></span>):</span><br><span class="line">        <span class="variable language_">self</span>._init_params()</span><br><span class="line">        <span class="keyword">for</span> iter_num <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, maxiter):</span><br><span class="line">            <span class="comment"># print(&quot;Iter:%d...&quot; % i)</span></span><br><span class="line">            <span class="variable language_">self</span>._lastw = <span class="variable language_">self</span>._w[:]  <span class="comment"># 保存上一轮权值</span></span><br><span class="line">            <span class="variable language_">self</span>._calc_model_exp()</span><br><span class="line">            <span class="comment"># 更新每个特征的权值</span></span><br><span class="line">            <span class="keyword">for</span> i, w <span class="keyword">in</span> <span class="built_in">enumerate</span>(<span class="variable language_">self</span>._w):</span><br><span class="line">                <span class="comment"># 迭代式更新w</span></span><br><span class="line">                <span class="variable language_">self</span>._w[i] += <span class="number">1.0</span> / <span class="variable language_">self</span>._C * math.log(<span class="variable language_">self</span>._train_exp[i] / <span class="variable language_">self</span>._model_exp[i])</span><br><span class="line">            <span class="comment"># print(self._w)</span></span><br><span class="line">            <span class="comment"># 检查是否收敛</span></span><br><span class="line">            <span class="keyword">if</span> <span class="variable language_">self</span>.is_convergence():</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">predict</span>(<span class="params">self, input_</span>):</span><br><span class="line">        X = input_.strip().split(<span class="string">&quot;\t&quot;</span>)</span><br><span class="line">        prob = <span class="variable language_">self</span>._pyx(X)</span><br><span class="line">        <span class="keyword">return</span> prob</span><br></pre></td></tr></table></figure>
+
+<p>训练数据来自各种天气情况下是否打球的例子。其中字段依次是:</p>
+<p>play &#x2F; outlook &#x2F; temperature &#x2F; humidity &#x2F; windy</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">maxent = MaxEnt()</span><br><span class="line">maxent.load_data(<span class="string">&#x27;max_entropy_data.txt&#x27;</span>)</span><br><span class="line">maxent.train()</span><br><span class="line"><span class="built_in">print</span>(maxent.predict(<span class="string">&quot;sunny\thot\thigh\tFALSE&quot;</span>))</span><br><span class="line"><span class="built_in">print</span>(maxent.predict(<span class="string">&quot;overcast\thot\thigh\tFALSE&quot;</span>))</span><br><span class="line"><span class="built_in">print</span>(maxent.predict(<span class="string">&quot;sunny\tcool\thigh\tTRUE&quot;</span>))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[(&#x27;yes&#x27;, 0.0041626518719793), (&#x27;no&#x27;, 0.9958373481280207)]</span><br><span class="line">[(&#x27;yes&#x27;, 0.9943682102360447), (&#x27;no&#x27;, 0.00563178976395537)]</span><br><span class="line">[(&#x27;yes&#x27;, 1.4464465173635744e-07), (&#x27;no&#x27;, 0.9999998553553482)]</span><br></pre></td></tr></table></figure>
+
+<h2 id="IIS算法"><a href="#IIS算法" class="headerlink" title="IIS算法"></a>IIS算法</h2><p>IIS，<strong>Improved Iterative Scaling</strong>。GIS的收敛取决于$C$的取值，因此有了改进的IIS。</p>
+<p>IIS的想法是：假设最大熵模型当前的参数向量是$w&#x3D;(w_1, …, w_n)^T$，我们希望找到一个新的参数向量$w+\delta&#x3D;(w_1+\delta_1, …, w_n+\delta_n)^T$，使得对数似然函数值能增加。</p>
+<p>$$L(w+\delta)-L(w)&#x3D;\sum_{x,y}\tilde P(x,y)\sum^n_{i&#x3D;1}\delta_if_i(x,y)-\sum_x\tilde P(x)log\frac{Z_{w+\delta}(x)}{Z_w(x)}$$</p>
+<p>$$ \geq\sum_{x,y}\tilde P(x,y)\sum^n_{i&#x3D;1}\delta_if_i(x,y)+1-\sum_x\tilde P(x)\frac{Z_{w+\delta}(x)}{Z_w(x)}\;\;根据-log\alpha \geq 1-\alpha$$</p>
+<p>$$&#x3D;\sum_{x,y}\tilde P(x,y)\sum^n_{i&#x3D;1}\delta_if_i(x,y)+1-\sum_x\tilde P(x)\sum_yP_w(y|x)exp\sum^n_{i&#x3D;1}\delta_if_i(x,y)\;\;记为A(\delta|w)$$</p>
+<p>即，$A(\delta|w)$是对数似然函数改变量的下界。IIS试图每一次只优化一个变量$\delta_i$使$A(\delta|w)$最大。</p>
+<p>引入新的量：$f^\#(x,y) &#x3D; \sum_i f_i(x,y)$，表示所有特征在$(x,y)$出现的次数。</p>
+<p>$A(\delta|w)改写成\;\;\sum_{x,y}\tilde P(x,y)\sum^n_{i&#x3D;1}\delta_if_i(x,y)+1-\sum_x\tilde P(x)\sum_yP_w(y|x)exp(f^\#(x,y)\sum^n_{i&#x3D;1}\frac{\delta_if_i(x,y)}{f^\#(x,y)})$</p>
+<p>利用Jensen不等式，得到：</p>
+<p>$exp(\sum^n_{i&#x3D;1}\frac{f_i(x,y)}{f^\#(x,y)}\delta_if^\#(x,y)) \leq \sum^n_{i&#x3D;1}\frac{f_i(x,y)} {f^\#(x,y)}exp(\delta_if^\#(x,y))$</p>
+<p>记$B(\delta|w)&#x3D;\sum_{x,y}\tilde P(x,y)\sum^n_{i&#x3D;1}\delta_if_i(x,y)+1-\sum_x\tilde P(x)\sum_yP_w(y|x)\sum^n_{i&#x3D;1}\frac{f_i(x,y)} {f^\#(x,y)}exp(\delta_if^\#(x,y))$</p>
+<p>求偏导：$\frac{\partial B(\delta|w)}{\partial \delta_i} &#x3D; \sum_{x,y}\tilde P(x,y)f_i(x,y)-\sum_x\tilde P(x)\sum_yP_w(y|x)f_i(x,y)exp(\delta_if^\#(x,y))$</p>
+<p>令偏导为0，求得每次更新的$\delta$。</p>
+<p><strong>IIS算法流程</strong>：</p>
+<ul>
+<li>输入：特征函数$f_1, f_2, …, f_n$。经验分布$\tilde<br>P(X, Y)$，模型$P_w(y|x)$。</li>
+<li>输出：最优参数值$w_i^*$，最优模型$P_w$。</li>
+<li>对所有$i \in {1,2,…,<br>n}$，取初值$w_i&#x3D;0$。</li>
+<li>对每一$i \in {1,2,…, n}$:<ul>
+<li>令$\delta_i$是方程：$\sum_{x,y}\tilde P(x,y)f_i(x,y)-\sum_x\tilde P(x)\sum_yP_w(y|x)f_i(x,y)exp(\delta_if^\#(x,y))$的解。</li>
+<li>更新$w_i$的值为：$w_i + \delta_i$。</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+              <a href="/tags/NLP/" rel="tag"># NLP</a>
+              <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/nlp/gen_dep_parser/" rel="prev" title="一个简单的生成式依存句法解析器">
+                  <i class="fa fa-angle-left"></i> 一个简单的生成式依存句法解析器
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/machine_learning/CRF/" rel="next" title="条件随机场 CRF总结和实现">
+                  条件随机场 CRF总结和实现 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

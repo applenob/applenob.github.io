@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="在tensorflow的官方文档：https:&#x2F;&#x2F;www.tensorflow.org&#x2F;guide&#x2F;keras?hl&#x3D;zh-cn 原生文档：https:&#x2F;&#x2F;keras.io&#x2F;  Keras中最重要的两个组件即：Model和Layer，二者在构建模型时核心的接口类似；Model还另外包含训练和测试相关的接口。 Model简介关键成员 updates：返回模型中，从输入到输出的所有的layer中，l">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Keras梳理">
+<meta property="og:url" content="https://applenob.github.io/tensorflow/keras/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="在tensorflow的官方文档：https:&#x2F;&#x2F;www.tensorflow.org&#x2F;guide&#x2F;keras?hl&#x3D;zh-cn 原生文档：https:&#x2F;&#x2F;keras.io&#x2F;  Keras中最重要的两个组件即：Model和Layer，二者在构建模型时核心的接口类似；Model还另外包含训练和测试相关的接口。 Model简介关键成员 updates：返回模型中，从输入到输出的所有的layer中，l">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-03-30T23:10:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.118Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="Tensorflow">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://applenob.github.io/tensorflow/keras/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/tensorflow/keras/","path":"tensorflow/keras/","title":"Keras梳理"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Keras梳理 | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Model%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">Model简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E6%88%90%E5%91%98"><span class="nav-number">1.1.</span> <span class="nav-text">关键成员</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E4%BD%BF%E7%94%A8%E8%8C%83%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">常见使用范式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B4%E6%8E%A5%E4%BD%BF%E7%94%A8%E5%86%85%E7%BD%AEModel"><span class="nav-number">2.1.</span> <span class="nav-text">直接使用内置Model</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.2.</span> <span class="nav-text">自定义模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E5%BC%8F%E4%B8%80%EF%BC%9A%E5%87%BD%E6%95%B0%E5%BC%8FAPI"><span class="nav-number">2.2.1.</span> <span class="nav-text">方式一：函数式API</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E5%BC%8F%E4%BA%8C%EF%BC%9A%E6%A8%A1%E5%9E%8B%E5%AD%90%E7%B1%BB%E5%8C%96"><span class="nav-number">2.2.2.</span> <span class="nav-text">方式二：模型子类化</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89Layer"><span class="nav-number">3.</span> <span class="nav-text">自定义Layer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%8D%E6%9D%82%E6%A8%A1%E5%9E%8B"><span class="nav-number">4.</span> <span class="nav-text">复杂模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%A8%E8%87%AA%E5%AE%9A%E4%B9%89layer%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%85%B6%E4%BB%96layer"><span class="nav-number">4.1.</span> <span class="nav-text">在自定义layer中使用其他layer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%A8%E8%87%AA%E5%AE%9A%E4%B9%89model%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%85%B6%E4%BB%96model"><span class="nav-number">4.2.</span> <span class="nav-text">在自定义model中使用其他model</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/tensorflow/keras/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Keras梳理 | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Keras梳理
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2019-03-30 16:10:00" itemprop="dateCreated datePublished" datetime="2019-03-30T16:10:00-07:00">2019-03-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Tensorflow%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">Tensorflow学习笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><ul>
+<li>在tensorflow的官方文档：<a href="https://www.tensorflow.org/guide/keras?hl=zh-cn">https://www.tensorflow.org/guide/keras?hl=zh-cn</a></li>
+<li>原生文档：<a href="https://keras.io/">https://keras.io/</a></li>
+</ul>
+<p>Keras中最重要的两个组件即：<code>Model</code>和<code>Layer</code>，二者在构建模型时核心的接口类似；<code>Model</code>还另外包含训练和测试相关的接口。</p>
+<h2 id="Model简介"><a href="#Model简介" class="headerlink" title="Model简介"></a>Model简介</h2><h3 id="关键成员"><a href="#关键成员" class="headerlink" title="关键成员"></a>关键成员</h3><ul>
+<li><code>updates</code>：返回模型中，从输入到输出的所有的layer中，<code>layer.updates</code>的op。</li>
+<li><code>compile(...)</code>：将模型所需要的其他核心组件配置好，比如metric、loss、optimizer。</li>
+<li><code>evaluate(...)</code>：在测试模式下，计算损失值和指标值。</li>
+<li><code>fit(...)</code>：模型训练，可以在<code>callbacks</code>中设置常用的内置<code>Callback</code>对象或者自定义<code>Callback</code>的对象。</li>
+<li><code>predict(...)</code>：生成预测。</li>
+<li><code>load_weights(filepath, by_name=False)</code>：加载模型权重。</li>
+<li><code>save_weights(filepath, overwrite=True, save_format=None)</code>：保存模型权重。</li>
+<li><code>summary()</code>：输出模型描述文本。</li>
+</ul>
+<h2 id="常见使用范式"><a href="#常见使用范式" class="headerlink" title="常见使用范式"></a>常见使用范式</h2><h3 id="直接使用内置Model"><a href="#直接使用内置Model" class="headerlink" title="直接使用内置Model"></a>直接使用内置Model</h3><p>比如最简单的<code>tf.keras.Sequential()</code>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">model = tf.keras.Sequential()</span><br><span class="line"><span class="comment"># Adds a densely-connected layer with 64 units to the model:</span></span><br><span class="line">model.add(layers.Dense(<span class="number">64</span>, activation=<span class="string">&#x27;relu&#x27;</span>))</span><br><span class="line"><span class="comment"># Add another:</span></span><br><span class="line">model.add(layers.Dense(<span class="number">64</span>, activation=<span class="string">&#x27;relu&#x27;</span>))</span><br><span class="line"><span class="comment"># Add a softmax layer with 10 output units:</span></span><br><span class="line">model.add(layers.Dense(<span class="number">10</span>, activation=<span class="string">&#x27;softmax&#x27;</span>))</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>优点：简单安全。</li>
+<li>缺点：只能用于层堆叠的简单模型，不能表示其他拓扑结构。</li>
+</ul>
+<h3 id="自定义模型"><a href="#自定义模型" class="headerlink" title="自定义模型"></a>自定义模型</h3><h4 id="方式一：函数式API"><a href="#方式一：函数式API" class="headerlink" title="方式一：函数式API"></a>方式一：函数式API</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">inputs = tf.keras.Input(shape=(<span class="number">3</span>,))</span><br><span class="line">x = tf.keras.layers.Dense(<span class="number">4</span>, activation=tf.nn.relu)(inputs)</span><br><span class="line">outputs = tf.keras.layers.Dense(<span class="number">5</span>, activation=tf.nn.softmax)(x)</span><br><span class="line">model = tf.keras.Model(inputs=inputs, outputs=outputs)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>优点：可以构建复杂的函数拓扑（多输入、多输出、共享层）。相对比较安全。</li>
+<li>缺点：没有子类化灵活。</li>
+</ul>
+<h4 id="方式二：模型子类化"><a href="#方式二：模型子类化" class="headerlink" title="方式二：模型子类化"></a>方式二：模型子类化</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MyModel</span>(tf.keras.Model):</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">super</span>(MyModel, <span class="variable language_">self</span>).__init__()</span><br><span class="line">        <span class="variable language_">self</span>.dense1 = tf.keras.layers.Dense(<span class="number">4</span>, activation=tf.nn.relu)</span><br><span class="line">        <span class="variable language_">self</span>.dense2 = tf.keras.layers.Dense(<span class="number">5</span>, activation=tf.nn.softmax)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">call</span>(<span class="params">self, inputs</span>):</span><br><span class="line">        x = <span class="variable language_">self</span>.dense1(inputs)</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.dense2(x)</span><br><span class="line"></span><br><span class="line">model = MyModel()</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>优点：最灵活，在启用<code>Eager Execution</code>时，可以命令式地编写前向传播。</li>
+<li>缺点：复杂性更高且用户出错率更高，<code>model.inputs</code>、<code>model.outputs</code>、<code>model.to_yaml()</code>、<code>model.to_json()</code>、<code>model.get_config()</code>、<code>model.save()</code>不可用。</li>
+</ul>
+<p>继承<code>Model</code>必须重写的方法：</p>
+<ul>
+<li><code>__init__</code>：创建模型用到的层，并设置为类实例的属性。</li>
+<li><code>call</code>：定义前向传播，即连接上面定义的层（定义层的输入输出）。</li>
+</ul>
+<h2 id="自定义Layer"><a href="#自定义Layer" class="headerlink" title="自定义Layer"></a>自定义Layer</h2><p>参考keras官方文档：<a href="https://keras.io/layers/writing-your-own-keras-layers/">Writing your own Keras layers</a></p>
+<p>自定义layer最佳方法是继承<code>tf.keras.Layer</code>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MyDenseLayer</span>(tf.keras.layers.Layer):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, num_outputs</span>):</span><br><span class="line">        <span class="built_in">super</span>(MyDenseLayer, <span class="variable language_">self</span>).__init__()</span><br><span class="line">        <span class="variable language_">self</span>.num_outputs = num_outputs</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">build</span>(<span class="params">self, input_shape</span>):</span><br><span class="line">        <span class="variable language_">self</span>.kernel = <span class="variable language_">self</span>.add_variable(<span class="string">&quot;kernel&quot;</span>, </span><br><span class="line">                                        shape=[<span class="built_in">int</span>(input_shape[-<span class="number">1</span>]), </span><br><span class="line">                                        <span class="variable language_">self</span>.num_outputs])</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">call</span>(<span class="params">self, <span class="built_in">input</span></span>):</span><br><span class="line">        <span class="keyword">return</span> tf.matmul(<span class="built_in">input</span>, <span class="variable language_">self</span>.kernel)</span><br><span class="line"></span><br><span class="line">layer = MyDenseLayer(<span class="number">10</span>)</span><br><span class="line"><span class="built_in">print</span>(layer(tf.zeros([<span class="number">10</span>, <span class="number">5</span>])))</span><br><span class="line"><span class="built_in">print</span>(layer.trainable_variables)</span><br></pre></td></tr></table></figure>
+
+<p>必须重写的方法：</p>
+<ul>
+<li><code>__init__</code>：所有和input无关的初始化。</li>
+<li><code>call</code>：定义前向传播。</li>
+</ul>
+<p>keras文档中还提到必须重写<code>compute_output_shape</code>：根据input的shape，返回output的shape。</p>
+<p>非必须但很重要：</p>
+<ul>
+<li><code>build</code>：<ul>
+<li>传入input的shape，然后做所有剩下的初始化。</li>
+<li>也可以将所有初始化过程都写在<code>__init__</code>中，这就意味着参数的shape必须固定下来，input的shape也因此需要固定。</li>
+<li>必须在最后调用<code>self.built=True</code>。</li>
+<li>在模型第一次调用<code>call()</code>之前会调用<code>build()</code>。</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyDenseLayer</span>(tf.keras.layers.Layer):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, num_outputs</span>):</span><br><span class="line">        <span class="built_in">super</span>(MyDenseLayer, <span class="variable language_">self</span>).__init__()</span><br><span class="line">        <span class="variable language_">self</span>.num_outputs = num_outputs</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">build</span>(<span class="params">self, input_shape</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;self.name&#125;</span> build() is called.&quot;</span>)</span><br><span class="line">        <span class="variable language_">self</span>.kernel = <span class="variable language_">self</span>.add_variable(<span class="string">&quot;kernel&quot;</span>, </span><br><span class="line">                                        shape=[<span class="built_in">int</span>(input_shape[-<span class="number">1</span>]), </span><br><span class="line">                                        <span class="variable language_">self</span>.num_outputs])</span><br><span class="line">        <span class="variable language_">self</span>.built = <span class="literal">True</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">call</span>(<span class="params">self, <span class="built_in">input</span></span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;self.name&#125;</span> call() is called.&quot;</span>)</span><br><span class="line">        <span class="keyword">return</span> tf.matmul(<span class="built_in">input</span>, <span class="variable language_">self</span>.kernel)</span><br><span class="line"></span><br><span class="line">layer = MyDenseLayer(<span class="number">10</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(layer(tf.zeros([<span class="number">10</span>, <span class="number">5</span>])))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">my_dense_layer build() is called.</span><br><span class="line">my_dense_layer call() is called.</span><br><span class="line">Tensor(&quot;my_dense_layer/MatMul:0&quot;, shape=(10, 10), dtype=float32)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(layer(tf.zeros([<span class="number">10</span>, <span class="number">5</span>])))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">my_dense_layer call() is called.</span><br><span class="line">Tensor(&quot;my_dense_layer_1/MatMul:0&quot;, shape=(10, 10), dtype=float32)</span><br></pre></td></tr></table></figure>
+
+<p>可见，在模型第一次调用<code>call()</code>之前会调用<code>build()</code>。</p>
+<p>官方文档：</p>
+<ul>
+<li><code>build()</code>: Called once from <code>__call__</code>, when we know the shapes of inputs and <code>dtype</code>. Should have the calls to <code>add_weight()</code>, and then call the super’s <code>build()</code> (which sets <code>self.built = True</code>, which is nice in case the user wants to call <code>build()</code> manually before the first <code>__call__</code>).</li>
+</ul>
+<p>源代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">_maybe_build</span>(<span class="params">self, inputs</span>):</span><br><span class="line">  <span class="comment"># Check input assumptions set before layer building, e.g. input rank.</span></span><br><span class="line">  <span class="keyword">if</span> <span class="variable language_">self</span>.built:</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">  input_spec.assert_input_compatibility(</span><br><span class="line">      <span class="variable language_">self</span>.input_spec, inputs, <span class="variable language_">self</span>.name)</span><br><span class="line">  input_list = nest.flatten(inputs)</span><br><span class="line">  <span class="keyword">if</span> input_list <span class="keyword">and</span> <span class="variable language_">self</span>._dtype <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">      <span class="variable language_">self</span>._dtype = input_list[<span class="number">0</span>].dtype.base_dtype.name</span><br><span class="line">    <span class="keyword">except</span> AttributeError:</span><br><span class="line">      <span class="keyword">pass</span></span><br><span class="line">  input_shapes = <span class="literal">None</span></span><br><span class="line">  <span class="keyword">if</span> <span class="built_in">all</span>(<span class="built_in">hasattr</span>(x, <span class="string">&#x27;shape&#x27;</span>) <span class="keyword">for</span> x <span class="keyword">in</span> input_list):</span><br><span class="line">    input_shapes = nest.map_structure(<span class="keyword">lambda</span> x: x.shape, inputs)</span><br><span class="line">  <span class="comment"># Only call `build` if the user has manually overridden the build method.</span></span><br><span class="line">  <span class="keyword">if</span> <span class="keyword">not</span> <span class="built_in">hasattr</span>(<span class="variable language_">self</span>.build, <span class="string">&#x27;_is_default&#x27;</span>):</span><br><span class="line">    <span class="variable language_">self</span>.build(input_shapes)</span><br><span class="line">  <span class="comment"># We must set self.built since user defined build functions are not</span></span><br><span class="line">  <span class="comment"># constrained to set self.built.</span></span><br><span class="line">  <span class="variable language_">self</span>.built = <span class="literal">True</span></span><br></pre></td></tr></table></figure>
+
+<p><code>_maybe_build</code>会被<code>__call__()</code>调用，<code>layer</code>用<code>self.built</code>标识是否已经调用过<code>build()</code>。</p>
+<h2 id="复杂模型"><a href="#复杂模型" class="headerlink" title="复杂模型"></a>复杂模型</h2><p>参考tensorflow官方文档：<a href="https://www.tensorflow.org/alpha/guide/keras/custom_layers_and_models">Writing layers and models with TensorFlow Keras</a></p>
+<h3 id="在自定义layer中使用其他layer"><a href="#在自定义layer中使用其他layer" class="headerlink" title="在自定义layer中使用其他layer"></a>在自定义layer中使用其他layer</h3><p>一些很常用的layer比如<code>Dense</code>，很可能被一个layer作为一部分，那<code>Dense</code>的代码如果不想重写，就需要在自定义的Layer中使用其他Layer。</p>
+<p>官方推荐在<code>__init__</code>方法里实例化所有的子layer。子layer里面的<code>build</code>会在外层layer的<code>build</code>被调用时调用。</p>
+<p>参考：<br><a href="https://www.tensorflow.org/alpha/guide/keras/custom_layers_and_models#layers_are_recursively_composable">https://www.tensorflow.org/alpha/guide/keras/custom_layers_and_models#layers_are_recursively_composable</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MyDenseBlock</span>(tf.keras.layers.Layer):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        <span class="variable language_">self</span>.dense_1 = MyDenseLayer(<span class="number">32</span>)</span><br><span class="line">        <span class="variable language_">self</span>.dense_2 = MyDenseLayer(<span class="number">1</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">build</span>(<span class="params">self, input_shape</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;self.name&#125;</span> build() is called.&quot;</span>)</span><br><span class="line">        <span class="variable language_">self</span>.built = <span class="literal">True</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">call</span>(<span class="params">self, inputs</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;self.name&#125;</span> call() is called.&quot;</span>)</span><br><span class="line">        x = <span class="variable language_">self</span>.dense_1(inputs)</span><br><span class="line">        x = tf.nn.relu(x)</span><br><span class="line">        x = <span class="variable language_">self</span>.dense_2(x)</span><br><span class="line">        <span class="keyword">return</span> x</span><br><span class="line"></span><br><span class="line">layer = MyDenseBlock()</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(layer(tf.zeros([<span class="number">10</span>, <span class="number">5</span>])))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">my_dense_block build() is called.</span><br><span class="line">my_dense_block call() is called.</span><br><span class="line">my_dense_layer_1 build() is called.</span><br><span class="line">my_dense_layer_1 call() is called.</span><br><span class="line">my_dense_layer_2 build() is called.</span><br><span class="line">my_dense_layer_2 call() is called.</span><br><span class="line">Tensor(&quot;my_dense_block/my_dense_layer_2/MatMul:0&quot;, shape=(10, 1), dtype=float32)</span><br></pre></td></tr></table></figure>
+
+<h3 id="在自定义model中使用其他model"><a href="#在自定义model中使用其他model" class="headerlink" title="在自定义model中使用其他model"></a>在自定义model中使用其他model</h3><p>这个方法也可以使用，但也有一些坑。<br>如果被使用的子model是使用函数式api定义的，一般可以正常使用，但如果是子类的方式，则必须重写<code>build</code>和<code>compute_output_shape</code>如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">build</span>(<span class="params">self, input_shape</span>):</span><br><span class="line">    <span class="variable language_">self</span>.built = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">compute_output_shape</span>(<span class="params">self, input_shape</span>):</span><br><span class="line">  <span class="keyword">return</span> tf.TensorShape([input_shape[<span class="number">0</span>], <span class="number">200</span>])</span><br></pre></td></tr></table></figure>
+<p>原因是子model会被当做layer使用，这两个函数经常会被一些layer的wrapper调用，所以需要加上（血的教训）。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Tensorflow/" rel="tag"># Tensorflow</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/dialog_sys/rasa/" rel="prev" title="Rasa学习总结">
+                  <i class="fa fa-angle-left"></i> Rasa学习总结
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/python/python_geek_class/" rel="next" title="《Python核心技术与实战》学习笔记">
+                  《Python核心技术与实战》学习笔记 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="12. Application计算机视觉计算机视觉的应用：计算机视觉的应用广泛：从复现人类视觉能力（比如识别人脸）到创造全新的视觉能力。 预处理：1.标准化：使得它们的像素都在相同并且合理的范围内，比如$[0,1]$或者$[-1,1]$。2.标准尺寸：裁剪或缩放图像以适应固定的尺寸。3.数据集增强：只对训练集做预处理，是减少大多数计算机视觉模型泛化误差的一种极好方法。 对比度归一化：对比度指的是图">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第十二章：Application">
+<meta property="og:url" content="https://applenob.github.io/deep_learning_book/deep_learning_12/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="12. Application计算机视觉计算机视觉的应用：计算机视觉的应用广泛：从复现人类视觉能力（比如识别人脸）到创造全新的视觉能力。 预处理：1.标准化：使得它们的像素都在相同并且合理的范围内，比如$[0,1]$或者$[-1,1]$。2.标准尺寸：裁剪或缩放图像以适应固定的尺寸。3.数据集增强：只对训练集做预处理，是减少大多数计算机视觉模型泛化误差的一种极好方法。 对比度归一化：对比度指的是图">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2017-05-09T19:00:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.028Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="笔记">
+<meta property="article:tag" content="Deep Learning">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://applenob.github.io/deep_learning_book/deep_learning_12/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/deep_learning_book/deep_learning_12/","path":"deep_learning_book/deep_learning_12/","title":"第十二章：Application"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>第十二章：Application | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#12-Application"><span class="nav-number">1.</span> <span class="nav-text">12. Application</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89"><span class="nav-number">1.1.</span> <span class="nav-text">计算机视觉</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%AD%E9%9F%B3%E8%AF%86%E5%88%AB"><span class="nav-number">1.2.</span> <span class="nav-text">语音识别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86"><span class="nav-number">1.3.</span> <span class="nav-text">自然语言处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E5%BA%94%E7%94%A8"><span class="nav-number">1.4.</span> <span class="nav-text">其他应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F"><span class="nav-number">1.4.1.</span> <span class="nav-text">推荐系统</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning_book/deep_learning_12/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="第十二章：Application | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第十二章：Application
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-05-09 12:00:00" itemprop="dateCreated datePublished" datetime="2017-05-09T12:00:00-07:00">2017-05-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E3%80%8ADeep-Learning%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">《Deep Learning》读书笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="12-Application"><a href="#12-Application" class="headerlink" title="12. Application"></a>12. Application</h1><h2 id="计算机视觉"><a href="#计算机视觉" class="headerlink" title="计算机视觉"></a>计算机视觉</h2><p><strong>计算机视觉的应用</strong>：计算机视觉的应用广泛：从复现人类视觉能力（比如识别人脸）到创造全新的视觉能力。</p>
+<p><strong>预处理</strong>：1.标准化：使得它们的像素都在相同并且合理的范围内，比如$[0,1]$或者$[-1,1]$。2.标准尺寸：裁剪或缩放图像以适应固定的尺寸。3.数据集增强：只对训练集做预处理，是减少大多数计算机视觉模型泛化误差的一种极好方法。</p>
+<p><strong>对比度归一化</strong>：对比度指的是图像中亮像素和暗像素之间差异的大小，在深度学习中，对比度通常指的是图像或图像区域中像素的标准差。</p>
+<p><strong>全局对比度归一化</strong>旨在通过从每个图像中减去其平均值，然后重新缩放其使得其像素上的标准差等于某个常数$s$来防止图像具有变化的对比度。</p>
+<p>局部对比度归一化确保对比度在每个小窗口上被归一化，而不是作为整体在图像上被归一化。</p>
+<p><strong>数据集增强</strong>：我们很容易通过增加训练集的额外副本来增加训练集的大小，进而改进分类器的泛化能力。</p>
+<p>这些额外副本可以通过对原始图像进行一些变化来生成，但是并不改变其类别。</p>
+<p>对象识别这个分类任务特别适合于这种形式的数据集增强，因为类别信息对于许多变换是不变的，而我们可以简单地对输入应用诸多几何变换。</p>
+<p>分类器可以受益于<strong>随机转换或者旋转</strong>。 还有一些高级的用以数据集增强的变换，包括图像中<strong>颜色的随机扰动</strong>，以及对输入的<strong>非线性几何变形</strong>。</p>
+<h2 id="语音识别"><a href="#语音识别" class="headerlink" title="语音识别"></a>语音识别</h2><p><strong>语音识别</strong>：语音识别任务旨在将一段包括了自然语言发音的声学信号投影到对应说话人的词序列上。</p>
+<p><strong>语音识别的应用</strong>：1.其中的一个创新点是卷积网络的应用。 卷积网络在时域与频域上复用了权重，改进了之前的仅在时域上使用重复权值的时延神经网络。</p>
+<p>这种新的二维的卷积模型并不是将输入的频谱当作一个长的向量，而是当成是一个图像，其中一个轴对应着时间，另一个轴对应的是谱分量的频率。2.完全抛弃HMM转向研究端到端的深度学习语音识别系统是一大活跃领域，这个领域第一个主要的突破是一个深度的LSTM神经网络</p>
+<h2 id="自然语言处理"><a href="#自然语言处理" class="headerlink" title="自然语言处理"></a>自然语言处理</h2><p><strong>自然语言处理</strong>：自然语言处理让计算机能够使用人类语言，例如英语或法语。</p>
+<p><strong>$n$-gram</strong>：语言模型定义了自然语言中标记序列的概率分布。 根据模型的设计，标记可以是词、字符、甚至是字节。<br>基于$n$-gram的模型定义一个条件概率——给定前$n-1$个标记后的第$n$个标记的条件概率。</p>
+<p>该模型使用这些条件分布的乘积定义较长序列的概率分布：$P(x_1,…,x_τ)&#x3D;P(x_1,…,x_{n−1})∏_{t&#x3D;n}^τP(x_t∣x_{t−n+1},…,x_{t−1})$。</p>
+<p>训练$n$-gram模型是简单的，因为最大似然估计可以通过简单地统计每个可能的$n$-gram在训练集中出现的次数来获得。</p>
+<p>几十年来，基于$n$-gram的模型都是统计语言模型的核心模块。 通常我们同时训练$n$-gram模型和$n-1$ gram模型。</p>
+<p>这使得下式可以简单地通过查找两个存储的概率来计算：$P(x_t∣x_{t−n+1},…,x_{t−1})&#x3D;P_n(x_{t−n+1},…,x_t)P_{n−1}(x_{t−n+1},…,x_{t−1})$。<br>$n$-gram特别容易引起维数灾难。</p>
+<p><strong>神经语言模型</strong>：神经语言模型是一类用来克服维数灾难的语言模型，它使用词的分布式表示对自然语言序列建模。</p>
+<p>不同于基于类的$n$-gram模型，神经语言模型在能够识别两个相似的词，并且不丧失将每个词编码为彼此不同的能力。</p>
+<p><strong>神经机器翻译</strong>：机器翻译以一种自然语言读取句子并产生等同含义的另一种语言的句子。 机器翻译系统通常涉及许多组件：在高层次，一个组件通常会提出许多候选翻译。</p>
+<p>由于语言之间的差异，这些翻译中的许多翻译是不符合语法的。 翻译系统的第二个组成部分（语言模型）评估提议的翻译，并可以评估哪句翻译地更好。</p>
+<h2 id="其他应用"><a href="#其他应用" class="headerlink" title="其他应用"></a>其他应用</h2><h3 id="推荐系统"><a href="#推荐系统" class="headerlink" title="推荐系统"></a>推荐系统</h3><p>可以分为两种主要的应用：在线广告和项目建议（通常这些建议的目的仍然是为了销售产品）。 两者都依赖于预测用户和项目之间的关联，一旦向该用户展示了广告或推荐了该产品，推荐系统要么预测一些行为的概率（用户购买产品或该行为的一些代替）或预期增益（其可取决于产品的价值）。早期推荐系统的工作依赖于这些预测输入的最小信息：用户ID和项目ID。</p>
+<p>在这种情况下，唯一的泛化方式依赖于不同用户或不同项目的目标变量值之间的模式相似性。 假设用户1和用户2都喜欢项目A，B和C.</p>
+<p>由此，我们可以推断出用户1和用户2具有类似的口味。 如果用户1喜欢项目D，那么这可以强烈提示用户2也喜欢D。 基于此原理的算法称为<strong>协同过滤</strong>。</p>
+<p>然而，协同过滤系统有一个基本限制：当引入新项目或新用户时，缺乏评级历史意味着无法评估其与其他项目或用户的相似性，或者说无法评估新的用户和现有项目的联系。</p>
+<p>这被称为冷启动推荐问题。 解决冷启动推荐问题的一般方式是引入单个用户和项目的额外信息。 例如，该额外信息可以是用户简要信息或每个项目的特征。</p>
+<p>使用这种信息的系统被称为基于内容的推荐系统(content-based recommender system)。<br>从丰富的用户特征或项目特征集到嵌入的映射可以通过深度学习架构学习。 专用的深度学习架构，如卷积网络已经应用于从丰富内容中提取特征，如提取用于音乐推荐的音乐音轨。</p>
+<p>在该工作中，卷积网络将声学特征作为输入并计算相关歌曲的嵌入。 该歌曲嵌入和用户嵌入之间的点积则可以预测用户是否将收听该歌曲。</p>
+<p><strong>知识表示、推理和回答</strong>：数学中，二元关系是一组有序的对象对。 集合中的对具有这种关系，而那些不在集合中的对则没有。 例如，我们可以在实体集${ 1, 2, 3 }$上定义关系”小于”来定义有序对的集合$S &#x3D; { (1, 2), (1, 3), (2, 3) }$。 一旦这个关系被定义，我们可以像动词一样使用它。</p>
+<p>因为$(1, 2) \in S$，我们说1小于2。 一种常见的引入深度学习方法是将神经语言模型扩展到模型实体和关系。</p>
+<p>神经语言模型学习提供每个词分布式表示的向量。 他们还通过学习这些向量的函数来学习词之间的相互作用，例如哪些词可能出现在词序列之后。</p>
+<p>我们可以学习每个关系的嵌入向量将这种方法扩展到实体和关系。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"># 笔记</a>
+              <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/deep_learning_book/deep_learning_11/" rel="prev" title="第十一章：Practical Methodology">
+                  <i class="fa fa-angle-left"></i> 第十一章：Practical Methodology
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/deep_learning_book/deep_learning_13/" rel="next" title="第十三章：Linear Factor Models">
+                  第十三章：Linear Factor Models <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

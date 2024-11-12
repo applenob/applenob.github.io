@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="简述Rasa是一个开源的基于机器学习的chatbot开发框架。其主要分成两大模块：Rasa NLU和Rasa Core。使用Rasa NLU + Rasa Core，开发者可以迅速构建自己的chatbot。本文先是分析了Rasa的结构组成，然后介绍开发者如何方便地利用Rasa构建自己的chatbot。 本文面向需要使用Rasa快速构建自己的chatbot的同学，还有想进一步了解Rasa框架结构的同">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rasa学习总结">
+<meta property="og:url" content="https://applenob.github.io/dialog_sys/rasa/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="简述Rasa是一个开源的基于机器学习的chatbot开发框架。其主要分成两大模块：Rasa NLU和Rasa Core。使用Rasa NLU + Rasa Core，开发者可以迅速构建自己的chatbot。本文先是分析了Rasa的结构组成，然后介绍开发者如何方便地利用Rasa构建自己的chatbot。 本文面向需要使用Rasa快速构建自己的chatbot的同学，还有想进一步了解Rasa框架结构的同">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://applenob.github.io/dialog_sys/rasa/rasa_nlu_pipeline.png">
+<meta property="og:image" content="https://applenob.github.io/dialog_sys/rasa/rasa_arch.png">
+<meta property="og:image" content="https://applenob.github.io/dialog_sys/rasa/rasa_story.png">
+<meta property="article:published_time" content="2019-03-07T19:50:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.048Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="Dialogue System">
+<meta property="article:tag" content="NLP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://applenob.github.io/dialog_sys/rasa/rasa_nlu_pipeline.png">
+
+
+<link rel="canonical" href="https://applenob.github.io/dialog_sys/rasa/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/dialog_sys/rasa/","path":"dialog_sys/rasa/","title":"Rasa学习总结"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Rasa学习总结 | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">简述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E5%AE%89%E8%A3%85"><span class="nav-number">1.1.</span> <span class="nav-text">快速安装</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rasa-NLU"><span class="nav-number">2.</span> <span class="nav-text">Rasa NLU</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%84%E5%AE%9A%E4%B9%89%E7%9A%84pipeline"><span class="nav-number">2.1.</span> <span class="nav-text">预定义的pipeline</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rasa-Core"><span class="nav-number">3.</span> <span class="nav-text">Rasa Core</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Action"><span class="nav-number">3.1.</span> <span class="nav-text">Action</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Tracker"><span class="nav-number">3.2.</span> <span class="nav-text">Tracker</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Events"><span class="nav-number">3.3.</span> <span class="nav-text">Events</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dispatcher"><span class="nav-number">3.4.</span> <span class="nav-text">Dispatcher</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Policy"><span class="nav-number">3.5.</span> <span class="nav-text">Policy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Story"><span class="nav-number">3.6.</span> <span class="nav-text">Story</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Interactive-learning"><span class="nav-number">3.7.</span> <span class="nav-text">Interactive learning</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5"><span class="nav-number">4.</span> <span class="nav-text">动手实践</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8B%B1%E6%96%87%E9%A1%B9%E7%9B%AE"><span class="nav-number">4.1.</span> <span class="nav-text">英文项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%AD%E6%96%87%E9%A1%B9%E7%9B%AE"><span class="nav-number">4.2.</span> <span class="nav-text">中文项目</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/dialog_sys/rasa/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Rasa学习总结 | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Rasa学习总结
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2019-03-07 11:50:00" itemprop="dateCreated datePublished" datetime="2019-03-07T11:50:00-08:00">2019-03-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AF%B9%E8%AF%9D%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index"><span itemprop="name">对话系统</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="简述"><a href="#简述" class="headerlink" title="简述"></a>简述</h2><p><strong>Rasa</strong>是一个开源的基于机器学习的chatbot开发框架。其主要分成两大模块：Rasa NLU和Rasa Core。使用Rasa NLU + Rasa Core，开发者可以迅速构建自己的chatbot。本文先是分析了Rasa的结构组成，然后介绍开发者如何方便地利用Rasa构建自己的chatbot。</p>
+<p>本文面向需要使用Rasa快速构建自己的chatbot的同学，还有想进一步了解Rasa框架结构的同学，以及想学习Rasa构建一个自己的chatbot框架的同学。</p>
+<h3 id="快速安装"><a href="#快速安装" class="headerlink" title="快速安装"></a>快速安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 install rasa-x --extra-index-url https://pypi.rasa.com/simple</span><br></pre></td></tr></table></figure>
+
+<h2 id="Rasa-NLU"><a href="#Rasa-NLU" class="headerlink" title="Rasa NLU"></a>Rasa NLU</h2><p>Rasa NLU负责提供自然语言理解的工具，包括意图分类和实体抽取。</p>
+<p>举例来说，对于输入：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;I am looking for a Mexican restaurant in the center of town&quot;</span><br></pre></td></tr></table></figure>
+
+<p>Rasa NLU的输出是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;intent&quot;: &quot;search_restaurant&quot;,</span><br><span class="line">  &quot;entities&quot;: &#123;</span><br><span class="line">    &quot;cuisine&quot; : &quot;Mexican&quot;,</span><br><span class="line">    &quot;location&quot; : &quot;center&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中，<code>Intent</code>代表用户意图。<code>Entities</code>即实体，代表用户输入语句的细节信息。</p>
+<h3 id="预定义的pipeline"><a href="#预定义的pipeline" class="headerlink" title="预定义的pipeline"></a>预定义的pipeline</h3><ul>
+<li><code>spacy_sklearn</code>：<ul>
+<li>1.使用<code>spaCy NLP</code>进行tokenize和POS（Part of Speech,词性标注）。</li>
+<li>2.使用<code>spaCy</code>的featuriser来获取GloVe向量，然后pool成一个句子向量。</li>
+<li>3.使用<code>sklearn</code>分类器做意图分类。</li>
+<li>4.使用<code>ner_crf</code>模块来做命名实体识别。</li>
+</ul>
+</li>
+</ul>
+<p><img src="/dialog_sys/rasa/rasa_nlu_pipeline.png" alt="rasa_nlu"></p>
+<h2 id="Rasa-Core"><a href="#Rasa-Core" class="headerlink" title="Rasa Core"></a>Rasa Core</h2><p>Rasa整体框架图：</p>
+<p><img src="/dialog_sys/rasa/rasa_arch.png" alt="rasa_arch"></p>
+<p>首先介绍一些核心概念。</p>
+<h3 id="Action"><a href="#Action" class="headerlink" title="Action"></a>Action</h3><p><code>action</code>是对系统响应的抽象。Rasa将对话管理视作一个分类问题，每轮都会在预先设定好的<code>action</code>集合中选出一个类别。Rasa Core定义了3中<code>action</code>：</p>
+<ul>
+<li><code>default action</code>：系统预先定义好的动作，如<code>action_listen</code>、<code>action_restart</code>、<code>action_default_fallback</code></li>
+<li><code>utter action</code>：一般以<code>utter_</code>开头，这种<code>action</code>就只会单纯地给用户返回文本消息。这类的<code>action</code>无需具体实现代码，只需在配置文件中指定其对应的相应文本模板即可。</li>
+<li><code>custom action</code>：用户可以任意编写此类<code>action</code>的代码。用户一般需要自己架设一个额外服务，然后在实现<code>action</code>时，让代码请求这个服务。</li>
+</ul>
+<h3 id="Tracker"><a href="#Tracker" class="headerlink" title="Tracker"></a>Tracker</h3><p><code>Tracker</code>是用于追踪对话状态的模块。当用户输入被解析后，会传入<code>Tracker</code>进行更新，然后系统会读取<code>Tracker</code>里的信息，作为策略判断的输入。</p>
+<p>目前支持的<code>tracker</code>：</p>
+<ul>
+<li>InMemoryTrackerStore (default)</li>
+<li>RedisTrackerStore</li>
+<li>MongoTrackerStore</li>
+<li>Custom Tracker Store</li>
+</ul>
+<h3 id="Events"><a href="#Events" class="headerlink" title="Events"></a>Events</h3><p><code>Events</code>用于描述一个对话过程中任何可能发生的事情。</p>
+<h3 id="Dispatcher"><a href="#Dispatcher" class="headerlink" title="Dispatcher"></a>Dispatcher</h3><p><code>Dispatcher</code>的作用是将消息以各种形式发送给用户。</p>
+<p><strong>Action + Dispatcher + Tracker + Events：</strong></p>
+<p>当<code>action</code>被执行的时候，通常会将一个<code>tracker</code>对象传进去。这样它就可以利用各种相关的信息，比如<code>slots</code>、之前的<code>utterance</code>还有之前的<code>action</code>。</p>
+<p><code>action</code>被执行的时候，通常会调用<code>dispatcher</code>将消息返还给用户。执行过程本身并不直接修改<code>tracker</code>，但是执行的完成后可能会返回<code>events</code>，<code>tracker</code>可以消费这些<code>event</code>，并更新状态。</p>
+<h3 id="Policy"><a href="#Policy" class="headerlink" title="Policy"></a>Policy</h3><p><code>policy</code>的输入是<code>tracker</code>记录的当前对话状态，输出是一个系统响应<code>action</code>。</p>
+<p><code>policy</code>包含一个<code>featurizer</code>。一个<code>featurizer</code>可以创造一个代表当前对话状态的向量。</p>
+<p>特征包括以下三部分：</p>
+<ul>
+<li>1.上轮动作</li>
+<li>2.上轮的intent和entities</li>
+<li>3.本轮的slots</li>
+</ul>
+<p>一个很重要的超参<code>max_history</code>：指定了要考虑多少个之前的状态。通常取值为3-6。</p>
+<h3 id="Story"><a href="#Story" class="headerlink" title="Story"></a>Story</h3><p>所谓的<code>story</code>有点像剧本，描述可能出现的对话场景。实际上<code>story</code>就是一个个用户输入<code>intent(entities)</code>和系统设定的输出<code>action</code>用于policy的训练。</p>
+<p>格式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">## story名称</span><br><span class="line">* 用户的intent或者entity</span><br><span class="line">- 系统的action</span><br></pre></td></tr></table></figure>
+
+<p><img src="/dialog_sys/rasa/rasa_story.png" alt="rasa_story"></p>
+<h3 id="Interactive-learning"><a href="#Interactive-learning" class="headerlink" title="Interactive learning"></a>Interactive learning</h3><p>交互式，让用户在每一次机器做出决定之后，给与反馈。<br>对于很难手动设计的边界情况非常有效。</p>
+<p>原理：每次系统给出动作的时候，收集用户的y&#x2F;n的信息，生成新的训练数据，对模型fine-tune。</p>
+<h2 id="动手实践"><a href="#动手实践" class="headerlink" title="动手实践"></a>动手实践</h2><h3 id="英文项目"><a href="#英文项目" class="headerlink" title="英文项目"></a>英文项目</h3><p>官方起步项目：<a href="https://github.com/RasaHQ/starter-pack-rasa-stack">https://github.com/RasaHQ/starter-pack-rasa-stack</a></p>
+<p>首先，按照网站上的README先安装好环境。<br>需要注意的文件：</p>
+<ul>
+<li><code>data/nlu_data.md</code>：训练nlu的数据。</li>
+<li><code>data/stories.md</code> ：训练policy的数据。</li>
+<li><code>nlu_config.yml</code> ：nlu模块相关的参数。</li>
+<li><code>domain.yml</code> ：包括intent、entities、slots、actions、templates的定义。</li>
+<li><code>actions.py</code>：包括用户自定义的action代码。</li>
+<li><code>endpoints.yml</code> ：包括和自定义网络调用相关的参数。</li>
+<li><code>policies.yml</code> ：包括训练policy模型的参数。</li>
+</ul>
+<h3 id="中文项目"><a href="#中文项目" class="headerlink" title="中文项目"></a>中文项目</h3><p>中文NLU：<br>Rasa NLU本身是只支持英文和德文的。中文因为其特殊性需要加入特定的tokenizer作为整个流水线的一部分。这个项目加入了jieba作为我们中文的tokenizer，这个适用于中文的rasa NLU的版本代码在github上：<a href="https://github.com/crownpku/rasa_nlu_chi">https://github.com/crownpku/rasa_nlu_chi</a></p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li>官方文档：<a href="https://rasa.com/docs/">https://rasa.com/docs/</a></li>
+<li>官方github：<a href="https://github.com/RasaHQ/rasa_core">https://github.com/RasaHQ/rasa_core</a></li>
+<li>官方paper：<ul>
+<li><a href="http://alborz-geramifard.com/workshops/nips17-Conversational-AI/Papers/17nipsw-cai-rasa.pdf">http://alborz-geramifard.com/workshops/nips17-Conversational-AI/Papers/17nipsw-cai-rasa.pdf</a></li>
+<li><a href="https://arxiv.org/pdf/1811.11707.pdf">https://arxiv.org/pdf/1811.11707.pdf</a></li>
+</ul>
+</li>
+<li>官方Demo：<a href="https://github.com/RasaHQ/starter-pack-rasa-stack">https://github.com/RasaHQ/starter-pack-rasa-stack</a></li>
+<li>不错的博客：<a href="https://velotio.com/blog/2018/2/15/stateless-bot-using-rasa-stack">https://velotio.com/blog/2018/2/15/stateless-bot-using-rasa-stack</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Dialogue-System/" rel="tag"># Dialogue System</a>
+              <a href="/tags/NLP/" rel="tag"># NLP</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/cpp/cpp_primer_practice/" rel="prev" title="《C++ Primer中文版第5版》学习笔记">
+                  <i class="fa fa-angle-left"></i> 《C++ Primer中文版第5版》学习笔记
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/tensorflow/keras/" rel="next" title="Keras梳理">
+                  Keras梳理 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

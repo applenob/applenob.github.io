@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="7. Regularization for Deep Learning正则化（Regularization）：对学习算法的修改——旨在减少泛化误差而不是训练误差。 参数范数惩罚（Parameter Norm Penalties）：通过对目标函数J添加一个**参数范数惩罚Ω(θ)**，来限制模型的学习能力。 我们将正则化后的目标函数记为$\tilde{J}$：$\tilde{J}(θ;X,y)&amp;#x">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第七章：Regularization for Deep Learning">
+<meta property="og:url" content="https://applenob.github.io/deep_learning_book/deep_learning_7/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="7. Regularization for Deep Learning正则化（Regularization）：对学习算法的修改——旨在减少泛化误差而不是训练误差。 参数范数惩罚（Parameter Norm Penalties）：通过对目标函数J添加一个**参数范数惩罚Ω(θ)**，来限制模型的学习能力。 我们将正则化后的目标函数记为$\tilde{J}$：$\tilde{J}(θ;X,y)&amp;#x">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2017-05-09T14:00:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.028Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="笔记">
+<meta property="article:tag" content="Deep Learning">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://applenob.github.io/deep_learning_book/deep_learning_7/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/deep_learning_book/deep_learning_7/","path":"deep_learning_book/deep_learning_7/","title":"第七章：Regularization for Deep Learning"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>第七章：Regularization for Deep Learning | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#7-Regularization-for-Deep-Learning"><span class="nav-number">1.</span> <span class="nav-text">7. Regularization for Deep Learning</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning_book/deep_learning_7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="第七章：Regularization for Deep Learning | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第七章：Regularization for Deep Learning
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-05-09 07:00:00" itemprop="dateCreated datePublished" datetime="2017-05-09T07:00:00-07:00">2017-05-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E3%80%8ADeep-Learning%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">《Deep Learning》读书笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="7-Regularization-for-Deep-Learning"><a href="#7-Regularization-for-Deep-Learning" class="headerlink" title="7. Regularization for Deep Learning"></a>7. Regularization for Deep Learning</h1><p><strong>正则化（Regularization）</strong>：对学习算法的修改——旨在减少泛化误差而不是训练误差。</p>
+<p><strong>参数范数惩罚（Parameter Norm Penalties）</strong>：通过对目标函数J添加一个**参数范数惩罚Ω(θ)**，来限制模型的学习能力。</p>
+<p>我们将正则化后的目标函数记为$\tilde{J}$：$\tilde{J}(θ;X,y)&#x3D;J(θ;X,y)+αΩ(θ)$，其中α∈[0,∞)是权衡范数惩罚项Ω和标准目标函数J(X;θ)相对贡献的超参数。说明，在神经网络中我们通常只对每一层仿射变换的<strong>权重w</strong>做惩罚而不对偏置做正则惩罚。典型的参数范数惩罚有$L^2$参数正则和$L^1$参数正则。</p>
+<p><strong>$L^2$参数正则（$L^2$ Parameter Regularization）</strong>：也就是<strong>权重衰减（weight decay）</strong>，顾名思义，权重会有所减小；罚项为$Ω(θ)&#x3D;\frac{1}{2}||w||_2^2$，也称为<strong>岭回归</strong>（ridge regression）或Tikhonov正则。</p>
+<p>在训练过程中，只有在显著减小目标函数方向上的参数会保留得相对完好；在无助于目标函数减小的方向（对应Hessian矩阵较小的特征值）上改变参数不会显著增加梯度。<br>这种不重要方向对应的分量会在训练过程中因正则化而衰减掉。</p>
+<p><strong>$L^1$参数正则（$L^1$ Parameter Regularization）</strong>：罚项为$Ω(θ)&#x3D;||w||_1&#x3D;\sum_i|w_i|$，相比于$L^2$正则，$L^1$正则产生更多的<strong>稀疏性结果</strong>，此处稀疏性指的是最优值中的一些参数为0。这一性质也使得$L^1$正则在<strong>特征选择</strong>机制中被广泛使用。</p>
+<p><strong>作为约束的范数惩罚</strong>：我们可以把参数范数惩罚看作对权重强加的约束。 如果Ω是$L^2$范数，那么权重就是被约束在一个$L^2$球中。</p>
+<p>如果Ω是$L^1$范数，那么权重就是被约束在一个$L^1$范数限制的区域中。 </p>
+<p><strong>数据集增强（Dataset Augmentation）</strong>：实际上，让机器学习模型泛化得更好的最好办法是使用更多的数据进行训练。 但在实践中，我们拥有的数据量是很有限的。</p>
+<p>解决这个问题的一种方法是创建假数据并添加到训练集中。这种方法用在分类任务来说是很简单的； 但这种方法对于其他许多任务来说并不那么容易，比如密度估计问题。</p>
+<p>数据集增强在目标识别（objective recognition）和语音识别（speech recognition）上被证实比较有效。通常情况下，人工设计的数据集增强方案可以大大减少机器学习技术的泛化误差。</p>
+<p><strong>噪声鲁棒性（Noise Robustness）</strong>：噪声可以直接注入到输入数据，作为数据集增强，向输入添加方差极小的噪声等价于对权重施加范数惩罚；也可以向隐藏单元添加噪声，这种罚项更加强大；可以直接向权重w注入噪声，经常用于rnn，它推动模型进入对权重小的变化相对不敏感的区域，找到的点不只是极小点，还是由平坦区域所包围的最小点；还可以向输出目标注入噪声，比如label smoothing。</p>
+<p><strong>半监督学习（Semi-Supervised Learning）</strong>：在深度学习的背景下，半监督学习通常指的是学习一个表示：h&#x3D;f(x)。 学习表示的目的是使相同类中的样本有类似的表示。</p>
+<p><strong>多任务学习（Multi-Task Learning）</strong>：通过合并几个任务中的样例（可以视为对参数施加的软约束）来提高泛化的一种方式。</p>
+<p>当模型的一部分在任务之间共享时，模型的这一部分更多地被约束为良好的值（假设共享是合理的），往往能更好地泛化。从深度学习的观点看，底层的先验知识如下：能解释数据变化的因素中，某些因素是跨两个或更多任务共享的。</p>
+<p><a href="https://raw.githubusercontent.com/applenob/reading_note/master/res/multi-task.png">https://raw.githubusercontent.com/applenob/reading_note/master/res/multi-task.png</a></p>
+<p><strong>提前停止（Early Stopping）</strong>：我们经常观察到，训练误差会随着时间的推移逐渐降低，但验证集的误差会再次上升。这意味着，如果在验证集误差开始上升的时候提前停止训练，这就是“提前终止”策略。可以获得更好的模型可能是深度学习中最常用的正则化形式。 它的流行主要是因为有效性和简单性，还可以减少训练过程的计算成本。</p>
+<p><strong>参数绑定（Parameter Tying）</strong>：A模型和已经有参数的模型B任务相似，可以让A尽可能接近B，设置罚项：$Ω(w^{(A)},w^{(B)})&#x3D;‖w^{(A)}−w^{(B)}‖^2_2$</p>
+<p><strong>参数共享（Parameter Sharing）</strong>：直接让A模型的参数等于B模型的参数，典型的应用是CNN。</p>
+<p><strong>稀疏表示（Sparse Representation）</strong>：惩罚神经网络中的激活单元，稀疏化激活单元，惩罚项：Ω(h)。稀疏表示和$L^1$正则带来的稀疏参数容易混淆，区别：</p>
+<p>稀疏表示：<a href="https://raw.githubusercontent.com/applenob/reading_note/master/res/sparse-rep.png">https://raw.githubusercontent.com/applenob/reading_note/master/res/sparse-rep.png</a></p>
+<p>稀疏参数：<a href="https://raw.githubusercontent.com/applenob/reading_note/master/res/sparse-weight.png">https://raw.githubusercontent.com/applenob/reading_note/master/res/sparse-weight.png</a></p>
+<p><strong>Bagging（Bootstrap Aggregating）</strong>：通过结合多个模型来降低泛化误差。这种方法通常又被称为“集成方法”（Ensemble Method）。具体来说，Bagging涉及构造k个不同的数据集，再训练k个模型，集合所有模型的预测结果投票得出最后结果。模型平均是一个减少泛化误差的非常强大可靠的方法。<br>但在作为科学论文算法的基准时，它通常是不鼓励使用的，因为任何机器学习算法都可以从模型平均中大幅获益。</p>
+<p><strong>Dropout</strong>：Dropout可以被认为是集成大量深层神经网络的实用Bagging方法。 但是Dropout训练与Bagging训练不太一样。</p>
+<p>在Bagging的情况下，所有模型都是独立的。 在Dropout的情况下，所有模型共享参数。 Dropout不仅仅是训练一个Bagging的集成模型，并且是共享隐藏单元的集成模型。 这意味着无论其他隐藏单元是否在模型中，每个隐藏单元必须都能够表现良好。 隐藏单元必须准备好进行模型之间的交换和互换。</p>
+<p>因此Dropout正则化每个隐藏单元不仅是一个很好的特征，更要在许多情况下是良好的特征。</p>
+<p>除此之外，计算方便是Dropout的一个优点，Dropout的另一个显著优点是不怎么限制适用的模型或训练过程。</p>
+<p>然而，当只有极少的训练样本可用时，Dropout不会很有效。</p>
+<p><strong>对抗训练（Adversarial Training）</strong>：<br>对抗训练通过鼓励网络在训练数据附近的局部区域恒定来限制这一高度敏感的局部线性行为。 这可以被看作是一种明确地向监督神经网络引入局部恒定先验的方法。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"># 笔记</a>
+              <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/deep_learning_book/deep_learning_6/" rel="prev" title="第六章：Deep Feedforward Networks">
+                  <i class="fa fa-angle-left"></i> 第六章：Deep Feedforward Networks
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/deep_learning_book/deep_learning_8/" rel="next" title="第八章：Optimization for Training Deep Models">
+                  第八章：Optimization for Training Deep Models <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

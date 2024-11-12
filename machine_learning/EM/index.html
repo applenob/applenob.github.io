@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="在概率模型中，最常用的模型参数估计方法应该就是最大似然法。EM算法本质上也是最大似然，它是针对模型中存在隐变量的情况的最大似然。 下面通过两个例子引入。 没有隐变量的硬币模型 假设有两个硬币，$A$和$B$，这两个硬币具体材质未知，即抛硬币的结果是head的概率不一定是50%。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="EM算法总结">
+<meta property="og:url" content="https://applenob.github.io/machine_learning/EM/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="在概率模型中，最常用的模型参数估计方法应该就是最大似然法。EM算法本质上也是最大似然，它是针对模型中存在隐变量的情况的最大似然。 下面通过两个例子引入。 没有隐变量的硬币模型 假设有两个硬币，$A$和$B$，这两个硬币具体材质未知，即抛硬币的结果是head的概率不一定是50%。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://applenob.github.io/machine_learning/EM/maximum_likelihood.png">
+<meta property="og:image" content="https://applenob.github.io/machine_learning/EM/expectation_maximization.png">
+<meta property="article:published_time" content="2016-12-11T19:00:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.078Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="Machine Learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://applenob.github.io/machine_learning/EM/maximum_likelihood.png">
+
+
+<link rel="canonical" href="https://applenob.github.io/machine_learning/EM/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/machine_learning/EM/","path":"machine_learning/EM/","title":"EM算法总结"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>EM算法总结 | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B2%A1%E6%9C%89%E9%9A%90%E5%8F%98%E9%87%8F%E7%9A%84%E7%A1%AC%E5%B8%81%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">没有隐变量的硬币模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%89%E9%9A%90%E5%8F%98%E9%87%8F%E7%9A%84%E7%A1%AC%E5%B8%81%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.</span> <span class="nav-text">有隐变量的硬币模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#EM%E7%AE%97%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">EM算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/machine_learning/EM/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="EM算法总结 | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          EM算法总结
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2016-12-11 11:00:00" itemprop="dateCreated datePublished" datetime="2016-12-11T11:00:00-08:00">2016-12-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>在概率模型中，最常用的模型参数估计方法应该就是<strong>最大似然法</strong>。<br><strong>EM算法</strong>本质上也是最大似然，它是针对模型中存在<strong>隐变量</strong>的情况的<strong>最大似然</strong>。</p>
+<p>下面通过两个例子引入。</p>
+<h2 id="没有隐变量的硬币模型"><a href="#没有隐变量的硬币模型" class="headerlink" title="没有隐变量的硬币模型"></a>没有隐变量的硬币模型</h2><p><img src="/machine_learning/EM/maximum_likelihood.png"></p>
+<p>假设有两个硬币，$A$和$B$，这两个硬币具体材质未知，即抛硬币的结果是head的概率不一定是50%。</p>
+<p>在这个实验中，我们每次拿其中一个硬币，抛10次，统计结果。</p>
+<p>实验的目标是统计$A$和$B$的head朝上的概率，即估计$\hat \theta_A$和$\hat \theta_B$。</p>
+<p>对每一枚硬币来说，使用<strong>极大似然法</strong>来估计它的参数：<br>假设硬币$A$正面朝上的次数是$n^A_h$，反面朝上的次数是：$n^A_t$。</p>
+<p>似然函数：$L(\theta_A) &#x3D;(\theta_A)^{n^A_h}(1-\theta_A)^{n^A_t}$。</p>
+<p>对数似然函数：$log;L(\theta_A) &#x3D; n^A_h\cdot log(\theta_A)+n^A_t\cdot log(1-\theta_A)$。</p>
+<p>$\hat \theta_A &#x3D; \underset{\theta_A}{argmax};log;L(\theta_A)$ 。</p>
+<p>对参数求偏导：$\frac{\partial log; L(\theta_A)}{\partial \theta_A}&#x3D;\frac{n^A_h}{\theta_A}-\frac{n^A_t}{1-\theta_A}$。</p>
+<p>令上式为$0$，解得：$\hat \theta_A &#x3D; \frac{n^A_h}{n^A_h+n^A_t}$。</p>
+<p>即$\hat \theta_A &#x3D; \frac{number\; of\; heads\; using\; coin\; A}{total\; number\; of\; flips\; using\; coin\; A}$。</p>
+<h2 id="有隐变量的硬币模型"><a href="#有隐变量的硬币模型" class="headerlink" title="有隐变量的硬币模型"></a>有隐变量的硬币模型</h2><p><img src="/machine_learning/EM/expectation_maximization.png"></p>
+<p>这个问题是上一个问题的困难版，即给出一系列统计的实验，<strong>但不告诉你某组实验采用的是哪枚硬币</strong>，即某组实验采用哪枚硬币成了一个<strong>隐变量</strong>。<br>这里引入<strong>EM算法的思路</strong>：</p>
+<ul>
+<li>1.先随机给出模型参数的估计，以初始化模型参数。</li>
+<li>2.根据之前模型参数的估计，和观测数据，计算<strong>隐变量的分布</strong>。</li>
+<li>3.根据隐变量的分布，求<strong>联合分布的对数</strong>关于隐变量分布的<strong>期望</strong>。</li>
+<li>4.重新估计<strong>模型参数</strong>，这次最大化的不是似然函数，而是第3步求的<strong>期望</strong>。</li>
+</ul>
+<p>一般教科书会把EM算法分成两步：E步和M步，即求期望和最大化期望。</p>
+<p>E步对应上面2,3；M对应4。</p>
+<h2 id="EM算法"><a href="#EM算法" class="headerlink" title="EM算法"></a>EM算法</h2><p>输入：观测变量数据$Y$，隐变量数据$Z$，联合分布$P(Y,Z|\theta)$，条件分布$P(Z|Y,\theta)$;<br>输出：模型参数$\theta$。</p>
+<ul>
+<li>1.选择参数的初始值$\theta^{(0)}$，开始迭代；</li>
+<li>在第$i+1$次迭代:<ul>
+<li>2.E步：$Q(\theta,\theta^{(i)}) &#x3D; \sum_zlog;P(Y,Z|\theta)P(Z|Y,\theta^{(i)})$</li>
+</ul>
+</li>
+<li>3.M步：$Q^{(i+1)} &#x3D; \underset{\theta}{argmax};Q(\theta,\theta^{(i)})$</li>
+<li>4.重复2，3直至收敛。</li>
+</ul>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="http://www.jianshu.com/p/1121509ac1dc">如何感性地理解EM算法？</a></li>
+<li><a href="http://pan.baidu.com/s/1i4NfvP7">What is the expectation maximization algorithm?</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+              <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/machine_learning/graph/" rel="prev" title="图模型总结">
+                  <i class="fa fa-angle-left"></i> 图模型总结
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/machine_learning/HMM/" rel="next" title="隐马尔科夫模型（HMM）及其Python实现">
+                  隐马尔科夫模型（HMM）及其Python实现 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

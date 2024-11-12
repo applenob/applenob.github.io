@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="这篇博客中，我通过学习hankcs的Java版本，自己试着做一个简单的Python版本，用于学习和理清思路。 思路所谓生成式句法解析是指生成一些列依存句法树，挑出概率最大的一棵。 这里的实现考虑了词性信息+词汇信息，使用最大生成树Prim算法搜索最终结果，实现一个简单的汉语依存句法分析器。 具体：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一个简单的生成式依存句法解析器">
+<meta property="og:url" content="https://applenob.github.io/nlp/gen_dep_parser/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="这篇博客中，我通过学习hankcs的Java版本，自己试着做一个简单的Python版本，用于学习和理清思路。 思路所谓生成式句法解析是指生成一些列依存句法树，挑出概率最大的一棵。 这里的实现考虑了词性信息+词汇信息，使用最大生成树Prim算法搜索最终结果，实现一个简单的汉语依存句法分析器。 具体：">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://applenob.github.io/nlp/gen_dep_parser/graph.png">
+<meta property="og:image" content="https://applenob.github.io/nlp/gen_dep_parser/dep_vis.png">
+<meta property="article:published_time" content="2017-11-30T06:19:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.088Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="NLP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://applenob.github.io/nlp/gen_dep_parser/graph.png">
+
+
+<link rel="canonical" href="https://applenob.github.io/nlp/gen_dep_parser/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/nlp/gen_dep_parser/","path":"nlp/gen_dep_parser/","title":"一个简单的生成式依存句法解析器"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>一个简单的生成式依存句法解析器 | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF"><span class="nav-number">1.</span> <span class="nav-text">思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE"><span class="nav-number">2.</span> <span class="nav-text">数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83"><span class="nav-number">3.</span> <span class="nav-text">模型训练</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA%E5%9B%BE"><span class="nav-number">4.</span> <span class="nav-text">构建图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Prim%E7%AE%97%E6%B3%95"><span class="nav-number">5.</span> <span class="nav-text">Prim算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/nlp/gen_dep_parser/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="一个简单的生成式依存句法解析器 | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          一个简单的生成式依存句法解析器
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-11-29 22:19:00" itemprop="dateCreated datePublished" datetime="2017-11-29T22:19:00-08:00">2017-11-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NLP/" itemprop="url" rel="index"><span itemprop="name">NLP</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>这篇博客中，我通过学习<a href="http://www.hankcs.com/nlp/to-achieve-a-simple-generative-dependency-parsing.html">hankcs</a>的Java版本，自己试着做一个简单的Python版本，用于学习和理清思路。</p>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>所谓生成式句法解析是指生成一些列依存句法树，挑出概率最大的一棵。</p>
+<p>这里的实现考虑了词性信息+词汇信息，使用最大生成树Prim算法搜索最终结果，实现一个简单的汉语依存句法分析器。</p>
+<p>具体：</p>
+<ul>
+<li>训练：<ul>
+<li>统计词语$WordA$和词语$WordB$构成依存关系$DrC$的频次。</li>
+<li>统计词语$WordA$和词性$TagB$构成依存关系$DrD$的频次。</li>
+</ul>
+</li>
+<li>统计词性$TagA$和词语$WordB$构成依存关系$DrE$的频次。<ul>
+<li>统计词性$TagA$和词性$TagB$构成依存关系$DrF$的频次。</li>
+</ul>
+</li>
+<li>解析：<ul>
+<li>为句子中的词语$i$和词语$j$生成多条依存句法边，权值是上面4中频次的综合。</li>
+<li>取边的权值最大的作为唯一的边，加入有向图。</li>
+</ul>
+</li>
+<li>使用Prim最大生成树算法，计算出最大生成树，格式化输出。</li>
+</ul>
+<h2 id="数据"><a href="#数据" class="headerlink" title="数据"></a>数据</h2><p>使用第二届自然语言处理与中文计算会议（NLP&amp;CC 2013）清华大学的数据。</p>
+<p>下载地址：<a href="http://tcci.ccf.org.cn/conference/2013/dldoc/evsam05.zip">http://tcci.ccf.org.cn/conference/2013/dldoc/evsam05.zip</a></p>
+<p>这些树库语料都是CoNLL格式的，CoNLL格式的语料以.conll结尾：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">CONLL标注格式包含10列，分别为：</span><br><span class="line">———————————————————————————</span><br><span class="line">   ID	FORM	LEMMA	CPOSTAG	POSTAG	FEATS	HEAD	DEPREL</span><br><span class="line">PHEAD	PDEPREL</span><br><span class="line">———————————————————————————</span><br><span class="line">   本次评测只用到前８列，其含义分别为：</span><br><span class="line">   1	ID</span><br><span class="line">当前词在句子中的序号，１开始.</span><br><span class="line">   2	FORM	当前词语或标点  </span><br><span class="line">   3	LEMMA	当前词语（或标点）的原型或词干，在中文中，此列与FORM相同</span><br><span class="line">4	CPOSTAG	当前词语的词性（粗粒度）</span><br><span class="line">   5	POSTAG	当前词语的词性（细粒度）</span><br><span class="line">   6	FEATS</span><br><span class="line">句法特征，在本次评测中，此列未被使用，全部以下划线代替。</span><br><span class="line">   7	HEAD	当前词语的中心词</span><br><span class="line">   8	DEPREL	当前词语与中心词的依存关系</span><br><span class="line">在CONLL格式中，每个词语占一行，无值列用下划线&#x27;_&#x27;代替，列的分隔符为制表符&#x27;\t&#x27;，行的分隔符为换行符&#x27;\n&#x27;；句子与句子之间用空行分隔。</span><br></pre></td></tr></table></figure>
+
+<h2 id="模型训练"><a href="#模型训练" class="headerlink" title="模型训练"></a>模型训练</h2><p>这里所谓的模型训练即统计之前说的四种词频。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> namedtuple</span><br><span class="line"></span><br><span class="line">train_file_name = <span class="string">&quot;../data/evsam05/tree/THU/train.conll&quot;</span></span><br><span class="line">ConllRow = namedtuple(<span class="string">&quot;ConllRow&quot;</span>, [<span class="string">&quot;ID&quot;</span>, <span class="string">&quot;FORM&quot;</span>, <span class="string">&quot;LEMMA&quot;</span>, <span class="string">&quot;CPOSTAG&quot;</span>, <span class="string">&quot;POSTAG&quot;</span>, <span class="string">&quot;FEATS&quot;</span>, <span class="string">&quot;HEAD&quot;</span>, <span class="string">&quot;DEPREL&quot;</span>])</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">add_to_dict</span>(<span class="params">d, k, dep</span>):</span><br><span class="line">    <span class="keyword">if</span> k <span class="keyword">not</span> <span class="keyword">in</span> d:</span><br><span class="line">        d[k] = &#123;dep: <span class="number">1</span>&#125;</span><br><span class="line">    <span class="keyword">elif</span> dep <span class="keyword">not</span> <span class="keyword">in</span> d[k]:</span><br><span class="line">        d[k][dep] = <span class="number">1</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        d[k][dep] += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">c_dict = &#123;&#125;</span><br><span class="line">d_dict = &#123;&#125;</span><br><span class="line">e_dict = &#123;&#125;</span><br><span class="line">f_dict = &#123;&#125;</span><br><span class="line">count = <span class="number">0</span></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(train_file_name) <span class="keyword">as</span> f:</span><br><span class="line">    sentence = []</span><br><span class="line">    <span class="keyword">for</span> line <span class="keyword">in</span> f:</span><br><span class="line">        <span class="keyword">if</span> line == <span class="string">&quot;\n&quot;</span>:</span><br><span class="line">            count += <span class="built_in">len</span>(sentence)</span><br><span class="line">            <span class="keyword">for</span> row <span class="keyword">in</span> sentence:</span><br><span class="line">                <span class="keyword">if</span> <span class="built_in">int</span>(row.HEAD) != <span class="number">0</span>:</span><br><span class="line">                    add_to_dict(c_dict, (row.LEMMA, sentence[<span class="built_in">int</span>(row.HEAD)-<span class="number">1</span>].LEMMA), row.DEPREL)</span><br><span class="line">                    add_to_dict(d_dict, (row.LEMMA, sentence[<span class="built_in">int</span>(row.HEAD)-<span class="number">1</span>].CPOSTAG), row.DEPREL)</span><br><span class="line">                    add_to_dict(e_dict, (row.CPOSTAG, sentence[<span class="built_in">int</span>(row.HEAD)-<span class="number">1</span>].LEMMA), row.DEPREL)</span><br><span class="line">                    add_to_dict(f_dict, (row.CPOSTAG, sentence[<span class="built_in">int</span>(row.HEAD)-<span class="number">1</span>].CPOSTAG), row.DEPREL)</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    add_to_dict(c_dict, (row.LEMMA, <span class="string">&quot;Root&quot;</span>), <span class="string">&quot;Root&quot;</span>)</span><br><span class="line">                    add_to_dict(d_dict, (row.LEMMA, <span class="string">&quot;Root&quot;</span>), <span class="string">&quot;Root&quot;</span>)</span><br><span class="line">                    add_to_dict(e_dict, (row.CPOSTAG, <span class="string">&quot;Root&quot;</span>), <span class="string">&quot;Root&quot;</span>)</span><br><span class="line">                    add_to_dict(f_dict, (row.CPOSTAG, <span class="string">&quot;Root&quot;</span>), <span class="string">&quot;Root&quot;</span>)</span><br><span class="line">            sentence = []</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            sentence.append(ConllRow._make(line.replace(<span class="string">&quot;\n&quot;</span>, <span class="string">&quot;&quot;</span>).strip().split(<span class="string">&quot;\t&quot;</span>)))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">list</span>(c_dict.items())[:<span class="number">10</span>]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[((&#x27;坚决&#x27;, &#x27;惩治&#x27;), &#123;&#x27;方式&#x27;: 1&#125;),</span><br><span class="line"> ((&#x27;惩治&#x27;, &#x27;Root&#x27;), &#123;&#x27;Root&#x27;: 3&#125;),</span><br><span class="line"> ((&#x27;贪污&#x27;, &#x27;犯罪&#x27;), &#123;&#x27;限定&#x27;: 17&#125;),</span><br><span class="line"> ((&#x27;贿赂&#x27;, &#x27;贪污&#x27;), &#123;&#x27;连接依存&#x27;: 37&#125;),</span><br><span class="line"> ((&#x27;等&#x27;, &#x27;贪污&#x27;), &#123;&#x27;连接依存&#x27;: 34&#125;),</span><br><span class="line"> ((&#x27;经济&#x27;, &#x27;犯罪&#x27;), &#123;&#x27;限定&#x27;: 19&#125;),</span><br><span class="line"> ((&#x27;犯罪&#x27;, &#x27;惩治&#x27;), &#123;&#x27;受事&#x27;: 3&#125;),</span><br><span class="line"> ((&#x27;最高&#x27;, &#x27;检察院&#x27;), &#123;&#x27;限定&#x27;: 2&#125;),</span><br><span class="line"> ((&#x27;人民&#x27;, &#x27;检察院&#x27;), &#123;&#x27;限定&#x27;: 3&#125;),</span><br><span class="line"> ((&#x27;检察院&#x27;, &#x27;检察长&#x27;), &#123;&#x27;限定&#x27;: 2&#125;)]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">count</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">165534</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">calc_dict_size</span>(<span class="params">one_dict</span>):</span><br><span class="line">    count = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> v_dict <span class="keyword">in</span> one_dict.values():</span><br><span class="line">        <span class="keyword">for</span> k, v <span class="keyword">in</span> v_dict.items():</span><br><span class="line">            count += v</span><br><span class="line">    <span class="keyword">return</span> count</span><br><span class="line">cc = calc_dict_size(c_dict)</span><br><span class="line">dc = calc_dict_size(d_dict)</span><br><span class="line">ec = calc_dict_size(e_dict)</span><br><span class="line">fc = calc_dict_size(f_dict)</span><br><span class="line"><span class="built_in">print</span>(cc, dc, ec, fc)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">165534 165534 165534 165534</span><br></pre></td></tr></table></figure>
+
+<h2 id="构建图"><a href="#构建图" class="headerlink" title="构建图"></a>构建图</h2><p>进来一句句子，首先要做<strong>分词</strong>和<strong>词性判断</strong>。</p>
+<p>然后在句首加入root，对一句有$n$个词的句子，两两之间可能有$(n+1)×n-n$条有向边。</p>
+<p><img src="/nlp/gen_dep_parser/graph.png"></p>
+<p>这里的箭头是指向被依赖的HEAD。</p>
+<p>有向边的权值计算方法：<br>$$log(词1到词2依存关系数&#x2F;总数)$$</p>
+<p>$$没有的话取\;\; log(词到词性依存关系数&#x2F;总数) *10$$</p>
+<p>$$没有的话取\;\; log(词性到词依存关系数&#x2F;总数) *10$$</p>
+<p>$$没有的话取\;\;log(词性到词性依存关系数&#x2F;总数) *100$$</p>
+<p>解释：第一种情况的权值要最大，第二第三种稍小，第四种最小。注意这里log计算后是负数。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> jieba</span><br><span class="line"><span class="keyword">import</span> jieba.posseg</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">test_sen = <span class="string">&quot;我写代码&quot;</span></span><br><span class="line"><span class="comment"># 使用jieba做分词和词性标注</span></span><br><span class="line">seg_list = <span class="built_in">list</span>(jieba.posseg.cut(test_sen))</span><br><span class="line">seg_list</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[pair(&#x27;我&#x27;, &#x27;r&#x27;), pair(&#x27;写&#x27;, &#x27;v&#x27;), pair(&#x27;代码&#x27;, &#x27;n&#x27;)]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">get_max_from_dict</span>(<span class="params">one_dict, k</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">sorted</span>(one_dict[k].items(), key=<span class="keyword">lambda</span> i: i[<span class="number">1</span>], reverse=<span class="literal">True</span>)[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">calc_edge_name_and_weight</span>(<span class="params">pair_1, pair_2</span>):</span><br><span class="line">    <span class="keyword">if</span> (pair_1.word, pair_2.word) <span class="keyword">in</span> c_dict:</span><br><span class="line">        name, num = get_max_from_dict(c_dict, (pair_1.word, pair_2.word))</span><br><span class="line">        <span class="keyword">return</span> name, np.log(<span class="built_in">float</span>(num)/count)</span><br><span class="line">    <span class="keyword">elif</span> (pair_1.word, pair_2.flag) <span class="keyword">in</span> d_dict:</span><br><span class="line">        name, num = get_max_from_dict(d_dict, (pair_1.word, pair_2.flag))</span><br><span class="line">        <span class="keyword">return</span> name, np.log(<span class="built_in">float</span>(num)/count)</span><br><span class="line">    <span class="keyword">elif</span> (pair_1.flag, pair_2.word) <span class="keyword">in</span> e_dict:</span><br><span class="line">        name, num = get_max_from_dict(e_dict, (pair_1.flag, pair_2.word))</span><br><span class="line">        <span class="keyword">return</span> name, np.log(<span class="built_in">float</span>(num)/count)</span><br><span class="line">    <span class="keyword">elif</span> (pair_1.flag, pair_2.flag) <span class="keyword">in</span> f_dict:</span><br><span class="line">        name, num = get_max_from_dict(f_dict, (pair_1.flag, pair_2.flag))</span><br><span class="line">        <span class="keyword">return</span> name, np.log(<span class="built_in">float</span>(num)/count)</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;&quot;</span>, -<span class="number">9999</span></span><br><span class="line"></span><br><span class="line">Edge = namedtuple(<span class="string">&quot;Edge&quot;</span>, [<span class="string">&quot;name&quot;</span>, <span class="string">&quot;weight&quot;</span>, <span class="string">&quot;from_id&quot;</span>, <span class="string">&quot;to_id&quot;</span>])</span><br><span class="line">root_pair = jieba.posseg.pair(<span class="string">&quot;Root&quot;</span>, <span class="string">&quot;Root&quot;</span>)</span><br><span class="line"></span><br><span class="line">graph_edges = []</span><br><span class="line"><span class="keyword">for</span> i, pair_1 <span class="keyword">in</span> <span class="built_in">enumerate</span>(seg_list):</span><br><span class="line">    <span class="keyword">for</span> j, pair_2 <span class="keyword">in</span> <span class="built_in">enumerate</span>(seg_list):</span><br><span class="line">        <span class="keyword">if</span> pair_1 != pair_2:</span><br><span class="line">            graph_edges.append(Edge._make(calc_edge_name_and_weight(pair_1, pair_2) + (i+<span class="number">1</span>, j+<span class="number">1</span>)))</span><br><span class="line">graph_edges</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[Edge(name=&#x27;施事&#x27;, weight=-11.323784710206265, from_id=1, to_id=2),</span><br><span class="line"> Edge(name=&#x27;限定&#x27;, weight=-7.7974241855901036, from_id=1, to_id=3),</span><br><span class="line"> Edge(name=&#x27;连接依存&#x27;, weight=-10.9183196020981, from_id=2, to_id=1),</span><br><span class="line"> Edge(name=&#x27;内容&#x27;, weight=-10.63063752964632, from_id=2, to_id=3),</span><br><span class="line"> Edge(name=&#x27;连接依存&#x27;, weight=-11.323784710206265, from_id=3, to_id=1),</span><br><span class="line"> Edge(name=&#x27;内容&#x27;, weight=-8.8814376748370609, from_id=3, to_id=2)]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">root_edges = []</span><br><span class="line"><span class="keyword">for</span> i, one_pair <span class="keyword">in</span> <span class="built_in">enumerate</span>(seg_list):</span><br><span class="line">    root_edges.append(Edge._make(calc_edge_name_and_weight(one_pair, root_pair) + (i, <span class="number">0</span>)))</span><br><span class="line">root_edges</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[Edge(name=&#x27;Root&#x27;, weight=-12.016931890766211, from_id=0, to_id=0),</span><br><span class="line"> Edge(name=&#x27;Root&#x27;, weight=-8.8814376748370609, from_id=1, to_id=0),</span><br><span class="line"> Edge(name=&#x27;Root&#x27;, weight=-4.318902720493405, from_id=2, to_id=0)]</span><br></pre></td></tr></table></figure>
+
+<h2 id="Prim算法"><a href="#Prim算法" class="headerlink" title="Prim算法"></a>Prim算法</h2><p><strong>Prim核心思路</strong>：任意挑一个顶点，添加权值最大边，直至所有顶点都在树中，得到一棵最大生成树。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">tree_edges = []</span><br><span class="line">tree_edges.append(<span class="built_in">sorted</span>(root_edges, key=<span class="keyword">lambda</span> e: e.weight, reverse=<span class="literal">True</span>)[<span class="number">0</span>])</span><br><span class="line">tree_edges</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Edge(name=&#x27;Root&#x27;, weight=-4.318902720493405, from_id=2, to_id=0)]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">nodes = <span class="built_in">set</span>([tree_edges[<span class="number">0</span>].from_id])</span><br><span class="line">target_nodes = <span class="built_in">set</span>(<span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(seg_list)+<span class="number">1</span>))</span><br><span class="line"><span class="built_in">print</span>(nodes)</span><br><span class="line">target_nodes</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;2&#125;</span><br><span class="line"></span><br><span class="line">&#123;1, 2, 3&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Prim</span></span><br><span class="line">new_sorted = <span class="built_in">sorted</span>(graph_edges, key=<span class="keyword">lambda</span> e: e.weight, reverse=<span class="literal">True</span>)</span><br><span class="line"><span class="keyword">while</span> nodes != target_nodes:</span><br><span class="line">    cut_id = -<span class="number">1</span></span><br><span class="line">    <span class="keyword">for</span> i, one_edge <span class="keyword">in</span> <span class="built_in">enumerate</span>(new_sorted):</span><br><span class="line">        <span class="keyword">if</span> one_edge.from_id <span class="keyword">in</span> nodes <span class="keyword">and</span> one_edge.to_id <span class="keyword">in</span> target_nodes - nodes:</span><br><span class="line">            nodes.add(one_edge.to_id)</span><br><span class="line">            tree_edges.append(one_edge)</span><br><span class="line">            cut_id = i</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        <span class="keyword">elif</span> one_edge.to_id <span class="keyword">in</span> nodes <span class="keyword">and</span> one_edge.from_id <span class="keyword">in</span> target_nodes - nodes:</span><br><span class="line">            nodes.add(one_edge.from_id)</span><br><span class="line">            tree_edges.append(one_edge)</span><br><span class="line">            cut_id = i</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">if</span> cut_id != -<span class="number">1</span>:</span><br><span class="line">        <span class="keyword">del</span> new_sorted[cut_id]  </span><br><span class="line">    new_sorted = <span class="built_in">sorted</span>(new_sorted, key=<span class="keyword">lambda</span> e: e.weight, reverse=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tree_edges</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[Edge(name=&#x27;Root&#x27;, weight=-4.318902720493405, from_id=2, to_id=0),</span><br><span class="line"> Edge(name=&#x27;内容&#x27;, weight=-8.8814376748370609, from_id=3, to_id=2),</span><br><span class="line"> Edge(name=&#x27;限定&#x27;, weight=-7.7974241855901036, from_id=1, to_id=3)]</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意到这里的实现是从DEP指向HEAD，所以和一般常用的箭头方向正好相反，下面的函数中将顺序反过来，并输出标准的CONLL格式</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">edges2conll</span>(<span class="params">edges, seg_list</span>):</span><br><span class="line">    <span class="keyword">for</span> i, pair <span class="keyword">in</span> <span class="built_in">enumerate</span>(seg_list):</span><br><span class="line">        head = -<span class="number">1</span> </span><br><span class="line">        name = <span class="string">&quot;&quot;</span></span><br><span class="line">        <span class="keyword">for</span> one_edge <span class="keyword">in</span> edges:</span><br><span class="line">            <span class="keyword">if</span> one_edge.from_id == i + <span class="number">1</span>:</span><br><span class="line">                head = one_edge.to_id</span><br><span class="line">                name = one_edge.name</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;\t&quot;</span>.join([<span class="built_in">str</span>(i + <span class="number">1</span>), pair.word, pair.word, pair.flag, pair.flag, <span class="string">&quot;_&quot;</span>, <span class="built_in">str</span>(head), name, <span class="string">&quot;_&quot;</span>, <span class="string">&quot;_&quot;</span>]))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">edges2conll(tree_edges, seg_list)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1	我	我	r	r	_	3	限定	_	_</span><br><span class="line">2	写	写	v	v	_	0	Root	_	_</span><br><span class="line">3	代码	代码	n	n	_	2	内容	_	_</span><br></pre></td></tr></table></figure>
+
+<p>使用这个在线可视化工具：<a href="http://spyysalo.github.io/conllu.js/">http://spyysalo.github.io/conllu.js/</a> ，输入conll格式的数据可视化一下：</p>
+<p><img src="/nlp/gen_dep_parser/dep_vis.png"></p>
+<p>果然还是个Toy，三个错了一个。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这只是我学习Hank写的一个小demo，主要目的是学习简单的依存解析器的实现原理。</p>
+<p>缺点：prim算法会产生交叉弧，prim本身的实现也不是最优的，还有很多地方需要改进，也没有进行测评。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+              <a href="/tags/NLP/" rel="tag"># NLP</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/nlp/n_shortest/" rel="prev" title="N-最短路径方法的分词实现">
+                  <i class="fa fa-angle-left"></i> N-最短路径方法的分词实现
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/machine_learning/max_entropy/" rel="next" title="Max Entropy学习总结">
+                  Max Entropy学习总结 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="1234在机器学习和数据挖掘的应用中，scikit-learn是一个功能强大的python包。在数据量不是过大的情况下，可以解决大部分问题。学习使用scikit-learn的过程中，我自己也在补充着机器学习和数据挖掘的知识。这里根据自己学习sklearn的经验，我做一个总结的笔记。另外，我也想把这篇笔记一直更新下去。 1 scikit-learn基础介绍1.1 估计器（Estimator）估计器，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Scikit-learn使用总结">
+<meta property="og:url" content="https://applenob.github.io/machine_learning/Scikit-learn/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="1234在机器学习和数据挖掘的应用中，scikit-learn是一个功能强大的python包。在数据量不是过大的情况下，可以解决大部分问题。学习使用scikit-learn的过程中，我自己也在补充着机器学习和数据挖掘的知识。这里根据自己学习sklearn的经验，我做一个总结的笔记。另外，我也想把这篇笔记一直更新下去。 1 scikit-learn基础介绍1.1 估计器（Estimator）估计器，">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://applenob.github.io/machine_learning/Scikit-learn/data.png">
+<meta property="og:image" content="https://applenob.github.io/machine_learning/Scikit-learn/count.png">
+<meta property="og:image" content="https://applenob.github.io/machine_learning/Scikit-learn/hash.png">
+<meta property="og:image" content="https://applenob.github.io/machine_learning/Scikit-learn/tfidf.png">
+<meta property="og:image" content="https://applenob.github.io/machine_learning/Scikit-learn/nb.png">
+<meta property="og:image" content="https://applenob.github.io/machine_learning/Scikit-learn/gs.png">
+<meta property="og:image" content="https://applenob.github.io/machine_learning/Scikit-learn/dxs.png">
+<meta property="og:image" content="https://applenob.github.io/machine_learning/Scikit-learn/bnl.png">
+<meta property="article:published_time" content="2016-08-31T23:10:20.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.078Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="Machine Learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://applenob.github.io/machine_learning/Scikit-learn/data.png">
+
+
+<link rel="canonical" href="https://applenob.github.io/machine_learning/Scikit-learn/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/machine_learning/Scikit-learn/","path":"machine_learning/Scikit-learn/","title":"Scikit-learn使用总结"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Scikit-learn使用总结 | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-scikit-learn%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">1 scikit-learn基础介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E4%BC%B0%E8%AE%A1%E5%99%A8%EF%BC%88Estimator%EF%BC%89"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 估计器（Estimator）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-%E8%BD%AC%E6%8D%A2%E5%99%A8%EF%BC%88Transformer%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 转换器（Transformer）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-%E6%B5%81%E6%B0%B4%E7%BA%BF%EF%BC%88Pipeline%EF%BC%89"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 流水线（Pipeline）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%81%E6%B0%B4%E7%BA%BF%E7%9A%84%E5%8A%9F%E8%83%BD%EF%BC%9A"><span class="nav-number">1.3.1.</span> <span class="nav-text">流水线的功能：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-number">1.3.2.</span> <span class="nav-text">基本使用方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-%E9%A2%84%E5%A4%84%E7%90%86"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 预处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5-%E7%89%B9%E5%BE%81"><span class="nav-number">1.5.</span> <span class="nav-text">1.5 特征</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-5-1-%E7%89%B9%E5%BE%81%E6%8A%BD%E5%8F%96"><span class="nav-number">1.5.1.</span> <span class="nav-text">1.5.1 特征抽取</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-5-2-%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9"><span class="nav-number">1.5.2.</span> <span class="nav-text">1.5.2 特征选择</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-6-%E9%99%8D%E7%BB%B4"><span class="nav-number">1.6.</span> <span class="nav-text">1.6 降维</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-7-%E7%BB%84%E5%90%88"><span class="nav-number">1.7.</span> <span class="nav-text">1.7 组合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-8-%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0%EF%BC%88%E5%BA%A6%E9%87%8F%EF%BC%89"><span class="nav-number">1.8.</span> <span class="nav-text">1.8 模型评估（度量）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-9-%E4%BA%A4%E5%8F%89%E9%AA%8C%E8%AF%81"><span class="nav-number">1.9.</span> <span class="nav-text">1.9 交叉验证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-10-%E7%BD%91%E6%A0%BC%E6%90%9C%E7%B4%A2"><span class="nav-number">1.10.</span> <span class="nav-text">1.10 网格搜索</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-11-%E5%A4%9A%E5%88%86%E7%B1%BB%E3%80%81%E5%A4%9A%E6%A0%87%E7%AD%BE%E5%88%86%E7%B1%BB"><span class="nav-number">1.11.</span> <span class="nav-text">1.11 多分类、多标签分类</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E5%85%B7%E4%BD%93%E6%A8%A1%E5%9E%8B"><span class="nav-number"></span> <span class="nav-text">2 具体模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%EF%BC%88Naive-Bayes%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">2.1 朴素贝叶斯（Naive Bayes）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-scikit-learn%E6%89%A9%E5%B1%95"><span class="nav-number"></span> <span class="nav-text">3 scikit-learn扩展</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-0-%E6%A6%82%E8%A7%88"><span class="nav-number">0.1.</span> <span class="nav-text">3.0 概览</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E5%88%9B%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%BD%AC%E6%8D%A2%E5%99%A8"><span class="nav-number">0.2.</span> <span class="nav-text">3.1 创建自己的转换器</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/machine_learning/Scikit-learn/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Scikit-learn使用总结 | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Scikit-learn使用总结
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2016-08-31 16:10:20" itemprop="dateCreated datePublished" datetime="2016-08-31T16:10:20-07:00">2016-08-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">在机器学习和数据挖掘的应用中，scikit-learn是一个功能强大的python包。</span><br><span class="line">在数据量不是过大的情况下，可以解决大部分问题。</span><br><span class="line">学习使用scikit-learn的过程中，我自己也在补充着机器学习和数据挖掘的知识。</span><br><span class="line">这里根据自己学习sklearn的经验，我做一个总结的笔记。另外，我也想把这篇笔记一直更新下去。</span><br></pre></td></tr></table></figure>
+<h2 id="1-scikit-learn基础介绍"><a href="#1-scikit-learn基础介绍" class="headerlink" title="1 scikit-learn基础介绍"></a>1 scikit-learn基础介绍</h2><h3 id="1-1-估计器（Estimator）"><a href="#1-1-估计器（Estimator）" class="headerlink" title="1.1 估计器（Estimator）"></a>1.1 估计器（Estimator）</h3><p>估计器，很多时候可以直接理解成分类器，主要包含两个函数：</p>
+<ul>
+<li>fit()：训练算法，设置内部参数。接收训练集和类别两个参数。</li>
+<li>predict()：预测测试集类别，参数为测试集。<br>大多数scikit-learn估计器接收和输出的数据格式均为numpy数组或类似格式。</li>
+</ul>
+<h3 id="1-2-转换器（Transformer）"><a href="#1-2-转换器（Transformer）" class="headerlink" title="1.2 转换器（Transformer）"></a>1.2 转换器（Transformer）</h3><p>转换器用于数据预处理和数据转换，主要是三个方法：</p>
+<ul>
+<li>fit()：训练算法，设置内部参数。</li>
+<li>transform()：数据转换。</li>
+<li>fit_transform()：合并fit和transform两个方法。</li>
+</ul>
+<h3 id="1-3-流水线（Pipeline）"><a href="#1-3-流水线（Pipeline）" class="headerlink" title="1.3 流水线（Pipeline）"></a>1.3 流水线（Pipeline）</h3><p><strong>sklearn.pipeline</strong>包</p>
+<h4 id="流水线的功能："><a href="#流水线的功能：" class="headerlink" title="流水线的功能："></a>流水线的功能：</h4><ul>
+<li>跟踪记录各步骤的操作（以方便地重现实验结果）</li>
+<li>对各步骤进行一个封装</li>
+<li>确保代码的复杂程度不至于超出掌控范围</li>
+</ul>
+<h4 id="基本使用方法"><a href="#基本使用方法" class="headerlink" title="基本使用方法"></a>基本使用方法</h4><p>流水线的输入为一连串的数据挖掘步骤，其中最后一步必须是估计器，前几步是转换器。输入的数据集经过转换器的处理后，输出的结果作为下一步的输入。最后，用位于流水线最后一步的估计器对数据进行分类。<br>每一步都用元组（ ‘名称’，步骤）来表示。现在来创建流水线。 </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">scaling_pipeline = Pipeline([</span><br><span class="line">  (<span class="string">&#x27;scale&#x27;</span>, MinMaxScaler()),</span><br><span class="line">  (<span class="string">&#x27;predict&#x27;</span>, KNeighborsClassifier())</span><br><span class="line">])</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-4-预处理"><a href="#1-4-预处理" class="headerlink" title="1.4 预处理"></a>1.4 预处理</h3><p>主要在<strong>sklearn.preprcessing</strong>包下。</p>
+<p><strong>规范化：</strong></p>
+<ul>
+<li><strong>MinMaxScaler</strong> :最大最小值规范化</li>
+<li><strong>Normalizer</strong> :使每条数据各特征值的和为1</li>
+<li><strong>StandardScaler</strong> :为使各特征的均值为0，方差为1</li>
+</ul>
+<p><strong>编码：</strong></p>
+<ul>
+<li><strong>LabelEncoder</strong> ：把字符串类型的数据转化为整型</li>
+<li><strong>OneHotEncoder</strong> ：特征用一个二进制数字来表示</li>
+<li><strong>Binarizer</strong> :为将数值型特征的二值化</li>
+<li><strong>MultiLabelBinarizer</strong>：多标签二值化</li>
+</ul>
+<h3 id="1-5-特征"><a href="#1-5-特征" class="headerlink" title="1.5 特征"></a>1.5 特征</h3><h4 id="1-5-1-特征抽取"><a href="#1-5-1-特征抽取" class="headerlink" title="1.5.1 特征抽取"></a>1.5.1 特征抽取</h4><p>包：<strong>sklearn.feature_extraction</strong><br>特征抽取是数据挖掘任务最为重要的一个环节，一般而言，它对最终结果的影响要高过数据挖掘算法本身。</p>
+<p>只有先把现实用特征表示出来，才能借助数据挖掘的力量找到问题的答案。</p>
+<p>特征选择的另一个优点在于：降低真实世界的复杂度，模型比现实更容易操纵。</p>
+<p>一般最常使用的特征抽取技术都是高度针对具体领域的，对于特定的领域，如图像处理，在过去一段时间已经开发了各种特征抽取的技术，但这些技术在其他领域的应用却非常有限。</p>
+<ul>
+<li><strong>DictVectorizer</strong>： 将dict类型的list数据，转换成numpy array</li>
+<li><strong>FeatureHasher</strong> ： 特征哈希，相当于一种降维技巧</li>
+<li><strong>image</strong>：图像相关的特征抽取</li>
+<li><strong>text</strong>： 文本相关的特征抽取</li>
+<li><strong>text.CountVectorizer</strong>：将文本转换为每个词出现的个数的向量</li>
+<li><strong>text.TfidfVectorizer</strong>：将文本转换为tfidf值的向量</li>
+<li><strong>text.HashingVectorizer</strong>：文本的特征哈希</li>
+</ul>
+<p><strong>示例</strong><br><img src="/machine_learning/Scikit-learn/data.png" alt="data.png"></p>
+<p>CountVectorize只数出现个数</p>
+<p><img src="/machine_learning/Scikit-learn/count.png" alt="count.png"></p>
+<p><img src="/machine_learning/Scikit-learn/hash.png" alt="hash.png"></p>
+<p>TfidfVectorizer：个数+归一化（不包括idf）</p>
+<p><img src="/machine_learning/Scikit-learn/tfidf.png" alt="tfidf(without idf).png"></p>
+<h4 id="1-5-2-特征选择"><a href="#1-5-2-特征选择" class="headerlink" title="1.5.2 特征选择"></a>1.5.2 特征选择</h4><p>包：<strong>sklearn.feature_selection</strong></p>
+<p>特征选择的原因如下：</p>
+<ul>
+<li><p>(1)降低复杂度</p>
+</li>
+<li><p>(2)降低噪音</p>
+</li>
+<li><p>(3)增加模型可读性</p>
+</li>
+<li><p><strong>VarianceThreshold</strong>： 删除特征值的方差达不到最低标准的特征</p>
+</li>
+<li><p><strong>SelectKBest</strong>： 返回<em>k</em>个最佳特征</p>
+</li>
+<li><p><strong>SelectPercentile</strong>： 返回表现最佳的前r%个特征</p>
+</li>
+</ul>
+<p>单个特征和某一类别之间相关性的计算方法有很多。最常用的有卡方检验（χ2）。其他方法还有互信息和信息熵。</p>
+<ul>
+<li><strong>chi2</strong>： 卡方检验（χ2）</li>
+</ul>
+<h3 id="1-6-降维"><a href="#1-6-降维" class="headerlink" title="1.6 降维"></a>1.6 降维</h3><p>包：<strong>sklearn.decomposition</strong></p>
+<ul>
+<li>主成分分析算法（Principal Component Analysis， PCA）的目的是找到能用较少信息描述数据集的特征组合。</li>
+</ul>
+<p>它意在发现彼此之间没有相关性、能够描述数据集的特征，确切说这些特征的方差跟整体方差没有多大差距，这样的特征也被称为主成分。</p>
+<p>这也就意味着，借助这种方法，就能通过更少的特征捕获到数据集的大部分信息。</p>
+<h3 id="1-7-组合"><a href="#1-7-组合" class="headerlink" title="1.7 组合"></a>1.7 组合</h3><p>包：<strong>sklearn.ensemble</strong></p>
+<p>组合技术即通过聚集多个分类器的预测来提高分类准确率。</p>
+<p>常用的组合分类器方法：</p>
+<ul>
+<li><p>(1)通过处理训练数据集。即通过某种抽样分布，对原始数据进行再抽样，得到多个训练集。常用的方法有装袋（bagging）和提升（boosting）。</p>
+</li>
+<li><p>(2)通过处理输入特征。即通过选择输入特征的子集形成每个训练集。适用于有大量冗余特征的数据集。随机森林（Random forest）就是一种处理输入特征的组合方法。</p>
+</li>
+<li><p>(3)通过处理类标号。适用于多分类的情况，将类标号随机划分成两个不相交的子集，再把问题变为二分类问题，重复构建多次模型，进行分类投票。</p>
+</li>
+<li><p><strong>BaggingClassifier</strong>： Bagging分类器组合</p>
+</li>
+<li><p><strong>BaggingRegressor</strong>： Bagging回归器组合</p>
+</li>
+<li><p><strong>AdaBoostClassifier</strong>： AdaBoost分类器组合</p>
+</li>
+<li><p><strong>AdaBoostRegressor</strong>： AdaBoost回归器组合</p>
+</li>
+<li><p><strong>GradientBoostingClassifier</strong>：GradientBoosting分类器组合</p>
+</li>
+<li><p><strong>GradientBoostingRegressor</strong>： GradientBoosting回归器组合</p>
+</li>
+<li><p><strong>ExtraTreeClassifier</strong>：ExtraTree分类器组合</p>
+</li>
+<li><p><strong>ExtraTreeRegressor</strong>： ExtraTree回归器组合</p>
+</li>
+<li><p><strong>RandomTreeClassifier</strong>：随机森林分类器组合</p>
+</li>
+<li><p><strong>RandomTreeRegressor</strong>： 随机森林回归器组合</p>
+</li>
+</ul>
+<p><strong>使用举例</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">AdaBoostClassifier(DecisionTreeClassifier(max_depth=<span class="number">1</span>),</span><br><span class="line">algorithm=<span class="string">&quot;SAMME&quot;</span>,</span><br><span class="line">n_estimators=<span class="number">200</span>)</span><br></pre></td></tr></table></figure>
+
+<p><strong>解释</strong></p>
+<p><strong>装袋（bagging）</strong>：</p>
+<p>根据均匀概率分布从数据集中重复抽样（有放回），每个自助样本集和原数据集一样大，每个自助样本集含有原数据集大约63%的数据。</p>
+<p>训练k个分类器，测试样本被指派到得票最高的类。</p>
+<p><strong>提升（boosting）</strong>：</p>
+<p>通过给样本设置不同的权值，每轮迭代调整权值。</p>
+<p>不同的提升算法之间的差别，一般是（1）如何更新样本的权值，（2）如何组合每个分类器的预测。</p>
+<p>其中Adaboost中，样本权值是增加那些被错误分类的样本的权值，分类器C_i的重要性依赖于它的错误率。</p>
+<p>Boosting主要关注降低偏差，因此Boosting能基于泛化性能相当弱的学习器构建出很强的集成；Bagging主要关注降低方差，因此它在不剪枝的决策树、神经网络等学习器上效用更为明显。</p>
+<p>偏差指的是算法的期望预测与真实预测之间的偏差程度，反应了模型本身的拟合能力；方差度量了同等大小的训练集的变动导致学习性能的变化，刻画了数据扰动所导致的影响。</p>
+<h3 id="1-8-模型评估（度量）"><a href="#1-8-模型评估（度量）" class="headerlink" title="1.8 模型评估（度量）"></a>1.8 模型评估（度量）</h3><p>包：<strong>sklearn.metrics</strong></p>
+<p>sklearn.metrics包含评分方法、性能度量、成对度量和距离计算。</p>
+<p><strong>分类结果度量</strong></p>
+<p>参数大多是y_true和y_pred。</p>
+<ul>
+<li><strong>accuracy_score</strong>：分类准确度</li>
+<li><strong>condusion_matrix</strong> ：分类混淆矩阵</li>
+<li><strong>classification_report</strong>：分类报告</li>
+<li><strong>precision_recall_fscore_support</strong>：计算精确度、召回率、f、支持率</li>
+<li><strong>jaccard_similarity_score</strong>：计算jcaard相似度</li>
+<li><strong>hamming_loss</strong>：计算汉明损失</li>
+<li><strong>zero_one_loss</strong>：0-1损失</li>
+<li><strong>hinge_loss</strong>：计算hinge损失</li>
+<li><strong>log_loss</strong>：计算log损失</li>
+</ul>
+<p>其中，F1是以<strong>每个类别</strong>为基础进行定义的，包括两个概念：准确率（precision）和召回率（recall）。准确率是指预测结果属于某一类的个体，实际属于该类的比例。召回率是被正确预测为某类的个体，与数据集中该类个体总数的比例。F1是准确率和召回率的调和平均数。</p>
+<p><strong>回归结果度量</strong></p>
+<ul>
+<li><strong>explained_varicance_score</strong>：可解释方差的回归评分函数</li>
+<li><strong>mean_absolute_error</strong>：平均绝对误差</li>
+<li><strong>mean_squared_error</strong>：平均平方误差</li>
+</ul>
+<p><strong>多标签的度量</strong></p>
+<ul>
+<li><strong>coverage_error</strong>：涵盖误差</li>
+<li><strong>label_ranking_average_precision_score</strong>：计算基于排名的平均误差Label ranking average precision (LRAP)</li>
+</ul>
+<p><strong>聚类的度量</strong></p>
+<ul>
+<li><strong>adjusted_mutual_info_score</strong>：调整的互信息评分</li>
+<li><strong>silhouette_score</strong>：所有样本的轮廓系数的平均值</li>
+<li><strong>silhouette_sample</strong>：所有样本的轮廓系数</li>
+</ul>
+<h3 id="1-9-交叉验证"><a href="#1-9-交叉验证" class="headerlink" title="1.9 交叉验证"></a>1.9 交叉验证</h3><p>包：<strong>sklearn.cross_validation</strong></p>
+<ul>
+<li><strong>KFold</strong>：K-Fold交叉验证迭代器。接收元素个数、fold数、是否清洗</li>
+<li><strong>LeaveOneOut</strong>：LeaveOneOut交叉验证迭代器</li>
+<li><strong>LeavePOut</strong>：LeavePOut交叉验证迭代器</li>
+<li><strong>LeaveOneLableOut</strong>：LeaveOneLableOut交叉验证迭代器</li>
+<li><strong>LeavePLabelOut</strong>：LeavePLabelOut交叉验证迭代器</li>
+</ul>
+<p>LeaveOneOut(n) 相当于 KFold(n, n_folds&#x3D;n) 相当于LeavePOut(n, p&#x3D;1)。</p>
+<p>LeaveP和LeaveOne差别在于leave的个数，也就是测试集的尺寸。LeavePLabel和LeaveOneLabel差别在于leave的Label的种类的个数。</p>
+<p>LeavePLabel这种设计是针对可能存在第三方的Label，比如我们的数据是一些季度的数据。</p>
+<p>那么很自然的一个想法就是把1,2,3个季度的数据当做训练集，第4个季度的数据当做测试集。</p>
+<p>这个时候只要输入每个样本对应的季度Label，就可以实现这样的功能。</p>
+<p>以下是实验代码，尽量自己多实验去理解。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding=utf-8</span></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> sklearnfrom sklearn</span><br><span class="line"><span class="keyword">import</span> cross_validation</span><br><span class="line">X = np.array([[<span class="number">1</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">4</span>], [<span class="number">5</span>, <span class="number">6</span>], [<span class="number">7</span>, <span class="number">8</span>],[<span class="number">9</span>, <span class="number">10</span>]])</span><br><span class="line">y = np.array([<span class="number">1</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>])</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">show_cross_val</span>(<span class="params">method</span>):    </span><br><span class="line">  <span class="keyword">if</span> method == <span class="string">&quot;lolo&quot;</span>:        </span><br><span class="line">    labels = np.array([<span class="string">&quot;summer&quot;</span>, <span class="string">&quot;winter&quot;</span>, <span class="string">&quot;summer&quot;</span>, <span class="string">&quot;winter&quot;</span>, <span class="string">&quot;spring&quot;</span>])        </span><br><span class="line">    cv = cross_validation.LeaveOneLabelOut(labels)          </span><br><span class="line">  <span class="keyword">elif</span> method == <span class="string">&#x27;lplo&#x27;</span>:        </span><br><span class="line">    labels = np.array([<span class="string">&quot;summer&quot;</span>, <span class="string">&quot;winter&quot;</span>, <span class="string">&quot;summer&quot;</span>, <span class="string">&quot;winter&quot;</span>, <span class="string">&quot;spring&quot;</span>])        </span><br><span class="line">    cv = cross_validation.LeavePLabelOut(labels,p=<span class="number">2</span>)    </span><br><span class="line">  <span class="keyword">elif</span> method == <span class="string">&#x27;loo&#x27;</span>:        </span><br><span class="line">    cv = cross_validation.LeaveOneOut(n=<span class="built_in">len</span>(y))    </span><br><span class="line">  <span class="keyword">elif</span> method == <span class="string">&#x27;lpo&#x27;</span>:        </span><br><span class="line">    cv = cross_validation.LeavePOut(n=<span class="built_in">len</span>(y),p=<span class="number">3</span>)    </span><br><span class="line">  <span class="keyword">for</span> train_index, test_index <span class="keyword">in</span> cv:        </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;TRAIN:&quot;</span>, train_index, <span class="string">&quot;TEST:&quot;</span>, test_index)        </span><br><span class="line">    X_train, X_test = X[train_index], X[test_index]        </span><br><span class="line">    y_train, y_test = y[train_index], y[test_index]        </span><br><span class="line">    <span class="built_in">print</span> <span class="string">&quot;X_train: &quot;</span>,X_train        </span><br><span class="line">    <span class="built_in">print</span> <span class="string">&quot;y_train: &quot;</span>, y_train        </span><br><span class="line">    <span class="built_in">print</span> <span class="string">&quot;X_test: &quot;</span>,X_test        </span><br><span class="line">    <span class="built_in">print</span> <span class="string">&quot;y_test: &quot;</span>,y_test</span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:    </span><br><span class="line">  show_cross_val(<span class="string">&quot;lpo&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p><strong>常用方法</strong></p>
+<ul>
+<li><strong>train_test_split</strong>：分离训练集和测试集（不是K-Fold）</li>
+<li><strong>cross_val_score</strong>：交叉验证评分，可以指认cv为上面的类的实例</li>
+<li><strong>cross_val_predict</strong>：交叉验证的预测。</li>
+</ul>
+<h3 id="1-10-网格搜索"><a href="#1-10-网格搜索" class="headerlink" title="1.10 网格搜索"></a>1.10 网格搜索</h3><p>包：<strong>sklearn.grid_search</strong></p>
+<p>网格搜索最佳参数</p>
+<ul>
+<li><strong>GridSearchCV</strong>：搜索指定参数网格中的最佳参数</li>
+<li><strong>ParameterGrid</strong>：参数网格</li>
+<li><strong>ParameterSampler</strong>：用给定分布生成参数的生成器</li>
+<li><strong>RandomizedSearchCV</strong>：超参的随机搜索<br>通过best_estimator_.get_params()方法，获取最佳参数。</li>
+</ul>
+<h3 id="1-11-多分类、多标签分类"><a href="#1-11-多分类、多标签分类" class="headerlink" title="1.11 多分类、多标签分类"></a>1.11 多分类、多标签分类</h3><p>包：<strong>sklearn.multiclass</strong></p>
+<ul>
+<li><strong>OneVsRestClassifier</strong>：1-rest多分类（多标签）策略</li>
+<li><strong>OneVsOneClassifier</strong>：1-1多分类策略</li>
+<li><strong>OutputCodeClassifier</strong>：1个类用一个二进制码表示</li>
+</ul>
+<p><strong>示例代码</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding=utf-8</span></span><br><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> metrics</span><br><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> cross_validation</span><br><span class="line"><span class="keyword">from</span> sklearn.svm <span class="keyword">import</span> SVC</span><br><span class="line"><span class="keyword">from</span> sklearn.multiclass <span class="keyword">import</span> OneVsRestClassifier</span><br><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> MultiLabelBinarizer</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> numpy <span class="keyword">import</span> random</span><br><span class="line">X=np.arange(<span class="number">15</span>).reshape(<span class="number">5</span>,<span class="number">3</span>)</span><br><span class="line">y=np.arange(<span class="number">5</span>)</span><br><span class="line">Y_1 = np.arange(<span class="number">5</span>)</span><br><span class="line">random.shuffle(Y_1)</span><br><span class="line">Y_2 = np.arange(<span class="number">5</span>)</span><br><span class="line">random.shuffle(Y_2)</span><br><span class="line">Y = np.c_[Y_1,Y_2]</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">multiclassSVM</span>():</span><br><span class="line">    X_train, X_test, y_train, y_test = cross_validation.train_test_split(X, y, test_size=<span class="number">0.2</span>,random_state=<span class="number">0</span>)</span><br><span class="line">    model = OneVsRestClassifier(SVC())</span><br><span class="line">    model.fit(X_train, y_train)</span><br><span class="line">    predicted = model.predict(X_test)</span><br><span class="line">    <span class="built_in">print</span> predicted</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">multilabelSVM</span>():</span><br><span class="line">    Y_enc = MultiLabelBinarizer().fit_transform(Y)</span><br><span class="line">    X_train, X_test, Y_train, Y_test = cross_validation.train_test_split(X, Y_enc, test_size=<span class="number">0.2</span>, random_state=<span class="number">0</span>)</span><br><span class="line">    model = OneVsRestClassifier(SVC())</span><br><span class="line">    model.fit(X_train, Y_train)</span><br><span class="line">    predicted = model.predict(X_test)</span><br><span class="line">    <span class="built_in">print</span> predicted</span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    multiclassSVM()</span><br><span class="line">    <span class="comment"># multilabelSVM()</span></span><br></pre></td></tr></table></figure>
+
+<p>上面的代码测试了svm在OneVsRestClassifier的包装下，分别处理多分类和多标签的情况。</p>
+<p>特别注意，在多标签的情况下，输入必须是二值化的。所以需要MultiLabelBinarizer()先处理。</p>
+<h1 id="2-具体模型"><a href="#2-具体模型" class="headerlink" title="2 具体模型"></a>2 具体模型</h1><h2 id="2-1-朴素贝叶斯（Naive-Bayes）"><a href="#2-1-朴素贝叶斯（Naive-Bayes）" class="headerlink" title="2.1 朴素贝叶斯（Naive Bayes）"></a>2.1 朴素贝叶斯（Naive Bayes）</h2><p>包：<strong>sklearn.cross_validation</strong></p>
+<p><img src="/machine_learning/Scikit-learn/nb.png" alt="朴素贝叶斯.png"></p>
+<p>朴素贝叶斯的特点是分类速度快，分类效果不一定是最好的。</p>
+<ul>
+<li><strong>GasussianNB</strong>：高斯分布的朴素贝叶斯</li>
+<li><strong>MultinomialNB</strong>：多项式分布的朴素贝叶斯</li>
+<li><strong>BernoulliNB</strong>：伯努利分布的朴素贝叶斯</li>
+</ul>
+<p>所谓使用什么分布的朴素贝叶斯，就是假设P(x_i|y)是符合哪一种分布，比如可以假设其服从高斯分布，然后用最大似然法估计高斯分布的参数。</p>
+<p><img src="/machine_learning/Scikit-learn/gs.png" alt="高斯分布.png"></p>
+<p><img src="/machine_learning/Scikit-learn/dxs.png" alt="多项式分布.png"></p>
+<p><img src="/machine_learning/Scikit-learn/bnl.png" alt="伯努利分布.png"></p>
+<h1 id="3-scikit-learn扩展"><a href="#3-scikit-learn扩展" class="headerlink" title="3 scikit-learn扩展"></a>3 scikit-learn扩展</h1><h3 id="3-0-概览"><a href="#3-0-概览" class="headerlink" title="3.0 概览"></a>3.0 概览</h3><p>具体的扩展，通常要继承<strong>sklearn.base</strong>包下的类。</p>
+<ul>
+<li><strong>BaseEstimator</strong>： 估计器的基类</li>
+<li><strong>ClassifierMixin</strong> ：分类器的混合类</li>
+<li><strong>ClusterMixin</strong>：聚类器的混合类</li>
+<li><strong>RegressorMixin</strong> ：回归器的混合类</li>
+<li><strong>TransformerMixin</strong> ：转换器的混合类</li>
+</ul>
+<p>关于什么是Mixin（混合类），具体可以看这个<a href="https://www.zhihu.com/question/20778853">知乎链接</a>。</p>
+<p>简单地理解，就是带有实现方法的接口，可以将其看做是组合模式的一种实现。</p>
+<p>举个例子，比如说常用的TfidfTransformer，继承了BaseEstimator， TransformerMixin，因此它的基本功能就是单一职责的估计器和转换器的组合。</p>
+<h3 id="3-1-创建自己的转换器"><a href="#3-1-创建自己的转换器" class="headerlink" title="3.1 创建自己的转换器"></a>3.1 创建自己的转换器</h3><p>在特征抽取的时候，经常会发现自己的一些数据预处理的方法，sklearn里可能没有实现，但若直接在数据上改，又容易将代码弄得混乱，难以重现实验。</p>
+<p>这个时候最好自己创建一个转换器，在后面将这个转换器放到pipeline里，统一管理。</p>
+<p>例如《Python数据挖掘入门与实战》书中的例子，我们想接收一个numpy数组，根据其均值将其离散化，任何高于均值的特征值替换为1，小于或等于均值的替换为0。</p>
+<p>代码实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.base <span class="keyword">import</span> TransformerMixin</span><br><span class="line"><span class="keyword">from</span> sklearn.utils <span class="keyword">import</span> as_float_array</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MeanDiscrete</span>(<span class="title class_ inherited__">TransformerMixin</span>):</span><br><span class="line">  </span><br><span class="line">  <span class="comment">#计算出数据集的均值，用内部变量保存该值。  </span></span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">fit</span>(<span class="params">self, X, y=<span class="literal">None</span></span>):</span><br><span class="line">        X = as_float_array(X)</span><br><span class="line">        <span class="variable language_">self</span>.mean = np.mean(X, axis=<span class="number">0</span>)</span><br><span class="line">        <span class="comment">#返回self，确保在转换器中能够进行链式调用（例如调用transformer.fit(X).transform(X)）</span></span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">transform</span>(<span class="params">self, X</span>):</span><br><span class="line">        X = as_float_array(X)</span><br><span class="line">        <span class="keyword">assert</span> X.shape[<span class="number">1</span>] == <span class="variable language_">self</span>.mean.shape[<span class="number">0</span>]</span><br><span class="line">        <span class="keyword">return</span> X &gt; <span class="variable language_">self</span>.mean</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+              <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/python/numpy_beginer/" rel="prev" title="numpy基础">
+                  <i class="fa fa-angle-left"></i> numpy基础
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/nlp/naive_bayes/" rel="next" title="基于朴素贝叶斯的自然语言分类器">
+                  基于朴素贝叶斯的自然语言分类器 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

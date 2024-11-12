@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="机器学习中的Monte-Carlo来说一下机器学习中Monte-Carlo中用在什么地方：  贝叶斯推论和学习： 归一化：$p(x | y) &#x3D;\frac{p(y | x)p(x)}{\int_Xp(y| x’)p(x’)dx’}$ 边缘概率的计算：$p(x | y) &#x3D; \int_Z p(x, z | y)dz$ 求期望：$E_{p(x|y)}(f(x)) &#x3D; \i">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习中的Monte Carlo（笔记和python实现）">
+<meta property="og:url" content="https://applenob.github.io/machine_learning/MCMC/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="机器学习中的Monte-Carlo来说一下机器学习中Monte-Carlo中用在什么地方：  贝叶斯推论和学习： 归一化：$p(x | y) &#x3D;\frac{p(y | x)p(x)}{\int_Xp(y| x’)p(x’)dx’}$ 边缘概率的计算：$p(x | y) &#x3D; \int_Z p(x, z | y)dz$ 求期望：$E_{p(x|y)}(f(x)) &#x3D; \i">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://applenob.github.io/machine_learning/MCMC/gausian.png">
+<meta property="og:image" content="https://applenob.github.io/machine_learning/MCMC/rejection_sampling.png">
+<meta property="og:image" content="https://applenob.github.io/machine_learning/MCMC/reject_exp.png">
+<meta property="og:image" content="https://applenob.github.io/machine_learning/MCMC/importance_exp.png">
+<meta property="og:image" content="https://applenob.github.io/machine_learning/MCMC/mha.png">
+<meta property="og:image" content="https://applenob.github.io/machine_learning/MCMC/mha2.png">
+<meta property="og:image" content="https://applenob.github.io/machine_learning/MCMC/mha3.png">
+<meta property="og:image" content="https://applenob.github.io/machine_learning/MCMC/f1.png">
+<meta property="og:image" content="https://applenob.github.io/machine_learning/MCMC/gibbs.png">
+<meta property="article:published_time" content="2016-11-21T01:00:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.078Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="Machine Learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://applenob.github.io/machine_learning/MCMC/gausian.png">
+
+
+<link rel="canonical" href="https://applenob.github.io/machine_learning/MCMC/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/machine_learning/MCMC/","path":"machine_learning/MCMC/","title":"机器学习中的Monte Carlo（笔记和python实现）"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>机器学习中的Monte Carlo（笔记和python实现） | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E4%B8%AD%E7%9A%84Monte-Carlo"><span class="nav-number">1.</span> <span class="nav-text">机器学习中的Monte-Carlo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9A%8F%E6%9C%BA%E9%87%87%E6%A0%B7%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.</span> <span class="nav-text">随机采样介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A6%BB%E6%95%A3%E5%88%86%E5%B8%83%E9%87%87%E6%A0%B7"><span class="nav-number">3.</span> <span class="nav-text">离散分布采样</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9E%E7%BB%AD%E5%88%86%E5%B8%83%E9%87%87%E6%A0%B7"><span class="nav-number">4.</span> <span class="nav-text">连续分布采样</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Box-Muller%E7%AE%97%E6%B3%95"><span class="nav-number">4.1.</span> <span class="nav-text">Box-Muller算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8B%92%E7%BB%9D%E9%87%87%E6%A0%B7"><span class="nav-number">5.</span> <span class="nav-text">拒绝采样</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E8%A6%81%E6%80%A7%E9%87%87%E6%A0%B7"><span class="nav-number">6.</span> <span class="nav-text">重要性采样</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MCMC"><span class="nav-number">7.</span> <span class="nav-text">MCMC</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Metropolis-Hastings-Algorithm"><span class="nav-number">7.1.</span> <span class="nav-text">Metropolis-Hastings Algorithm</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Gibbs-Sampling"><span class="nav-number">7.2.</span> <span class="nav-text">Gibbs Sampling</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/machine_learning/MCMC/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="机器学习中的Monte Carlo（笔记和python实现） | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          机器学习中的Monte Carlo（笔记和python实现）
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2016-11-20 17:00:00" itemprop="dateCreated datePublished" datetime="2016-11-20T17:00:00-08:00">2016-11-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="机器学习中的Monte-Carlo"><a href="#机器学习中的Monte-Carlo" class="headerlink" title="机器学习中的Monte-Carlo"></a>机器学习中的Monte-Carlo</h2><p>来说一下机器学习中Monte-Carlo中用在什么地方：</p>
+<ul>
+<li>贝叶斯推论和学习：<ul>
+<li>归一化：$p(x | y) &#x3D;\frac{p(y | x)p(x)}{\int_Xp(y| x’)p(x’)dx’}$</li>
+<li>边缘概率的计算：$p(x | y) &#x3D; \int_Z p(x, z | y)dz$</li>
+<li>求期望：$E_{p(x|y)}(f(x)) &#x3D; \int_Xf(x)p(x|y)dx$</li>
+</ul>
+</li>
+<li>上面三处都用到了积分，Monte-Carlo的核心思想即<strong>用样本的和去近似积分</strong>。</li>
+</ul>
+<h2 id="随机采样介绍"><a href="#随机采样介绍" class="headerlink" title="随机采样介绍"></a>随机采样介绍</h2><p>所谓采样，实际上是指根据<strong>某种分布去生成一些数据点</strong>，比如“石头剪刀布”的游戏，服从均匀分布，且概率都是三分之一，采样即希望随机获得一个“石头”或者“剪刀”或者“布”，并且每中情况出现的机会应该是一样的。也就是说，这是我们根据<strong>观察数据再确定分布的过程的逆过程</strong>。</p>
+<p>最基本的假设是认为我们可以获得服从<strong>均匀分布</strong>的随机数。一般的采样问题，都可以理解成：<strong>有了均匀分布（简单分布）的采样，如何去获取复杂分布的采样。</strong></p>
+<h2 id="离散分布采样"><a href="#离散分布采样" class="headerlink" title="离散分布采样"></a>离散分布采样</h2><p>对于<strong>离散的分布</strong>，比如$p(x)&#x3D;[0.1, 0.5, 0.2, 0.2]^T$，那么我们可以从$u \sim<br>U_{(0,1)}$中采样，把概率分布向量看做一个区间段，然后判断$u$落在哪个区间段内。<strong>区间段的长度和概率成正比，这样采样完全符合原来的分布。</strong><br>通过一个例子实现：</p>
+<p>假设上面的向量，分别对应“你”，“好”，“合”，“协”四个字分别出现的概率，那么我们随机采样几次，看看出现的结果。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">index2word = [<span class="string">&quot;你&quot;</span>,<span class="string">&quot;好&quot;</span>,<span class="string">&quot;合&quot;</span>,<span class="string">&quot;协&quot;</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">sample_discrete</span>(<span class="params">vec</span>):</span><br><span class="line">    u = np.random.rand()</span><br><span class="line">    start = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i, num <span class="keyword">in</span> <span class="built_in">enumerate</span>(vec):      </span><br><span class="line">        <span class="keyword">if</span> u &gt; start:</span><br><span class="line">            start += num</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> i-<span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> i</span><br><span class="line"></span><br><span class="line">count = <span class="built_in">dict</span>([(w, <span class="number">0</span>) <span class="keyword">for</span> w <span class="keyword">in</span> index2word])</span><br><span class="line"><span class="comment"># 采样1000次</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1000</span>):    </span><br><span class="line">    s = sample_discrete([<span class="number">0.1</span>, <span class="number">0.5</span>, <span class="number">0.2</span>, <span class="number">0.2</span>])</span><br><span class="line">    count[index2word[s]] += <span class="number">1</span></span><br><span class="line"><span class="keyword">for</span> k <span class="keyword">in</span> count:</span><br><span class="line">    <span class="built_in">print</span>(k,<span class="string">&quot; : &quot;</span>, count[k])</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">你  :  110</span><br><span class="line">好  :  493</span><br><span class="line">协  :  216</span><br><span class="line">合  :  181</span><br></pre></td></tr></table></figure>
+
+<p>可以看到采样的频率比较符合设定的概率分布：$[0.1,0.5,0.2,0.2]$</p>
+<h2 id="连续分布采样"><a href="#连续分布采样" class="headerlink" title="连续分布采样"></a>连续分布采样</h2><p>对于<strong>连续的分布</strong>，如果可以计算这个分布的<strong>累积分布函数（CDF）</strong>，就可以通过计算CDF的<strong>反函数</strong>，结合基础的均匀分布，获得其采样。所以，在这个基础上我们又可以获得一些简单的分布的采样。</p>
+<h3 id="Box-Muller算法"><a href="#Box-Muller算法" class="headerlink" title="Box-Muller算法"></a>Box-Muller算法</h3><p><strong>Box-Muller算法</strong>，实现对<strong>高斯分布</strong>的采样。</p>
+<p><strong>原理</strong>:</p>
+<ul>
+<li>假设随机变量$x,y$都服从标准高斯分布，则有：$f(x,y) &#x3D;<br>\frac{1}{\sqrt{2\pi}}e^{-x^2&#x2F;2}\frac{1}{\sqrt{2\pi}}e^{-y^2&#x2F;2}&#x3D;\frac{1}{\sqrt{2\pi}}e^{-(x^2+y^2)&#x2F;2}$。</li>
+<li>如果使用极坐标系，即$x&#x3D;rsin(\theta)$，$y&#x3D;rcos(\theta)$，有$r^2 &#x3D; x^2+y^2$。</li>
+<li>求CDF：$P(r\leq R) &#x3D; \int_{r&#x3D;0}^R\int_{\theta&#x3D;0}^{2\pi}\frac{1}{2\pi}e^{r^2}r;drd\theta&#x3D;\int_{r&#x3D;0}^r&#x3D;e^{-r^2}r;dr$</li>
+<li>用$s&#x3D;\frac{1}{2}r^2$带入，得：$P(r\leq R) &#x3D; \int _{s&#x3D;0}^{r^2&#x2F;2}e^{-s}ds &#x3D; 1 - e^{-r^2&#x2F;2}$</li>
+<li>则，随机采样$\theta$服从均与分布，范围是$0 \leq \theta \leq 1$，可以使$\theta&#x3D;2\pi U_1$。</li>
+<li>$1-e^{-r^2&#x2F;2}&#x3D;1-U_2$即$r&#x3D;\sqrt{-1ln(U_2)}$</li>
+</ul>
+<p><strong>算法流程</strong>：</p>
+<ul>
+<li>抽样两个服从均匀分布的随机数：$0<br>\leq U_1, U_2, \leq 1$。</li>
+<li>令$\theta &#x3D; 2\pi U_1$，$r&#x3D;\sqrt{-2ln(U_2)}$</li>
+<li>$x&#x3D;rsin(\theta)$，$y&#x3D;rcos(\theta)$ 都是服从标准高斯分布的变量。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Code from Chapter 14 of Machine Learning: An Algorithmic Perspective</span></span><br><span class="line"><span class="comment"># by Stephen Marsland (http://seat.massey.ac.nz/personal/s.r.marsland/MLBook.html)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># You are free to use, change, or redistribute the code in any way you wish for</span></span><br><span class="line"><span class="comment"># non-commercial purposes, but please maintain the name of the original author.</span></span><br><span class="line"><span class="comment"># This code comes with no warranty of any kind.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Stephen Marsland, 2008</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The Box-Muller algorithm for constructing pseudo-random Gaussian-distributed numbers</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pylab <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">boxmuller</span>(<span class="params">n</span>):</span><br><span class="line">    </span><br><span class="line">    x = np.zeros((n,<span class="number">2</span>))</span><br><span class="line">    y = np.zeros((n,<span class="number">2</span>))</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(n):</span><br><span class="line">        x[i,:] = np.array([<span class="number">2</span>,<span class="number">2</span>])</span><br><span class="line">        x2 = x[i,<span class="number">0</span>]*x[i,<span class="number">0</span>]+x[i,<span class="number">1</span>]*x[i,<span class="number">1</span>]</span><br><span class="line">        <span class="keyword">while</span> (x2)&gt;<span class="number">1</span>:</span><br><span class="line">            x[i,:] = np.random.rand(<span class="number">2</span>)*<span class="number">2</span>-<span class="number">1</span></span><br><span class="line">            x2 = x[i,<span class="number">0</span>]*x[i,<span class="number">0</span>]+x[i,<span class="number">1</span>]*x[i,<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">        y[i,:] = x[i,:] * np.sqrt((-<span class="number">2</span>*log(x2))/x2)</span><br><span class="line">    </span><br><span class="line">    y = np.reshape(y,<span class="number">2</span>*n,<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> y</span><br><span class="line"></span><br><span class="line">y = boxmuller(<span class="number">1000</span>)</span><br><span class="line">hist(y,normed=<span class="number">1</span>,fc=<span class="string">&#x27;c&#x27;</span>)</span><br><span class="line">x = arange(-<span class="number">4</span>,<span class="number">4</span>,<span class="number">0.1</span>)</span><br><span class="line">plot(x,<span class="number">1</span>/np.sqrt(<span class="number">2</span>*np.pi)*np.exp(-<span class="number">0.5</span>*x**<span class="number">2</span>),<span class="string">&#x27;g&#x27;</span>,lw=<span class="number">6</span>)</span><br><span class="line">xlabel(<span class="string">&#x27;x&#x27;</span>,fontsize=<span class="number">24</span>)</span><br><span class="line">ylabel(<span class="string">&#x27;p(x)&#x27;</span>,fontsize=<span class="number">24</span>)</span><br><span class="line">show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/machine_learning/MCMC/gausian.png"></p>
+<p>接下来，我们专注于复杂的任意分布的采样。</p>
+<h2 id="拒绝采样"><a href="#拒绝采样" class="headerlink" title="拒绝采样"></a>拒绝采样</h2><p>拒绝采样（Rejection Sampling）。</p>
+<p>假设我们已经可以抽样高斯分布q(x)（如Box–Muller_transform 算法），我们按照一定的方法<strong>拒绝</strong>某些样本，达到接近$p(x)$分布的目的:</p>
+<p><img src="/machine_learning/MCMC/rejection_sampling.png" alt="reject"></p>
+<p>具体操作：</p>
+<ul>
+<li>首先，确定常量$k$，使得$p(x)$总在$kq(x)$的下方。</li>
+<li>$x$轴方向：从$q(x)$分布抽样得到$a$。但是$a$并不一定留下，会有一定的几率被<strong>拒绝</strong>。</li>
+<li>$y$轴方向：从均匀分布$(0,kq(a))$中抽样得到$u$。如果$u&gt;p(a)$，也就是落到了灰色的区域中，拒绝，否则接受这次抽样。</li>
+</ul>
+<p>拒绝采样实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Code from Chapter 14 of Machine Learning: An Algorithmic Perspective</span></span><br><span class="line"><span class="comment"># The basic rejection sampling algorithm</span></span><br><span class="line"><span class="comment"># 稍有修改，使用matplotlib</span></span><br><span class="line"></span><br><span class="line">%matplotlib inline </span><br><span class="line"><span class="keyword">import</span> matplotlib</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> seaborn</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">qsample</span>():</span><br><span class="line">    <span class="string">&quot;&quot;&quot;使用均匀分布作为q(x)，返回采样&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> np.random.rand()*<span class="number">4.</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">p</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;目标分布&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0.3</span>*np.exp(-(x-<span class="number">0.3</span>)**<span class="number">2</span>) + <span class="number">0.7</span>* np.exp(-(x-<span class="number">2.</span>)**<span class="number">2</span>/<span class="number">0.3</span>) </span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">rejection</span>(<span class="params">nsamples</span>):</span><br><span class="line">    </span><br><span class="line">    M = <span class="number">0.72</span><span class="comment">#0.8 k值</span></span><br><span class="line">    samples = np.zeros(nsamples,dtype=<span class="built_in">float</span>)</span><br><span class="line">    count = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(nsamples):</span><br><span class="line">        accept = <span class="literal">False</span></span><br><span class="line">        <span class="keyword">while</span> <span class="keyword">not</span> accept:</span><br><span class="line">            x = qsample()</span><br><span class="line">            u = np.random.rand()*M</span><br><span class="line">            <span class="keyword">if</span> u&lt;p(x):</span><br><span class="line">                accept = <span class="literal">True</span></span><br><span class="line">                samples[i] = x</span><br><span class="line">            <span class="keyword">else</span>: </span><br><span class="line">                count += <span class="number">1</span></span><br><span class="line">    <span class="built_in">print</span> <span class="string">&quot;reject count: &quot;</span>, count   </span><br><span class="line">    <span class="keyword">return</span> samples</span><br><span class="line"></span><br><span class="line">x = np.arange(<span class="number">0</span>,<span class="number">4</span>,<span class="number">0.01</span>)</span><br><span class="line">x2 = np.arange(-<span class="number">0.5</span>,<span class="number">4.5</span>,<span class="number">0.1</span>)</span><br><span class="line">realdata = <span class="number">0.3</span>*np.exp(-(x-<span class="number">0.3</span>)**<span class="number">2</span>) + <span class="number">0.7</span>* np.exp(-(x-<span class="number">2.</span>)**<span class="number">2</span>/<span class="number">0.3</span>) </span><br><span class="line">box = np.ones(<span class="built_in">len</span>(x2))*<span class="number">0.75</span><span class="comment">#0.8</span></span><br><span class="line">box[:<span class="number">5</span>] = <span class="number">0</span></span><br><span class="line">box[-<span class="number">5</span>:] = <span class="number">0</span></span><br><span class="line">plt.plot(x,realdata,<span class="string">&#x27;g&#x27;</span>,lw=<span class="number">3</span>)</span><br><span class="line">plt.plot(x2,box,<span class="string">&#x27;r--&#x27;</span>,lw=<span class="number">3</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line">t0=time.time()</span><br><span class="line">samples = rejection(<span class="number">10000</span>)</span><br><span class="line">t1=time.time()</span><br><span class="line"><span class="built_in">print</span> <span class="string">&quot;Time &quot;</span>,t1-t0</span><br><span class="line"></span><br><span class="line">plt.hist(samples,<span class="number">15</span>,normed=<span class="number">1</span>,fc=<span class="string">&#x27;c&#x27;</span>)</span><br><span class="line">plt.xlabel(<span class="string">&#x27;x&#x27;</span>,fontsize=<span class="number">24</span>)</span><br><span class="line">plt.ylabel(<span class="string">&#x27;p(x)&#x27;</span>,fontsize=<span class="number">24</span>)</span><br><span class="line">plt.axis([-<span class="number">0.5</span>,<span class="number">4.5</span>,<span class="number">0</span>,<span class="number">1</span>])</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/machine_learning/MCMC/reject_exp.png"></p>
+<p>在高维的情况下，Rejection Sampling有两个问题：</p>
+<ol>
+<li>合适的q分布很难找</li>
+<li>很难确定一个合理的k值</li>
+</ol>
+<p>导致拒绝率很高。</p>
+<h2 id="重要性采样"><a href="#重要性采样" class="headerlink" title="重要性采样"></a>重要性采样</h2><p>重要性采样（Importance Sampling）。</p>
+<p>$$E(f)&#x3D; \int p(x)f(x) dx$$</p>
+<p>$$ &#x3D; \int q(x)\frac{p(x)f(x)}{q(x)} dx$$</p>
+<p>其中可以把$w(x)&#x3D;\frac{p(x)}{q(x)}$称为<strong>重要性权重（importance weight）</strong></p>
+<p><strong>重要性采样算法</strong>：</p>
+<ul>
+<li>从简单分布$q(x)$中采样N个样本$x^{(i)}$</li>
+<li>计算归一化的重要性权重：$w^{(i)} &#x3D;\frac{p(x^{(i)})&#x2F;q(x^{(i)})}{\sum_j p(x^{(j)})&#x2F;q(x^{(j)})}$</li>
+<li>再在分布${x^{(i)}}$中，按照权重$w^{(i)}$作为概率做采样。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">qsample</span>():</span><br><span class="line">    <span class="keyword">return</span> np.random.rand()*<span class="number">4.</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">p</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0.3</span>*np.exp(-(x-<span class="number">0.3</span>)**<span class="number">2</span>) + <span class="number">0.7</span>* np.exp(-(x-<span class="number">2.</span>)**<span class="number">2</span>/<span class="number">0.3</span>) </span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">q</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="number">4.0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">importance</span>(<span class="params">nsamples</span>):</span><br><span class="line">    </span><br><span class="line">    samples = np.zeros(nsamples,dtype=<span class="built_in">float</span>)</span><br><span class="line">    w = np.zeros(nsamples,dtype=<span class="built_in">float</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(nsamples):</span><br><span class="line">        samples[i] = qsample()</span><br><span class="line">        w[i] = p(samples[i])/q(samples[i])</span><br><span class="line">                </span><br><span class="line">    <span class="keyword">return</span> samples, w</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">sample_discrete</span>(<span class="params">vec</span>):</span><br><span class="line">    u = np.random.rand()</span><br><span class="line">    start = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i, num <span class="keyword">in</span> <span class="built_in">enumerate</span>(vec):      </span><br><span class="line">        <span class="keyword">if</span> u &gt; start:</span><br><span class="line">            start += num</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> i-<span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> i</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">importance_sampling</span>(<span class="params">nsamples</span>):</span><br><span class="line">    samples, w = importance(nsamples)</span><br><span class="line">    final_samples = np.zeros(nsamples,dtype=<span class="built_in">float</span>)</span><br><span class="line">    w = w / w.<span class="built_in">sum</span>()</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(nsamples):</span><br><span class="line">        final_samples[j] = samples[sample_discrete(w)]</span><br><span class="line">    <span class="keyword">return</span> final_samples</span><br><span class="line"></span><br><span class="line">x = np.arange(<span class="number">0</span>,<span class="number">4</span>,<span class="number">0.01</span>)</span><br><span class="line">x2 = np.arange(-<span class="number">0.5</span>,<span class="number">4.5</span>,<span class="number">0.1</span>)</span><br><span class="line">realdata = <span class="number">0.3</span>*np.exp(-(x-<span class="number">0.3</span>)**<span class="number">2</span>) + <span class="number">0.7</span>* np.exp(-(x-<span class="number">2.</span>)**<span class="number">2</span>/<span class="number">0.3</span>) </span><br><span class="line">box = np.ones(<span class="built_in">len</span>(x2))*<span class="number">0.8</span></span><br><span class="line">box[:<span class="number">5</span>] = <span class="number">0</span></span><br><span class="line">box[-<span class="number">5</span>:] = <span class="number">0</span></span><br><span class="line">plt.plot(x,realdata,<span class="string">&#x27;g&#x27;</span>,lw=<span class="number">6</span>)</span><br><span class="line">plt.plot(x2,box,<span class="string">&#x27;r--&#x27;</span>,lw=<span class="number">6</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># samples,w = importance(5000)</span></span><br><span class="line">final_samples = importance_sampling(<span class="number">5000</span>)</span><br><span class="line">plt.hist(final_samples,normed=<span class="number">1</span>,fc=<span class="string">&#x27;c&#x27;</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/machine_learning/MCMC/importance_exp.png"></p>
+<p>可以明显感觉到重要性采样，速度比较慢。</p>
+<h2 id="MCMC"><a href="#MCMC" class="headerlink" title="MCMC"></a>MCMC</h2><p>MCMC（Markov Chain Monte Carlo），上面提到的方法都是可以并行的，即某一个样本的产生不依赖于上一个样本的抽样；MCMC是一个链式的抽样过程，即每一个样本抽样跟且只跟上一个样本的抽样相关。</p>
+<p>因此我们引入<strong>概率转移矩阵</strong>$T$，即某一时刻是状态$s$，那么下一时刻状态是$s’$的概率是：$T(s,s’)$，于是问题变转换成了某一时刻有一个抽样，那么下一个时刻抽样的概率由$T$决定。</p>
+<p>另外，不要忘了，不管是从什么状态开始抽样，我们都期望在第$i$次的分布概率$p(x^{(i)})$可以收敛到实际分布$p(x)$。<br>马尔科夫链若收敛，$T$需要满足:</p>
+<ul>
+<li>不可化简（irreducibility）：即对于x任何可能的取值，都有机会（概率大于0）到达其他的取值（不一定要下一期，只要是在有限的时刻内），即上面的图是闭环的。</li>
+<li>非周期的（aperiodicity）</li>
+<li>细致平稳条件（detail balance）$p(x)T(x,x’)&#x3D;p(x’)T(x’,x)$，保证了chain是reversible。</li>
+</ul>
+<p><strong>关键</strong>：构造转移矩阵$T$，使得平稳分布恰好是我们需要的分布$p(x)$。</p>
+<h3 id="Metropolis-Hastings-Algorithm"><a href="#Metropolis-Hastings-Algorithm" class="headerlink" title="Metropolis-Hastings Algorithm"></a>Metropolis-Hastings Algorithm</h3><p>Metropolis-Hastings的核心思想类似于拒绝采样：我们有一个采样$x^*$，要决定是否留下它。类似的，我们也有一个建议分布$q(x_i|x_{i-1})$。和拒绝采样<strong>不同</strong>的是，<strong>一旦拒绝新的采样，将采样当前的采样作为新采样</strong>。这也是这个算法之所以高效的原因。</p>
+<p>算法介绍：对于目标分布$p(x)$，首先给定参考条件概率分布$q(x^*|x)$，然后基于当前x的抽样一个新样本$x^*$，然后依据一定的概率移动到$x^*$（否则还留在$x$），这个概率是接受概率$A(x_i,x^*)&#x3D;min{1,\frac{p(x^*)q(x_i|x^*)}{p(x_i)q(x^*|x_i)}}$</p>
+<p><strong>接受概率的推导</strong>：上面的细致平稳条件：$p(x)T(x,x’)&#x3D;p(x’)T(x’,x)$，我们希望根据一个建议分布$q$和一个接受率$a$来等价于$T$。即：$p(i)q(i,j)a(i, j) &#x3D; p(j)q(j,i)a(j,i)$。令$a(j,i)&#x3D;1$，有$a(i,j)&#x3D;\frac{p(j)q(j,i)}{p(i)q(j,i)}$。注：这段推导的符号标记和全文的风格不太相同，也比较简洁。</p>
+<p><strong>算法流程</strong>：</p>
+<ul>
+<li>给顶一个初始值$x_0$</li>
+<li>重复以下步骤：<ul>
+<li>从$q(x_i|x_{i-1})$中采样一个样本$x^*$。</li>
+<li>从均匀分布中抽样一个$u$。</li>
+<li>如果$u&lt;A(x_i,x^*)$<ul>
+<li>$x_{i+1} &#x3D; x^*$</li>
+</ul>
+</li>
+<li>否则：<ul>
+<li>$x_{i+1} &#x3D; x_i$</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>接受概率$A(x_i,x^*)$有个形象的比喻：假设你目前在一片高低不平的山地上，<strong>你此行的目的是在海拔越高的地方停留越久</strong>（$p(x)$大的时候，样本里$x$就多）。你的方法是随便指一个新的地方，如果这个地方的海拔更高，那么就移动过去；但如果这个地方的海拔比当前低，你就抛一个不均匀的硬币决定是否过去，而硬币的不均匀程度相当于新海拔和当前海拔的比例。也即新海拔若是当前海拔的一半，你就只有1&#x2F;2的概率会过去。MH算法中$q(x^*|x_i)$就是按照一定的规律指出一个新方向，$A(x_i,x^*)$就是计算相对高度。</p>
+<p>基于上述想法的MH算法实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># my own try </span></span><br><span class="line"><span class="keyword">import</span> scipy.stats</span><br><span class="line">mu = <span class="number">3</span></span><br><span class="line">sigma = <span class="number">10</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">qsample</span>():</span><br><span class="line">    <span class="keyword">return</span> np.random.normal(mu,sigma)</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">q</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="keyword">return</span> exp(-(x-mu)**<span class="number">2</span>/(sigma**<span class="number">2</span>))</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">p</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;目标分布&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0.3</span>*np.exp(-(x-<span class="number">0.3</span>)**<span class="number">2</span>) + <span class="number">0.7</span>* np.exp(-(x-<span class="number">2.</span>)**<span class="number">2</span>/<span class="number">0.3</span>)</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">hm</span>(<span class="params">n=<span class="number">10000</span></span>):</span><br><span class="line">    sample = np.zeros(n)</span><br><span class="line">    sample[<span class="number">0</span>] = <span class="number">0.5</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(n-<span class="number">1</span>):</span><br><span class="line">        q_s = qsample()</span><br><span class="line">        u = np.random.rand()</span><br><span class="line">        <span class="keyword">if</span> u &lt; <span class="built_in">min</span>(<span class="number">1</span>, (p(q_s)*q(sample[i]))/(p(sample[i])*q(q_s))):</span><br><span class="line">            sample[i+<span class="number">1</span>] = q_s</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            sample[i+<span class="number">1</span>] = sample[i]</span><br><span class="line">    <span class="keyword">return</span> sample</span><br><span class="line"></span><br><span class="line">x = np.arange(<span class="number">0</span>,<span class="number">4</span>,<span class="number">0.1</span>)</span><br><span class="line">realdata = p(x)</span><br><span class="line">N=<span class="number">10000</span></span><br><span class="line">sample = hm(N)</span><br><span class="line">plt.plot(x,realdata,<span class="string">&#x27;g&#x27;</span>,lw=<span class="number">3</span>)</span><br><span class="line">plt.plot(x,q(x),<span class="string">&#x27;r&#x27;</span>)</span><br><span class="line">plt.hist(sample,bins=x,normed=<span class="number">1</span>,fc=<span class="string">&#x27;c&#x27;</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/machine_learning/MCMC/mha.png"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Code from Chapter 14 of Machine Learning: An Algorithmic Perspective</span></span><br><span class="line"><span class="comment"># by Stephen Marsland (http://seat.massey.ac.nz/personal/s.r.marsland/MLBook.html)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># You are free to use, change, or redistribute the code in any way you wish for</span></span><br><span class="line"><span class="comment"># non-commercial purposes, but please maintain the name of the original author.</span></span><br><span class="line"><span class="comment"># This code comes with no warranty of any kind.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Stephen Marsland, 2008</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The Metropolis-Hastings algorithm</span></span><br><span class="line"><span class="keyword">from</span> pylab <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> numpy <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">p</span>(<span class="params">x</span>):</span><br><span class="line">    mu1 = <span class="number">3</span></span><br><span class="line">    mu2 = <span class="number">10</span></span><br><span class="line">    v1 = <span class="number">10</span></span><br><span class="line">    v2 = <span class="number">3</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0.3</span>*exp(-(x-mu1)**<span class="number">2</span>/v1) + <span class="number">0.7</span>* exp(-(x-mu2)**<span class="number">2</span>/v2)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">q</span>(<span class="params">x</span>):</span><br><span class="line">    mu = <span class="number">5</span></span><br><span class="line">    sigma = <span class="number">10</span></span><br><span class="line">    <span class="keyword">return</span> exp(-(x-mu)**<span class="number">2</span>/(sigma**<span class="number">2</span>))</span><br><span class="line"></span><br><span class="line">stepsize = <span class="number">0.5</span></span><br><span class="line">x = arange(-<span class="number">10</span>,<span class="number">20</span>,stepsize)</span><br><span class="line">px = zeros(shape(x))</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(x)):</span><br><span class="line">    px[i] = p(x[i])</span><br><span class="line">N = <span class="number">5000</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># independence chain</span></span><br><span class="line">u = random.rand(N)</span><br><span class="line">mu = <span class="number">5</span></span><br><span class="line">sigma = <span class="number">10</span></span><br><span class="line">y = zeros(N)</span><br><span class="line">y[<span class="number">0</span>] = random.normal(mu,sigma)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(N-<span class="number">1</span>):</span><br><span class="line">    ynew = random.normal(mu,sigma)</span><br><span class="line">    alpha = <span class="built_in">min</span>(<span class="number">1</span>,p(ynew)*q(y[i])/(p(y[i])*q(ynew)))</span><br><span class="line">    <span class="keyword">if</span> u[i] &lt; alpha:</span><br><span class="line">        y[i+<span class="number">1</span>] = ynew</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        y[i+<span class="number">1</span>] = y[i]</span><br><span class="line"></span><br><span class="line"><span class="comment"># random walk chain</span></span><br><span class="line">u2 = random.rand(N)</span><br><span class="line">sigma = <span class="number">10</span></span><br><span class="line">y2 = zeros(N)</span><br><span class="line">y2[<span class="number">0</span>] = random.normal(<span class="number">0</span>,sigma)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(N-<span class="number">1</span>):</span><br><span class="line">    y2new = y2[i] + random.normal(<span class="number">0</span>,sigma)</span><br><span class="line">    alpha = <span class="built_in">min</span>(<span class="number">1</span>,p(y2new)/p(y2[i]))</span><br><span class="line">    <span class="keyword">if</span> u2[i] &lt; alpha:</span><br><span class="line">        y2[i+<span class="number">1</span>] = y2new</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        y2[i+<span class="number">1</span>] = y2[i]</span><br><span class="line"></span><br><span class="line">figure(<span class="number">1</span>)</span><br><span class="line">nbins = <span class="number">30</span></span><br><span class="line">hist(y, bins = x)</span><br><span class="line">plot(x, px*N/<span class="built_in">sum</span>(px), color=<span class="string">&#x27;g&#x27;</span>, linewidth=<span class="number">2</span>)</span><br><span class="line">plot(x, q(x)*N/<span class="built_in">sum</span>(px), color=<span class="string">&#x27;r&#x27;</span>, linewidth=<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">figure(<span class="number">2</span>)</span><br><span class="line">nbins = <span class="number">30</span></span><br><span class="line">hist(y2, bins = x)</span><br><span class="line">plot(x, px*N/<span class="built_in">sum</span>(px), color=<span class="string">&#x27;g&#x27;</span>, linewidth=<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/machine_learning/MCMC/mha2.png"></p>
+<p><img src="/machine_learning/MCMC/mha3.png"></p>
+<h3 id="Gibbs-Sampling"><a href="#Gibbs-Sampling" class="headerlink" title="Gibbs Sampling"></a>Gibbs Sampling</h3><p>Gibbs Sampling的本质是MH的变种。适用于我们知道完全条件概率的情况，即$p(x_j|x_1,…,x_{j-1},x_{j+1},…,x_n)$，也写作：$p(x_j|x_{-j})$。</p>
+<p>采用设置多维概率分布$p$里的<strong>完全条件概率(full conditionals)<strong>作为</strong>建议概率(proposal)，q</strong>，那么接受率就会始终&#x3D;1，一直接受$x^*$。</p>
+<p>对 $j&#x3D;1,…,n$</p>
+<p><img src="/machine_learning/MCMC/f1.png"></p>
+<p><strong>注意</strong>符号的问题，在MH算法中，$x_i$代表第i个样本的值，在Gibbs中，$x_j^{(i)}$代表第i个样本中，第j维（第j个变量）的值。</p>
+<p>证明：<br>$$A(x^{(i)},x^*)&#x3D;min\{1,\frac{p(x^*)q(x^{(i)}|x^*)}{p(x^{(i)})q(x^*|x^{(i)})}\}$$</p>
+<p>$$&#x3D;min\{1,\frac{p(x^*)p(x^{(i)}_j|x^{(i)}_{-j})}{p(x^{(i)})p(x^*_j|x^*_{-j})}\}$$</p>
+<p>$$&#x3D;min\{1,\frac{p(x^*_{-j})}{p(x^{(i)}_{-j})}\}$$</p>
+<p>$$&#x3D;1$$</p>
+<p><strong>Gibbs Sampling算法</strong></p>
+<ul>
+<li>对每个变量$x_j$：<ul>
+<li>初始化$x_j^{(0)}$</li>
+</ul>
+</li>
+<li>重复：<ul>
+<li>对每个变量$x_j$：</li>
+</ul>
+</li>
+<li>从$p(x_1 | x_{2}^{(i)}, … , x_{n}^{(i)})$中采样$x_1^{i+1}$。<ul>
+<li>从$p(x_2 | x_{1}^{(i+1)}, x_{3}^{(i)}, …, x_{n}^{(i)})$中采样$x_2^{i+1}$。</li>
+<li>…</li>
+<li>从$p(x_n | x_{1}^{(i+1)}, …, x_{n-1}^{(i+1)})$中采样$x_n^{i+1}$。</li>
+</ul>
+</li>
+<li>直到有足够多的sample。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Code from Chapter 14 of Machine Learning: An Algorithmic Perspective</span></span><br><span class="line"><span class="comment"># A simple Gibbs sampler</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">pXgivenY</span>(<span class="params">y,m1,m2,s1,s2</span>):</span><br><span class="line">    <span class="keyword">return</span> np.random.normal(m1 + (y-m2)/s2,s1)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">pYgivenX</span>(<span class="params">x,m1,m2,s1,s2</span>):</span><br><span class="line">    <span class="keyword">return</span> np.random.normal(m2 + (x-m1)/s1,s2)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">gibbs</span>(<span class="params">N=<span class="number">5000</span></span>):</span><br><span class="line">    k=<span class="number">20</span></span><br><span class="line">    x0 = np.zeros(N,dtype=<span class="built_in">float</span>)</span><br><span class="line">    m1 = <span class="number">10</span></span><br><span class="line">    m2 = <span class="number">20</span></span><br><span class="line">    s1 = <span class="number">2</span></span><br><span class="line">    s2 = <span class="number">3</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(N):</span><br><span class="line">        y = np.random.rand(<span class="number">1</span>)</span><br><span class="line">        <span class="comment"># 每次采样需要迭代 k 次</span></span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(k):</span><br><span class="line">            x = pXgivenY(y,m1,m2,s1,s2)</span><br><span class="line">            y = pYgivenX(x,m1,m2,s1,s2)</span><br><span class="line">        x0[i] = x</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> x0</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">f</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;目标分布&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> np.exp(-(x-<span class="number">10</span>)**<span class="number">2</span>/<span class="number">10</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 画图</span></span><br><span class="line">N=<span class="number">10000</span></span><br><span class="line">s=gibbs(N)</span><br><span class="line">x1 = np.arange(<span class="number">0</span>,<span class="number">17</span>,<span class="number">1</span>)</span><br><span class="line">plt.hist(s,bins=x1,fc=<span class="string">&#x27;c&#x27;</span>)</span><br><span class="line">x1 = np.ar</span><br><span class="line">ange(<span class="number">0</span>,<span class="number">17</span>, <span class="number">0.1</span>)</span><br><span class="line">px1 = np.zeros(<span class="built_in">len</span>(x1))</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(x1)):</span><br><span class="line">    px1[i] = f(x1[i])</span><br><span class="line">plt.plot(x1, px1*N*<span class="number">10</span>/<span class="built_in">sum</span>(px1), color=<span class="string">&#x27;r&#x27;</span>,linewidth=<span class="number">3</span>)</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="/machine_learning/MCMC/gibbs.png"></p>
+<p>以上算法是简单的二维Gibbs Sampling的实现，如下图：<br><a href="https://raw.githubusercontent.com/applenob/machine_learning_basic/master/res/gibbs2.png">https://raw.githubusercontent.com/applenob/machine_learning_basic/master/res/gibbs2.png</a></p>
+<p>参考资料：</p>
+<ul>
+<li><a href="http://yuedu.baidu.com/ebook/d0b441a8ccbff121dd36839a">LDA漫游指南</a></li>
+<li><a href="https://www.amazon.de/Machine-Learning-Algorithmic-Perspective-Recognition/dp/1420067184">Machine learning an algorithmic perspective</a></li>
+<li><a href="http://www.cs.princeton.edu/courses/archive/spr06/cos598C/papers/AndrieuFreitasDoucetJordan2003.pdf">An Introduction to MCMC for Machine Learning</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+              <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/deep_learning/nn_bp/" rel="prev" title="神经网络基础（BP算法推导和基本的神经网络的实现）">
+                  <i class="fa fa-angle-left"></i> 神经网络基础（BP算法推导和基本的神经网络的实现）
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/machine_learning/Logistic_Regression/" rel="next" title="Logistic Regression VS Max Entropy 和 Theano实现">
+                  Logistic Regression VS Max Entropy 和 Theano实现 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

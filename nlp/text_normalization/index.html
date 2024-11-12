@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="问题描述所谓“文本正则”，即将手写形式的文本转换成语音形式的文本。 例子：  手写：A baby giraffe is 6ft tall and weighs 150lb. 语音：A baby giraffe is six feet tall and weighs one hundred fifty pounds.  调研">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kaggle比赛：Text Normalization for English银牌全程记录">
+<meta property="og:url" content="https://applenob.github.io/nlp/text_normalization/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="问题描述所谓“文本正则”，即将手写形式的文本转换成语音形式的文本。 例子：  手写：A baby giraffe is 6ft tall and weighs 150lb. 语音：A baby giraffe is six feet tall and weighs one hundred fifty pounds.  调研">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2017-11-22T04:00:20.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.088Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="NLP">
+<meta property="article:tag" content="Text Normalization">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://applenob.github.io/nlp/text_normalization/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/nlp/text_normalization/","path":"nlp/text_normalization/","title":"Kaggle比赛：Text Normalization for English银牌全程记录"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Kaggle比赛：Text Normalization for English银牌全程记录 | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B0%83%E7%A0%94"><span class="nav-number">2.</span> <span class="nav-text">调研</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95%E8%BF%9B%E5%8C%96%E8%AE%B0%E5%BD%95"><span class="nav-number">3.</span> <span class="nav-text">解决方法进化记录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2017-11-2"><span class="nav-number">3.1.</span> <span class="nav-text">2017-11-2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2017-11-5"><span class="nav-number">3.2.</span> <span class="nav-text">2017-11-5</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2017-11-6"><span class="nav-number">3.3.</span> <span class="nav-text">2017-11-6</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2017-11-8"><span class="nav-number">3.4.</span> <span class="nav-text">2017-11-8</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2017-11-11"><span class="nav-number">3.5.</span> <span class="nav-text">2017-11-11</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF%E4%B8%80%EF%BC%9A%E5%A2%9E%E5%8A%A0%E4%BA%BA%E4%B8%BA%E5%88%A4%E5%AE%9A%E8%A7%84%E5%88%99"><span class="nav-number">3.5.1.</span> <span class="nav-text">思路一：增加人为判定规则</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF%E4%BA%8C%EF%BC%9A%E7%9B%B4%E6%8E%A5%E6%8F%90%E5%8D%87%E6%A8%A1%E5%9E%8B%E5%87%86%E7%A1%AE%E7%8E%87"><span class="nav-number">3.5.2.</span> <span class="nav-text">思路二：直接提升模型准确率</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AF%94%E8%B5%9B%E8%AE%B0%E5%BD%95"><span class="nav-number">4.</span> <span class="nav-text">比赛记录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2017-11-15"><span class="nav-number">4.1.</span> <span class="nav-text">2017-11-15</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2017-11-17"><span class="nav-number">4.2.</span> <span class="nav-text">2017-11-17</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2017-11-20"><span class="nav-number">4.3.</span> <span class="nav-text">2017-11-20</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2017-11-21"><span class="nav-number">4.4.</span> <span class="nav-text">2017-11-21</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E4%BF%A1%E6%81%AF"><span class="nav-number">5.</span> <span class="nav-text">其他信息</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%88%B0%E7%9A%84%E7%AC%AC%E4%B8%89%E6%96%B9%E5%8C%85"><span class="nav-number">5.1.</span> <span class="nav-text">使用到的第三方包</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/nlp/text_normalization/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Kaggle比赛：Text Normalization for English银牌全程记录 | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Kaggle比赛：Text Normalization for English银牌全程记录
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-11-21 20:00:20" itemprop="dateCreated datePublished" datetime="2017-11-21T20:00:20-08:00">2017-11-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NLP/" itemprop="url" rel="index"><span itemprop="name">NLP</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>所谓“文本正则”，即将手写形式的文本转换成语音形式的文本。</p>
+<p>例子：</p>
+<ul>
+<li>手写：<code>A baby giraffe is 6ft tall and weighs 150lb.</code></li>
+<li>语音：<code>A baby giraffe is six feet tall and weighs one hundred fifty pounds.</code></li>
+</ul>
+<h2 id="调研"><a href="#调研" class="headerlink" title="调研"></a>调研</h2><p>目前kernel上主要以收集大辞典的方法为主流。</p>
+<p>基于RNN的方法在paper中提到说效果不佳，paper上的实现方法是char进去，word出来。这样word的个数在训练集里就有6w多个，太多，训练效果不好。char到char的话又会丢掉很多上下文信息，比如<code>$ 6</code>对应的<code>six dollars</code>，要互换顺序，还要加复数，很难有好的效果。</p>
+<p>token的所有类别：<code>[&#39;PLAIN&#39;, &#39;PUNCT&#39;, &#39;DATE&#39;, &#39;LETTERS&#39;, &#39;CARDINAL&#39;, &#39;VERBATIM&#39;, &#39;DECIMAL&#39;, &#39;MEASURE&#39;, &#39;MONEY&#39;, &#39;ORDINAL&#39;, &#39;TIME&#39;, &#39;ELECTRONIC&#39;, &#39;DIGIT&#39;, &#39;FRACTION&#39;, &#39;TELEPHONE&#39;, &#39;ADDRESS&#39;]</code>。<br>其中，<code>&#39;PLAIN&#39;, &#39;PUNCT&#39;</code>是输出和输入相同的类别。但训练数据中，只有<code>&#39;PUNCT&#39;</code>的输出和输入完全相同，<code>&#39;PLAIN&#39;</code>的输入和输出相同的个数是：7317175，总共个数是：7353693。比例是：0.995034059757458。这里后续需要继续调查。</p>
+<p>在训练集中，<code>&#39;PLAIN&#39;, &#39;PUNCT&#39;</code>所占的比例是0.931。</p>
+<h2 id="解决方法进化记录"><a href="#解决方法进化记录" class="headerlink" title="解决方法进化记录"></a>解决方法进化记录</h2><h3 id="2017-11-2"><a href="#2017-11-2" class="headerlink" title="2017-11-2"></a>2017-11-2</h3><p>0.9937-198&#x2F;489</p>
+<p>使用kernel中提供的方法尝试了一下。大致上就是从训练语料中提取一个大辞典，这个词典包括所有词以及其映射。不同的方法引进了更多的额外训练语料。</p>
+<h3 id="2017-11-5"><a href="#2017-11-5" class="headerlink" title="2017-11-5"></a>2017-11-5</h3><p>0.9164</p>
+<p>用xgboost训练了一个二分类器，判别某个token是不是属于<code>&#39;PLAIN&#39;+&#39;PUNCT&#39;</code>。是则输入和输出相同，否则输出<code>&quot;&quot;</code>。得到这个准确率。</p>
+<h3 id="2017-11-6"><a href="#2017-11-6" class="headerlink" title="2017-11-6"></a>2017-11-6</h3><p>0.9835</p>
+<p>用xgboost训练了一个三分类器，判别某个token是否属于<code>&#39;PLAIN&#39;, &#39;PUNCT&#39;</code>还有其他。</p>
+<h3 id="2017-11-8"><a href="#2017-11-8" class="headerlink" title="2017-11-8"></a>2017-11-8</h3><p>最终发现还是要使用全分类器<code>full_classifier</code>，即16个类别全都分全。然后针对每个类别手动设计normalize的过程<code>full_replace</code>和<code>replace_by_rule</code>。并使用<code>test/test_one_class.py</code>一个一个类别调准确率。这一阶段准确率的提升主要来自对每个单独类别的normalize的优化。</p>
+<p>准确率：0.9908-&gt;0.9921-&gt;0.9937-&gt;0.9942-&gt;0.9951-&gt;0.9954-&gt;0.9956</p>
+<p>排名：75&#x2F;554，已经进入铜牌区域，但也进入了瓶颈，单独类别的转换准确率很难找到大幅提升的改进点。</p>
+<p>使用脚本<code>full_replace_train.py</code>发现所有的训练数据，如果知道其分类，那么normalize的准确率是：<code>9913201 / 9918441 = 0.9994716911659807</code>。也就是说，错误的数目只有5k+了，继续修改normalize上升空间有限。</p>
+<h3 id="2017-11-11"><a href="#2017-11-11" class="headerlink" title="2017-11-11"></a>2017-11-11</h3><p>转换思路，继续提高分类器的准确率。</p>
+<h4 id="思路一：增加人为判定规则"><a href="#思路一：增加人为判定规则" class="headerlink" title="思路一：增加人为判定规则"></a>思路一：增加人为判定规则</h4><p>根据对数据的分析，发现分类器有几类典型错误：</p>
+<ul>
+<li>1.被误认为是<code>cardinal</code>的实际上的<code>date</code>的年份。这类情况特征明显，长度是4的数字都判为<code>date</code>即可。</li>
+<li>2.被误认为是<code>plain</code>的实际上的<code>electronic</code>的网站，比如<code>baidu.com</code>之类的，写一个简单的规则判断。</li>
+</ul>
+<p>上面总结的规则都集中在<code>patch_classifier.py</code>脚本中，在分类器给出判定结果之后再跑一遍，作为对分类器的修正。</p>
+<h4 id="思路二：直接提升模型准确率"><a href="#思路二：直接提升模型准确率" class="headerlink" title="思路二：直接提升模型准确率"></a>思路二：直接提升模型准确率</h4><ul>
+<li>1.<strong>特征工程</strong>：token的长度；是否是一句话中第一个token。目前特征工程对模型准确率没有明显提升。<code>v2</code>。</li>
+<li>2.<strong>调整权重</strong>：因为本次任务是非常<strong>unbalanced</strong>的分类任务，因此最好对于不同类别的数据，在计算loss的时候，采用不同的权重。<code>v3</code>。</li>
+<li>3.<strong>调参</strong>：关键参数：<code>max_depth</code>， <code>round_num</code>。<code>v2</code>。</li>
+</ul>
+<h2 id="比赛记录"><a href="#比赛记录" class="headerlink" title="比赛记录"></a>比赛记录</h2><h3 id="2017-11-15"><a href="#2017-11-15" class="headerlink" title="2017-11-15"></a>2017-11-15</h3><p>比赛第一天，新的测试数据发布。按照之前的模型跑一版，到0.9933，直接窜到第三名。也不知道可以坚挺多久。</p>
+<p>使用大字典的方法跑了一个baseline：0.9893，用作后续提高的对比数据。</p>
+<h3 id="2017-11-17"><a href="#2017-11-17" class="headerlink" title="2017-11-17"></a>2017-11-17</h3><p>寻找错误大概从两个方向上去找：1.找分类器分错的类别。2.找normalizer没有换对的情况。</p>
+<p>分类器分错的类别可以通过分类器输出的分类信心概率来获取。比如使用xgboost中的<code>&#39;objective&#39;: &#39;multi:softprob&#39;</code>参数设定。检查prob值特别小的数据。</p>
+<p>通过最终结果去找可以直接使用大字典跑出来的baseline去比较不同，但这个方法也不尽靠谱，不同的不一定错，相同的不一定对。但也可以从中观察，找到一些规律。</p>
+<p>还可以直接在最终的结果中去找数字和特殊符号，一般是normalize失败的情况，这个方法可以查出来。</p>
+<p>目前是0.9947。</p>
+<h3 id="2017-11-20"><a href="#2017-11-20" class="headerlink" title="2017-11-20"></a>2017-11-20</h3><p>今天是比赛最后一天，发现之前xgboost的参数设置有问题： <code>&#39;nthread&#39;: -1</code>，直接删掉，因为默认值是最大值。果然重新运行之后cpu的8核满负荷运行。快了很多。</p>
+<p>另外把之前的基于context的方法做了一下修正：之前每个token都会包括上一个token和下一个token。那么句子中的最后一个token的context会包含下一句的第一个token，句子的第一个token的context会包含上一句的最后一个token。这显然是不对的。因此在每句之间加入全0向量。忽略该向量本身，只是用于其他向量的context。</p>
+<p>最后一天重新check所有类别的rule函数，发现还有不错的可改进空间。</p>
+<p>还能继续改的：</p>
+<ul>
+<li><code>ORDINAL</code>: 前面有没有the的问题。</li>
+<li><code>VERBATIM</code>: <code>#</code> 是hash-tag还是number的问题。</li>
+</ul>
+<h3 id="2017-11-21"><a href="#2017-11-21" class="headerlink" title="2017-11-21"></a>2017-11-21</h3><p>比赛结束，最终在private上的结果是0.9937，15&#x2F;260，属于top6%，silver medal。</p>
+<p>可以继续改进的是分类器的性能，以后有机会继续做。</p>
+<h2 id="其他信息"><a href="#其他信息" class="headerlink" title="其他信息"></a>其他信息</h2><h3 id="使用到的第三方包"><a href="#使用到的第三方包" class="headerlink" title="使用到的第三方包"></a>使用到的第三方包</h3><ul>
+<li><code>roman</code>:罗马数字和阿拉伯数字的转换。</li>
+<li><code>num2words</code>:文字和数字的转换，支持序数的数字。</li>
+<li><code>inflect</code>:单词复数形式的转换等。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+              <a href="/tags/NLP/" rel="tag"># NLP</a>
+              <a href="/tags/Text-Normalization/" rel="tag"># Text Normalization</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/tensorflow/5_trouble/" rel="prev" title="五. Tensorflow 各种坑">
+                  <i class="fa fa-angle-left"></i> 五. Tensorflow 各种坑
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/nlp/statistics_seg/" rel="next" title="基于统计学的的分词">
+                  基于统计学的的分词 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

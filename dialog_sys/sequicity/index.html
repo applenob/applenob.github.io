@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="简介Sequicity: Simplifying Task-oriented Dialogue Systems with Single Sequence-to-Sequence Architectures, acl2018, pdf, pytorch code  本文是针对任务型对话提出的一种end2end的模型，名为Sequicity。该模型是一种seq2seq+Two Stage CopyNe">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Sequicity: Simplifying Task-oriented Dialogue Systems with Single Sequence-to-Sequence Architectures">
+<meta property="og:url" content="https://applenob.github.io/dialog_sys/sequicity/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="简介Sequicity: Simplifying Task-oriented Dialogue Systems with Single Sequence-to-Sequence Architectures, acl2018, pdf, pytorch code  本文是针对任务型对话提出的一种end2end的模型，名为Sequicity。该模型是一种seq2seq+Two Stage CopyNe">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://applenob.github.io/dialog_sys/sequicity/1.png">
+<meta property="article:published_time" content="2019-10-03T18:50:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.058Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="Dialogue System">
+<meta property="article:tag" content="NLP">
+<meta property="article:tag" content="Paper">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://applenob.github.io/dialog_sys/sequicity/1.png">
+
+
+<link rel="canonical" href="https://applenob.github.io/dialog_sys/sequicity/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/dialog_sys/sequicity/","path":"dialog_sys/sequicity/","title":"Sequicity: Simplifying Task-oriented Dialogue Systems with Single Sequence-to-Sequence Architectures"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Sequicity: Simplifying Task-oriented Dialogue Systems with Single Sequence-to-Sequence Architectures | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E6%9E%84%E7%BB%86%E8%8A%82"><span class="nav-number">2.</span> <span class="nav-text">结构细节</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Belief-Span-%EF%BC%88bspan%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">Belief Span （bspan）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sequicity"><span class="nav-number">2.2.</span> <span class="nav-text">Sequicity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C"><span class="nav-number">2.3.</span> <span class="nav-text">实验</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/dialog_sys/sequicity/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Sequicity: Simplifying Task-oriented Dialogue Systems with Single Sequence-to-Sequence Architectures | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Sequicity: Simplifying Task-oriented Dialogue Systems with Single Sequence-to-Sequence Architectures
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2019-10-03 11:50:00" itemprop="dateCreated datePublished" datetime="2019-10-03T11:50:00-07:00">2019-10-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AF%B9%E8%AF%9D%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index"><span itemprop="name">对话系统</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Sequicity: Simplifying Task-oriented Dialogue Systems with Single Sequence-to-Sequence Architectures, acl2018, <a href="https://www.comp.nus.edu.sg/~kanmy/papers/acl18-sequicity.pdf">pdf</a>, <a href="https://github.com/WING-NUS/sequicity">pytorch code</a> </p>
+<p>本文是针对任务型对话提出的一种end2end的模型，名为<code>Sequicity</code>。该模型是一种<code>seq2seq+Two Stage CopyNet</code>的结构。</p>
+<p><strong>优点</strong>：</p>
+<ul>
+<li>1.相对于pipeline的结构，复杂度低，参数少，训练时间短。</li>
+<li>2.针对oov的数据，还能保持不错的实体匹配率。</li>
+<li>3.可以同时完成task completion和response generation。</li>
+</ul>
+<h2 id="结构细节"><a href="#结构细节" class="headerlink" title="结构细节"></a>结构细节</h2><h3 id="Belief-Span-（bspan）"><a href="#Belief-Span-（bspan）" class="headerlink" title="Belief Span （bspan）"></a>Belief Span （bspan）</h3><p>在Belief Span的术语中：一个slot可以是<strong>informable</strong> 或者<strong>requestable</strong>。所谓<strong>informable</strong>是指这个slot是作为知识库搜索时的<strong>限制条件</strong>，比如食物类型<code>food_type</code>，如果设定成<code>chinese food</code>，则搜索时返回的餐馆必须是中餐馆；所谓<strong>requestable</strong>是指这个slot可以<strong>被用户指定返回</strong>，比如用户需要知道餐馆的类型，slot<code>address</code>就会被置为<code>true</code>，后面的回答就必须包含餐馆的地址。</p>
+<h3 id="Sequicity"><a href="#Sequicity" class="headerlink" title="Sequicity"></a>Sequicity</h3><p><img src="/dialog_sys/sequicity/1.png" alt="image"></p>
+<p>模型的输入（图中上层）是上一轮的bspan，上一轮的系统回答，本轮的用户输入；输出（图中下层）是更新的bspan和本轮系统回答。</p>
+<p>输入先是过了一个统一的encoder，然后再分别过一个bspan的decoder，再拿这个decoder的结果再过response的decoder，生成最终的response。</p>
+<p>上面的两步也正对应着两步的copy net：1.计算生成的词分布和输入的词分布，将二者叠加获得新的词分布，生成bspan decoder的输出；2.将生成的次分布和bsapn decoder的词分布叠加，生成response decoder的词分布。</p>
+<h3 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h3><p>数据集： CamRest676 (Wen et al., 2017a) and KVRET (Eric and Manning, 2017b)</p>
+<p>样例：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;dial&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">            <span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;turn&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span> </span><br><span class="line">                <span class="attr">&quot;usr&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                    <span class="attr">&quot;transcript&quot;</span><span class="punctuation">:</span> <span class="string">&quot;I need to find an expensive restauant that&#x27;s in the south section of the city.&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                    <span class="attr">&quot;slu&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                        <span class="punctuation">&#123;</span></span><br><span class="line">                            <span class="attr">&quot;act&quot;</span><span class="punctuation">:</span> <span class="string">&quot;inform&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                            <span class="attr">&quot;slots&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                                <span class="punctuation">[</span></span><br><span class="line">                                    <span class="string">&quot;pricerange&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                                    <span class="string">&quot;expensive&quot;</span></span><br><span class="line">                                <span class="punctuation">]</span></span><br><span class="line">                            <span class="punctuation">]</span></span><br><span class="line">                        <span class="punctuation">&#125;</span><span class="punctuation">,</span> </span><br><span class="line">                        <span class="punctuation">&#123;</span></span><br><span class="line">                            <span class="attr">&quot;act&quot;</span><span class="punctuation">:</span> <span class="string">&quot;inform&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                            <span class="attr">&quot;slots&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                                <span class="punctuation">[</span></span><br><span class="line">                                    <span class="string">&quot;area&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                                    <span class="string">&quot;south&quot;</span></span><br><span class="line">                                <span class="punctuation">]</span></span><br><span class="line">                            <span class="punctuation">]</span></span><br><span class="line">                        <span class="punctuation">&#125;</span></span><br><span class="line">                    <span class="punctuation">]</span></span><br><span class="line">                <span class="punctuation">&#125;</span><span class="punctuation">,</span> </span><br><span class="line">                <span class="attr">&quot;sys&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                    <span class="attr">&quot;sent&quot;</span><span class="punctuation">:</span> <span class="string">&quot;There are several restaurants in the south part of town that serve expensive food. Do you have a cuisine preference?&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                    <span class="attr">&quot;DA&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                        <span class="string">&quot;food&quot;</span></span><br><span class="line">                    <span class="punctuation">]</span></span><br><span class="line">                <span class="punctuation">&#125;</span></span><br><span class="line">            <span class="punctuation">&#125;</span><span class="punctuation">,</span> </span><br><span class="line">            <span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;turn&quot;</span><span class="punctuation">:</span> <span class="number">1</span><span class="punctuation">,</span> </span><br><span class="line">                <span class="attr">&quot;usr&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                    <span class="attr">&quot;transcript&quot;</span><span class="punctuation">:</span> <span class="string">&quot;No I don&#x27;t care about the type of cuisine.&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                    <span class="attr">&quot;slu&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                        <span class="punctuation">&#123;</span></span><br><span class="line">                            <span class="attr">&quot;act&quot;</span><span class="punctuation">:</span> <span class="string">&quot;inform&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                            <span class="attr">&quot;slots&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                                <span class="punctuation">[</span></span><br><span class="line">                                    <span class="string">&quot;pricerange&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                                    <span class="string">&quot;expensive&quot;</span></span><br><span class="line">                                <span class="punctuation">]</span></span><br><span class="line">                            <span class="punctuation">]</span></span><br><span class="line">                        <span class="punctuation">&#125;</span><span class="punctuation">,</span> </span><br><span class="line">                        <span class="punctuation">&#123;</span></span><br><span class="line">                            <span class="attr">&quot;act&quot;</span><span class="punctuation">:</span> <span class="string">&quot;inform&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                            <span class="attr">&quot;slots&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                                <span class="punctuation">[</span></span><br><span class="line">                                    <span class="string">&quot;food&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                                    <span class="string">&quot;dontcare&quot;</span></span><br><span class="line">                                <span class="punctuation">]</span></span><br><span class="line">                            <span class="punctuation">]</span></span><br><span class="line">                        <span class="punctuation">&#125;</span><span class="punctuation">,</span> </span><br><span class="line">                        <span class="punctuation">&#123;</span></span><br><span class="line">                            <span class="attr">&quot;act&quot;</span><span class="punctuation">:</span> <span class="string">&quot;inform&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                            <span class="attr">&quot;slots&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                                <span class="punctuation">[</span></span><br><span class="line">                                    <span class="string">&quot;area&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                                    <span class="string">&quot;south&quot;</span></span><br><span class="line">                                <span class="punctuation">]</span></span><br><span class="line">                            <span class="punctuation">]</span></span><br><span class="line">                        <span class="punctuation">&#125;</span></span><br><span class="line">                    <span class="punctuation">]</span></span><br><span class="line">                <span class="punctuation">&#125;</span><span class="punctuation">,</span> </span><br><span class="line">                <span class="attr">&quot;sys&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                    <span class="attr">&quot;sent&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Chiquito Restaurant Bar is a Mexican restaurant located in the south part of town.&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                    <span class="attr">&quot;DA&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span></span><br><span class="line">                <span class="punctuation">&#125;</span></span><br><span class="line">            <span class="punctuation">&#125;</span><span class="punctuation">,</span> </span><br><span class="line">            <span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;turn&quot;</span><span class="punctuation">:</span> <span class="number">2</span><span class="punctuation">,</span> </span><br><span class="line">                <span class="attr">&quot;usr&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                    <span class="attr">&quot;transcript&quot;</span><span class="punctuation">:</span> <span class="string">&quot;What is their address?&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                    <span class="attr">&quot;slu&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                        <span class="punctuation">&#123;</span></span><br><span class="line">                            <span class="attr">&quot;act&quot;</span><span class="punctuation">:</span> <span class="string">&quot;request&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                            <span class="attr">&quot;slots&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                                <span class="punctuation">[</span></span><br><span class="line">                                    <span class="string">&quot;slot&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                                    <span class="string">&quot;address&quot;</span></span><br><span class="line">                                <span class="punctuation">]</span></span><br><span class="line">                            <span class="punctuation">]</span></span><br><span class="line">                        <span class="punctuation">&#125;</span><span class="punctuation">,</span> </span><br><span class="line">                        <span class="punctuation">&#123;</span></span><br><span class="line">                            <span class="attr">&quot;act&quot;</span><span class="punctuation">:</span> <span class="string">&quot;inform&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                            <span class="attr">&quot;slots&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                                <span class="punctuation">[</span></span><br><span class="line">                                    <span class="string">&quot;pricerange&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                                    <span class="string">&quot;expensive&quot;</span></span><br><span class="line">                                <span class="punctuation">]</span></span><br><span class="line">                            <span class="punctuation">]</span></span><br><span class="line">                        <span class="punctuation">&#125;</span><span class="punctuation">,</span> </span><br><span class="line">                        <span class="punctuation">&#123;</span></span><br><span class="line">                            <span class="attr">&quot;act&quot;</span><span class="punctuation">:</span> <span class="string">&quot;inform&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                            <span class="attr">&quot;slots&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                                <span class="punctuation">[</span></span><br><span class="line">                                    <span class="string">&quot;area&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                                    <span class="string">&quot;south&quot;</span></span><br><span class="line">                                <span class="punctuation">]</span></span><br><span class="line">                            <span class="punctuation">]</span></span><br><span class="line">                        <span class="punctuation">&#125;</span><span class="punctuation">,</span> </span><br><span class="line">                        <span class="punctuation">&#123;</span></span><br><span class="line">                            <span class="attr">&quot;act&quot;</span><span class="punctuation">:</span> <span class="string">&quot;inform&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                            <span class="attr">&quot;slots&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                                <span class="punctuation">[</span></span><br><span class="line">                                    <span class="string">&quot;food&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                                    <span class="string">&quot;dontcare&quot;</span></span><br><span class="line">                                <span class="punctuation">]</span></span><br><span class="line">                            <span class="punctuation">]</span></span><br><span class="line">                        <span class="punctuation">&#125;</span></span><br><span class="line">                    <span class="punctuation">]</span></span><br><span class="line">                <span class="punctuation">&#125;</span><span class="punctuation">,</span> </span><br><span class="line">                <span class="attr">&quot;sys&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                    <span class="attr">&quot;sent&quot;</span><span class="punctuation">:</span> <span class="string">&quot;There address is 2G Cambridge Leisure Park Cherry Hinton Road Cherry Hinton, it there anything else I can help you with?&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                    <span class="attr">&quot;DA&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                    <span class="punctuation">]</span></span><br><span class="line">                <span class="punctuation">&#125;</span></span><br><span class="line">            <span class="punctuation">&#125;</span><span class="punctuation">,</span> </span><br><span class="line">            <span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;turn&quot;</span><span class="punctuation">:</span> <span class="number">3</span><span class="punctuation">,</span> </span><br><span class="line">                <span class="attr">&quot;usr&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                    <span class="attr">&quot;transcript&quot;</span><span class="punctuation">:</span> <span class="string">&quot;What is the food type they serve ?&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                    <span class="attr">&quot;slu&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                        <span class="punctuation">&#123;</span></span><br><span class="line">                            <span class="attr">&quot;act&quot;</span><span class="punctuation">:</span> <span class="string">&quot;request&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                            <span class="attr">&quot;slots&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                                <span class="punctuation">[</span></span><br><span class="line">                                    <span class="string">&quot;slot&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                                    <span class="string">&quot;food&quot;</span></span><br><span class="line">                                <span class="punctuation">]</span></span><br><span class="line">                            <span class="punctuation">]</span></span><br><span class="line">                        <span class="punctuation">&#125;</span><span class="punctuation">,</span> </span><br><span class="line">                        <span class="punctuation">&#123;</span></span><br><span class="line">                            <span class="attr">&quot;act&quot;</span><span class="punctuation">:</span> <span class="string">&quot;inform&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                            <span class="attr">&quot;slots&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                                <span class="punctuation">[</span></span><br><span class="line">                                    <span class="string">&quot;area&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                                    <span class="string">&quot;south&quot;</span></span><br><span class="line">                                <span class="punctuation">]</span></span><br><span class="line">                            <span class="punctuation">]</span></span><br><span class="line">                        <span class="punctuation">&#125;</span><span class="punctuation">,</span> </span><br><span class="line">                        <span class="punctuation">&#123;</span></span><br><span class="line">                            <span class="attr">&quot;act&quot;</span><span class="punctuation">:</span> <span class="string">&quot;inform&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                            <span class="attr">&quot;slots&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                                <span class="punctuation">[</span></span><br><span class="line">                                    <span class="string">&quot;food&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                                    <span class="string">&quot;dontcare&quot;</span></span><br><span class="line">                                <span class="punctuation">]</span></span><br><span class="line">                            <span class="punctuation">]</span></span><br><span class="line">                        <span class="punctuation">&#125;</span><span class="punctuation">,</span> </span><br><span class="line">                        <span class="punctuation">&#123;</span></span><br><span class="line">                            <span class="attr">&quot;act&quot;</span><span class="punctuation">:</span> <span class="string">&quot;inform&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                            <span class="attr">&quot;slots&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                                <span class="punctuation">[</span></span><br><span class="line">                                    <span class="string">&quot;pricerange&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                                    <span class="string">&quot;expensive&quot;</span></span><br><span class="line">                                <span class="punctuation">]</span></span><br><span class="line">                            <span class="punctuation">]</span></span><br><span class="line">                        <span class="punctuation">&#125;</span></span><br><span class="line">                    <span class="punctuation">]</span></span><br><span class="line">                <span class="punctuation">&#125;</span><span class="punctuation">,</span> </span><br><span class="line">                <span class="attr">&quot;sys&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                    <span class="attr">&quot;sent&quot;</span><span class="punctuation">:</span> <span class="string">&quot;They serve Mexican food .&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                    <span class="attr">&quot;DA&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span></span><br><span class="line">                <span class="punctuation">&#125;</span></span><br><span class="line">            <span class="punctuation">&#125;</span><span class="punctuation">,</span> </span><br><span class="line">            <span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;turn&quot;</span><span class="punctuation">:</span> <span class="number">4</span><span class="punctuation">,</span> </span><br><span class="line">                <span class="attr">&quot;usr&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                    <span class="attr">&quot;transcript&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Nope, that&#x27;s what I was looking for. Thanks a lot!&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                    <span class="attr">&quot;slu&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                        <span class="punctuation">&#123;</span></span><br><span class="line">                            <span class="attr">&quot;act&quot;</span><span class="punctuation">:</span> <span class="string">&quot;inform&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                            <span class="attr">&quot;slots&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                                <span class="punctuation">[</span></span><br><span class="line">                                    <span class="string">&quot;food&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                                    <span class="string">&quot;dontcare&quot;</span></span><br><span class="line">                                <span class="punctuation">]</span></span><br><span class="line">                            <span class="punctuation">]</span></span><br><span class="line">                        <span class="punctuation">&#125;</span><span class="punctuation">,</span> </span><br><span class="line">                        <span class="punctuation">&#123;</span></span><br><span class="line">                            <span class="attr">&quot;act&quot;</span><span class="punctuation">:</span> <span class="string">&quot;inform&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                            <span class="attr">&quot;slots&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                                <span class="punctuation">[</span></span><br><span class="line">                                    <span class="string">&quot;pricerange&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                                    <span class="string">&quot;expensive&quot;</span></span><br><span class="line">                                <span class="punctuation">]</span></span><br><span class="line">                            <span class="punctuation">]</span></span><br><span class="line">                        <span class="punctuation">&#125;</span><span class="punctuation">,</span> </span><br><span class="line">                        <span class="punctuation">&#123;</span></span><br><span class="line">                            <span class="attr">&quot;act&quot;</span><span class="punctuation">:</span> <span class="string">&quot;inform&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                            <span class="attr">&quot;slots&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                                <span class="punctuation">[</span></span><br><span class="line">                                    <span class="string">&quot;area&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                                    <span class="string">&quot;south&quot;</span></span><br><span class="line">                                <span class="punctuation">]</span></span><br><span class="line">                            <span class="punctuation">]</span></span><br><span class="line">                        <span class="punctuation">&#125;</span></span><br><span class="line">                    <span class="punctuation">]</span></span><br><span class="line">                <span class="punctuation">&#125;</span><span class="punctuation">,</span> </span><br><span class="line">                <span class="attr">&quot;sys&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                    <span class="attr">&quot;sent&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Thank you very much for using the Cambridge Restaurant System.&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                    <span class="attr">&quot;DA&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span></span><br><span class="line">                <span class="punctuation">&#125;</span></span><br><span class="line">            <span class="punctuation">&#125;</span></span><br><span class="line">        <span class="punctuation">]</span><span class="punctuation">,</span> </span><br><span class="line">        <span class="attr">&quot;dialogue_id&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span> </span><br><span class="line">        <span class="attr">&quot;finished&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span> </span><br><span class="line">        <span class="attr">&quot;goal&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;constraints&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                <span class="punctuation">[</span></span><br><span class="line">                    <span class="string">&quot;pricerange&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                    <span class="string">&quot;expensive&quot;</span></span><br><span class="line">                <span class="punctuation">]</span><span class="punctuation">,</span> </span><br><span class="line">                <span class="punctuation">[</span></span><br><span class="line">                    <span class="string">&quot;area&quot;</span><span class="punctuation">,</span> </span><br><span class="line">                    <span class="string">&quot;south&quot;</span></span><br><span class="line">                <span class="punctuation">]</span></span><br><span class="line">            <span class="punctuation">]</span><span class="punctuation">,</span> </span><br><span class="line">            <span class="attr">&quot;request-slots&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                <span class="string">&quot;address&quot;</span></span><br><span class="line">            <span class="punctuation">]</span><span class="punctuation">,</span> </span><br><span class="line">            <span class="attr">&quot;text&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Task 11193: You are looking for an expensive restaurant and it should be in the south part of town. Make sure you get the address of the venue.&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span> </span><br></pre></td></tr></table></figure>
+
+<p>指标：</p>
+<ul>
+<li>BLEU </li>
+<li>Entity match rate evaluates task completion. </li>
+<li>Success F1</li>
+</ul>
+<p>结果：</p>
+<p>指标超过各个baseline模型。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Dialogue-System/" rel="tag"># Dialogue System</a>
+              <a href="/tags/NLP/" rel="tag"># NLP</a>
+              <a href="/tags/Paper/" rel="tag"># Paper</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/dialog_sys/dialog_sys/" rel="prev" title="任务型对话系统综述">
+                  <i class="fa fa-angle-left"></i> 任务型对话系统综述
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/dialog_sys/daml/" rel="next" title="Domain Adaptive Dialog Generation via Meta Learning">
+                  Domain Adaptive Dialog Generation via Meta Learning <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

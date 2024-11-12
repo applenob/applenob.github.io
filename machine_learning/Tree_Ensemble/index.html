@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="概览Ensemble的方法主要有两大类：Bagging和Boosting。  Boosting主要关注降低偏差，因此Boost能基于泛化性能相当弱的学习器构建出很强的集成； Bagging主要关注降低方差，因此它在不剪枝的决策树、神经网络等学习器上效用更为明显。 Boosting的个体学习器之间存在强依赖关系，必须串行生成； Bagging的个体学习器之间不存在强依赖关系，可以同时生成即并行化。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="决策树模型的各种Ensemble">
+<meta property="og:url" content="https://applenob.github.io/machine_learning/Tree_Ensemble/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="概览Ensemble的方法主要有两大类：Bagging和Boosting。  Boosting主要关注降低偏差，因此Boost能基于泛化性能相当弱的学习器构建出很强的集成； Bagging主要关注降低方差，因此它在不剪枝的决策树、神经网络等学习器上效用更为明显。 Boosting的个体学习器之间存在强依赖关系，必须串行生成； Bagging的个体学习器之间不存在强依赖关系，可以同时生成即并行化。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2016-12-21T04:12:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T20:30:54.078Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="Machine Learning">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://applenob.github.io/machine_learning/Tree_Ensemble/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/machine_learning/Tree_Ensemble/","path":"machine_learning/Tree_Ensemble/","title":"决策树模型的各种Ensemble"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>决策树模型的各种Ensemble | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%A7%88"><span class="nav-number">1.</span> <span class="nav-text">概览</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bagging"><span class="nav-number">2.</span> <span class="nav-text">Bagging</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80Bagging"><span class="nav-number">2.1.</span> <span class="nav-text">基础Bagging</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bagging%E5%AE%9E%E8%B7%B5"><span class="nav-number">2.2.</span> <span class="nav-text">Bagging实践</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97"><span class="nav-number">2.3.</span> <span class="nav-text">随机森林</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97%E5%AE%9E%E8%B7%B5"><span class="nav-number">2.4.</span> <span class="nav-text">随机森林实践</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Boosting"><span class="nav-number">3.</span> <span class="nav-text">Boosting</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AdaBoost"><span class="nav-number">3.1.</span> <span class="nav-text">AdaBoost</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GBDT"><span class="nav-number">3.2.</span> <span class="nav-text">GBDT</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#XGBoost"><span class="nav-number">3.3.</span> <span class="nav-text">XGBoost</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Boosting%E5%AE%9E%E8%B7%B5"><span class="nav-number">3.4.</span> <span class="nav-text">Boosting实践</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#xgboost%E5%AE%9E%E8%B7%B5"><span class="nav-number">3.5.</span> <span class="nav-text">xgboost实践</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/machine_learning/Tree_Ensemble/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="决策树模型的各种Ensemble | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          决策树模型的各种Ensemble
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2016-12-20 20:12:00" itemprop="dateCreated datePublished" datetime="2016-12-20T20:12:00-08:00">2016-12-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><p>Ensemble的方法主要有两大类：<strong>Bagging</strong>和<strong>Boosting</strong>。</p>
+<ol>
+<li>Boosting主要关注<strong>降低偏差</strong>，因此Boost能基于泛化性能相当弱的学习器构建出很强的集成；</li>
+<li>Bagging主要关注<strong>降低方差</strong>，因此它在不剪枝的决策树、神经网络等学习器上效用更为明显。</li>
+<li>Boosting的个体学习器之间存在强依赖关系，必须<strong>串行</strong>生成；</li>
+<li>Bagging的个体学习器之间不存在强依赖关系，可以同时生成即<strong>并行化</strong>。</li>
+</ol>
+<h2 id="Bagging"><a href="#Bagging" class="headerlink" title="Bagging"></a>Bagging</h2><h3 id="基础Bagging"><a href="#基础Bagging" class="headerlink" title="基础Bagging"></a>基础Bagging</h3><p>先讲Bagging，Bagging是Bootstrap aggregation的缩写。所谓的<strong>Bootstrap</strong>是<strong>有放回抽样</strong>，而这里的抽样指的是对数据样本的抽样。</p>
+<p>如果对于一个有$n$个样本的数据集$D$，有放回抽样$n’$个数据，那么当$n$足够大的时候，满足抽样出来的样本个数（无重复的个数）和原数据集的比例是：$(1 - 1&#x2F;e) (≈63.2\%)$</p>
+<p><strong>证明</strong>：</p>
+<p>某个样本没有被抽中的概率是：$p_{not} &#x3D; (1-\frac{1}{n})^n$<br>$\frac{1}{p_{not}} &#x3D; (\frac{n}{n-1})^{n} &#x3D; (1+\frac{1}{n-1})^{n-1}(1+\frac{1}{n-1})$</p>
+<p>当n很大时，上式等于e（根据常用极限：$lim_{x\rightarrow∞}(1+\frac{1}{x})^x&#x3D;e$）。</p>
+<p>因此，$p_{not} &#x3D; (1-\frac{1}{n})^n &#x3D; \frac{1}{e}$。<br>回到Bagging，<strong>Bagging的基本做法</strong>：</p>
+<ul>
+<li>1 从样本<strong>有放回地</strong>抽取n个样本；</li>
+<li>2 在所有的属性上，对这n个样本建立分类器；</li>
+<li>3 重复上述过程m次，得到m个分类器；</li>
+<li>4 将数据放在这m个分类器上分类，最终结果由所有分类器结果投票决定。</li>
+</ul>
+<h3 id="Bagging实践"><a href="#Bagging实践" class="headerlink" title="Bagging实践"></a>Bagging实践</h3><p><code>sklearn.ensemble.BaggingClassifier</code>提供了Bagging的模型。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np  </span><br><span class="line"><span class="keyword">from</span> sklearn.tree <span class="keyword">import</span> DecisionTreeClassifier  </span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split  </span><br><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> BaggingClassifier  </span><br><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> datasets  </span><br><span class="line">  </span><br><span class="line"><span class="comment">#读取数据，划分训练集和测试集  </span></span><br><span class="line">iris=datasets.load_iris()  </span><br><span class="line">x=iris.data[: , :<span class="number">2</span>]  </span><br><span class="line">y=iris.target  </span><br><span class="line">x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=<span class="number">0.7</span>, random_state=<span class="number">1</span>)  </span><br><span class="line">  </span><br><span class="line"><span class="comment">#模型训练  </span></span><br><span class="line"><span class="comment"># sklearn 自带的决策树分类器</span></span><br><span class="line">model1=DecisionTreeClassifier(max_depth=<span class="number">3</span>)  </span><br><span class="line"><span class="comment"># sklearn自带的bagging分类器</span></span><br><span class="line">model2=BaggingClassifier(model1,n_estimators=<span class="number">100</span>,max_samples=<span class="number">0.3</span>)  </span><br><span class="line">model1.fit(x_train,y_train)  </span><br><span class="line">model2.fit(x_train,y_train)  </span><br><span class="line">model1_pre=model1.predict(x_test)  </span><br><span class="line">model2_pre=model2.predict(x_test)  </span><br><span class="line">res1=model1_pre==y_test  </span><br><span class="line">res2=model2_pre==y_test  </span><br><span class="line"><span class="built_in">print</span> <span class="string">&#x27;决策树测试集正确率%.2f%%&#x27;</span>%np.mean(res1*<span class="number">100</span>)  </span><br><span class="line"><span class="built_in">print</span> <span class="string">&#x27;Bagging测试集正确率%.2f%%&#x27;</span>%np.mean(res2*<span class="number">100</span>)  </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">决策树测试集正确率75.56%</span><br><span class="line">Bagging测试集正确率77.78%</span><br></pre></td></tr></table></figure>
+
+<h3 id="随机森林"><a href="#随机森林" class="headerlink" title="随机森林"></a>随机森林</h3><p>随机森林（Random Forest， 简称RF）是Bagging的一个扩展变体。</p>
+<p>RF在Bagging的基础上，加入了<strong>随机属性选择</strong>，即，<strong>对特征进行无放回抽样</strong>，并且使用CART树。</p>
+<p><strong>随机森林的基本做法</strong>：</p>
+<ul>
+<li>1 首先在样本集中有放回的抽样n个样本；</li>
+<li>2 在所有的属性当中再随机选择K个属性；</li>
+<li>3 根据这n个样本的K个属性，建立CART树；</li>
+<li>4 重复以上过程m次，得到了m棵CART树；</li>
+<li>5 利用这m棵树对样本进行预测并投票。</li>
+</ul>
+<h3 id="随机森林实践"><a href="#随机森林实践" class="headerlink" title="随机森林实践"></a>随机森林实践</h3><p><code>sklearn.ensemble.RandomForestClassifier</code>提供了随机森林的模型。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np  </span><br><span class="line"><span class="keyword">from</span> sklearn.tree <span class="keyword">import</span> DecisionTreeClassifier  </span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split  </span><br><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> RandomForestClassifier  </span><br><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> datasets  </span><br><span class="line">  </span><br><span class="line"><span class="comment">#读取数据，划分训练集和测试集  </span></span><br><span class="line">iris=datasets.load_iris()  </span><br><span class="line">x=iris.data[:,:<span class="number">2</span>]  </span><br><span class="line">y=iris.target  </span><br><span class="line">x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=<span class="number">0.7</span>, random_state=<span class="number">1</span>)  </span><br><span class="line">  </span><br><span class="line"><span class="comment">#模型训练  </span></span><br><span class="line">model1=DecisionTreeClassifier(max_depth=<span class="number">3</span>)  </span><br><span class="line">model2=RandomForestClassifier(n_estimators=<span class="number">200</span>, criterion=<span class="string">&#x27;entropy&#x27;</span>, max_depth=<span class="number">3</span>)  </span><br><span class="line">model1.fit(x_train,y_train)  </span><br><span class="line">model2.fit(x_train,y_train)  </span><br><span class="line">model1_pre=model1.predict(x_train)  </span><br><span class="line">model2_pre=model2.predict(x_train)  </span><br><span class="line">res1=model1_pre==y_train  </span><br><span class="line">res2=model2_pre==y_train  </span><br><span class="line"><span class="built_in">print</span> <span class="string">&#x27;决策树训练集正确率%.2f%%&#x27;</span>%np.mean(res1*<span class="number">100</span>)  </span><br><span class="line"><span class="built_in">print</span> <span class="string">&#x27;随机森林训练集正确率%.2f%%&#x27;</span>%np.mean(res2*<span class="number">100</span>) </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">决策树训练集正确率83.81%</span><br><span class="line">随机森林训练集正确率85.71%</span><br></pre></td></tr></table></figure>
+
+<h2 id="Boosting"><a href="#Boosting" class="headerlink" title="Boosting"></a>Boosting</h2><p>Boosting（提升）通过<strong>给样本设置不同的权值</strong>，每轮迭代调整权值。</p>
+<p>不同的提升算法之间的差别，一般是：</p>
+<ol>
+<li>如何更新<strong>样本的权值</strong>；</li>
+<li>如何组合每个分类器的预测，即，调整<strong>分类器的权值</strong>。<br>其中Adaboost中，样本权值是增加那些被错误分类的样本的权值，分类器$C_i$的重要性依赖于它的错误率。</li>
+</ol>
+<h3 id="AdaBoost"><a href="#AdaBoost" class="headerlink" title="AdaBoost"></a>AdaBoost</h3><p>直接看算法：</p>
+<ul>
+<li>1.初始化训练数据的权值分布：$D_1 &#x3D; (w_{11}, …, w_{1i}, …, w_{1N},)$，$w_{1,i}&#x3D;\frac{1}{N}$。（N是数据个数）</li>
+<li>对$m&#x3D;1, …, M$（M是弱分类器的个数）：<ul>
+<li>2.使用具有权值分布$D_m$训练得到弱分类器：$G_m(x)$</li>
+<li>3.计算$G_m(x)$在训练集上的分类错误率：$e_m &#x3D;\sum_{i&#x3D;1}^Nw_{mi}I(G_m(x_i)≠y_i)$</li>
+<li>4.计算$G_m(x)$的系数：$α_m&#x3D;\frac{1}{2}log\frac{1-e_m}{e_m}$（<strong>分类器错误率越大，权重越小</strong>）</li>
+<li>5.更新训练集权重：$w_{m+1, i} &#x3D; \frac{w_{mi}}{Z_m}exp(-α_my_iG_m(x_i))$（**$x_i$分类错误则提高权重**）</li>
+</ul>
+</li>
+<li>6.构建弱分类器的线性组合：$f(x) &#x3D; \sum_{m&#x3D;1}^Mα_mG_m(x)$</li>
+</ul>
+<h3 id="GBDT"><a href="#GBDT" class="headerlink" title="GBDT"></a>GBDT</h3><p><strong>GBDT（Gradient Boosting Decision Tree），梯度提升算法</strong>又叫 **MART（Multiple Additive Regression Tree)**。</p>
+<p>从后面的名字可以看出，这是一种<strong>回归树</strong>的模型。它使用的基础分类器也是CART。</p>
+<p>着重分析GBDT中的Boosting，即<strong>Additive Training</strong>。</p>
+<p>这里的方法是：第一轮去拟合一个大致上和目标差不多的值，然后计算残差，下一轮的拟合目标就是这个残差，即：</p>
+<ul>
+<li>1.用训练集训练一个弱分类器：$f_1(x) &#x3D; y$</li>
+<li>2.用残差训练一个弱分类器：$h_1(x) &#x3D; y - f_1(x)$</li>
+<li>3.获得新模型：$f_2(x) &#x3D; f_1(x) + h_1(x)$ 上一轮迭代得到的强学习器是$f_{t-1}(x)$，损失函数是$L(y, f_{t-1}(x))$。</li>
+</ul>
+<p>我们本轮迭代的目标是：找到一个CART回归树模型的弱学习器$h_t(x)$，让本轮的损失损失$L(y, f_{t}(x)) &#x3D;L(y, f_{t-1}(x)+ h_t(x))$最小。</p>
+<ul>
+<li>第t轮的第i个样本，损失函数的<strong>负梯度</strong>表示：$r_{ti} &#x3D; -\bigg[\frac{\partial L(y,f(x_i)))}{\partial f(x_i)}\bigg]_{f(x) &#x3D; f_{t-1}(x)}$，负梯度可以用来估计残差（注：为什么要使用负梯度而不直接使用残差是为了使用不同Loss function时，使用负梯度更容易优化）。</li>
+<li>再用$(x_i, r_{ti})$去拟合下一棵CART回归树：<ul>
+<li>对$j&#x3D;1,2,…,J$，计算：$c_{tj} &#x3D; \underbrace{arg; min}_{c}\sum\limits_{x_i \in R_{tj}} L(y_i,f_{t-1}(x_i) +c)$</li>
+</ul>
+</li>
+<li>得到本轮的拟合函数：$h_t(x) &#x3D; \sum\limits_{j&#x3D;1}^{J}c_{tj}I(x \in R_{tj})$<ul>
+<li>更新强学习器：$f_{t}(x) &#x3D; f_{t-1}(x) + \sum\limits_{j&#x3D;1}^{J}c_{tj}I(x \in R_{tj})$</li>
+</ul>
+</li>
+</ul>
+<p>上面算法描述版本参考自李航老师的《统计学习方法》，$c_{tj}$是决策树单元$R_{tj}$上固定输出值。然而更常见的算法版本（参考wikipedia）并不使用$c$，而是使用**步长$\gamma$**，步长×负梯度更reasonable：</p>
+<p>即：</p>
+<ul>
+<li>使用$(x_i, r_{ti})$去拟合下一棵CART回归树：<ul>
+<li>拟合的输出是$h_m(x)$<br>  -再用线性搜索找到最佳步长$\gamma_m &#x3D; \underset{\gamma}{arg; min}\sum_{i&#x3D;1}^nL(y_i, F_{m-1}(x_i)+\gamma h_m(x_i))$，其中的$\gamma h_m(x)$等价于$c$。</li>
+</ul>
+</li>
+</ul>
+<h3 id="XGBoost"><a href="#XGBoost" class="headerlink" title="XGBoost"></a>XGBoost</h3><p>XGBoost的符号表示稍微有些不同，参考<code>陈天奇</code>的<a href="https://homes.cs.washington.edu/~tqchen/pdf/BoostedTree.pdf">slide</a>。</p>
+<p>XGBoost本质上也是一个gradient boosting。</p>
+<p>我们每轮都训练一个基础分类器：</p>
+<p>$\hat y_i^{(0)} &#x3D; 0$</p>
+<p>$\hat y_i^{(1)} &#x3D; f_1(x_i) &#x3D; \hat y_i^{(0)} + f_1(x_i)$</p>
+<p>$\hat y_i^{(2)} &#x3D; f_1(x_i) + f_2(x_i) &#x3D; \hat y_i^{(1)} + f_2(x_i)$</p>
+<p>…</p>
+<p>$\hat y_i^{(t)} &#x3D; \sum_{k&#x3D;1}^t f_k(x_i) &#x3D; \hat y_i^{(t-1)} + f_t(x_i)$</p>
+<p>上面的最后一条式子解释如下：当我们训练了t轮以后，有了t个弱学习器，每一轮都将之前已经Boosting的强学习器和现在这轮的弱学习器的结果相加。</p>
+<p><strong>目标函数（损失函数）</strong>：$Obj^{(t)} &#x3D; \sum_{i&#x3D;1}^nl(y_i, \hat y_i^{(t)})+\sum_{i&#x3D;1}^tΩ(f_i)$</p>
+<p>回忆<strong>泰勒展开</strong>：$f(x + \Delta x)≈f(x)+f’(x)\Delta x+\frac{1}{2}f’’(x)\Delta x^2$</p>
+<p>将$\hat y_i^{(t)} &#x3D; \hat y_i^{(t-1)} + f_t(x_i)$带入目标函数，转换成：</p>
+<p>$Obj^{(t)} &#x3D; \sum_{i&#x3D;1}^n[l(y_i, \hat y_i^{(t-1)})+g_if_t(x_i)+\frac{1}{2}h_if_t^2(x_i)]+Ω(f_t)+constant$，其中，$g_i &#x3D; \partial_{\hat y_i^{(t-1)}}l(y_i, \hat y_i^{(t-1)})$，$h_i &#x3D; \partial^2_{\hat y_i^{(t-1)}}l(y_i, \hat y_i^{(t-1)})^2$</p>
+<p>把上面的常数都去掉，剩下：</p>
+<p>$Obj^{(t)} &#x3D; \sum_{i&#x3D;1}^n[g_if_t(x_i)+\frac{1}{2}h_if_t^2(x_i)]+Ω(f_t)$</p>
+<p>引入叶结点的权重：$f_t(x) &#x3D; w_{q(x)}$，$q(x)$是样本到叶结点的映射，正则函数：$Ω(f_t) &#x3D; \gamma T + \frac{1}{2}\lambda \sum^T_{j&#x3D;1}w^2_j$。$T$是叶结点的个数。</p>
+<p>定义在叶结点j的样本集：$I_j &#x3D; {i|q(x_i) &#x3D; j}$<br>把叶结点权重和正则函数带入目标函数，得到：</p>
+<p>$$Obj^{(t)} &#x3D; \sum_{i&#x3D;1}^n[g_iw_{q(x_i)}+\frac{1}{2}h_iw^2_{q(x_i)}]+\gamma T +<br>\frac{1}{2}\lambda \sum^T_{j&#x3D;1}w^2_j$$</p>
+<p>$$&#x3D;\sum_{j&#x3D;1}^T[(\sum_{i∈I_j }g_i)w_j +<br>\frac{1}{2}(\sum_{i∈I_j}h_i+\lambda)w_j^2]+\gamma T$$</p>
+<p>定义：$G_j &#x3D; \sum_{i∈I_j}g_i$，$H_j &#x3D; \sum_{i∈I_j}h_i$，</p>
+<p>$Obj^{(t)} &#x3D;\sum_{j&#x3D;1}^T[G_jw_j + \frac{1}{2}(H_j + \lambda)w_j^2] + \lambda T$</p>
+<p>回忆一下一元二次函数的性质：</p>
+<p>对于：$Gx + \frac{1}{2}Hx^2$，（$H&gt;0$），最小值为：$-\frac{1}{2}\frac{G^2}{H}$，在$ -\frac{G}{H}$处取得。</p>
+<p>回到目标函数中去，如果树的结构（$q(x)$）固定，那最优的权值分配是：</p>
+<p>$w_j^* &#x3D; -\frac{G_i}{H_j+\lambda}$</p>
+<p>$Obj^* &#x3D; -\frac{1}{2}\sum^T_{j&#x3D;1}\frac{G_j^2}{H_j+\lambda}+\gamma T$</p>
+<p>接下来考虑<strong>如何学习树的结构（Greedy Learning）</strong>：</p>
+<p>回忆一下CART是如何做的：</p>
+<p>对现有特征A的每一个特征，每一个可能的取值a，<strong>根据样本点对$A&#x3D;a$的测试是“是”还是“否”</strong>，将$D$分割成$D_1$和$D_2$两部分，计算$A&#x3D;a$时的基尼指数。选择基尼指数最小的特征机器对应的切分点作为<strong>最优特征</strong>和<strong>最优切分点</strong>。</p>
+<p>这里不算基尼指数，这里的Gain是：$\frac{1}{2}[\frac{G^2_L}{H_L+\lambda}+\frac{G^2_R}{H_R+\lambda}-\frac{(G_L+G_R)^2}{H_L+H_R+\lambda}] - \gamma$。</p>
+<p>上式方括号中的三项分别代表：<strong>左子树的得分</strong>；<strong>右子树的得分</strong>；<strong>如果不分割的得分</strong>。得分可以理解成是损失的反面。<br>寻找最优分割的算法：</p>
+<ul>
+<li>对每个结点，遍历所有feature：<ul>
+<li>对每个feature，将数据样本按照feature 值排序；</li>
+<li>使用linear scan决定这个feature的最佳split；</li>
+<li>如此循环，找到所有feature的最佳split。</li>
+</ul>
+</li>
+</ul>
+<p>上面算法的时间复杂度是：$O(d\cdot K\cdot nlogn )$，其中，$n$是数据个数，$d$是特征个数，$K$是树深度。</p>
+<p><strong>剪枝</strong>：</p>
+<p>这里的剪枝和其他普通的决策树剪枝没有区别，分为前剪枝和后剪枝。其中，后剪枝的策略是：递归地减掉所有产生negative gain的split。</p>
+<h3 id="Boosting实践"><a href="#Boosting实践" class="headerlink" title="Boosting实践"></a>Boosting实践</h3><p>sklearn中自带：<code>sklearn.ensemble.GradientBoostingClassifier</code>和<code>sklearn.ensemble.AdaBoostClassifier</code>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np  </span><br><span class="line"><span class="keyword">from</span> sklearn.tree <span class="keyword">import</span> DecisionTreeClassifier  </span><br><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> GradientBoostingClassifier  </span><br><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> AdaBoostClassifier  </span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt  </span><br><span class="line"><span class="keyword">import</span> matplotlib <span class="keyword">as</span> mpl  </span><br><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> datasets  </span><br><span class="line">  </span><br><span class="line">iris=datasets.load_iris()  </span><br><span class="line">x=iris.data[:,:<span class="number">2</span>]  </span><br><span class="line">y=iris.target  </span><br><span class="line">  </span><br><span class="line">model1=DecisionTreeClassifier(max_depth=<span class="number">5</span>)  </span><br><span class="line">model2=GradientBoostingClassifier(n_estimators=<span class="number">100</span>)  </span><br><span class="line">model3=AdaBoostClassifier(model1,n_estimators=<span class="number">100</span>)  </span><br><span class="line">model1.fit(x,y)  </span><br><span class="line">model2.fit(x,y)  </span><br><span class="line">model3.fit(x,y)  </span><br><span class="line">model1_pre=model1.predict(x)  </span><br><span class="line">model2_pre=model2.predict(x)  </span><br><span class="line">model3_pre=model3.predict(x)  </span><br><span class="line">res1=model1_pre==y  </span><br><span class="line">res2=model2_pre==y  </span><br><span class="line">res3=model3_pre==y  </span><br><span class="line"><span class="built_in">print</span> <span class="string">&#x27;决策树正确率%.2f%%&#x27;</span>%np.mean(res1*<span class="number">100</span>)  </span><br><span class="line"><span class="built_in">print</span> <span class="string">&#x27;GDBT正确率%.2f%%&#x27;</span>%np.mean(res2*<span class="number">100</span>)  </span><br><span class="line"><span class="built_in">print</span> <span class="string">&#x27;AdaBoost正确率%.2f%%&#x27;</span>%np.mean(res3*<span class="number">100</span>)  </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">决策树正确率84.67%</span><br><span class="line">GDBT正确率92.00%</span><br><span class="line">AdaBoost正确率92.67%</span><br></pre></td></tr></table></figure>
+
+<h3 id="xgboost实践"><a href="#xgboost实践" class="headerlink" title="xgboost实践"></a>xgboost实践</h3><p>xgboost需要额外安装一下：<a href="https://xgboost.readthedocs.io/en/latest/build.html">官方安装地址</a></p>
+<p>这里简单说下ubuntu下python接口的安装：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git clone --recursive</span><br><span class="line">https://github.com/dmlc/xgboost</span><br><span class="line">cd xgboost; make -j4</span><br><span class="line">cd python-package; sudo</span><br><span class="line">python setup.py install</span><br></pre></td></tr></table></figure>
+
+<p>同样，<a href="https://xgboost.readthedocs.io/en/latest/how_to/param_tuning.html">官网这里</a>对调参方法有很详细的介绍。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> xgboost <span class="keyword">as</span> xgb  </span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split  </span><br><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> datasets  </span><br><span class="line">  </span><br><span class="line">iris=datasets.load_iris()  </span><br><span class="line">x=iris.data[:,:<span class="number">2</span>]  </span><br><span class="line">y=iris.target  </span><br><span class="line">x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=<span class="number">0.7</span>, random_state=<span class="number">1</span>)  </span><br><span class="line">data_train = xgb.DMatrix(x_train,label=y_train)  </span><br><span class="line">data_test=xgb.DMatrix(x_test,label=y_test)  </span><br><span class="line">param = &#123;&#125;  </span><br><span class="line">param[<span class="string">&#x27;objective&#x27;</span>] = <span class="string">&#x27;multi:softmax&#x27;</span>  </span><br><span class="line">param[<span class="string">&#x27;eta&#x27;</span>] = <span class="number">0.1</span>  </span><br><span class="line">param[<span class="string">&#x27;max_depth&#x27;</span>] = <span class="number">5</span> </span><br><span class="line">param[<span class="string">&#x27;silent&#x27;</span>] = <span class="number">1</span>  </span><br><span class="line">param[<span class="string">&#x27;nthread&#x27;</span>] = <span class="number">4</span>  </span><br><span class="line">param[<span class="string">&#x27;num_class&#x27;</span>] = <span class="number">3</span>  </span><br><span class="line">watchlist = [ (data_train,<span class="string">&#x27;train&#x27;</span>), (data_test, <span class="string">&#x27;test&#x27;</span>) ]  </span><br><span class="line">num_round = <span class="number">10</span>  </span><br><span class="line">bst = xgb.train(param, data_train, num_round, watchlist );  </span><br><span class="line">pred = bst.predict( data_test );  </span><br><span class="line"><span class="built_in">print</span> (<span class="string">&#x27;predicting, classification error=%f&#x27;</span> % (<span class="built_in">sum</span>( <span class="built_in">int</span>(pred[i]) != y_test[i] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(y_test))) / <span class="built_in">float</span>(<span class="built_in">len</span>(y_test)) ))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[0]	train-merror:0.133333	test-merror:0.266667</span><br><span class="line">[1]	train-merror:0.142857	test-merror:0.266667</span><br><span class="line">[2]	train-merror:0.12381	test-merror:0.266667</span><br><span class="line">[3]	train-merror:0.12381	test-merror:0.266667</span><br><span class="line">[4]	train-merror:0.12381	test-merror:0.266667</span><br><span class="line">[5]	train-merror:0.114286	test-merror:0.288889</span><br><span class="line">[6]	train-merror:0.104762	test-merror:0.288889</span><br><span class="line">[7]	train-merror:0.104762	test-merror:0.288889</span><br><span class="line">[8]	train-merror:0.114286	test-merror:0.288889</span><br><span class="line">[9]	train-merror:0.114286	test-merror:0.288889</span><br><span class="line">predicting, classification error=0.288889</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="http://blog.kaggle.com/2017/01/23/a-kaggle-master-explains-gradient-boosting/">A Kaggle Master Explains Gradient Boosting</a></li>
+<li><a href="http://blog.csdn.net/sinat_22594309/article/details/60465700">机器学习笔记（六）Bagging及随机森林</a></li>
+<li><a href="http://blog.csdn.net/sinat_22594309/article/details/60957594">机器学习笔记（七）Boost算法（GDBT,AdaBoost，XGBoost）原理及实践</a></li>
+<li><a href="https://homes.cs.washington.edu/~tqchen/pdf/BoostedTree.pdf">Introduction to Boosted Trees</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Gradient_boosting#Gradient_tree_boosting">wikipedia</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+              <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/machine_learning/Tree_Basic/" rel="prev" title="决策树基础">
+                  <i class="fa fa-angle-left"></i> 决策树基础
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/nlp/word2vec/" rel="next" title="Word2Vec学习总结">
+                  Word2Vec学习总结 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
