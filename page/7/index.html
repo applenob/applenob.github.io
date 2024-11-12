@@ -121,13 +121,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-count">95</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-count">19</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -169,7 +169,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/machine_learning/interview/">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning_book/deep_learning_8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/ggb.png">
@@ -187,7 +187,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/machine_learning/interview/" class="post-title-link" itemprop="url">机器学习基础知识汇总</a>
+          <a href="/deep_learning_book/deep_learning_8/" class="post-title-link" itemprop="url">第八章：Optimization for Training Deep Models</a>
         </h2>
 
         <div class="post-meta-container">
@@ -198,814 +198,7 @@
       </span>
       <span class="post-meta-item-text">Posted on</span>
 
-      <time title="Created: 2017-08-11 14:00:00" itemprop="dateCreated datePublished" datetime="2017-08-11T14:00:00-07:00">2017-08-11</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="计算CNN输出尺寸"><a href="#计算CNN输出尺寸" class="headerlink" title="计算CNN输出尺寸"></a>计算CNN输出尺寸</h2><p>公式：<code>输出尺寸=(输入尺寸-filter尺寸+2*padding）/stride+1</code></p>
-<h2 id="ROC-和AUC"><a href="#ROC-和AUC" class="headerlink" title="ROC 和AUC"></a>ROC 和AUC</h2><p>ROC曲线的x轴是伪阳率即$\frac{伪阳}{真阴+伪阳}$，y轴是真阳率即$\frac{真阳}{真阳+伪阴}$。</p>
-<ul>
-<li>thresh-hold很高，导致全部预测阴，则真阳率为0，伪阳率为0，在坐标点$(0, 0)$；</li>
-<li>thresh-hold很低，导致全部预测阳，则真阳率为1，伪阳率为1，在坐标点$(1, 1)$；</li>
-<li>如果分类效果很好，则真阳率很高，伪阳率很低，接近坐标点$(0, 1)$。AUC即（Area Under Curve），即ROC曲线下的面积。如果分类效果越好，点越接近$(0, 1)$则AUC越大。</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/machine_learning/interview/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/machine_learning/tran_learn/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/ggb.png">
-      <meta itemprop="name" content="Javen Chen">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Javen Chen's Blog">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Javen Chen's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/machine_learning/tran_learn/" class="post-title-link" itemprop="url">迁移学习入门</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2017-08-10 15:00:00" itemprop="dateCreated datePublished" datetime="2017-08-10T15:00:00-07:00">2017-08-10</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>迁移学习简单地说，首先有个目标任务$T$，目标数据$D_T$数据量偏小，此时有一个相似的源任务$S$，源数据$D_S$相对更充分，迁移学习的目标即如何借助源任务去提高目标任务的效果。</p>
-<p>第四范式的罗远升有一篇很不错的文章<a href="http://www.sohu.com/a/160626995_470008">《迁移学习实战：从算法到实践》</a>，看了那篇文章，你会对迁移学习有个大概的认识。</p>
-<h2 id="迁移学习方法分类"><a href="#迁移学习方法分类" class="headerlink" title="迁移学习方法分类"></a>迁移学习方法分类</h2><p>根据所要迁移的知识的表示形式（即“What to transfer”），分为以下四大类：</p>
-<ul>
-<li>基于样本的迁移学习（instance-transfer）；</li>
-<li>基于参数的迁移学习（parameter-transfer）；</li>
-<li>基于特征表示的迁移学习（feature- representation-transfer）；</li>
-<li>基于关系知识的迁移（relation-knowledge-transfer）。</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/machine_learning/tran_learn/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/japanese/biaori_2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/ggb.png">
-      <meta itemprop="name" content="Javen Chen">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Javen Chen's Blog">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Javen Chen's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/japanese/biaori_2/" class="post-title-link" itemprop="url">标日语法笔记——初级（上二）</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2017-07-15 15:06:00" itemprop="dateCreated datePublished" datetime="2017-07-15T15:06:00-07:00">2017-07-15</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%97%A5%E8%AF%AD%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">日语学习</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <ul>
-<li><p>名【数量】+ 动<br>意：数量词用在动词前面。<br>例：本を　２<strong>冊</strong>　買いました。</p>
-</li>
-<li><p>名【时间】　名【次数】　+　动<br>意：表示一定的时间内进行了若干次动作。<br>例：李さんは　１週間に　2回　プールへ　行きます。</p>
-</li>
-<li><p>动词的“ます”形<br>例：働きます、休みます、寝ます、起きます。</p>
-</li>
-<li><p>名【场所】<strong>へ</strong>　动<strong>に</strong>　行きます／来ます<br>意：表示移动行为的<strong>目的</strong>。<br>例：午後　郵便局<strong>へ</strong>　荷物を　出し<strong>に</strong>　行きます。</p>
-</li>
-<li><p>名【数量】+ <strong>で</strong><br>意：用于不称重而以数量的形式售物。<br>例：この　ケーキは　3個<strong>で</strong>　500円です。</p>
-</li>
-<li><p>数词和量词<br>～冊／～回／～枚／～個／～杯／～人／～台<br>～本／～頭／～匹／～つ／ ～着／～羽／～番<br>～足／～度／～キロメートル／～皿</p>
-</li>
-<li><p>动词的<strong>“て”</strong>形<br>意：<br><strong>一类动词</strong>：去掉“ます”后的最后一个音位于<strong>“い段”</strong>的；<br><strong>二类动词</strong>：最后一个音位于<strong>“え段”</strong>的，以及位于“い段”的一小部分动词如<strong>起きます</strong>、<strong>見ます</strong>；<br><strong>三类动词</strong>：<strong>“します”</strong>和<strong>“来ます</strong>”两个动词，以及“勉強します”等使用<strong>“します”</strong>的动词。<br>变换方式：<br><strong>一类动词</strong>：“ます形”去掉“ます”后加<strong>“て”</strong>，<strong>“き”–&gt;“いて”</strong>，<strong>“ぎ”–&gt;“いで”</strong>，<strong>“び、み、に”–&gt;“んで”</strong>，<strong>“ち、り、い”</strong>–&gt;<strong>“って”</strong>，<strong>“し”–&gt;“して”</strong>；<br><strong>二类动词</strong>，<strong>三类动词</strong>：“ます形”去掉<strong>“ます”</strong>后加<strong>“て”</strong><br><a href="http://upload-images.jianshu.io/upload_images/1713813-a4184540c807453b.gif?imageMogr2/auto-orient/strip">http://upload-images.jianshu.io/upload_images/1713813-a4184540c807453b.gif?imageMogr2/auto-orient/strip</a><br><a href="https://i.ytimg.com/vi/9kOK3YxpLhU/maxresdefault.jpg">https://i.ytimg.com/vi/9kOK3YxpLhU/maxresdefault.jpg</a></p>
-</li>
-<li><p>动<strong>て</strong>　动【相继发生1】<br>意：两个以上的动作<strong>相继发生</strong>。<br>例：昨日　デパートへ　行っ<strong>て</strong>，買い物しました。</p>
-</li>
-<li><p>动<strong>てから</strong>　动【相继发生2】<br>意：两个以上的动作<strong>相继发生</strong>。<br>例：昼ご飯を　食べ<strong>てから</strong>　出かけます。</p>
-</li>
-<li><p>动<strong>て　ください</strong><br>意：请求某人做某事。<br>例：ここに　住所と　名前を　書い<strong>て　ください</strong>。</p>
-</li>
-<li><p>名【场所】<strong>を</strong>　动【经过】【离开】<br>意：经过某个场所，使用助词“を”<br>例：この　バスは　駅前<strong>を</strong>　とります。</p>
-</li>
-<li><p>动<strong>て　います</strong>【正在进行】<br>意：表示动作<strong>正在进行</strong>。<br>例：小野さんは　今　新聞を　読ん<strong>で　います</strong>。</p>
-</li>
-<li><p>动<strong>ても　いいです</strong><br>意：表示<strong>许可</strong>。<br>例：家で　仕事を　して<strong>も　いいです</strong>。</p>
-</li>
-<li><p>动<strong>ては　いけません</strong><br>意：表示<strong>禁止</strong>。<br>例：飛行機の中で　タバコを　吸っ<strong>ては　いけません</strong>。</p>
-</li>
-<li><p>名【附着点】<strong>に</strong>　动<br>意：人和物的<strong>附着点</strong>，助词用“に”。<br>例：李さんは　電車に　乗りました。</p>
-</li>
-<li><p>名【目的地】に　动<br>意：表示动作的<strong>目的地</strong>时，除了用“へ”，也可以用“に”。<br>例：李さんは　病院<strong>に</strong>　行きます。</p>
-</li>
-<li><p>一类形<strong>て</strong>　一类形【并列1】<br>意：两个以上的一类形容词并列使用，用一类形的“て形”，一类形的“て形”是将词尾<strong>“い”</strong>变为<strong>“くて”</strong>。<br>例：ホテルの　部屋は　広<strong>くて</strong>　明るいです。</p>
-</li>
-<li><p>二类形<strong>で</strong>　二类形【并列2】<br>意：两个以上的二类形容词并列使用，用二类形的“て形”，二类形的“て形”是<strong>“二类形+で”</strong>。<br>例：この　コンピュータの　操作は　簡単**で　**便利です。</p>
-</li>
-<li><p>名1<strong>で</strong>　名2【并列3】<br>意：两个以上的名词并列使用。<br>例：スミスさんは　旅行会社の　社員で，部長です。</p>
-</li>
-<li><p>动<strong>て　います</strong>　2【结果状态1】<br>意：除了表示现在进行时以外，还可以表示动作结束后留下的<strong>结果状态</strong>。<br>例：わたしは　北京に　住ん<strong>で　います</strong>。<br>　　吉田さんを　知っ<strong>て　いますか</strong>。<br>　　いいえ，知りません。</p>
-</li>
-<li><p>小句<strong>が</strong>，小句【转折】<br>意：表示两个小句的转折关系，相当于汉语的<strong>“但是”</strong>。<br>例：この　レストランは　おいしいです<strong>が</strong>，ちょっと　高いです。</p>
-</li>
-<li><p><strong>まだ</strong>　+　动（否定）<br>意：表示还没有达到某种程度。<br>例：<strong>まだ</strong>　結婚して　いません。</p>
-</li>
-<li><p>名が　<strong>欲しいです</strong><br>意：表达愿望。<br>例：わたしは　新しい　洋服が　<strong>欲しいです</strong>。</p>
-</li>
-<li><p>名を　动<strong>たいです</strong><br>意：相当于汉语“想～”。<br>例：映画を　見<strong>たいです</strong>。</p>
-</li>
-<li><p>动<strong>ませんか</strong><br>意：动词的否定形式“～ません”加上“か”，表示<strong>提议</strong>。<br>例：少し　休み<strong>ませんか</strong>。</p>
-</li>
-<li><p>动ましょう<br>意：把动词的“ます形”的“ます”换成<strong>“ましょう”</strong>，可表示提议。<br>例：そろそろ　行き<strong>ましょう</strong>。</p>
-</li>
-<li><p>疑问词　+　<strong>でも</strong><br>意：表示任何情况下事态都相同。<br>例：李さん，何を　食べたいでか。<br>　　何<strong>でも</strong>　いいです。</p>
-</li>
-<li><p>一类形　<strong>なります</strong><br>意：表示性质或者状态的<strong>变化</strong>，<strong>“い”变“く”</strong>，再加<strong>“なります”</strong>。<br>例：だんだん　暖か<strong>く　なります</strong>。</p>
-</li>
-<li><p>一类形　<strong>します</strong><br>意：因为主语的<strong>意志</strong>，引起形容词描述的<strong>变化</strong>，<strong>“い”变“く”</strong>，再加<strong>“します”</strong>。<br>例：テレビの　音を　大き<strong>く　します</strong>。</p>
-</li>
-<li><p>二类形／名<strong>に　なります</strong><br>意：表示性质或者状态的变化。<br>例：もう　元気<strong>に　なります</strong>。</p>
-</li>
-<li><p>二类形／名<strong>に　します</strong><br>意：因为主语的意志，引起形容词描述的变化。<br>例：部屋を　きれい<strong>に　して</strong>　ください。</p>
-</li>
-<li><p>一类形／二类形　<strong>ほうが　いいです</strong>。<br>意：比较两个以上事物的性质，认为其中一个比较好<br>例：旅行の　荷物は　軽い<strong>ほうが　いいです</strong>。<br>　　子供は　元気<strong>なほうが　いいです</strong>。</p>
-</li>
-<li><p><strong>自动词</strong> vs <strong>他动词</strong><br>意：自动词是不带宾语的动词，表示动作自主进行。他动词一般有主语作用于宾语。自动词和他动词一般相互对应。<br>例：窓が　<strong>開きました</strong>。<br>　　李さんが　窓を　<strong>開けました</strong>。</p>
-</li>
-<li><p>动词的<strong>“ない”</strong>形<br><strong>一类动词</strong>：把“ます形”去掉“ます”，最后的音变成<strong>“あ”</strong>段，再加“<strong>ない”</strong>。如果最后的音是“い”，把<strong>“い”</strong>变成<strong>“わ”</strong>后面加<strong>“ない”</strong>。<br><strong>二类动词</strong>：把“ます形”去掉“ます”，再加“ない”。<br><strong>三类动词</strong>：把<strong>“来ます”</strong>变成<strong>“来ない”</strong>，把<strong>“します”</strong>变成<strong>“しない”</strong>。<br><a href="http://upload-images.jianshu.io/upload_images/1713813-5d154e9792f75295.gif?imageMogr2/auto-orient/strip">http://upload-images.jianshu.io/upload_images/1713813-5d154e9792f75295.gif?imageMogr2/auto-orient/strip</a></p>
-</li>
-<li><p>动<strong>ないで　ください</strong><br>意：表示<strong>否定的命令</strong>。<br>例：部屋の　かぎを　忘れ<strong>ないで　ください</strong>。</p>
-</li>
-<li><p>动<strong>なければ　なりません</strong><br>意：表示<strong>必须</strong>。<br>例：李さんは　今日　早く　帰ら<strong>なければ　なりません</strong>。</p>
-</li>
-<li><p>动<strong>なくても　いいです</strong><br>意：表示不做某事也可以。<br>例：明日は　残業し<strong>なくても　いいです</strong>。</p>
-</li>
-<li><p>动词的<strong>“基本形”</strong><br>“ます形”去掉“ます”<br><strong>一类动词</strong>，最后的<strong>“い”</strong>段变成<strong>“う”</strong>段；<br><strong>二类动词</strong>：加<strong>“る”</strong>；<br><strong>三类动词</strong>：<strong>“来る”</strong>和<strong>“する”</strong>。<br><img src="/japanese/biaori_2/"></p>
-</li>
-<li><p>名【人】は　动【基本形】　<strong>ことが　できます</strong><br>意：表示<strong>能力</strong>，肯定的情况下用“できます”， 否定的情况下用“できません”。<br>例：スミスさんは　ピアノを　<strong>弾く　ことが　できます。</strong></p>
-</li>
-<li><p>名は　动【基本形】　<strong>ことです</strong><br>意：谓语的内容是动作。<br>例：わたしの　興味は　切手を　<strong>集める　こと　です。</strong></p>
-</li>
-<li><p>动【基本形】　<strong>前に</strong>，～<br>意：表示一个动作在另一个动作<strong>之前发生</strong>。<br>例：こちらへ　来る　<strong>前に</strong>　電話を　かけて　ください。</p>
-</li>
-<li><p>动词的<strong>“た形”</strong><br>“た形”是把<strong>“て形”</strong>中的<strong>“て”</strong>换成<strong>“た”</strong>。</p>
-</li>
-<li><p>动【た形】　<strong>ことが　あります</strong><br>意：表示过去的经历，相当于<strong>“曾经～过”</strong>。一般是比较久远的事情。<br>例：わたしは　すき焼きを　食べ<strong>た　ことが</strong>　あります。</p>
-</li>
-<li><p>动【た形】　<strong>後で</strong>，　～<br>意：表示一个动作在另一个动作发生<strong>之后</strong>。<br>例：会社が　終わった　<strong>後で</strong>，　飲みに　行きます。</p>
-</li>
-<li><p>动【た形】　<strong>ほうが　いいです</strong><br>意：在两种事物中进行选择时，做出的选择。<br>例：ホテルを　予約した　<strong>ほうが　いいですが</strong>。</p>
-</li>
-<li><p><strong>敬体形 <strong>vs <strong>简体形</strong><br>意：</strong>“ます形”</strong>属于<strong>敬体形</strong>；<strong>“基本形”</strong>，<strong>“ない形”</strong>，<strong>“た形”</strong>属于<strong>简体形</strong>。</p>
-</li>
-<li><p><strong>动词</strong>的<strong>简体形</strong><br>1.<strong>现在肯定</strong>：<strong>“基本形”</strong>買う，对应敬体形<strong>“ます”</strong>買います；<br>2.<strong>现在否定</strong>：<strong>“ない形”</strong>買わない，对应敬体形<strong>“ません”</strong>買いません；<br>3.<strong>过去肯定</strong>：<strong>“た形</strong>”買った，对应敬体形<strong>“ました”</strong>買いました；<br>4.<strong>过去否定</strong>：<strong>“なかった”</strong>買わなかった，对应敬体形<strong>“ませんでした”</strong>買いませんでした。</p>
-</li>
-</ul>
-<p> <strong>一类形容词</strong>作<strong>谓语</strong>的<strong>简体形</strong><br>1.<strong>现在肯定</strong>：“忙し<strong>い</strong>”，对应敬体形“忙し<strong>です</strong>”；<br>2.<strong>现在否定</strong>：“忙し<strong>くない</strong>”，对应敬体形“忙し<strong>くないです</strong>”；<br>3.<strong>过去肯定</strong>：“忙し<strong>かった</strong>”，对应敬体形“忙し<strong>かったです</strong>”；<br>4.<strong>过去否定</strong>：“忙し<strong>く　なかった</strong>”，对应敬体形“忙し<strong>く　なかったです</strong>”。</p>
-<ul>
-<li><p><strong>二类形容词</strong>作<strong>谓语</strong>的<strong>简体形</strong><br>1.<strong>现在肯定</strong>：“簡単<strong>だ</strong>”，对应敬体形“簡単<strong>です</strong>”；<br>2.<strong>现在否定</strong>：“簡単<strong>では　ない</strong>”，对应敬体形“簡単<strong>では　ありません</strong>”；<br>3.<strong>过去肯定</strong>：“簡単<strong>だった</strong>”，对应敬体形“簡単<strong>でした</strong>”；<br>4.<strong>过去否定</strong>：“簡単<strong>では　なかった</strong>”，对应敬体形“簡単<strong>では　ありませんでした</strong>”。</p>
-</li>
-<li><p><strong>名词谓语</strong>形式的<strong>简体形</strong><br>1.<strong>现在肯定</strong>：“晴れ<strong>だ</strong>”，对应敬体形“晴れ<strong>です</strong>”；<br>2.<strong>现在否定</strong>：“晴れ<strong>では　ない</strong>”，对应敬体形“晴れ<strong>では　ありません</strong>”；<br>3.<strong>过去肯定</strong>：“晴れ　<strong>だった</strong>”，对应敬体形“晴れ　<strong>でした</strong>”；<br>4.<strong>过去否定</strong>：“晴れ<strong>では　なかった</strong>”，对应敬体形“晴れ<strong>では　ありませんでした</strong>”。</p>
-</li>
-<li><p>小句<strong>けど</strong>　小句【转折】【铺垫】<br>意：<strong>表转折</strong>。<br>例：昨日の　試験は，　ちょっと　難しかった<strong>けど</strong>，　まあまあ　できたよ。</p>
-</li>
-<li><p>动<strong>たり</strong>　动<strong>たり</strong><br>意：表示列举若干种有代表性的动作。<br>例：小野さんは　休みの日　散歩し<strong>たり</strong>　買い物に　行っ<strong>たり</strong>　します。</p>
-</li>
-<li><p>一类形<strong>かったり</strong>　一类形<strong>かったりです **　二类形</strong>だったり**　二类形<strong>だったりです</strong>　名<strong>だったり</strong>　名<strong>だったりです</strong><br>意：表示状态或状况有<strong>多种可能</strong>。<br>例：飛行機の　チケットは　高<strong>かったり</strong>　安<strong>かったり</strong>です。<br>この　公園は　時間に　よって　静<strong>かだったり</strong>　にぎや<strong>かだったり</strong>です。</p>
-</li>
-<li><p>小句（简体形）<strong>と　思います</strong><br>意：表示说话人的思考内容。<br>例：李さんは　もう　すぐ　来る<strong>と　思います</strong>。</p>
-</li>
-<li><p>名【人】は　小句（简体形）<strong>と　言いました</strong><br>意：向第三者专属他人说的话。<br>例：陳さんは　パーテイーに　行く<strong>と　言いました</strong>。</p>
-</li>
-<li><p>～<strong>のです</strong>／<strong>んです</strong><br>意：表示所讲的内容与前句或者前向内容<strong>有关</strong>，用于<strong>说明情况或解释原因</strong>。<strong>“のです”</strong>用于<strong>书面语</strong>，<strong>“んです”</strong>是“のです”的<strong>口语</strong>形式。“のです／んです”前接<strong>简体形</strong>，名词和二类形容词的现在将来肯定形中的<strong>“だ”</strong>要换成<strong>“な”</strong>。<br>例：タバコは　やめた　ほうが　いいですよ。<br>そうなんですが，　やめる　ことが　できない<strong>ん</strong>です。<br>すごい　人気ですね。<br>ええ，　あの　歌手は　日本では　とても　有名<strong>なん</strong>です。</p>
-</li>
-<li><p>小句<strong>が</strong>　小句【铺垫】<br>意：提示接下来说的内容。<br>例：東京タワーへ　行きたい<strong>ん</strong>です<strong>が</strong>，　どうやって　いきますが。</p>
-</li>
-<li><p>另： 　找到一张关于动词形态的很不错的图片，还是例子和规则结合记忆更有效。<br><a href="http://www.mianfeiwendang.com/pic/40887d106170ec3f039ce8ac/1-670-jpg_6_0_______-1052-0-0-1052.jpg">http://www.mianfeiwendang.com/pic/40887d106170ec3f039ce8ac/1-670-jpg_6_0_______-1052-0-0-1052.jpg</a></p>
-</li>
-</ul>
-
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/japanese/biaori_2/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/tensorflow/2_tensor/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/ggb.png">
-      <meta itemprop="name" content="Javen Chen">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Javen Chen's Blog">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Javen Chen's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/tensorflow/2_tensor/" class="post-title-link" itemprop="url">二. Tensorflow基础：tensor</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2017-07-15 11:00:00" itemprop="dateCreated datePublished" datetime="2017-07-15T11:00:00-07:00">2017-07-15</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Tensorflow%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">Tensorflow学习笔记</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>本片博文介绍和<code>tensor</code>本身相关的操作</p>
-<p>定义两个矩阵：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">sess = tf.InteractiveSession()</span><br><span class="line"></span><br><span class="line">matrix1 = tf.constant(np.arange(<span class="number">9</span>).reshape(<span class="number">3</span>,<span class="number">3</span>), name=<span class="string">&quot;m1&quot;</span>, dtype=<span class="string">&quot;int32&quot;</span>)</span><br><span class="line">matrix2 = tf.<span class="built_in">range</span>(<span class="number">10</span>,<span class="number">19</span>, name=<span class="string">&quot;m2&quot;</span>)</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>获取尺寸</li>
-</ul>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">matrix1.get_shape()</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/tensorflow/2_tensor/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/japanese/biaori_1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/ggb.png">
-      <meta itemprop="name" content="Javen Chen">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Javen Chen's Blog">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Javen Chen's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/japanese/biaori_1/" class="post-title-link" itemprop="url">标日语法笔记——初级（上一）</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2017-06-22 22:54:00" itemprop="dateCreated datePublished" datetime="2017-06-22T22:54:00-07:00">2017-06-22</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%97%A5%E8%AF%AD%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">日语学习</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <ul>
-<li><p>名<strong>は</strong>　名<strong>です</strong><br>意：～是～<br>例：私は　中国人です。</p>
-</li>
-<li><p>名<strong>は</strong>　名<strong>では　ありません</strong><br>意：～不是～<br>例：わたし<strong>は</strong>　日本人<strong>では　ありません。</strong></p>
-</li>
-<li><p>名<strong>は</strong>　名<strong>ですか</strong><br>意：～是～吗？<br>例：あなた<strong>は</strong>　中国人<strong>ですか</strong>。</p>
-</li>
-<li><p>誰（だれ）ですか／何ですか<br>意：～是谁／什么？<br>例：それは　何ですか。</p>
-</li>
-<li><p>名は　<strong>どこ</strong>ですか<br>意：～在哪里？<br>例：トイレは　<strong>どこ</strong>ですか。</p>
-</li>
-<li><p>名<strong>も</strong>　名です<br>意：も代表<strong>“也”</strong><br>例：あなた<strong>も</strong>　中国人ですか。</p>
-</li>
-<li><p>名は　<strong>いくら</strong>ですか<br>意：～多少钱？<br>例：これは　<strong>いくら</strong>ですか。</p>
-</li>
-<li><p>名【场所】に　名【物／人】が　<strong>あります／います</strong><br>意：～有～<br>例：部屋に　机が　<strong>あります</strong>。<br>　　小園に　猫が　<strong>います</strong>。</p>
-</li>
-<li><p>名【物／人】は　 名【场所】に　<strong>あります／います</strong><br>意：～在～<br>例：いすは　部屋に　<strong>あります</strong>。<br>　　吉田さんは　庭に　<strong>います</strong>。</p>
-</li>
-<li><p>名<strong>と</strong>　名【并列】<br>意：相当于“和”<br>例：時計<strong>と</strong>　眼鏡</p>
-</li>
-<li><p>疑问词 + <strong>も</strong> + 动（否定）<br>意：表示全面否定<br>例：冷蔵庫に　何<strong>も</strong>　ありません。</p>
-</li>
-<li><p><strong>动ます</strong>／<strong>动ません</strong><br><strong>动ました</strong>／<strong>动ませんでした</strong><br>意：现在（将来）的动作／否定<br>　　过去的动作／过去否定<br>例：私は　昨日　はたらき<strong>ませんでした</strong>。</p>
-</li>
-<li><p>名【时间】<strong>に</strong>　动<br>意：表示动作发生的时间，要在表示时间的名词后面+に<br>例：私は　7時<strong>に</strong>　起きます。</p>
-</li>
-<li><p><strong>いつ</strong>　动ますか<br>意：什么时候做XX<br>例：試験は　<strong>いつ</strong>から　始まりますか。</p>
-</li>
-<li><p><strong>は</strong>【对比】<br>意：表示对比的时候，は发音略重<br>例：小野さんは　昨日<strong>は</strong>　休みます。</p>
-</li>
-<li><p>名【场所】<strong>へ</strong>　动<br>意：表示移动的目的地<br>例：吉田さんは　会社<strong>へ</strong>　行きます。</p>
-</li>
-<li><p>名【场所】<strong>から</strong>　动<br>意：表示移动的起点<br>例：李さんは　先月　北京<strong>から</strong>　来ました。</p>
-</li>
-<li><p>名【交通工具】<strong>で</strong>　动<br>意：交通工具的助词用で<br>例：李さんは　<strong>歩いて</strong>　会社へ　行きます<br>　　上海へ　飛行機<strong>で</strong>　行きます。</p>
-</li>
-<li><p>名<strong>を</strong>　动<br>意：动词的对象助词用を<br>例：李さんは　毎日　新聞<strong>を</strong>　読みます。</p>
-</li>
-<li><p>名【场所】<strong>で</strong>　动<br>意：动作的场所用助词で表示，区别于存在的に<br>例：李さんは　会社<strong>で</strong>　働きます。</p>
-</li>
-<li><p>名<strong>か</strong>　名<br>意：对若干名词进行选择，相当于“或者”<br>例：私は　毎朝　パン<strong>か</strong>　お粥を　食べます。</p>
-</li>
-<li><p>名<strong>を　ください</strong><br>意：买东西或者点菜时使用<br>例：この　本<strong>を　ください</strong>。</p>
-</li>
-<li><p>名【工具】<strong>で</strong>　动<br>意：表示手段或者原材料<br>例：新聞紙<strong>で</strong>　紙飛行機を　作ります。</p>
-</li>
-<li><p>名1【人】<strong>は</strong>　名2【人】<strong>に</strong>　名3【物】<strong>を　あげます</strong><br>意：相当于汉语的“给”<br>例：李さん<strong>は</strong>　小野さん<strong>に</strong>　お土産<strong>を　あげます</strong>。</p>
-</li>
-<li><p>名1【人】<strong>は</strong>　名2【人】<strong>に</strong>　名3【物】<strong>を</strong>　<strong>もらいます</strong><br>意：相当于汉语的“得到”、“接受”<br>例：私<strong>は</strong>　小野さん<strong>に</strong>　写真<strong>を</strong>　<strong>もらいました</strong>。</p>
-</li>
-<li><p>名【人】<strong>に　会います</strong><br>意：和～见面，助词用<strong>に</strong><br>例：李さんは　明日　中島さん<strong>に　会います</strong>。</p>
-</li>
-<li><p>名<strong>は</strong>　一类形<strong>です</strong><br>意：日语的形容词分两类，一类形容词以<strong>“い”</strong>结尾，作谓语是要在后面加<strong>“です”</strong><br>例：この　お茶<strong>は</strong>　熱い<strong>です</strong>。</p>
-</li>
-<li><p>一类形　作谓语时的否定形式<br>意：<strong>“い”</strong>变<strong>“く”</strong>再加上<strong>“ないです”</strong>或者<strong>“ありません”</strong><br>例：この　スープは　<strong>熱く　ないです</strong>。</p>
-</li>
-<li><p>一类形　作谓语时的过去形式<br>意：<strong>“い”</strong>变<strong>“かった”</strong>再加上<strong>“です”</strong><br>例：旅行は　<strong>楽し　かったです</strong>。</p>
-</li>
-<li><p>一类形　作谓语时的过去否定形式<br>意：<strong>“い”</strong>变<strong>“く”</strong>再加上<strong>“なかったです”</strong>或者<strong>“ありませんでした”</strong><br>例：昨日は　寒<strong>く　なかったです</strong>。</p>
-</li>
-<li><p>一类形+名<br>意：一类形容词可以直接修饰名词<br>例：広い　国</p>
-</li>
-<li><p><strong>“を”</strong>–&gt;<strong>“は”</strong><br>意：名词在用作对比或是作为话题时，<strong>“を”</strong>去掉，用<strong>“は”</strong><br>例：この本<strong>は</strong>　李さんに　もらいました。</p>
-</li>
-<li><p><strong>あまり</strong>　一类形&#x2F;动（否定）<br>意：“あまり”与后面的否定相呼应，表示程度不太高。<br>例：試験は　<strong>あまり</strong>　難しいです。</p>
-</li>
-<li><p>常用的<strong>一类形容词</strong>：<br>新（あたら）しい<br>古（ふる）い<br>熱（あつ）い<br>冷（つめ）たい<br>高（たか）い<br>低（ひく）い<br>暑（あつ）い<br>寒（さむ）い<br>安（やす）い<br>多（おお）い<br>少（すく）ない<br>難（むずか）しい<br>易（やさ）しい<br>大（おお）きい<br>小（ちい）さい<br>遠（とお）い<br>近（ちか）い<br>いい<br>悪（わる）い<br>楽（たの）しい<br>広（ひろ）い<br>狭（せま）い<br>辛（から）い<br>塩（しお）辛い<br>酸（す）っぱい<br>苦（にが）い<br>おいしい<br>まずい<br>面白（おもしろ）い<br>つまらない<br>忙（いそが）しい<br>素晴（すば）らしい<br>青（あお）い<br>白（しろ）い</p>
-</li>
-<li><p>名<strong>は</strong>　 二类形<strong>です／でした</strong><br>意：二类形容词是<strong>不以“い”</strong>结尾的形容词，做谓语时，要在后面加“です”，过去形式是“でした”。<br>例：京都の　紅葉<strong>は</strong>　有名<strong>です</strong>。<br>　　この　通り<strong>は</strong>　静か<strong>です</strong>。</p>
-</li>
-<li><p>名<strong>は</strong>　二类形<strong>では　ありません／では　ありませんでした</strong><br>意：二类形容词作谓语时的否定形式是<strong>“二类形容词+では　ありません”</strong>。过去形式的否定形式是<strong>“では　ありませんでした”</strong>。在日语里<strong>“では”</strong>一般说成<strong>“じゃ”</strong>。<br>例：この　通りは　<strong>にぎやかでは　ありません</strong>。<br>　　昨日は　<strong>暇じゃ　ありませんでした</strong>。</p>
-</li>
-<li><p>名<strong>は</strong>　二类形<strong>な</strong>　名<strong>です</strong><br>意：二类形容词修饰名词时，用<strong>“二类形容词+な+名词”</strong>的形式。<br>例：奈良<strong>は</strong>　<strong>静かな</strong>　町<strong>です</strong>。</p>
-</li>
-<li><p>名<strong>でした</strong><br>意：名词作谓语时的过去形式是<strong>“名词+でした”</strong>，否定形式是<strong>“名词+では（じゃ）ありませんでした”</strong>。<br>例：昨日<strong>は</strong>　<strong>日曜日でした</strong><br>　　おとといは　<strong>休みでは　ありませんでした</strong>。</p>
-</li>
-<li><p><strong>どんな</strong>　名<br>意：询问人或事物的性质时，用<strong>“どんな＋名”</strong>，相当于汉语中的“怎样的”<br>例：横浜は　<strong>どんな</strong>　町ですか。</p>
-</li>
-<li><p><strong>どうですか</strong><br>意：询问对方的意见<br>例：お茶　<strong>どうですか</strong>。</p>
-</li>
-<li><p><strong>でも</strong>和<strong>そして</strong><br>意：<strong>“でも”</strong>是转折，<strong>“そして”</strong>是并列<br>例：わたしの部屋は　狭いです。<strong>でも</strong>，きれいです。<br>　　わたしの部屋は　狭いです。<strong>そして</strong>，汚（きたな）いです。</p>
-</li>
-<li><p>常用的<strong>二类形容词</strong>：<br>好き<br>嫌い<br>にぎやか<br>静か<br>便利<br>不便<br>きれい<br>元気<br>簡単<br>暇<br>有名</p>
-</li>
-<li><p>名1<strong>は</strong>　名2<strong>が</strong>　一类形／二类形<strong>です</strong><br>意：用于表达<strong>感情</strong>，名1是感情的主体，名2是感情的对象。<br>例：小野さん<strong>は</strong>　歌<strong>が</strong>　<strong>好きです</strong>。</p>
-</li>
-<li><p>名1<strong>は</strong>　名2<strong>が</strong>　<strong>分かります／できます</strong><br>意：表达<strong>“能力”</strong>。<br>例：小野さん<strong>は</strong>　料理<strong>が</strong>　<strong>上手です</strong>。</p>
-</li>
-<li><p>名<strong>や</strong>　名<br>意：<strong>と</strong>和<strong>や</strong>都表示<strong>“和”</strong>，<strong>と</strong>一般列举，<strong>や</strong>只举两个例子。<br>例：吉田さん<strong>は</strong>　時々　中国<strong>や</strong>　韓国へ　行きます。</p>
-</li>
-<li><p><strong>“～から”</strong>和<strong>“だから”</strong>【原因、理由】<br>意：说明原因时的助词<br>例：寒いです<strong>から</strong>　お酒が　好きですから，毎日　飲みさす。</p>
-</li>
-<li><p>表示<strong>频率</strong>的副词：<br>いつも<br>よく<br>時々<br>偶（たま）に<br>あまり～ません<br>全然～ません</p>
-</li>
-<li><p><strong>どうしてですか</strong><br>意：询问原因，相当于<strong>“为什么”</strong>。回答时谓语后加<strong>“から”</strong>。</p>
-</li>
-<li><p>名1<strong>は</strong>　名2<strong>より</strong>　一类形／二类形です<br>意：名1 <strong>比</strong>名2 <strong>更</strong> ～<br>例：中国<strong>は</strong>　日本<strong>より</strong>　広いです。</p>
-</li>
-<li><p>名1<strong>より</strong>　名2<strong>の　ほうが</strong>　一类形／二类形です<br>意：<strong>相比</strong> 名1 , 名2 <strong>更</strong> ～<br>例：日本<strong>より</strong>，中国<strong>の　ほうが</strong>　広いです。</p>
-</li>
-<li><p>名1<strong>は</strong>　名2<strong>ほど</strong>　一类形<strong>く　ないです</strong>／二类形<strong>では　ありません</strong><br>意：名1 <strong>比</strong>  名2 <strong>更不</strong>～<br>例：東京の冬<strong>は</strong>　北京の冬<strong>ほど</strong>　<strong>寒く　ないです</strong>。</p>
-</li>
-<li><p>名1<strong>の中で</strong>　名2<strong>が</strong>　<strong>一番（いちばん）</strong>　一类形／二类形です<br>意：<br>例：日本料理<strong>の中で</strong>　寿司<strong>が</strong>　<strong>いちばん</strong>　おいしいです。</p>
-</li>
-<li><p>名1<strong>と</strong>　名2<strong>と</strong>　<strong>どちらが</strong>　一类形／二类形ですか<br>意：询问两个事物中哪种更具有某个性质的时候使用。<strong>“どちら”</strong>是二者选一时使用的疑问词，回答时使用<strong>“～の　ほうが．．．”</strong>，如果程度相当，回答<strong>“どちらも　～です”</strong>。<strong>“どちら”</strong>在口语中说成<strong>“どっち”</strong>。<br>例：コーヒー<strong>と</strong>　紅茶<strong>と</strong>　**どっちらが　**好きですか。<br>　　<strong>どちらも</strong>　いいです。</p>
-</li>
-<li><p><strong>どの</strong>　<strong>名／いつ／どれ／だれ／何が　いちばん</strong>　一类形／二类形ですか<br>意：哪个<strong>“最”</strong>～<br>例：この　中で　<strong>どの</strong>　料理が　<strong>いちばん</strong>　おいしいですか。</p>
-</li>
-</ul>
-
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/japanese/biaori_1/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/python/save/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/ggb.png">
-      <meta itemprop="name" content="Javen Chen">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Javen Chen's Blog">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Javen Chen's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/python/save/" class="post-title-link" itemprop="url">python 不同格式的读取效率</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2017-05-28 10:29:00" itemprop="dateCreated datePublished" datetime="2017-05-28T10:29:00-07:00">2017-05-28</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>对比了<code>pickle</code>&#x2F;<code>npy</code>&#x2F;<code>npz</code>&#x2F;<code>hdf</code>四种格式的读取效率。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> cPickle <span class="keyword">as</span> pkl</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> tables</span><br><span class="line"></span><br><span class="line">a1 = np.random.normal(size=[<span class="number">256</span>, <span class="number">4096</span>])</span><br><span class="line">label = np.random.normal(size=[<span class="number">256</span>, <span class="number">1</span>])</span><br><span class="line">all_batch = np.concatenate([a1, label], <span class="number">1</span>)</span><br><span class="line"><span class="comment"># 重新分割</span></span><br><span class="line"><span class="comment"># a1, a2 = np.split(all_batch, [-1], 1)</span></span><br><span class="line"></span><br><span class="line">all_batches = []</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):</span><br><span class="line">    all_batches.append(all_batch)</span><br><span class="line">all_batches = np.array(all_batches)</span><br><span class="line"><span class="built_in">print</span>(all_batches.shape)</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(10, 256, 4097)</span><br></pre></td></tr></table></figure>
-
-<h2 id="Pickle"><a href="#Pickle" class="headerlink" title="Pickle"></a>Pickle</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">s_t = time.time()</span><br><span class="line">pkl_name = <span class="string">&quot;a.pkl&quot;</span></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(pkl_name, <span class="string">&quot;wb&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    pkl.dump(all_batches, f)</span><br><span class="line">pkl_in_time = time.time()-s_t</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;pkl dump costs &#123;&#125; sec&quot;</span>.<span class="built_in">format</span>(pkl_in_time))</span><br><span class="line">s_t = time.time()</span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(pkl_name) <span class="keyword">as</span> f:</span><br><span class="line">    new_a = pkl.load(f)</span><br><span class="line">pkl_out_time = time.time() - s_t</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;pkl load costs &#123;&#125; sec&quot;</span>.<span class="built_in">format</span>(pkl_out_time))</span><br><span class="line">pkl_size = os.path.getsize(pkl_name)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;pkl file size: &#123;&#125; byte, &#123;&#125; mb&quot;</span>.<span class="built_in">format</span>(pkl_size, <span class="built_in">float</span>(pkl_size)/(<span class="number">1024</span>*<span class="number">1024</span>)))</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/python/save/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning_book/deep_learning_20/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/ggb.png">
-      <meta itemprop="name" content="Javen Chen">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Javen Chen's Blog">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Javen Chen's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/deep_learning_book/deep_learning_20/" class="post-title-link" itemprop="url">第二十章：Deep Generative Models</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2017-05-09 20:00:00" itemprop="dateCreated datePublished" datetime="2017-05-09T20:00:00-07:00">2017-05-09</time>
+      <time title="Created: 2017-05-09 08:00:00" itemprop="dateCreated datePublished" datetime="2017-05-09T08:00:00-07:00">2017-05-09</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1034,12 +227,13 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="20-Deep-Generative-Models"><a href="#20-Deep-Generative-Models" class="headerlink" title="20. Deep Generative Models"></a>20. Deep Generative Models</h1><h2 id="玻尔兹曼机（Boltzmann-Machines）"><a href="#玻尔兹曼机（Boltzmann-Machines）" class="headerlink" title="玻尔兹曼机（Boltzmann Machines）"></a>玻尔兹曼机（Boltzmann Machines）</h2><p>我们在d维二值随机向量$x∈{0,1}^d$上定义玻尔兹曼机：</p>
-<p>玻尔兹曼机是一种<strong>基于能量</strong>的模型，意味着我们可以使用能量函数定义联合概率分布：<br>$P(x) &#x3D; \frac{\exp(-E(x))}{Z}$，其中$E(x)$是能量函数，Z是确保$∑_xP(x)&#x3D;1$的配分函数。<br>玻尔兹曼机的能量函数如下给出： $E(x) &#x3D; -x^TUx - b^Tx$，其中$U$是模型参数的“权重”矩阵，$b$是偏置向量。<br>带隐变量的玻尔兹曼机：$E(v,h)&#x3D;−v^⊤Rv−v^⊤Wh−h^⊤Sh−b^⊤v−c^⊤h$。</p>
-<p><a href="https://raw.githubusercontent.com/applenob/reading_note/master/res/rbms.png">https://raw.githubusercontent.com/applenob/reading_note/master/res/rbms.png</a></p>
+          <h1 id="8-Optimization-for-Training-Deep-Models"><a href="#8-Optimization-for-Training-Deep-Models" class="headerlink" title="8. Optimization for Training Deep Models"></a>8. Optimization for Training Deep Models</h1><p><strong>机器学习和纯优化问题的区别</strong>：机器学习关注某些性能度量P，定义于测试集上并且可能是不可解的，只能间接地优化P。因此通过降低代价函数J(θ)来提高P。</p>
+<p>这一点与纯优化不同，纯优化最小化目标J本身。</p>
+<p><strong>批量（batch）梯度算法</strong>：使用整个训练集的优化算法被称为批量（batch）或确定性（deterministic）梯度算法。</p>
+<p><strong>在线（online）算法</strong>：每次只使用单个样本的优化算法有时被称为随机（stochastic）或者在线（online）算法。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/deep_learning_book/deep_learning_20/#more" rel="contents">
+              <a class="btn" href="/deep_learning_book/deep_learning_8/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -1070,7 +264,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning_book/deep_learning_19/">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning_book/deep_learning_7/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/ggb.png">
@@ -1088,7 +282,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/deep_learning_book/deep_learning_19/" class="post-title-link" itemprop="url">第十九章：Approximate Inference</a>
+          <a href="/deep_learning_book/deep_learning_7/" class="post-title-link" itemprop="url">第七章：Regularization for Deep Learning</a>
         </h2>
 
         <div class="post-meta-container">
@@ -1099,7 +293,7 @@
       </span>
       <span class="post-meta-item-text">Posted on</span>
 
-      <time title="Created: 2017-05-09 19:00:00" itemprop="dateCreated datePublished" datetime="2017-05-09T19:00:00-07:00">2017-05-09</time>
+      <time title="Created: 2017-05-09 07:00:00" itemprop="dateCreated datePublished" datetime="2017-05-09T07:00:00-07:00">2017-05-09</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1128,12 +322,13 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="19-Approximate-Inference"><a href="#19-Approximate-Inference" class="headerlink" title="19. Approximate Inference"></a>19. Approximate Inference</h1><h2 id="推断（Inference）"><a href="#推断（Inference）" class="headerlink" title="推断（Inference）"></a>推断（Inference）</h2><p>我们通常使用<strong>推断</strong>这个术语来指代给定一些其他变量的情况下计算某些变量概率分布的过程。</p>
-<p>在深度学习中，通常我们有一系列<strong>可见变量v</strong>和一系列<strong>隐变量h</strong>。 </p>
-<p>推断困难通常是指难以计算$p(h∣v)$或其期望。推断在最大似然学习的任务中往往是必需的。 </p>
+          <h1 id="7-Regularization-for-Deep-Learning"><a href="#7-Regularization-for-Deep-Learning" class="headerlink" title="7. Regularization for Deep Learning"></a>7. Regularization for Deep Learning</h1><p><strong>正则化（Regularization）</strong>：对学习算法的修改——旨在减少泛化误差而不是训练误差。</p>
+<p><strong>参数范数惩罚（Parameter Norm Penalties）</strong>：通过对目标函数J添加一个**参数范数惩罚Ω(θ)**，来限制模型的学习能力。</p>
+<p>我们将正则化后的目标函数记为$\tilde{J}$：$\tilde{J}(θ;X,y)&#x3D;J(θ;X,y)+αΩ(θ)$，其中α∈[0,∞)是权衡范数惩罚项Ω和标准目标函数J(X;θ)相对贡献的超参数。说明，在神经网络中我们通常只对每一层仿射变换的<strong>权重w</strong>做惩罚而不对偏置做正则惩罚。典型的参数范数惩罚有$L^2$参数正则和$L^1$参数正则。</p>
+<p><strong>$L^2$参数正则（$L^2$ Parameter Regularization）</strong>：也就是<strong>权重衰减（weight decay）</strong>，顾名思义，权重会有所减小；罚项为$Ω(θ)&#x3D;\frac{1}{2}||w||_2^2$，也称为<strong>岭回归</strong>（ridge regression）或Tikhonov正则。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/deep_learning_book/deep_learning_19/#more" rel="contents">
+              <a class="btn" href="/deep_learning_book/deep_learning_7/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -1164,7 +359,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning_book/deep_learning_18/">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning_book/deep_learning_6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/ggb.png">
@@ -1182,7 +377,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/deep_learning_book/deep_learning_18/" class="post-title-link" itemprop="url">第十八章：Confronting the Partition Function</a>
+          <a href="/deep_learning_book/deep_learning_6/" class="post-title-link" itemprop="url">第六章：Deep Feedforward Networks</a>
         </h2>
 
         <div class="post-meta-container">
@@ -1193,7 +388,7 @@
       </span>
       <span class="post-meta-item-text">Posted on</span>
 
-      <time title="Created: 2017-05-09 18:00:00" itemprop="dateCreated datePublished" datetime="2017-05-09T18:00:00-07:00">2017-05-09</time>
+      <time title="Created: 2017-05-09 06:00:00" itemprop="dateCreated datePublished" datetime="2017-05-09T06:00:00-07:00">2017-05-09</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1222,12 +417,13 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="18-Confronting-the-Partition-Function"><a href="#18-Confronting-the-Partition-Function" class="headerlink" title="18. Confronting the Partition Function"></a>18. Confronting the Partition Function</h1><h2 id="配分函数（Partition-Function）"><a href="#配分函数（Partition-Function）" class="headerlink" title="配分函数（Partition Function）"></a>配分函数（Partition Function）</h2><p>许多概率模型（<strong>通常是无向图模型</strong>）由一个未归一化的概率分布$\tilde{p}(x,θ)$定义。</p>
-<p>必须通过除以**配分函数Z(θ)来归一化$\tilde{p}$**，以获得一个有效的概率分布：$p(x;θ)&#x3D;\frac{1}{Z(θ)}\tilde{p}(x;θ)$。</p>
-<p>配分函数是未归一化概率所有状态的积分（对于连续变量）或求和（对于离散变量）：$∫\tilde{p}(x)dx$或者$∑_x\tilde{p}(x)$。对很多有趣的模型，以上积分或求和难以计算。</p>
+          <h1 id="6-Deep-Feedforward-Networks"><a href="#6-Deep-Feedforward-Networks" class="headerlink" title="6. Deep Feedforward Networks"></a>6. Deep Feedforward Networks</h1><p><strong>深度前馈网络（Deep Feedforward Networks）</strong>：也被称为前馈神经网络（feedforward neural networks），或者多层感知机（multi-layer perceptrons， MLPs）是典型的深度学习模型。前馈网络的目标是去近似一个函数$f^*$。模型之所以称为前馈，是因为信息只向前流动，没有反馈的连接。</p>
+<p><strong>基于梯度的学习（Gradient Based Learning）</strong>：神经网络模型和线性模型最大的区别在于神经网络的非线性使得损失函数<strong>不再是凸函数</strong>。这意味着神经网络的训练通常使用迭代的、基于梯度的优化，仅仅使得代价函数达到一个非常小的值；而不是像用于训练线性回归模型的线性方程求解器，或者用于训练逻辑回归或SVM的<strong>凸优化算法</strong>那样保证全局收敛。</p>
+<p>凸优化从任何一种初始参数出发都会收敛（理论上如此——在实践中也很鲁棒但可能会遇到数值问题）。</p>
+<p>用于非凸损失函数的随机梯度下降没有这种收敛性保证，并且对参数的初始值很敏感。 对于前馈神经网络，将所有的权重值初始化为小随机数是很重要的。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/deep_learning_book/deep_learning_18/#more" rel="contents">
+              <a class="btn" href="/deep_learning_book/deep_learning_6/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -1258,7 +454,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning_book/deep_learning_17/">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning_book/deep_learning_5/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/ggb.png">
@@ -1276,7 +472,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/deep_learning_book/deep_learning_17/" class="post-title-link" itemprop="url">第十七章：Monte Carlo Methods</a>
+          <a href="/deep_learning_book/deep_learning_5/" class="post-title-link" itemprop="url">第五章：Machine Learning Basics</a>
         </h2>
 
         <div class="post-meta-container">
@@ -1287,7 +483,7 @@
       </span>
       <span class="post-meta-item-text">Posted on</span>
 
-      <time title="Created: 2017-05-09 17:00:00" itemprop="dateCreated datePublished" datetime="2017-05-09T17:00:00-07:00">2017-05-09</time>
+      <time title="Created: 2017-05-09 05:00:00" itemprop="dateCreated datePublished" datetime="2017-05-09T05:00:00-07:00">2017-05-09</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1316,13 +512,588 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="17-Monte-Carlo-Methods"><a href="#17-Monte-Carlo-Methods" class="headerlink" title="17. Monte Carlo Methods"></a>17. Monte Carlo Methods</h2><p><strong>随机算法</strong>：随机算法可以粗略地分为两类：拉斯维加斯算法（Las Vegas algorithms）和蒙特卡洛算法（Monte Carlo algorithms）。 </p>
-<p><strong>拉斯维加斯算法（Las Vegas algorithms）</strong>：总是精确地返回一个正确答案（或者返回算法失败）。 该方法通常需要占用随机量的计算资源（一般指内存或运行时间）。</p>
-<p><strong>蒙特卡洛算法（Monte Carlo algorithms）</strong>：蒙特卡罗方法返回的答案具有随机大小的错误。</p>
-<p>花费更多的计算资源（通常包括内存和运行时间）可以减少这种错误。 在任意固定的计算资源下， 蒙特卡罗算法可以得到一个近似解。</p>
+          <h1 id="5-Machine-Learning-Basics"><a href="#5-Machine-Learning-Basics" class="headerlink" title="5. Machine Learning Basics"></a>5. Machine Learning Basics</h1><p><strong>机器学习定义</strong>：一个计算机程序，如果它能做到在任务T中的性能P随着经验E可以提高，那就可以称它是关于某类任务T和性能衡量P，从经验E中学习。</p>
+<p><strong>机器学习任务（$T$）类别</strong>：分类（classification）&#x2F;缺失输入数据的分类（classification with missing<br>data）&#x2F;回归（regression）&#x2F;转录（transciption）&#x2F;机器翻译（machine translation）&#x2F;结构化输出（structured<br>output）&#x2F;异常检测（anomaly detection）&#x2F;合成和采样（synthesis and smapling）&#x2F;缺失值填补（imputation<br>of missing data）&#x2F;去噪（denoising）&#x2F;密度估计（density estimation）</p>
+<p><strong>机器学习的性能（$P$）</strong>：$P$因为$T$的不同而不同。对于像分类&#x2F;缺失输入数据的分类&#x2F;转录，使用准确率（accuracy）来衡量性能；而对于密度估计，通常输出模型在一些样本上概率对数的平均值。</p>
+<p><strong>机器学习的经验（$E$）</strong>：根据经验的不同，分为监督学习和无监督学习。监督学习：学习$p(x)$；无监督学习：学习$p(y|x)$。通常来说，无监督学习通常指代从不需要人工标注数据中提取信息。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/deep_learning_book/deep_learning_17/#more" rel="contents">
+              <a class="btn" href="/deep_learning_book/deep_learning_5/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning_book/deep_learning_4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/deep_learning_book/deep_learning_4/" class="post-title-link" itemprop="url">第四章：Numerical Computation</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-05-09 04:00:00" itemprop="dateCreated datePublished" datetime="2017-05-09T04:00:00-07:00">2017-05-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E3%80%8ADeep-Learning%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">《Deep Learning》读书笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="4-Numerical-Computation"><a href="#4-Numerical-Computation" class="headerlink" title="4. Numerical Computation"></a>4. Numerical Computation</h1><p><strong>数值优化（Numerical Computation）</strong>：通常指代那些在解决数学问题时，不使用从符号表达式中直接推导出解析解，而是使用迭代更新的方式获取答案的算法。</p>
+<p><strong>上溢和下溢（overflow&#x2F;underflow）</strong>：数据太小或者太大，在计算机内存中无法表示。</p>
+<p><strong>优化问题（optimization problem）</strong>：优化目标：最小化函数：损失函数（loss function）&#x2F; 错误函数（error function）通常上标*表示最优解。$x^*&#x3D;argmin f(x)$</p>
+<p><strong>临界点（critical point）</strong>：$f’(x)&#x3D;0$的点称为临界点，一般临界点取得极大值或者极小值，否则为鞍点（saddle point）。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/deep_learning_book/deep_learning_4/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning_book/deep_learning_3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/deep_learning_book/deep_learning_3/" class="post-title-link" itemprop="url">第三章：Probability and Information Theory</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-05-09 03:00:00" itemprop="dateCreated datePublished" datetime="2017-05-09T03:00:00-07:00">2017-05-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E3%80%8ADeep-Learning%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">《Deep Learning》读书笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="3-Probability-and-Information-Theory"><a href="#3-Probability-and-Information-Theory" class="headerlink" title="3. Probability and Information Theory"></a>3. Probability and Information Theory</h1><h2 id="概率论部分"><a href="#概率论部分" class="headerlink" title="概率论部分"></a>概率论部分</h2><p><strong>频率学派概率（frequentist probability）</strong>：认为概率和事件发生的频率相关。</p>
+<p><strong>贝叶斯学派概率（Bayesian probability）</strong>：认为概率是的对某件事发生的确定程度，可以理解成是确信的程度（degree of belief）。</p>
+<p><strong>随机变量（random variable）</strong>：一个可能随机获取不同值的变量。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/deep_learning_book/deep_learning_3/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning_book/deep_learning_2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/deep_learning_book/deep_learning_2/" class="post-title-link" itemprop="url">第二章：Linear Algebra</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-05-09 02:00:00" itemprop="dateCreated datePublished" datetime="2017-05-09T02:00:00-07:00">2017-05-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E3%80%8ADeep-Learning%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">《Deep Learning》读书笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="2-Linear-Algebra"><a href="#2-Linear-Algebra" class="headerlink" title="2. Linear Algebra"></a>2. Linear Algebra</h1><p><strong>基础概念</strong>：</p>
+<ul>
+<li>Scalars: 一个数；</li>
+<li>Vctors: 一列数；</li>
+<li>Matrices: 二位数组的数，每个元素由两个下标确定；</li>
+<li>Tensors: 多维数组的数。</li>
+</ul>
+<p><strong>转置</strong>（transpose）：$(A^T)_{i,j}&#x3D;A_{j,i}$</p>
+<p><strong>矩阵乘法</strong>: $C&#x3D;AB$， $C_{i,j}&#x3D;\sum_kA_{i,k}B_{k,j}$</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/deep_learning_book/deep_learning_2/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning_book/deep_learning_1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/deep_learning_book/deep_learning_1/" class="post-title-link" itemprop="url">第一章：introduction</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-05-09 01:00:00" itemprop="dateCreated datePublished" datetime="2017-05-09T01:00:00-07:00">2017-05-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E3%80%8ADeep-Learning%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">《Deep Learning》读书笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="《Deep-Learning》"><a href="#《Deep-Learning》" class="headerlink" title="《Deep Learning》"></a>《Deep Learning》</h1><p><a href="https://img3.doubanio.com/lpic/s29133163.jpg">https://img3.doubanio.com/lpic/s29133163.jpg</a></p>
+<h2 id="0-书本介绍"><a href="#0-书本介绍" class="headerlink" title="0.书本介绍"></a>0.书本介绍</h2><p><a href="https://book.douban.com/subject/26883982/">Deep Learning</a><br><a href="http://www.deeplearningbook.org/">原版阅读网站</a></p>
+<p>作者:  Ian Goodfellow &#x2F; Yoshua<br>Bengio &#x2F; Aaron Courville</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/deep_learning_book/deep_learning_1/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/algrithom/pt_offer_summary_py/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/algrithom/pt_offer_summary_py/" class="post-title-link" itemprop="url">《剑指offer》所有习题python解法</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-03-27 12:40:00" itemprop="dateCreated datePublished" datetime="2017-03-27T12:40:00-07:00">2017-03-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%AE%97%E6%B3%95%E9%A2%98%E8%A7%A3/" itemprop="url" rel="index"><span itemprop="name">算法题解</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">《剑指offer》第二版python版总结。</span><br></pre></td></tr></table></figure>
+
+<h2 id="动机"><a href="#动机" class="headerlink" title="动机"></a>动机</h2><p>个人觉得在准备找工作要刷题前，先刷一遍这本书的问题，再去刷LeetCode这类的OJ比较合适。难度循序渐进，亦有理论支撑。</p>
+<p>阅读流程：按照目录去索引问题，找到问题后，先看<strong>问题描述</strong>，思考问题解决思路；然后看<strong>思路</strong>，获取提示；然后阅读<strong>优点</strong>和<strong>复杂度</strong>，检查和自己想的是否一致。</p>
+<h2 id="用到的数据结构"><a href="#用到的数据结构" class="headerlink" title="用到的数据结构"></a>用到的数据结构</h2>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/algrithom/pt_offer_summary_py/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/algrithom/book_learning_6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/algrithom/book_learning_6/" class="post-title-link" itemprop="url">六. Trees and Tree Algorithms</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-02-23 21:00:00" itemprop="dateCreated datePublished" datetime="2017-02-23T21:00:00-08:00">2017-02-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E3%80%8AProblem-Solving-with-Algorithms-and-Data-Structures-using-Python%E3%80%8B%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E5%92%8C%E8%AF%BE%E5%90%8E%E4%BD%9C%E4%B8%9A%E7%AD%94%E6%A1%88/" itemprop="url" rel="index"><span itemprop="name">《Problem Solving with Algorithms and Data Structures using Python》的学习笔记和课后作业答案</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">对应本书第六章。</span><br></pre></td></tr></table></figure>
+
+<p><a href="http://interactivepython.org/courselib/static/pythonds/Trees/toctree.html">原目录</a></p>
+<h2 id="笔记"><a href="#笔记" class="headerlink" title="笔记"></a>笔记</h2><p>作者介绍了两个计算机中的树结构：文件系统（File System）和HTML页面。</p>
+<h3 id="用结点和引用实现的二叉树"><a href="#用结点和引用实现的二叉树" class="headerlink" title="用结点和引用实现的二叉树"></a>用结点和引用实现的二叉树</h3>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/algrithom/book_learning_6/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -1346,7 +1117,7 @@
 
 
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="Previous page" aria-label="Previous page" href="/page/6/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" title="Next page" aria-label="Next page" href="/page/8/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" title="Previous page" aria-label="Previous page" href="/page/6/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" title="Next page" aria-label="Next page" href="/page/8/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>

@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="策略梯度的通用形式$\nabla_\theta J(\theta)&#x3D;E_{\tau \sim \pi_\theta}[\sum_{t&#x3D;0}^T\nabla_\theta log \pi_\theta(a_t|s_t)\Phi_t]$ 其中，$\Phi_t$可以是各种形式，如$\Phi_t &#x3D; R(\tau)$或者$\Phi_t &#x3D; \sum_{t’&amp;#x3D">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PPO in LLM详解">
+<meta property="og:url" content="https://applenob.github.io/llm/ppo/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="策略梯度的通用形式$\nabla_\theta J(\theta)&#x3D;E_{\tau \sim \pi_\theta}[\sum_{t&#x3D;0}^T\nabla_\theta log \pi_\theta(a_t|s_t)\Phi_t]$ 其中，$\Phi_t$可以是各种形式，如$\Phi_t &#x3D; R(\tau)$或者$\Phi_t &#x3D; \sum_{t’&amp;#x3D">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://applenob.github.io/llm/ppo/ppo.png">
+<meta property="og:image" content="https://applenob.github.io/llm/ppo/ppo_algo.png">
+<meta property="og:image" content="https://applenob.github.io/llm/ppo/ppo_clip.png">
+<meta property="og:image" content="https://applenob.github.io/llm/ppo/ppo_code_arch.png">
+<meta property="article:published_time" content="2024-02-25T07:35:00.000Z">
+<meta property="article:modified_time" content="2024-11-12T06:22:32.832Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="LLM">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://applenob.github.io/llm/ppo/ppo.png">
+
+
+<link rel="canonical" href="https://applenob.github.io/llm/ppo/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/llm/ppo/","path":"llm/ppo/","title":"PPO in LLM详解"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>PPO in LLM详解 | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%E7%9A%84%E9%80%9A%E7%94%A8%E5%BD%A2%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">策略梯度的通用形式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#RLHF%E5%88%B0%E5%BA%95%E4%B8%BALLM%E8%B4%A1%E7%8C%AE%E4%BA%86%E5%95%A5%EF%BC%9F"><span class="nav-number">2.</span> <span class="nav-text">RLHF到底为LLM贡献了啥？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#PPO%E7%9A%84%E7%94%B1%E6%9D%A5"><span class="nav-number">3.</span> <span class="nav-text">PPO的由来</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#PPO%E7%AE%97%E6%B3%95"><span class="nav-number">4.</span> <span class="nav-text">PPO算法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#PPO%E7%AE%97%E6%B3%95%E7%9A%84%E4%BC%98%E7%82%B9%EF%BC%9A"><span class="nav-number">5.</span> <span class="nav-text">PPO算法的优点：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#PPO%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="nav-number">6.</span> <span class="nav-text">PPO代码实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">6.1.</span> <span class="nav-text">参考</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">95</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/llm/ppo/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="PPO in LLM详解 | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          PPO in LLM详解
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2024-02-24 23:35:00" itemprop="dateCreated datePublished" datetime="2024-02-24T23:35:00-08:00">2024-02-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-11 22:22:32" itemprop="dateModified" datetime="2024-11-11T22:22:32-08:00">2024-11-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/LLM/" itemprop="url" rel="index"><span itemprop="name">LLM</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="策略梯度的通用形式"><a href="#策略梯度的通用形式" class="headerlink" title="策略梯度的通用形式"></a>策略梯度的通用形式</h1><p>$\nabla_\theta J(\theta)&#x3D;E_{\tau \sim \pi_\theta}[\sum_{t&#x3D;0}^T\nabla_\theta log \pi_\theta(a_t|s_t)\Phi_t]$</p>
+<p>其中，$\Phi_t$可以是各种形式，如$\Phi_t &#x3D; R(\tau)$或者$\Phi_t &#x3D; \sum_{t’&#x3D;t}^T R(s’<em>t, a_t’)$或者$\Phi_t &#x3D; \sum</em>{t’&#x3D;t}^T R(s’_t, a_t’) - b(s_t)$，也可以是$\Phi_t &#x3D; A(s_t,a_t)&#x3D;Q(s_t,a_t)-V(s_t)$</p>
+<p>用优势函数可以降低$\Phi_t$的方差。</p>
+<p>策略梯度的$\Phi_t$如果用蒙特卡洛的方式来估算，就是<strong>REINFORCE</strong>算法；如果用一个critic model来学，就是<strong>Actor-Critic</strong>架构。PPO本质上采用了<strong>Actor-Critic</strong>架构。</p>
+<h1 id="RLHF到底为LLM贡献了啥？"><a href="#RLHF到底为LLM贡献了啥？" class="headerlink" title="RLHF到底为LLM贡献了啥？"></a>RLHF到底为LLM贡献了啥？</h1><p>对齐！对齐人类的沟通方式，对齐人类的价值体系，比如安全性、真实性等等。</p>
+<h1 id="PPO的由来"><a href="#PPO的由来" class="headerlink" title="PPO的由来"></a>PPO的由来</h1><p>随机梯度策略  —为了限制梯度更新过大—&gt;  TRPO —将约束直接加载目标函数里（大幅简化）—&gt; PPO</p>
+<p>总而言之，TRPO和PPO的核心思想都是采用<strong>更小更稳定的策略更新</strong>，只不过PPO实现更简单。</p>
+<p><img src="/llm/ppo/ppo.png" alt="moutain"></p>
+<h1 id="PPO算法"><a href="#PPO算法" class="headerlink" title="PPO算法"></a>PPO算法</h1><p><img src="/llm/ppo/ppo_algo.png" alt="ppo_algo"></p>
+<p>其中：</p>
+<ul>
+<li>Policy模型的训练：<ul>
+<li>CLIP形式：$L_{ppo-clip}(\theta) &#x3D; \hat E_t[min(\frac{\pi_{\theta}(a_t|s_t)}{\pi_{\theta_{old}}(a_t|s_t)}\hat A_t, clip(\frac{\pi_{\theta}(a_t|s_t)}{\pi_{\theta_{old}}(a_t|s_t)}, 1-\epsilon, 1+\epsilon)\hat A_t)]$<ul>
+<li>$\hat A_t$是优势函数的近似，这里用GAE（Generalized Advantage Estimation）：<ul>
+<li>$\hat A_t^{GAE(\gamma, \lambda)} &#x3D; \sum_{l&#x3D;0}^{\infty}(\gamma\lambda)^l\delta_{t+l}$</li>
+<li>$\lambda$是指数滑动平均的超参，$\gamma$是折扣系数</li>
+<li>$\delta_t &#x3D; r_t + \gamma V(s_{t+1}) - V(s_t)$</li>
+<li>为什么用GAE估计优势函数？<ul>
+<li><a href="https://zhuanlan.zhihu.com/p/345687962">https://zhuanlan.zhihu.com/p/345687962</a></li>
+<li>泛化优化估计(GAE)实际上是$\lambda$-return应用在估计优势函数的版本。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>惩罚项形式：$L_{ppo-penalty}(\theta) &#x3D;  \hat E_t [\frac{\pi_{\theta}(a_t|s_t)}{\pi_{\theta_{old}}(a_t|s_t)}\hat A_t] - \beta KL(\pi_{\theta_{old}}(\cdot|s_t), \pi_{\theta}(\cdot|s_t))$</li>
+</ul>
+</li>
+<li>Critic模型的训练： $L_{critic(\phi)} &#x3D; \hat{E_t}[||V_{\phi}(s_t)-\hat R_t||^2]$<ul>
+<li>$\hat R_t$是状态$s_t$下的实际收益：$\hat R_t &#x3D; \sum_{l&#x3D;0}^{\infty}\gamma^l r_{t+l}$</li>
+</ul>
+</li>
+<li>Reward模型是提前训练好的：$L(\psi)&#x3D;log;\sigma(r(x,y_w)-r(x,y_l))$<ul>
+<li>实际训练的时候还会再加一个语言模型的损失函数</li>
+<li>最终的奖励需要再考虑一个KL散度的惩罚：$r_{total} &#x3D; r(x,y) - \eta KL(\pi_{\phi}^{RL}(y|x),\pi_{\phi}^{SFT}(y|x))$</li>
+</ul>
+</li>
+</ul>
+<h1 id="PPO算法的优点："><a href="#PPO算法的优点：" class="headerlink" title="PPO算法的优点："></a>PPO算法的优点：</h1><ul>
+<li>通过clip操作，避免了过大的policy更新<ul>
+<li><p>min + clip的最终效果：（横坐标是ratio，纵坐标是目标值）</p>
+</li>
+<li><p><img src="/llm/ppo/ppo_clip.png" alt="ppo_clip"></p>
+</li>
+<li><p>当A&gt;0，说明当前动作表现优于平均水平。如果此时ratio较大，说明新策略相对老策略在这个动作的概率已经比较大，我们不要过于贪心，这里就将梯度设成0，不再更新。</p>
+</li>
+<li><p>当A&lt;0，说明当前动作表现差于平均水平。如果此时ratio较小，说明新策略相对老策略在这个动作的概率已经比较小，我们不要过于贪心，这里就将梯度设成0，不再更新。</p>
+</li>
+</ul>
+</li>
+<li>比TRPO更简洁，但具有了TRPO的优点：稳定。</li>
+</ul>
+<h1 id="PPO代码实现"><a href="#PPO代码实现" class="headerlink" title="PPO代码实现"></a>PPO代码实现</h1><p><img src="/llm/ppo/ppo_code_arch.png" alt="ppo_code_arch"></p>
+<p>从图上（结合代码）看，一共涉及4个模型：</p>
+<ul>
+<li>policy model （RLHF最终获取的语言模型）</li>
+<li>critic model （图中Value Model，计算value，参数可训）</li>
+<li>reference model （图中SFT Model，用于计算KL，参数固定）</li>
+<li>reward model （计算reward，参数固定）</li>
+</ul>
+<p>Loss一共有3个：</p>
+<ul>
+<li>PPO-clip Loss （作用于policy model）</li>
+<li>LM Loss （作用于policy model，通常是可选项）</li>
+<li>MSE Loss  （作用于critic model）</li>
+</ul>
+<p>代码流程：</p>
+<ul>
+<li><p>make experiences</p>
+<ul>
+<li>随机采样prompt</li>
+<li>生成对应的response</li>
+<li>根据response计算reward（reward model）和value（critic model）</li>
+<li>计算policy model的probs和ref model的probs的kl散度</li>
+</ul>
+</li>
+<li><p>根据experience生成新的训练数据</p>
+<ul>
+<li><p>计算advantages和returns</p>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">get_advantages_and_returns</span>(<span class="params">self, rewards: <span class="type">List</span>[<span class="built_in">float</span>], values: <span class="type">List</span>[<span class="built_in">float</span>]</span>):</span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">        Copied from TRLX: https://github.com/CarperAI/trlx/blob/main/trlx/models/modeling_ppo.py</span></span><br><span class="line"><span class="string">        &#x27;&#x27;&#x27;</span></span><br><span class="line">        response_length = <span class="built_in">len</span>(values)</span><br><span class="line">        advantages_reversed = []</span><br><span class="line">        lastgaelam = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> t <span class="keyword">in</span> <span class="built_in">reversed</span>(<span class="built_in">range</span>(response_length)):</span><br><span class="line">            nextvalues = values[t + <span class="number">1</span>] <span class="keyword">if</span> t &lt; response_length - <span class="number">1</span> <span class="keyword">else</span> <span class="number">0.0</span></span><br><span class="line">            delta = rewards[t] + <span class="variable language_">self</span>.gamma * nextvalues - values[t]</span><br><span class="line">            lastgaelam = delta + <span class="variable language_">self</span>.gamma * <span class="variable language_">self</span>.lam * lastgaelam</span><br><span class="line">            advantages_reversed.append(lastgaelam)</span><br><span class="line"></span><br><span class="line">        advantages = advantages_reversed[::-<span class="number">1</span>]</span><br><span class="line">        returns = [a + v <span class="keyword">for</span> a, v <span class="keyword">in</span> <span class="built_in">zip</span>(advantages, values)]</span><br><span class="line">        <span class="keyword">assert</span> <span class="built_in">len</span>(returns) == <span class="built_in">len</span>(advantages) == <span class="built_in">len</span>(values)</span><br><span class="line">        <span class="keyword">return</span> advantages, returns</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>train step</p>
+<ul>
+<li>policy_model和critic_model执行前向计算</li>
+<li>criterion<ul>
+<li>计算vf_loss<ul>
+<li><code>vf_loss1 = (values - returns) ** 2</code></li>
+</ul>
+</li>
+<li>计算pg_loss1<ul>
+<li><code>pg_loss1 = advantages * ratio</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>使用优化器梯度回传</li>
+</ul>
+</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li>PPO原始论文：Proximal Policy Optimization Algorithms</li>
+<li>Secrets of RLHF in Large Language Models. Part I: PPO</li>
+<li>hugging face的入门科普文：<a href="https://huggingface.co/learn/deep-rl-course/unit8/intuition-behind-ppo">The intuition behind PPO - Hugging Face Deep RL Course</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/LLM/" rel="tag"># LLM</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/python/coroutines/" rel="prev" title="Python异步编程">
+                  <i class="fa fa-angle-left"></i> Python异步编程
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/llm/alignment/" rel="next" title="Alignment in LLM">
+                  Alignment in LLM <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

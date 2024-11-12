@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"applenob.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="协程(Coroutines)的优点：协程由于由程序主动控制切换，没有线程切换的开销，所以执行效率极高。对于IO密集型任务非常适用，如果是cpu密集型，推荐多进程+协程的方式。 Generator理解yield表达式 方法中包含yield表达式后，Python会将其视作generator对象，不再是普通的方法。 1234567891011121314151617181920212223def tes">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python异步编程">
+<meta property="og:url" content="https://applenob.github.io/python/coroutines/index.html">
+<meta property="og:site_name" content="Javen Chen&#39;s Blog">
+<meta property="og:description" content="协程(Coroutines)的优点：协程由于由程序主动控制切换，没有线程切换的开销，所以执行效率极高。对于IO密集型任务非常适用，如果是cpu密集型，推荐多进程+协程的方式。 Generator理解yield表达式 方法中包含yield表达式后，Python会将其视作generator对象，不再是普通的方法。 1234567891011121314151617181920212223def tes">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-07-27T06:35:00.000Z">
+<meta property="article:modified_time" content="2024-11-12T06:10:47.922Z">
+<meta property="article:author" content="Javen Chen">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://applenob.github.io/python/coroutines/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://applenob.github.io/python/coroutines/","path":"python/coroutines/","title":"Python异步编程"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Python异步编程 | Javen Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Javen Chen's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech and Life~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Generator"><span class="nav-number">1.</span> <span class="nav-text">Generator</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%8F%E7%A8%8B-Coroutine"><span class="nav-number">2.</span> <span class="nav-text">协程(Coroutine)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Awaitable%E5%AF%B9%E8%B1%A1"><span class="nav-number">3.</span> <span class="nav-text">Awaitable对象</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Coroutine"><span class="nav-number">3.1.</span> <span class="nav-text">Coroutine</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Task"><span class="nav-number">3.2.</span> <span class="nav-text">Task</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Future"><span class="nav-number">3.3.</span> <span class="nav-text">Future</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6"><span class="nav-number">4.</span> <span class="nav-text">其他核心组件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Semaphore"><span class="nav-number">4.1.</span> <span class="nav-text">Semaphore</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E4%BB%A3%E7%A0%81%E7%89%87"><span class="nav-number">5.</span> <span class="nav-text">常用代码片</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E4%B8%80%E7%B3%BB%E5%88%97%E6%95%B0%E6%8D%AE%E8%B0%83%E7%94%A8%E5%B9%B6%E5%8F%91%E5%87%BD%E6%95%B0"><span class="nav-number">5.1.</span> <span class="nav-text">对一系列数据调用并发函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%90%E5%88%B6%E5%B9%B6%E5%8F%91%E9%87%8F"><span class="nav-number">5.2.</span> <span class="nav-text">限制并发量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Future%E4%BD%BF%E7%94%A8"><span class="nav-number">5.3.</span> <span class="nav-text">Future使用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Javen Chen"
+      src="/images/ggb.png">
+  <p class="site-author-name" itemprop="name">Javen Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">95</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/applenob" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;applenob" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:applenobcer@gmail.com" title="E-Mail → mailto:applenobcer@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/python/coroutines/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Python异步编程 | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Python异步编程
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-07-26 23:35:00" itemprop="dateCreated datePublished" datetime="2022-07-26T23:35:00-07:00">2022-07-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-11 22:10:47" itemprop="dateModified" datetime="2024-11-11T22:10:47-08:00">2024-11-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p><strong>协程</strong>(Coroutines)的优点：协程由于由程序主动控制切换，没有线程切换的开销，所以执行效率极高。对于IO密集型任务非常适用，如果是cpu密集型，推荐多进程+协程的方式。</p>
+<h1 id="Generator"><a href="#Generator" class="headerlink" title="Generator"></a>Generator</h1><p><strong>理解<code>yield</code>表达式</strong></p>
+<p>方法中包含<code>yield</code>表达式后，Python会将其视作generator对象，不再是普通的方法。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">test</span>():</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;generator start&quot;</span>)</span><br><span class="line">    n = <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        yield_expression_value = <span class="keyword">yield</span> n</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;yield_expression_value = %d&quot;</span> % yield_expression_value)</span><br><span class="line">        n += <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ①创建generator对象</span></span><br><span class="line">generator = test()</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">type</span>(generator))</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;\n---------------\n&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># ②启动generator</span></span><br><span class="line">next_result = generator.__next__()</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;next_result = %d&quot;</span> % next_result)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;\n---------------\n&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># ③发送值给yield表达式</span></span><br><span class="line">send_result = generator.send(<span class="number">666</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;send_result = %d&quot;</span> % send_result)</span><br></pre></td></tr></table></figure>
+
+<p>输出：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;<span class="keyword">class</span> <span class="string">&#x27;generator&#x27;</span>&gt;</span><br><span class="line"></span><br><span class="line">---------------</span><br><span class="line"></span><br><span class="line">generator start</span><br><span class="line">next_result = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">---------------</span><br><span class="line"></span><br><span class="line">yield_expression_value = <span class="number">666</span></span><br><span class="line">send_result = <span class="number">2</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>yield实现的功能是一个函数可以不止在一个地方return一次</strong>。我们可以再一个地方return一次，然后记住return的点，返回信息。下一次再调用的时候可以回到这个点，继续执行，到下一个return的点。这个功能恰好是实现一个协程管理器需要的，我们希望目标程序到可以等待的点的时候，先返回主程序，然后主程序主动选择下一个调用目标程序的时机，并回到之前返回的地方继续。</p>
+<p><strong>理解<code>yield from</code>表达式</strong></p>
+<p>用于将一个生成器部分操作<strong>委托</strong>给另一个生成器。此外，允许子生成器（即yield from后的“参数”）返回一个值，该值可供委派生成器（即包含yield from的生成器）使用。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 子生成器</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">test</span>(<span class="params">n</span>):</span><br><span class="line">    i = <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> i &lt; n:</span><br><span class="line">        <span class="keyword">yield</span> i</span><br><span class="line">        i += <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 委派生成器</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">test_yield_from</span>(<span class="params">n</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;test_yield_from start&quot;</span>)</span><br><span class="line">    <span class="keyword">yield</span> <span class="keyword">from</span> test(n)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;test_yield_from end&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> test_yield_from(<span class="number">3</span>):</span><br><span class="line">    <span class="built_in">print</span>(i)</span><br></pre></td></tr></table></figure>
+
+<p>输出：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">test_yield_from start</span><br><span class="line"><span class="number">0</span></span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">2</span></span><br><span class="line">test_yield_from end</span><br></pre></td></tr></table></figure>
+
+<h1 id="协程-Coroutine"><a href="#协程-Coroutine" class="headerlink" title="协程(Coroutine)"></a><strong>协程(Coroutine)</strong></h1><p><strong><code>async</code>&#x2F;<code>await</code></strong></p>
+<p>本质上是<a href="mailto:%60@asyncio.coroutine"><code>@asyncio.coroutine</code></a>和<code>yield from</code>的<strong>语法糖</strong>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> asyncio</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">compute</span>(<span class="params">x, y</span>):  <span class="comment"># 定义一个协程</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Compute %s + %s ...&quot;</span> % (x, y))</span><br><span class="line">    <span class="keyword">await</span> asyncio.sleep(<span class="number">1.0</span>)</span><br><span class="line">    <span class="keyword">return</span> x + y</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">print_sum</span>(<span class="params">x, y</span>):</span><br><span class="line">    result = <span class="keyword">await</span> compute(x, y)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;%s + %s = %s&quot;</span> % (x, y, result))</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;start&quot;</span>)</span><br><span class="line">asyncio.run(print_sum(<span class="number">1</span>, <span class="number">2</span>))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;end&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>输出：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">start</span><br><span class="line">Compute <span class="number">1</span> + <span class="number">2</span> ...</span><br><span class="line"><span class="number">1</span> + <span class="number">2</span> = <span class="number">3</span></span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+
+<h1 id="Awaitable对象"><a href="#Awaitable对象" class="headerlink" title="Awaitable对象"></a>Awaitable对象</h1><p>Coroutine&#x2F;Task&#x2F;Future</p>
+<h2 id="Coroutine"><a href="#Coroutine" class="headerlink" title="Coroutine"></a>Coroutine</h2><ul>
+<li>a <em>coroutine function</em>: an <a href="https://docs.python.org/3/reference/compound_stmts.html#async-def"><code>async def</code></a> function</li>
+<li>a <em>coroutine object</em>: an object returned by calling a <em>coroutine function</em></li>
+</ul>
+<h2 id="Task"><a href="#Task" class="headerlink" title="Task"></a>Task</h2><p>用 <a href="https://docs.python.org/3/library/asyncio-task.html#asyncio.create_task"><code>asyncio.create_task()</code></a> 包装一个协程，随后可以被立即调度执行。</p>
+<h2 id="Future"><a href="#Future" class="headerlink" title="Future"></a>Future</h2><p>Future是一种底层的awaitable对象，通常表示异步操作的最后结果。</p>
+<h1 id="其他核心组件"><a href="#其他核心组件" class="headerlink" title="其他核心组件"></a>其他核心组件</h1><h2 id="Semaphore"><a href="#Semaphore" class="headerlink" title="Semaphore"></a>Semaphore</h2><p>可以用于控制并发量。</p>
+<p>Semaphore的核心代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Semaphore</span>(_ContextManagerMixin, mixins._LoopBoundMixin):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;A Semaphore implementation.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    A semaphore manages an internal counter which is decremented by each</span></span><br><span class="line"><span class="string">    acquire() call and incremented by each release() call. The counter</span></span><br><span class="line"><span class="string">    can never go below zero; when acquire() finds that it is zero, it blocks,</span></span><br><span class="line"><span class="string">    waiting until some other thread calls release().</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Semaphores also support the context management protocol.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    The optional argument gives the initial value for the internal</span></span><br><span class="line"><span class="string">    counter; it defaults to 1. If the value given is less than 0,</span></span><br><span class="line"><span class="string">    ValueError is raised.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, value=<span class="number">1</span>, *, loop=mixins._marker</span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__(loop=loop)</span><br><span class="line">        <span class="keyword">if</span> value &lt; <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">raise</span> ValueError(<span class="string">&quot;Semaphore initial value must be &gt;= 0&quot;</span>)</span><br><span class="line">        <span class="variable language_">self</span>._waiters = <span class="literal">None</span></span><br><span class="line">        <span class="variable language_">self</span>._value = value</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__repr__</span>(<span class="params">self</span>):</span><br><span class="line">        res = <span class="built_in">super</span>().__repr__()</span><br><span class="line">        extra = <span class="string">&#x27;locked&#x27;</span> <span class="keyword">if</span> <span class="variable language_">self</span>.locked() <span class="keyword">else</span> <span class="string">f&#x27;unlocked, value:<span class="subst">&#123;self._value&#125;</span>&#x27;</span></span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>._waiters:</span><br><span class="line">            extra = <span class="string">f&#x27;<span class="subst">&#123;extra&#125;</span>, waiters:<span class="subst">&#123;<span class="built_in">len</span>(self._waiters)&#125;</span>&#x27;</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">f&#x27;&lt;<span class="subst">&#123;res[<span class="number">1</span>:-<span class="number">1</span>]&#125;</span> [<span class="subst">&#123;extra&#125;</span>]&gt;&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">locked</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Returns True if semaphore cannot be acquired immediately.&quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>._value == <span class="number">0</span> <span class="keyword">or</span> (</span><br><span class="line">            <span class="built_in">any</span>(<span class="keyword">not</span> w.cancelled() <span class="keyword">for</span> w <span class="keyword">in</span> (<span class="variable language_">self</span>._waiters <span class="keyword">or</span> ())))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">acquire</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Acquire a semaphore.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        If the internal counter is larger than zero on entry,</span></span><br><span class="line"><span class="string">        decrement it by one and return True immediately.  If it is</span></span><br><span class="line"><span class="string">        zero on entry, block, waiting until some other coroutine has</span></span><br><span class="line"><span class="string">        called release() to make it larger than 0, and then return</span></span><br><span class="line"><span class="string">        True.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> <span class="variable language_">self</span>.locked():</span><br><span class="line">            <span class="variable language_">self</span>._value -= <span class="number">1</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>._waiters <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="variable language_">self</span>._waiters = collections.deque()</span><br><span class="line">        fut = <span class="variable language_">self</span>._get_loop().create_future()</span><br><span class="line">        <span class="variable language_">self</span>._waiters.append(fut)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Finally block should be called before the CancelledError</span></span><br><span class="line">        <span class="comment"># handling as we don&#x27;t want CancelledError to call</span></span><br><span class="line">        <span class="comment"># _wake_up_first() and attempt to wake up itself.</span></span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            <span class="keyword">try</span>:</span><br><span class="line">                <span class="keyword">await</span> fut</span><br><span class="line">            <span class="keyword">finally</span>:</span><br><span class="line">                <span class="variable language_">self</span>._waiters.remove(fut)</span><br><span class="line">        <span class="keyword">except</span> exceptions.CancelledError:</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> fut.cancelled():</span><br><span class="line">                <span class="variable language_">self</span>._value += <span class="number">1</span></span><br><span class="line">                <span class="variable language_">self</span>._wake_up_next()</span><br><span class="line">            <span class="keyword">raise</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>._value &gt; <span class="number">0</span>:</span><br><span class="line">            <span class="variable language_">self</span>._wake_up_next()</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">release</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Release a semaphore, incrementing the internal counter by one.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        When it was zero on entry and another coroutine is waiting for it to</span></span><br><span class="line"><span class="string">        become larger than zero again, wake up that coroutine.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="variable language_">self</span>._value += <span class="number">1</span></span><br><span class="line">        <span class="variable language_">self</span>._wake_up_next()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_wake_up_next</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Wake up the first waiter that isn&#x27;t done.&quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> <span class="variable language_">self</span>._waiters:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> fut <span class="keyword">in</span> <span class="variable language_">self</span>._waiters:</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> fut.done():</span><br><span class="line">                <span class="variable language_">self</span>._value -= <span class="number">1</span></span><br><span class="line">                fut.set_result(<span class="literal">True</span>)</span><br><span class="line">                <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">_ContextManagerMixin</span>:  <span class="comment"># 异步的上下文管理器</span></span><br><span class="line">    <span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">__aenter__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">await</span> <span class="variable language_">self</span>.acquire()  <span class="comment"># 如果锁住了就await</span></span><br><span class="line">        <span class="comment"># We have no use for the &quot;as ...&quot;  clause in the with</span></span><br><span class="line">        <span class="comment"># statement for locks.</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">__aexit__</span>(<span class="params">self, exc_type, exc, tb</span>):</span><br><span class="line">        <span class="variable language_">self</span>.release()</span><br></pre></td></tr></table></figure>
+
+<h1 id="常用代码片"><a href="#常用代码片" class="headerlink" title="常用代码片"></a>常用代码片</h1><h2 id="对一系列数据调用并发函数"><a href="#对一系列数据调用并发函数" class="headerlink" title="对一系列数据调用并发函数"></a>对一系列数据调用并发函数</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> asyncio</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">coroutine_func_1</span>():</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;call func 1&#x27;</span>)</span><br><span class="line">    <span class="keyword">await</span> asyncio.sleep(<span class="number">5</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;func 1 done!&#x27;</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">coroutine_func_2</span>():</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;call func 2&#x27;</span>)</span><br><span class="line">    <span class="keyword">await</span> asyncio.sleep(<span class="number">5</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;func 2 done!&#x27;</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">gather_data</span>():</span><br><span class="line">    results = <span class="keyword">await</span> asyncio.gather(*[coroutine_func_1(), coroutine_func_2()])</span><br><span class="line">    <span class="keyword">return</span> results</span><br><span class="line"></span><br><span class="line">results = asyncio.run(gather_data())</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;results: <span class="subst">&#123;results&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">call func <span class="number">1</span></span><br><span class="line">call func <span class="number">2</span></span><br><span class="line">func <span class="number">1</span> done!</span><br><span class="line">func <span class="number">2</span> done!</span><br><span class="line">results: [<span class="number">1</span>, <span class="number">2</span>]</span><br></pre></td></tr></table></figure>
+
+<h2 id="限制并发量"><a href="#限制并发量" class="headerlink" title="限制并发量"></a>限制并发量</h2><p>用<code>asyncio.Semaphore</code>来实现。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> asyncio</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">coroutine_func_1</span>(<span class="params">sem</span>):</span><br><span class="line">    <span class="keyword">async</span> <span class="keyword">with</span> sem:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;call func 1&#x27;</span>)</span><br><span class="line">        <span class="keyword">await</span> asyncio.sleep(<span class="number">5</span>)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;func 1 done!&#x27;</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">coroutine_func_2</span>(<span class="params">sem</span>):</span><br><span class="line">    <span class="keyword">async</span> <span class="keyword">with</span> sem:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;call func 2&#x27;</span>)</span><br><span class="line">        <span class="keyword">await</span> asyncio.sleep(<span class="number">5</span>)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;func 2 done!&#x27;</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">coroutine_func_3</span>(<span class="params">sem</span>):</span><br><span class="line">    <span class="keyword">async</span> <span class="keyword">with</span> sem:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;call func 3&#x27;</span>)</span><br><span class="line">        <span class="keyword">await</span> asyncio.sleep(<span class="number">5</span>)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;func 3 done!&#x27;</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="number">3</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">gather_data</span>():</span><br><span class="line">    sem = asyncio.Semaphore(<span class="number">2</span>)</span><br><span class="line">    results = <span class="keyword">await</span> asyncio.gather(*[coroutine_func_1(sem), </span><br><span class="line">                                     coroutine_func_2(sem),</span><br><span class="line">                                     coroutine_func_3(sem)])</span><br><span class="line">    <span class="keyword">return</span> results</span><br><span class="line"></span><br><span class="line">results = asyncio.run(gather_data())</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;results: <span class="subst">&#123;results&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">call func <span class="number">1</span></span><br><span class="line">call func <span class="number">2</span></span><br><span class="line">func <span class="number">1</span> done!</span><br><span class="line">func <span class="number">2</span> done!</span><br><span class="line">call func <span class="number">3</span></span><br><span class="line">func <span class="number">3</span> done!</span><br><span class="line">results: [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br></pre></td></tr></table></figure>
+
+<h2 id="Future使用"><a href="#Future使用" class="headerlink" title="Future使用"></a>Future使用</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> asyncio</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">set_future_result</span>(<span class="params">future, result</span>):</span><br><span class="line">    <span class="keyword">await</span> asyncio.sleep(<span class="number">1</span>)</span><br><span class="line">    future.set_result(result)</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    loop = asyncio.get_event_loop()</span><br><span class="line">    future = loop.create_future()</span><br><span class="line"></span><br><span class="line">    loop.create_task(set_future_result(future, <span class="string">&quot;Hello, asyncio!&quot;</span>))</span><br><span class="line"></span><br><span class="line">    result = <span class="keyword">await</span> future</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;Future result: <span class="subst">&#123;result&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    asyncio.run(main())</span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Future result: Hello, asyncio!</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://zhuanlan.zhihu.com/p/68043798">理解Python协程(Coroutine)</a></p>
+<p><a href="https://docs.python.org/3/library/asyncio-task.html">Coroutines and Tasks</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/deep_learning/visual_language_pretrain/" rel="prev" title="图文预训练梳理">
+                  <i class="fa fa-angle-left"></i> 图文预训练梳理
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/llm/ppo/" rel="next" title="PPO in LLM详解">
+                  PPO in LLM详解 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Javen Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

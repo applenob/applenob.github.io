@@ -121,13 +121,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-count">95</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-count">19</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -169,7 +169,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/machine_learning/CRF/">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning_book/deep_learning_18/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/ggb.png">
@@ -187,7 +187,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/machine_learning/CRF/" class="post-title-link" itemprop="url">条件随机场 CRF总结和实现</a>
+          <a href="/deep_learning_book/deep_learning_18/" class="post-title-link" itemprop="url">第十八章：Confronting the Partition Function</a>
         </h2>
 
         <div class="post-meta-container">
@@ -198,7 +198,7 @@
       </span>
       <span class="post-meta-item-text">Posted on</span>
 
-      <time title="Created: 2017-12-15 09:42:00" itemprop="dateCreated datePublished" datetime="2017-12-15T09:42:00-08:00">2017-12-15</time>
+      <time title="Created: 2017-05-09 18:00:00" itemprop="dateCreated datePublished" datetime="2017-05-09T18:00:00-07:00">2017-05-09</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -213,7 +213,7 @@
       </span>
       <span class="post-meta-item-text">In</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+          <a href="/categories/%E3%80%8ADeep-Learning%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">《Deep Learning》读书笔记</span></a>
         </span>
     </span>
 
@@ -227,17 +227,206 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="概率无向图模型"><a href="#概率无向图模型" class="headerlink" title="概率无向图模型"></a>概率无向图模型</h2><p>回顾一下之前讲解的概率无向图模型：<a href="https://applenob.github.io/machine_learning/graph.html">https://applenob.github.io/machine_learning/graph.html</a></p>
-<p>总结一下：</p>
+          <h1 id="18-Confronting-the-Partition-Function"><a href="#18-Confronting-the-Partition-Function" class="headerlink" title="18. Confronting the Partition Function"></a>18. Confronting the Partition Function</h1><h2 id="配分函数（Partition-Function）"><a href="#配分函数（Partition-Function）" class="headerlink" title="配分函数（Partition Function）"></a>配分函数（Partition Function）</h2><p>许多概率模型（<strong>通常是无向图模型</strong>）由一个未归一化的概率分布$\tilde{p}(x,θ)$定义。</p>
+<p>必须通过除以**配分函数Z(θ)来归一化$\tilde{p}$**，以获得一个有效的概率分布：$p(x;θ)&#x3D;\frac{1}{Z(θ)}\tilde{p}(x;θ)$。</p>
+<p>配分函数是未归一化概率所有状态的积分（对于连续变量）或求和（对于离散变量）：$∫\tilde{p}(x)dx$或者$∑_x\tilde{p}(x)$。对很多有趣的模型，以上积分或求和难以计算。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/deep_learning_book/deep_learning_18/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning_book/deep_learning_17/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/deep_learning_book/deep_learning_17/" class="post-title-link" itemprop="url">第十七章：Monte Carlo Methods</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-05-09 17:00:00" itemprop="dateCreated datePublished" datetime="2017-05-09T17:00:00-07:00">2017-05-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E3%80%8ADeep-Learning%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">《Deep Learning》读书笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="17-Monte-Carlo-Methods"><a href="#17-Monte-Carlo-Methods" class="headerlink" title="17. Monte Carlo Methods"></a>17. Monte Carlo Methods</h2><p><strong>随机算法</strong>：随机算法可以粗略地分为两类：拉斯维加斯算法（Las Vegas algorithms）和蒙特卡洛算法（Monte Carlo algorithms）。 </p>
+<p><strong>拉斯维加斯算法（Las Vegas algorithms）</strong>：总是精确地返回一个正确答案（或者返回算法失败）。 该方法通常需要占用随机量的计算资源（一般指内存或运行时间）。</p>
+<p><strong>蒙特卡洛算法（Monte Carlo algorithms）</strong>：蒙特卡罗方法返回的答案具有随机大小的错误。</p>
+<p>花费更多的计算资源（通常包括内存和运行时间）可以减少这种错误。 在任意固定的计算资源下， 蒙特卡罗算法可以得到一个近似解。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/deep_learning_book/deep_learning_17/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning_book/deep_learning_16/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/deep_learning_book/deep_learning_16/" class="post-title-link" itemprop="url">第十六章：Structured Probabilistic Models for Deep Learning</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-05-09 16:00:00" itemprop="dateCreated datePublished" datetime="2017-05-09T16:00:00-07:00">2017-05-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E3%80%8ADeep-Learning%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">《Deep Learning》读书笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="16-Structured-Probabilistic-Models-for-Deep-Learning"><a href="#16-Structured-Probabilistic-Models-for-Deep-Learning" class="headerlink" title="16. Structured Probabilistic Models for Deep Learning"></a>16. Structured Probabilistic Models for Deep Learning</h1><h2 id="多样化的任务："><a href="#多样化的任务：" class="headerlink" title="多样化的任务："></a>多样化的任务：</h2><p>除了分类任务以外，很多任务需要<strong>对输入数据整个结构有完整理解</strong>，包括：</p>
 <ul>
-<li><strong>最大团</strong>：无向图$G$中任何两个结点都有边连接的结点子集称为团（clique）。若团$C$不能在加入任何一个结点使其称为一个更大的团，则称$C$为图$G$的一个最大团。</li>
-<li>概率无向图模型的<strong>联合概率分</strong>布可以表示成其最大团上的随机变量的函数的乘积形式。这也被称为概率无向图模型的<strong>因子分解</strong>。</li>
-<li>$P(Y) &#x3D; \frac{1}{Z}\prod_C\psi_C(Y_C)$，其中，$Z$是规范化因子，$Z &#x3D; \sum_Y\prod_C\psi_C(Y_C)$，$\psi_C(Y_C)$称为<strong>势函数</strong>，要求势函数是严格正的（因为涉及到累乘）。</li>
+<li>1.<strong>概率密度估计（Density Estimation）</strong>：给定一个输入x，机器学习系统返回一个对数据生成分布的真实密度函数p(x)的估计。</li>
+<li>2.<strong>去噪（Denoising）</strong>：给定一个受损的或者观察有误的输入数据$\tilde{x}$，机器学习系统返回一个对原始的真实x的估计。</li>
+<li>3.<strong>缺失值的填补（Missing Value Imputation）</strong>：给定x的某些元素作为观察值，模型被要求返回一些或者全部未观察值的估计或者概率分布。</li>
+<li>4.<strong>采样（Sampling）</strong>：模型从分布$p(x)$中抽取新的样本。</li>
 </ul>
-<h2 id="条件随机场"><a href="#条件随机场" class="headerlink" title="条件随机场"></a>条件随机场</h2>
+<h2 id="非结构化建模的挑战"><a href="#非结构化建模的挑战" class="headerlink" title="非结构化建模的挑战"></a>非结构化建模的挑战</h2>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/machine_learning/CRF/#more" rel="contents">
+              <a class="btn" href="/deep_learning_book/deep_learning_16/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -268,7 +457,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/machine_learning/max_entropy/">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning_book/deep_learning_15/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/ggb.png">
@@ -286,7 +475,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/machine_learning/max_entropy/" class="post-title-link" itemprop="url">Max Entropy学习总结</a>
+          <a href="/deep_learning_book/deep_learning_15/" class="post-title-link" itemprop="url">第十五章：Representation Learning</a>
         </h2>
 
         <div class="post-meta-container">
@@ -297,7 +486,7 @@
       </span>
       <span class="post-meta-item-text">Posted on</span>
 
-      <time title="Created: 2017-11-29 22:19:00" itemprop="dateCreated datePublished" datetime="2017-11-29T22:19:00-08:00">2017-11-29</time>
+      <time title="Created: 2017-05-09 15:00:00" itemprop="dateCreated datePublished" datetime="2017-05-09T15:00:00-07:00">2017-05-09</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -312,7 +501,7 @@
       </span>
       <span class="post-meta-item-text">In</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+          <a href="/categories/%E3%80%8ADeep-Learning%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">《Deep Learning》读书笔记</span></a>
         </span>
     </span>
 
@@ -326,13 +515,13 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="模型推导"><a href="#模型推导" class="headerlink" title="模型推导"></a>模型推导</h2><p><strong>最大熵</strong>是选择最优模型的一个准则，即，首先要<strong>满足已有的事实（约束条件）</strong>，然后在没有更多信息的情况下，那些不确定的部分都是<strong>“等可能的”。</strong>“等可能”本身不容易操作，熵是一个可以优化的数值目标。</p>
-<p>这里最大熵最大化的，是<strong>条件熵</strong>$H(Y|X)$。</p>
-<p>$$H(Y|X)&#x3D;-\sum_{x,y}\hat{P}(x)P(y|x)logP(y|x)$$</p>
-<p>具体的关于信息熵的文章，可以看<a href="https://colah.github.io/posts/2015-09-Visual-Information/">colah的这篇博客</a>，里面对信息熵&#x2F;互信息&#x2F;条件熵的物理意义做很好的解释。</p>
+          <h2 id="15-Representation-Learning"><a href="#15-Representation-Learning" class="headerlink" title="15. Representation Learning"></a>15. Representation Learning</h2><p><strong>前馈网络</strong>：我们可以将监督学习训练的前馈网络视为表示学习的一种形式。<br>具体地，网络的最后一层通常是线性分类器，如softmax回归分类器。 网络的其余部分学习出该分类器的表示。</p>
+<p><strong>贪心逐层无监督预训练（Greddy Layer-Wise Unsupervised Pretrain）</strong>：贪心逐层无监督预训练依赖于单层表示学习算法，例如RBM、单层自编码器、稀疏编码模型或其他学习潜在表示的模型。</p>
+<p>每一层使用无监督学习预训练，将前一层的输出作为输入，输出数据的新的表示。 贪心逐层无监督预训练被称为贪心的，是因为它是一个贪心算法，这意味着它独立地优化解决方案的每一个部分，每一步解决一个部分，而不是联合优化所有部分。 它被称为逐层的，是因为这些独立的解决方案是网络层。</p>
+<p>具体地，贪心逐层无监督预训练每次处理一层网络，训练第kk层时保持前面的网络层不变。无监督预训练结合了两种不同的想法：<br>第一，它利用了深度神经网络对初始参数的选择，可以对模型有着显著的正则化效果（在较小程度上，可以改进优化）的想法。<br>第二，它利用了更一般的想法——学习输入分布有助于学习从输入到输出的映射。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/machine_learning/max_entropy/#more" rel="contents">
+              <a class="btn" href="/deep_learning_book/deep_learning_15/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -363,7 +552,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/nlp/gen_dep_parser/">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning_book/deep_learning_14/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/ggb.png">
@@ -381,7 +570,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/nlp/gen_dep_parser/" class="post-title-link" itemprop="url">一个简单的生成式依存句法解析器</a>
+          <a href="/deep_learning_book/deep_learning_14/" class="post-title-link" itemprop="url">第十四章：Autoencoders</a>
         </h2>
 
         <div class="post-meta-container">
@@ -392,7 +581,7 @@
       </span>
       <span class="post-meta-item-text">Posted on</span>
 
-      <time title="Created: 2017-11-29 22:19:00" itemprop="dateCreated datePublished" datetime="2017-11-29T22:19:00-08:00">2017-11-29</time>
+      <time title="Created: 2017-05-09 14:00:00" itemprop="dateCreated datePublished" datetime="2017-05-09T14:00:00-07:00">2017-05-09</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -407,7 +596,7 @@
       </span>
       <span class="post-meta-item-text">In</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/NLP/" itemprop="url" rel="index"><span itemprop="name">NLP</span></a>
+          <a href="/categories/%E3%80%8ADeep-Learning%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">《Deep Learning》读书笔记</span></a>
         </span>
     </span>
 
@@ -421,13 +610,12 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>这篇博客中，我通过学习<a href="http://www.hankcs.com/nlp/to-achieve-a-simple-generative-dependency-parsing.html">hankcs</a>的Java版本，自己试着做一个简单的Python版本，用于学习和理清思路。</p>
-<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>所谓生成式句法解析是指生成一些列依存句法树，挑出概率最大的一棵。</p>
-<p>这里的实现考虑了词性信息+词汇信息，使用最大生成树Prim算法搜索最终结果，实现一个简单的汉语依存句法分析器。</p>
-<p>具体：</p>
+          <h1 id="14-Autoencoders"><a href="#14-Autoencoders" class="headerlink" title="14. Autoencoders"></a>14. Autoencoders</h1><h2 id="自编码器（Autoencoders）"><a href="#自编码器（Autoencoders）" class="headerlink" title="自编码器（Autoencoders）"></a>自编码器（Autoencoders）</h2><p>自编码器是神经网络的一种，经过训练后能尝试将输入复制到输出。自编码器内部有一个隐藏层 $h$，产生<strong>编码表示输入</strong>。 </p>
+<p>该网络由两部分组成：一个由函数$h &#x3D; f(x)$表示的编码器和一个生成重构的解码器$r&#x3D;g(h)$。 如果一个自编码器只是简单地学会将处处设置为$g(f(x)) &#x3D; x$，那么这个自编码器就没什么特别的用处。</p>
+<p>相反，我们不应该将自编码器设计成输入到输出完全相等:向自编码器强加一些约束，使它只能近似地复制，并只能复制与训练数据相似的输入。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/nlp/gen_dep_parser/#more" rel="contents">
+              <a class="btn" href="/deep_learning_book/deep_learning_14/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -458,7 +646,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/nlp/n_shortest/">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning_book/deep_learning_13/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/ggb.png">
@@ -476,7 +664,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/nlp/n_shortest/" class="post-title-link" itemprop="url">N-最短路径方法的分词实现</a>
+          <a href="/deep_learning_book/deep_learning_13/" class="post-title-link" itemprop="url">第十三章：Linear Factor Models</a>
         </h2>
 
         <div class="post-meta-container">
@@ -487,7 +675,7 @@
       </span>
       <span class="post-meta-item-text">Posted on</span>
 
-      <time title="Created: 2017-11-28 22:29:00" itemprop="dateCreated datePublished" datetime="2017-11-28T22:29:00-08:00">2017-11-28</time>
+      <time title="Created: 2017-05-09 13:00:00" itemprop="dateCreated datePublished" datetime="2017-05-09T13:00:00-07:00">2017-05-09</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -502,7 +690,7 @@
       </span>
       <span class="post-meta-item-text">In</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/NLP/" itemprop="url" rel="index"><span itemprop="name">NLP</span></a>
+          <a href="/categories/%E3%80%8ADeep-Learning%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">《Deep Learning》读书笔记</span></a>
         </span>
     </span>
 
@@ -516,18 +704,302 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>这篇文章是我照着《基于N最短路径方法的中文词语粗分模型》这篇论文，自己用Python实现了下文中的算法，用于理解原理。</p>
-<h2 id="大致思想"><a href="#大致思想" class="headerlink" title="大致思想"></a>大致思想</h2><p>考虑到汉语自动分词中存在切分歧义消除和未登录词识别两个主要问题，因此，有专家将分词过程分成两个阶段：首先采用切分算法对句子词语进行初步切分，得到一个相对最好的粗分结果，然后，再进行歧义排除和未登录词识别。<br>N-最短路径方法就是一种词语<strong>粗分模型</strong>，大致步骤：</p>
+          <h2 id="13-Linear-Factor-Models"><a href="#13-Linear-Factor-Models" class="headerlink" title="13. Linear Factor Models"></a>13. Linear Factor Models</h2><p><strong>线性因子模型（Linear Factor Models）</strong>：线性因子模型通过随机线性解码器函数来定义，该函数通过对h的线性变换以及添加噪声来生成x。通常包含如下步骤：1.首先，我们从一个分布中采样解释性因子h，$h\sim p(h)$，其中p(h)是一个因子分布，满足$p(h)&#x3D;\prod_i p(h_i)$；2.然后，我们对实值的可观察变量进行采样$x&#x3D;Wh+b+noise$。</p>
+<p><strong>概率PCA、因子分析和其他线性因子模型</strong>仅在对观测到x之前的噪声分布和隐变量h先验的选择上有所不同。</p>
+<p><strong>因子分析（Factor Analysis）</strong>：隐变量先验是一个方差为单位矩阵的高斯分布$h \sim N(h;0,I)$，同时假定在给定h的条件下观察值$x_i$是条件独立的。假设噪声是从对角协方差矩阵的高斯分布中采样的的，协方差矩阵为$ψ&#x3D;diag(σ^2)$，容易看出，x服从多维正态分布，并满$x\sim N(x;b,WW^⊤+ψ)$。</p>
+<p><strong>概率PCA（Probabilistic PCA）和</strong>：在因子分析的基础上，使条件方差$σ^2_i$等于同一个值。x的协方差简化为$WW^⊤+σ^2_I$，或者等价的$x&#x3D;Wh+b+σz$，其中$z\sim N(z;0,I)$</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/deep_learning_book/deep_learning_13/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning_book/deep_learning_12/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/deep_learning_book/deep_learning_12/" class="post-title-link" itemprop="url">第十二章：Application</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-05-09 12:00:00" itemprop="dateCreated datePublished" datetime="2017-05-09T12:00:00-07:00">2017-05-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E3%80%8ADeep-Learning%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">《Deep Learning》读书笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="12-Application"><a href="#12-Application" class="headerlink" title="12. Application"></a>12. Application</h1><h2 id="计算机视觉"><a href="#计算机视觉" class="headerlink" title="计算机视觉"></a>计算机视觉</h2><p><strong>计算机视觉的应用</strong>：计算机视觉的应用广泛：从复现人类视觉能力（比如识别人脸）到创造全新的视觉能力。</p>
+<p><strong>预处理</strong>：1.标准化：使得它们的像素都在相同并且合理的范围内，比如$[0,1]$或者$[-1,1]$。2.标准尺寸：裁剪或缩放图像以适应固定的尺寸。3.数据集增强：只对训练集做预处理，是减少大多数计算机视觉模型泛化误差的一种极好方法。</p>
+<p><strong>对比度归一化</strong>：对比度指的是图像中亮像素和暗像素之间差异的大小，在深度学习中，对比度通常指的是图像或图像区域中像素的标准差。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/deep_learning_book/deep_learning_12/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning_book/deep_learning_11/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/deep_learning_book/deep_learning_11/" class="post-title-link" itemprop="url">第十一章：Practical Methodology</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-05-09 11:00:00" itemprop="dateCreated datePublished" datetime="2017-05-09T11:00:00-07:00">2017-05-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E3%80%8ADeep-Learning%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">《Deep Learning》读书笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="11-Practical-Methodology"><a href="#11-Practical-Methodology" class="headerlink" title="11. Practical Methodology"></a>11. Practical Methodology</h2><h2 id="实践设计流程"><a href="#实践设计流程" class="headerlink" title="实践设计流程"></a>实践设计流程</h2><p>1.确定目标：使用什么样的<strong>误差度量（error metric）</strong>，并为此指定目标值。</p>
+<p>2.尽快建立一个端到端的的pipeline，包括估计合适的性能度量（performance metric）。</p>
+<p>3.搭建系统，并确定性能瓶颈，检查哪个部分的性能差于预期，以及是否是因为过拟合、欠拟合，或者数据或软件缺陷造成的。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/deep_learning_book/deep_learning_11/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning_book/deep_learning_10/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/deep_learning_book/deep_learning_10/" class="post-title-link" itemprop="url">第十章：Sequence Modeling：Recurrent and Recursive Nets</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-05-09 10:00:00" itemprop="dateCreated datePublished" datetime="2017-05-09T10:00:00-07:00">2017-05-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E3%80%8ADeep-Learning%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">《Deep Learning》读书笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="10-Sequence-Modeling-Recurrent-and-Recursive-Nets"><a href="#10-Sequence-Modeling-Recurrent-and-Recursive-Nets" class="headerlink" title="10. Sequence Modeling: Recurrent and Recursive Nets"></a>10. Sequence Modeling: Recurrent and Recursive Nets</h1><h2 id="循环神经网络（Recurrent-Neural-Network，RNN）"><a href="#循环神经网络（Recurrent-Neural-Network，RNN）" class="headerlink" title="循环神经网络（Recurrent Neural Network，RNN）"></a>循环神经网络（Recurrent Neural Network，RNN）</h2><ul>
+<li>是一类用于处理<strong>序列数据</strong>的神经网络。<br>-RNN在不同的时间点上<strong>共享参数</strong>，使得模型能够扩展到<strong>不同长度</strong>的样本并进行泛化。</li>
+<li>如果我们在每个时间点都有一个单独的参数，我们不但不能泛化到训练时没有见过序列长度，也不能在时间上共享不同序列长度和不同位置的统计强度。</li>
+<li>$h^{(t)} &#x3D; f (h^{(t−1)}, x^{(t)} ; θ)$</li>
+</ul>
+<p><strong>展开过程的两个主要优点</strong>：</p>
 <ul>
-<li>1.根据词典，找出字串中所有可能的词，构造词语切分有向无环图。 </li>
-<li>2.每个词对应图中的一条有向边，并赋给相应的边长（权值） 。 </li>
-<li>3.然后针对该切分图，在起点到终点的所有路径中，求出长度值按严格升序排列（任何两个不同位置上的值一定不等）依次为第1、第2、…、第i、…、第N（N≥1）的路径集合作为相应的粗分结果集。 </li>
-<li>4.如果两条或两条以上路径长度相等，那么它们的长度并列第i，都要列入粗分结果集，而且不影响其他路径的排列序号，最后的粗分结果集合大小大于或等于N。</li>
+<li>无论序列的长度，学成的模型始终具有相同的输入大小。</li>
+<li>可以在每个时间节点使用相同的转移函数$f$。</li>
 </ul>
-<h2 id="具体介绍"><a href="#具体介绍" class="headerlink" title="具体介绍"></a>具体介绍</h2>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/nlp/n_shortest/#more" rel="contents">
+              <a class="btn" href="/deep_learning_book/deep_learning_10/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -558,7 +1030,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/nlp/statistics_seg/">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning_book/deep_learning_9/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/ggb.png">
@@ -576,7 +1048,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/nlp/statistics_seg/" class="post-title-link" itemprop="url">基于统计学的的分词</a>
+          <a href="/deep_learning_book/deep_learning_9/" class="post-title-link" itemprop="url">第九章：Convolutional Networks</a>
         </h2>
 
         <div class="post-meta-container">
@@ -587,7 +1059,7 @@
       </span>
       <span class="post-meta-item-text">Posted on</span>
 
-      <time title="Created: 2017-11-27 22:19:00" itemprop="dateCreated datePublished" datetime="2017-11-27T22:19:00-08:00">2017-11-27</time>
+      <time title="Created: 2017-05-09 09:00:00" itemprop="dateCreated datePublished" datetime="2017-05-09T09:00:00-07:00">2017-05-09</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -602,7 +1074,7 @@
       </span>
       <span class="post-meta-item-text">In</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/NLP/" itemprop="url" rel="index"><span itemprop="name">NLP</span></a>
+          <a href="/categories/%E3%80%8ADeep-Learning%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">《Deep Learning》读书笔记</span></a>
         </span>
     </span>
 
@@ -616,495 +1088,19 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>最大匹配分词方法只考虑词有没有在字典中出现，没有考虑词在词典中的频率。</p>
-<p>基于统计学的分词即考虑词在词典中的频率的一种简单的分词方法。</p>
-<p><strong>注：下面的代码参考snownlp作者的博客</strong>：<a href="http://www.isnowfy.com/python-chinese-segmentation/">http://www.isnowfy.com/python-chinese-segmentation/</a></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> math</span><br><span class="line"><span class="keyword">import</span> codecs</span><br><span class="line"></span><br><span class="line">d = &#123;&#125;</span><br><span class="line">log = <span class="keyword">lambda</span> x: <span class="built_in">float</span>(<span class="string">&#x27;-inf&#x27;</span>) <span class="keyword">if</span> <span class="keyword">not</span> x <span class="keyword">else</span> math.log(x)</span><br><span class="line">prob = <span class="keyword">lambda</span> x: d[x] <span class="keyword">if</span> x <span class="keyword">in</span> d <span class="keyword">else</span> <span class="number">0</span> <span class="keyword">if</span> <span class="built_in">len</span>(x)&gt;<span class="number">1</span> <span class="keyword">else</span> <span class="number">1</span>  <span class="comment"># 计算每个词的频次（加入平滑）</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">init</span>(<span class="params">filename=<span class="string">&#x27;SogouLabDic.dic.utf8&#x27;</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;读取字典&quot;&quot;&quot;</span></span><br><span class="line">    d[<span class="string">&#x27;_t_&#x27;</span>] = <span class="number">0.0</span></span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(filename, <span class="string">&quot;r&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        <span class="keyword">for</span> line <span class="keyword">in</span> f:</span><br><span class="line">            word, freq = line.split(<span class="string">&#x27;\t&#x27;</span>)[:<span class="number">2</span>]</span><br><span class="line">            d[<span class="string">&#x27;_t_&#x27;</span>] += <span class="built_in">int</span>(freq)+<span class="number">1</span></span><br><span class="line">            d[word] = <span class="built_in">int</span>(freq)+<span class="number">1</span></span><br><span class="line">                </span><br><span class="line">init()</span><br></pre></td></tr></table></figure>
-
-<p>小插曲：</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/nlp/statistics_seg/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/nlp/text_normalization/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/ggb.png">
-      <meta itemprop="name" content="Javen Chen">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Javen Chen's Blog">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Javen Chen's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/nlp/text_normalization/" class="post-title-link" itemprop="url">Kaggle比赛：Text Normalization for English银牌全程记录</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2017-11-21 20:00:20" itemprop="dateCreated datePublished" datetime="2017-11-21T20:00:20-08:00">2017-11-21</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/NLP/" itemprop="url" rel="index"><span itemprop="name">NLP</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>所谓“文本正则”，即将手写形式的文本转换成语音形式的文本。</p>
-<p>例子：</p>
-<ul>
-<li>手写：<code>A baby giraffe is 6ft tall and weighs 150lb.</code></li>
-<li>语音：<code>A baby giraffe is six feet tall and weighs one hundred fifty pounds.</code></li>
+          <h1 id="9-Convolutional-Networks"><a href="#9-Convolutional-Networks" class="headerlink" title="9. Convolutional Networks"></a>9. Convolutional Networks</h1><p><strong>卷积网络（Convolutional Networks）</strong>：卷积网络是指那些至少在网络的一层中使用卷积运算来替代一般的矩阵乘法运算的神经网络。</p>
+<h3 id="卷积（Convolution）操作"><a href="#卷积（Convolution）操作" class="headerlink" title="卷积（Convolution）操作"></a>卷积（Convolution）操作</h3><ul>
+<li>卷积是一种特殊的线性运算。 </li>
+<li>假设我们正在用激光传感器追踪一艘宇宙飞船的位置，$x(t)$表示宇宙飞船在时刻t的位置，$x$和$t$都是实值。 </li>
+<li>假设我们的传感器受到一定程度的噪声干扰。 为了得到飞船位置的低噪声估计，我们对得到的测量结果进行平均。 </li>
+<li>显然，时间上越近的测量结果越相关，所以我们采用一种加权平均的方法，对于最近的测量结果赋予更高的权重。<br>采用一个加权函数$w(a)$来实现，其中a表示某个测量的测量时刻：$s(t)&#x3D;∫x(a)w(t−a)da$，或者用离散的表达式：$s(t)&#x3D;(x∗w)(t)&#x3D;∑_{a&#x3D;−∞}^∞x(a)w(t−a)$。</li>
+<li>这就是卷积操作，可以用星号表示：$s(t)&#x3D;(x∗w)(t)$。 </li>
+<li>$x$是输入（input）；$w$是核（kernel）；输出的$s$是特征映射（feature map）。</li>
 </ul>
-<h2 id="调研"><a href="#调研" class="headerlink" title="调研"></a>调研</h2>
+<p><strong>互相关函数（cross-correlation）</strong>：</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/nlp/text_normalization/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/tensorflow/5_trouble/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/ggb.png">
-      <meta itemprop="name" content="Javen Chen">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Javen Chen's Blog">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Javen Chen's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/tensorflow/5_trouble/" class="post-title-link" itemprop="url">五. Tensorflow 各种坑</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2017-11-15 11:00:00" itemprop="dateCreated datePublished" datetime="2017-11-15T11:00:00-08:00">2017-11-15</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Tensorflow%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">Tensorflow学习笔记</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="1-启动tensorflow程序时有另外的tensorflow程序在运行"><a href="#1-启动tensorflow程序时有另外的tensorflow程序在运行" class="headerlink" title="1. 启动tensorflow程序时有另外的tensorflow程序在运行"></a>1. 启动tensorflow程序时有另外的tensorflow程序在运行</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">InternalError (see above for traceback): Blas SGEMM launch failed :</span><br><span class="line">a.shape=(1, 128), b.shape=(128, 512), m=1, n=512, k=128</span><br><span class="line">         [[Node:</span><br><span class="line">MatMul_11 = MatMul[T=DT_FLOAT, transpose_a=false, transpose_b=false,</span><br><span class="line">_device=&quot;/job:localhost/replica:0/task:0/gpu:0&quot;](Variable_6/read, m/read)]]</span><br><span class="line">[[Node: Softmax_1/_29 = _Recv[client_terminated=false,</span><br><span class="line">recv_device=&quot;/job:localhost/replica:0/task:0/cpu:0&quot;,</span><br><span class="line">send_device=&quot;/job:localhost/replica:0/task:0/gpu:0&quot;, send_device_incarnation=1,</span><br><span class="line">tensor_name=&quot;edge_118_Softmax_1&quot;, tensor_type=DT_FLOAT,</span><br><span class="line">_device=&quot;/job:localhost/replica:0/task:0/cpu:0&quot;]()]]</span><br></pre></td></tr></table></figure>
-
-<p>也有可能是在ipython notebook中打开了交互式对话。</p>
-
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/tensorflow/5_trouble/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/tensorflow/4_graph_session/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/ggb.png">
-      <meta itemprop="name" content="Javen Chen">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Javen Chen's Blog">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Javen Chen's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/tensorflow/4_graph_session/" class="post-title-link" itemprop="url">四. Tensorflow基础概念：Graph和Session</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2017-10-15 11:00:00" itemprop="dateCreated datePublished" datetime="2017-10-15T11:00:00-07:00">2017-10-15</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Tensorflow%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">Tensorflow学习笔记</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>本篇博客介绍关于graph和session的细节。</p>
-<h2 id="1-使用Graph"><a href="#1-使用Graph" class="headerlink" title="1. 使用Graph"></a>1. 使用Graph</h2><p>（1）.不显式地指定图，等价于使用其他两种方法：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"></span><br><span class="line"><span class="comment"># 不显式地指定图</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Build a graph.</span></span><br><span class="line">a = tf.constant(<span class="number">5.0</span>)</span><br><span class="line">b = tf.constant(<span class="number">6.0</span>)</span><br><span class="line">c = a * b</span><br><span class="line"></span><br><span class="line"><span class="comment"># Launch the graph in a session.</span></span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</span><br><span class="line">    <span class="comment"># Evaluate the tensor `c`.</span></span><br><span class="line">    <span class="built_in">print</span>(sess.run(c))</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">30.0</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/tensorflow/4_graph_session/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/tensorflow/3_placeholder/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/ggb.png">
-      <meta itemprop="name" content="Javen Chen">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Javen Chen's Blog">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Javen Chen's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/tensorflow/3_placeholder/" class="post-title-link" itemprop="url">三. Tensorflow基础：placeholder, embedding_lookup 和dropout</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2017-09-15 11:00:00" itemprop="dateCreated datePublished" datetime="2017-09-15T11:00:00-07:00">2017-09-15</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Tensorflow%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">Tensorflow学习笔记</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>本篇博客介绍了<code>placeholder</code>, <code>embedding_lookup</code> <code>和dropout</code></p>
-<h2 id="1-placeholder"><a href="#1-placeholder" class="headerlink" title="1.placeholder"></a>1.placeholder</h2><p><code>placeholder</code>在笔记一中的feed机制中提到，是graph的数据输入。</p>
-<p>原理很简单，下面的实验关注传入的tensor的shape问题：</p>
-<p>如果传入的数据的shape是[3,3]，则placeholder的shape可以是[3,3]或者[3,None]；只是[3]会报错。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/tensorflow/3_placeholder/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning/generative_model/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/ggb.png">
-      <meta itemprop="name" content="Javen Chen">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Javen Chen's Blog">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Javen Chen's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/deep_learning/generative_model/" class="post-title-link" itemprop="url">深度生成模型总结--原始GAN和VAE</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2017-08-21 23:00:00" itemprop="dateCreated datePublished" datetime="2017-08-21T23:00:00-07:00">2017-08-21</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>前段时间研究了一段<code>Zero Shot Learning</code>，研究了一些生成模型，总结一下备忘。</p>
-<p>关于生成模型有一个很好的<a href="https://github.com/wiseodd/generative-models">github仓库</a>，而且作者的<a href="https://wiseodd.github.io/">博客</a>写的也非常精彩。</p>
-<p>所谓生成模型，即，给定一些数据，用一个向量$x$表示，每一个datapoint对应一张图片或者一句话，生成模型的目标是学会$P(x)$，有了$P(x)$就可以从中sample，从而<strong>生成</strong>一些数据。</p>
-<p>本文主要总结下<strong>GAN</strong>和<strong>VAE</strong>两种生成模型。</p>
-<h2 id="GAN"><a href="#GAN" class="headerlink" title="GAN"></a>GAN</h2>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/deep_learning/generative_model/#more" rel="contents">
+              <a class="btn" href="/deep_learning_book/deep_learning_9/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -1128,7 +1124,7 @@
 
 
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="Previous page" aria-label="Previous page" href="/page/5/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" title="Next page" aria-label="Next page" href="/page/7/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" title="Previous page" aria-label="Previous page" href="/page/5/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" title="Next page" aria-label="Next page" href="/page/7/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
