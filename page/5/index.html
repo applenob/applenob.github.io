@@ -121,7 +121,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">95</span>
+          <span class="site-state-item-count">90</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -132,7 +132,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-count">22</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -160,301 +160,6 @@
     </div>
 
     <div class="main-inner index posts-expand">
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/nlp/n_shortest/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/ggb.png">
-      <meta itemprop="name" content="Javen Chen">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Javen Chen's Blog">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Javen Chen's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/nlp/n_shortest/" class="post-title-link" itemprop="url">N-最短路径方法的分词实现</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2017-11-28 22:29:00" itemprop="dateCreated datePublished" datetime="2017-11-28T22:29:00-08:00">2017-11-28</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/NLP/" itemprop="url" rel="index"><span itemprop="name">NLP</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>这篇文章是我照着《基于N最短路径方法的中文词语粗分模型》这篇论文，自己用Python实现了下文中的算法，用于理解原理。</p>
-<h2 id="大致思想"><a href="#大致思想" class="headerlink" title="大致思想"></a>大致思想</h2><p>考虑到汉语自动分词中存在切分歧义消除和未登录词识别两个主要问题，因此，有专家将分词过程分成两个阶段：首先采用切分算法对句子词语进行初步切分，得到一个相对最好的粗分结果，然后，再进行歧义排除和未登录词识别。<br>N-最短路径方法就是一种词语<strong>粗分模型</strong>，大致步骤：</p>
-<ul>
-<li>1.根据词典，找出字串中所有可能的词，构造词语切分有向无环图。 </li>
-<li>2.每个词对应图中的一条有向边，并赋给相应的边长（权值） 。 </li>
-<li>3.然后针对该切分图，在起点到终点的所有路径中，求出长度值按严格升序排列（任何两个不同位置上的值一定不等）依次为第1、第2、…、第i、…、第N（N≥1）的路径集合作为相应的粗分结果集。 </li>
-<li>4.如果两条或两条以上路径长度相等，那么它们的长度并列第i，都要列入粗分结果集，而且不影响其他路径的排列序号，最后的粗分结果集合大小大于或等于N。</li>
-</ul>
-<h2 id="具体介绍"><a href="#具体介绍" class="headerlink" title="具体介绍"></a>具体介绍</h2>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/nlp/n_shortest/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/nlp/statistics_seg/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/ggb.png">
-      <meta itemprop="name" content="Javen Chen">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Javen Chen's Blog">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Javen Chen's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/nlp/statistics_seg/" class="post-title-link" itemprop="url">基于统计学的的分词</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2017-11-27 22:19:00" itemprop="dateCreated datePublished" datetime="2017-11-27T22:19:00-08:00">2017-11-27</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/NLP/" itemprop="url" rel="index"><span itemprop="name">NLP</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>最大匹配分词方法只考虑词有没有在字典中出现，没有考虑词在词典中的频率。</p>
-<p>基于统计学的分词即考虑词在词典中的频率的一种简单的分词方法。</p>
-<p><strong>注：下面的代码参考snownlp作者的博客</strong>：<a href="http://www.isnowfy.com/python-chinese-segmentation/">http://www.isnowfy.com/python-chinese-segmentation/</a></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> math</span><br><span class="line"><span class="keyword">import</span> codecs</span><br><span class="line"></span><br><span class="line">d = &#123;&#125;</span><br><span class="line">log = <span class="keyword">lambda</span> x: <span class="built_in">float</span>(<span class="string">&#x27;-inf&#x27;</span>) <span class="keyword">if</span> <span class="keyword">not</span> x <span class="keyword">else</span> math.log(x)</span><br><span class="line">prob = <span class="keyword">lambda</span> x: d[x] <span class="keyword">if</span> x <span class="keyword">in</span> d <span class="keyword">else</span> <span class="number">0</span> <span class="keyword">if</span> <span class="built_in">len</span>(x)&gt;<span class="number">1</span> <span class="keyword">else</span> <span class="number">1</span>  <span class="comment"># 计算每个词的频次（加入平滑）</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">init</span>(<span class="params">filename=<span class="string">&#x27;SogouLabDic.dic.utf8&#x27;</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;读取字典&quot;&quot;&quot;</span></span><br><span class="line">    d[<span class="string">&#x27;_t_&#x27;</span>] = <span class="number">0.0</span></span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(filename, <span class="string">&quot;r&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        <span class="keyword">for</span> line <span class="keyword">in</span> f:</span><br><span class="line">            word, freq = line.split(<span class="string">&#x27;\t&#x27;</span>)[:<span class="number">2</span>]</span><br><span class="line">            d[<span class="string">&#x27;_t_&#x27;</span>] += <span class="built_in">int</span>(freq)+<span class="number">1</span></span><br><span class="line">            d[word] = <span class="built_in">int</span>(freq)+<span class="number">1</span></span><br><span class="line">                </span><br><span class="line">init()</span><br></pre></td></tr></table></figure>
-
-<p>小插曲：</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/nlp/statistics_seg/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/nlp/text_normalization/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/ggb.png">
-      <meta itemprop="name" content="Javen Chen">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Javen Chen's Blog">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Javen Chen's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/nlp/text_normalization/" class="post-title-link" itemprop="url">Kaggle比赛：Text Normalization for English银牌全程记录</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2017-11-21 20:00:20" itemprop="dateCreated datePublished" datetime="2017-11-21T20:00:20-08:00">2017-11-21</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/NLP/" itemprop="url" rel="index"><span itemprop="name">NLP</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>所谓“文本正则”，即将手写形式的文本转换成语音形式的文本。</p>
-<p>例子：</p>
-<ul>
-<li>手写：<code>A baby giraffe is 6ft tall and weighs 150lb.</code></li>
-<li>语音：<code>A baby giraffe is six feet tall and weighs one hundred fifty pounds.</code></li>
-</ul>
-<h2 id="调研"><a href="#调研" class="headerlink" title="调研"></a>调研</h2>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/nlp/text_normalization/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
 
     
 
@@ -530,104 +235,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/deep_learning/generative_model/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/machine_learning/interview/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/ggb.png">
-      <meta itemprop="name" content="Javen Chen">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Javen Chen's Blog">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Javen Chen's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/machine_learning/interview/" class="post-title-link" itemprop="url">机器学习基础知识汇总</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2017-08-11 14:00:00" itemprop="dateCreated datePublished" datetime="2017-08-11T14:00:00-07:00">2017-08-11</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="计算CNN输出尺寸"><a href="#计算CNN输出尺寸" class="headerlink" title="计算CNN输出尺寸"></a>计算CNN输出尺寸</h2><p>公式：<code>输出尺寸=(输入尺寸-filter尺寸+2*padding）/stride+1</code></p>
-<h2 id="ROC-和AUC"><a href="#ROC-和AUC" class="headerlink" title="ROC 和AUC"></a>ROC 和AUC</h2><p>ROC曲线的x轴是伪阳率即$\frac{伪阳}{真阴+伪阳}$，y轴是真阳率即$\frac{真阳}{真阳+伪阴}$。</p>
-<ul>
-<li>thresh-hold很高，导致全部预测阴，则真阳率为0，伪阳率为0，在坐标点$(0, 0)$；</li>
-<li>thresh-hold很低，导致全部预测阳，则真阳率为1，伪阳率为1，在坐标点$(1, 1)$；</li>
-<li>如果分类效果很好，则真阳率很高，伪阳率很低，接近坐标点$(0, 1)$。AUC即（Area Under Curve），即ROC曲线下的面积。如果分类效果越好，点越接近$(0, 1)$则AUC越大。</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/machine_learning/interview/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -1351,8 +958,391 @@
 
 
 
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning_book/deep_learning_18/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/deep_learning_book/deep_learning_18/" class="post-title-link" itemprop="url">第十八章：Confronting the Partition Function</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-05-09 18:00:00" itemprop="dateCreated datePublished" datetime="2017-05-09T18:00:00-07:00">2017-05-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E3%80%8ADeep-Learning%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">《Deep Learning》读书笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="18-Confronting-the-Partition-Function"><a href="#18-Confronting-the-Partition-Function" class="headerlink" title="18. Confronting the Partition Function"></a>18. Confronting the Partition Function</h1><h2 id="配分函数（Partition-Function）"><a href="#配分函数（Partition-Function）" class="headerlink" title="配分函数（Partition Function）"></a>配分函数（Partition Function）</h2><p>许多概率模型（<strong>通常是无向图模型</strong>）由一个未归一化的概率分布$\tilde{p}(x,θ)$定义。</p>
+<p>必须通过除以**配分函数Z(θ)来归一化$\tilde{p}$**，以获得一个有效的概率分布：$p(x;θ)&#x3D;\frac{1}{Z(θ)}\tilde{p}(x;θ)$。</p>
+<p>配分函数是未归一化概率所有状态的积分（对于连续变量）或求和（对于离散变量）：$∫\tilde{p}(x)dx$或者$∑_x\tilde{p}(x)$。对很多有趣的模型，以上积分或求和难以计算。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/deep_learning_book/deep_learning_18/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning_book/deep_learning_17/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/deep_learning_book/deep_learning_17/" class="post-title-link" itemprop="url">第十七章：Monte Carlo Methods</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-05-09 17:00:00" itemprop="dateCreated datePublished" datetime="2017-05-09T17:00:00-07:00">2017-05-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E3%80%8ADeep-Learning%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">《Deep Learning》读书笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="17-Monte-Carlo-Methods"><a href="#17-Monte-Carlo-Methods" class="headerlink" title="17. Monte Carlo Methods"></a>17. Monte Carlo Methods</h2><p><strong>随机算法</strong>：随机算法可以粗略地分为两类：拉斯维加斯算法（Las Vegas algorithms）和蒙特卡洛算法（Monte Carlo algorithms）。 </p>
+<p><strong>拉斯维加斯算法（Las Vegas algorithms）</strong>：总是精确地返回一个正确答案（或者返回算法失败）。 该方法通常需要占用随机量的计算资源（一般指内存或运行时间）。</p>
+<p><strong>蒙特卡洛算法（Monte Carlo algorithms）</strong>：蒙特卡罗方法返回的答案具有随机大小的错误。</p>
+<p>花费更多的计算资源（通常包括内存和运行时间）可以减少这种错误。 在任意固定的计算资源下， 蒙特卡罗算法可以得到一个近似解。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/deep_learning_book/deep_learning_17/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning_book/deep_learning_16/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/deep_learning_book/deep_learning_16/" class="post-title-link" itemprop="url">第十六章：Structured Probabilistic Models for Deep Learning</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-05-09 16:00:00" itemprop="dateCreated datePublished" datetime="2017-05-09T16:00:00-07:00">2017-05-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E3%80%8ADeep-Learning%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">《Deep Learning》读书笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="16-Structured-Probabilistic-Models-for-Deep-Learning"><a href="#16-Structured-Probabilistic-Models-for-Deep-Learning" class="headerlink" title="16. Structured Probabilistic Models for Deep Learning"></a>16. Structured Probabilistic Models for Deep Learning</h1><h2 id="多样化的任务："><a href="#多样化的任务：" class="headerlink" title="多样化的任务："></a>多样化的任务：</h2><p>除了分类任务以外，很多任务需要<strong>对输入数据整个结构有完整理解</strong>，包括：</p>
+<ul>
+<li>1.<strong>概率密度估计（Density Estimation）</strong>：给定一个输入x，机器学习系统返回一个对数据生成分布的真实密度函数p(x)的估计。</li>
+<li>2.<strong>去噪（Denoising）</strong>：给定一个受损的或者观察有误的输入数据$\tilde{x}$，机器学习系统返回一个对原始的真实x的估计。</li>
+<li>3.<strong>缺失值的填补（Missing Value Imputation）</strong>：给定x的某些元素作为观察值，模型被要求返回一些或者全部未观察值的估计或者概率分布。</li>
+<li>4.<strong>采样（Sampling）</strong>：模型从分布$p(x)$中抽取新的样本。</li>
+</ul>
+<h2 id="非结构化建模的挑战"><a href="#非结构化建模的挑战" class="headerlink" title="非结构化建模的挑战"></a>非结构化建模的挑战</h2>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/deep_learning_book/deep_learning_16/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://applenob.github.io/deep_learning_book/deep_learning_15/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ggb.png">
+      <meta itemprop="name" content="Javen Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Javen Chen's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/deep_learning_book/deep_learning_15/" class="post-title-link" itemprop="url">第十五章：Representation Learning</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-05-09 15:00:00" itemprop="dateCreated datePublished" datetime="2017-05-09T15:00:00-07:00">2017-05-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-10 12:30:54" itemprop="dateModified" datetime="2024-11-10T12:30:54-08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E3%80%8ADeep-Learning%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">《Deep Learning》读书笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="15-Representation-Learning"><a href="#15-Representation-Learning" class="headerlink" title="15. Representation Learning"></a>15. Representation Learning</h2><p><strong>前馈网络</strong>：我们可以将监督学习训练的前馈网络视为表示学习的一种形式。<br>具体地，网络的最后一层通常是线性分类器，如softmax回归分类器。 网络的其余部分学习出该分类器的表示。</p>
+<p><strong>贪心逐层无监督预训练（Greddy Layer-Wise Unsupervised Pretrain）</strong>：贪心逐层无监督预训练依赖于单层表示学习算法，例如RBM、单层自编码器、稀疏编码模型或其他学习潜在表示的模型。</p>
+<p>每一层使用无监督学习预训练，将前一层的输出作为输入，输出数据的新的表示。 贪心逐层无监督预训练被称为贪心的，是因为它是一个贪心算法，这意味着它独立地优化解决方案的每一个部分，每一步解决一个部分，而不是联合优化所有部分。 它被称为逐层的，是因为这些独立的解决方案是网络层。</p>
+<p>具体地，贪心逐层无监督预训练每次处理一层网络，训练第kk层时保持前面的网络层不变。无监督预训练结合了两种不同的想法：<br>第一，它利用了深度神经网络对初始参数的选择，可以对模型有着显著的正则化效果（在较小程度上，可以改进优化）的想法。<br>第二，它利用了更一般的想法——学习输入分布有助于学习从输入到输出的映射。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/deep_learning_book/deep_learning_15/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="Previous page" aria-label="Previous page" href="/page/4/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" title="Next page" aria-label="Next page" href="/page/6/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" title="Previous page" aria-label="Previous page" href="/page/4/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" title="Next page" aria-label="Next page" href="/page/6/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
@@ -1363,7 +1353,7 @@
 
   <div class="copyright">
     &copy; 
-    <span itemprop="copyrightYear">2024</span>
+    <span itemprop="copyrightYear">2025</span>
     <span class="with-love">
       <i class="fa fa-heart"></i>
     </span>
