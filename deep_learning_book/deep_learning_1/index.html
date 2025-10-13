@@ -130,18 +130,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">90</span>
+          <span class="site-state-item-count">91</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-count">20</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-count">23</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -260,7 +260,35 @@
     
     
 
-    <footer class="post-footer">
+    <footer class="post-footer"><script>
+  function remountUtterances() {
+    // NexT 内置的评论容器优先是 #comments
+    const container = document.querySelector('#comments') || document.querySelector('.post-comments');
+    if (!container) return;
+
+    // 无论当前是否有 iframe，都先清空，保证不会重复
+    container.innerHTML = '';
+
+    // 重新创建 utterances 脚本（参数与 _config.next.yml 保持一致）
+    const s = document.createElement('script');
+    s.src = 'https://utteranc.es/client.js';
+    s.async = true;
+    s.crossOrigin = 'anonymous';
+    s.setAttribute('repo', 'applenob/applenob.github.io');
+    s.setAttribute('issue-term', 'pathname');
+    s.setAttribute('label', 'utterances_comments');
+    s.setAttribute('theme', 'preferred-color-scheme');
+    container.appendChild(s);
+  }
+
+  // ⚠️ 不要在初次加载时挂载，交给 NexT 内置去做
+  // 只在用户从 GitHub 登录页/弹窗回到本页时，做一次“替换式重挂载”
+  window.addEventListener('focus', remountUtterances);
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) remountUtterances();
+  });
+</script>
+
           <div class="post-tags">
               <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"># 笔记</a>
               <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
